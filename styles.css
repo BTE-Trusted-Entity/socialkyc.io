@@ -84,6 +84,7 @@ body {
   width: 1.5rem;
   background: url('./images/chevron_down.svg') no-repeat center;
   border: 0.5px solid #c6c6c6;
+  border-radius: 10%;
   cursor: pointer;
   margin-right: 1.5rem;
 }
