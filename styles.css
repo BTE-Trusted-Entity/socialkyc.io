@@ -1,0 +1,103 @@
+@font-face {
+  font-family: 'Alef Bold';
+  src: url('./fonts/Alef-Bold.ttf') format('truetype');
+}
+
+@font-face {
+  font-family: 'Alef Regular';
+  src: url('./fonts/Alef-Regular.ttf') format('truetype');
+}
+
+* {
+  font-family: 'Alef Regular';
+  font-weight: 400;
+}
+
+html,
+body {
+  margin: 0;
+  padding: 0;
+  height: 100%;
+  width: 100%;
+}
+
+h1,
+h2,
+h3,
+p {
+  margin: 0;
+}
+
+body {
+  display: flex;
+  background: #fff;
+  color: #3c3c3b;
+}
+
+.right,
+.left {
+  width: 50%;
+}
+
+.left {
+  background: url('./images/logo.svg') no-repeat top 3rem right 3rem;
+}
+
+.right {
+  background-image: linear-gradient(
+      rgba(188, 40, 75, 0.7),
+      rgba(188, 40, 75, 0.7)
+    ),
+    url('./images/background.jpg');
+  background-size: cover;
+  color: #fff;
+}
+
+.heading {
+  margin: calc(214rem / 16) 0 2rem 6.5rem;
+  font-size: 2rem;
+}
+
+.info {
+  margin-left: 6.5rem;
+  font-size: 2rem;
+}
+
+.subline {
+  margin-left: 7rem;
+  font-size: 1.5rem;
+}
+
+.media-list {
+  list-style: none;
+  margin: 2rem 0 0 16rem;
+  padding: 0;
+}
+
+.media-list li {
+  font-size: 1.75rem;
+  margin-bottom: 0.5rem;
+  display: flex;
+  align-items: center;
+}
+
+.expand {
+  height: 1.5rem;
+  width: 1.5rem;
+  background: url('./images/chevron_down.svg') no-repeat center;
+  border: 0.5px solid #c6c6c6;
+  border-radius: 10%;
+  cursor: pointer;
+  margin-right: 1.5rem;
+}
+
+.large {
+  margin: 11rem 0 0 7rem;
+  line-height: 1;
+  font-size: calc(235rem / 16);
+}
+
+.tagline {
+  font-size: 2rem;
+  margin-left: 19rem;
+}
