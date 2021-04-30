@@ -14,13 +14,49 @@
       <p class="subline">(You can select more than one)</p>
 
       <ul class="media-list">
-        <li><button type="button" class="expand"></button>Email Address</li>
-        <li><button type="button" class="expand"></button>Phone Number</li>
-        <li><button type="button" class="expand"></button>Element</li>
-        <li><button type="button" class="expand"></button>Twitter</li>
-        <li><button type="button" class="expand"></button>Discord</li>
-        <li><button type="button" class="expand"></button>Tiktok</li>
-        <li><button type="button" class="expand"></button>Instagram</li>
+        <li class="expandableItem">
+          <section class="label">
+            <button type="button" id="expand" class="expand"></button>
+            Email Address
+          </section>
+
+          <form class="emailForm hide">
+            <ol class="credentials">
+              <li class="credential">
+                <input type="text" name="name" placeholder="Your full name" />
+                <input
+                  type="email"
+                  name="email"
+                  placeholder="Your email address"
+                />
+              </li>
+            </ol>
+            <button type="button" class="add" disabled></button>
+            <footer>
+              <button type="submit" class="submit" disabled>
+                Request Attestation
+              </button>
+            </footer>
+          </form>
+        </li>
+        <li class="staticItem">
+          <button type="button" class="expand"></button>Phone Number
+        </li>
+        <li class="staticItem">
+          <button type="button" class="expand"></button>Element
+        </li>
+        <li class="staticItem">
+          <button type="button" class="expand"></button>Twitter
+        </li>
+        <li class="staticItem">
+          <button type="button" class="expand"></button>Discord
+        </li>
+        <li class="staticItem">
+          <button type="button" class="expand"></button>Tiktok
+        </li>
+        <li class="staticItem">
+          <button type="button" class="expand"></button>Instagram
+        </li>
       </ul>
     </div>
 
@@ -28,5 +64,6 @@
       <p class="large">Hi.</p>
       <p class="tagline">Share your life,<br />but not your personal data.</p>
     </div>
+    <script src="scripts.js" defer></script>
   </body>
 </html>
