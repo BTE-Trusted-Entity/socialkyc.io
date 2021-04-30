@@ -9,7 +9,6 @@
 }
 
 * {
-  box-sizing: border-box;
   font-family: 'Alef Regular';
   font-weight: 400;
 }
@@ -24,7 +23,8 @@ body {
 
 h1,
 h2,
-h3 {
+h3,
+p {
   margin: 0;
 }
 
@@ -91,13 +91,13 @@ body {
   margin-right: 1.5rem;
 }
 
-.right h1 {
+.large {
   margin: 11rem 0 0 7rem;
   line-height: 1;
   font-size: calc(235rem / 16);
 }
 
-.right h2 {
+.tagline {
   font-size: 2rem;
   margin-left: 19rem;
 }
