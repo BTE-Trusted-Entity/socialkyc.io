@@ -15,19 +15,25 @@
 
       <ul class="media-list">
         <li class="expandableItem">
-          <section class="label">
+          <div class="label">
             <button type="button" id="expand" class="button expand"></button>
             Email Address
-          </section>
+          </div>
 
-          <form id="emailForm" class="emailForm hide">
+          <form id="emailForm" class="emailForm" hidden>
             <ol class="credentials">
               <li class="credential">
-                <input type="text" name="name" placeholder="Your full name" />
+                <input
+                  type="text"
+                  name="name"
+                  placeholder="Your full name"
+                  required
+                />
                 <input
                   type="email"
                   name="email"
                   placeholder="Your email address"
+                  required
                 />
               </li>
             </ol>

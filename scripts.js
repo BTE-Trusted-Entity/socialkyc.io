@@ -4,21 +4,12 @@ const submitButton = document.querySelector('.submit');
 
 function handleClick(event) {
   const button = event.target;
-  if (!button.classList.contains('expanded')) {
-    button.classList.add('expanded');
 
-    form.classList.remove('hide');
-  } else {
-    button.classList.remove('expanded');
-
-    form.classList.add('hide');
-  }
+  button.classList.toggle('expanded');
+  form.hidden = !button.classList.contains('expanded');
 }
 
 function handleFocus() {
-  if (form.classList.contains('active')) {
-    return;
-  }
   form.classList.add('active');
 
   addButton.disabled = false;
@@ -27,13 +18,15 @@ function handleFocus() {
 
 function handleSubmit(event) {
   event.preventDefault();
-  // TODO: API call to open popup
+
+  window.sporranExtension.showClaimPopup({
+    'Full Name': event.target.elements.name.value,
+    Email: event.target.elements.email.value,
+  });
 }
 
 document.getElementById('expand').addEventListener('click', handleClick);
 
-document.querySelectorAll('input').forEach((input) => {
-  input.addEventListener('focus', handleFocus);
-});
+form.addEventListener('focusin', handleFocus);
 
 form.addEventListener('submit', handleSubmit);

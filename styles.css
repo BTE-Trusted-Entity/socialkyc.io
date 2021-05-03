@@ -3,11 +3,6 @@
   src: url('./fonts/Alef-Regular.ttf') format('truetype');
 }
 
-* {
-  font-family: 'Alef Regular';
-  font-weight: 400;
-}
-
 html,
 body {
   margin: 0;
@@ -19,8 +14,17 @@ body {
 h1,
 h2,
 h3,
-p {
+p,
+li {
   margin: 0;
+  font-family: 'Alef Regular';
+  font-weight: 400;
+}
+
+input,
+button,
+li::marker {
+  font-family: system-ui;
 }
 
 body {
@@ -115,8 +119,8 @@ body {
   margin-bottom: 1rem;
 }
 
-.hide {
-  display: none;
+[hidden] {
+  display: none !important;
 }
 
 .active {
@@ -138,15 +142,12 @@ body {
 }
 
 .credential {
-  font-family: system-ui;
   width: 70%;
-  padding-left: 1.5rem;
   padding: 0 3rem 0 1.5rem;
 }
 
 .credential input {
   box-sizing: border-box;
-  font-family: system-ui;
   font-size: 1.5rem;
   width: 100%;
   height: 3rem;
@@ -164,8 +165,7 @@ body {
 .add {
   height: 3rem;
   width: 3rem;
-  background: url('./images/add.svg') no-repeat center/auto;
-  background-color: #977a13;
+  background: #977a13 url('./images/add.svg') no-repeat center/auto;
   border-radius: 50%;
 }
 
@@ -188,7 +188,6 @@ footer {
   width: 16rem;
   height: 2.5rem;
   border-radius: 1.25rem;
-  font-family: system-ui;
   font-size: 1.5rem;
   color: #fff;
   background-color: #977a13;
