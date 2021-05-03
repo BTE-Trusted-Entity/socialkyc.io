@@ -11,10 +11,6 @@ function handleClick(event) {
   } else {
     button.classList.remove('expanded');
 
-    addButton.disabled = true;
-    submitButton.disabled = true;
-
-    form.classList.remove('active');
     form.classList.add('hide');
   }
 }
