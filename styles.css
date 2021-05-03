@@ -1,16 +1,6 @@
 @font-face {
-  font-family: 'Alef Bold';
-  src: url('./fonts/Alef-Bold.ttf') format('truetype');
-}
-
-@font-face {
   font-family: 'Alef Regular';
   src: url('./fonts/Alef-Regular.ttf') format('truetype');
-}
-
-* {
-  font-family: 'Alef Regular';
-  font-weight: 400;
 }
 
 html,
@@ -24,14 +14,24 @@ body {
 h1,
 h2,
 h3,
-p {
+p,
+li {
   margin: 0;
+  font-family: 'Alef Regular';
+  font-weight: 400;
+}
+
+input,
+button,
+li::marker {
+  font-family: system-ui;
 }
 
 body {
   display: flex;
   background: #fff;
   color: #3c3c3b;
+  overflow: hidden;
 }
 
 .right,
@@ -41,6 +41,7 @@ body {
 
 .left {
   background: url('./images/logo.svg') no-repeat top 3rem right 3rem;
+  position: relative;
 }
 
 .right {
@@ -64,31 +65,38 @@ body {
 }
 
 .subline {
-  margin-left: 7rem;
+  margin-left: 6.5rem;
   font-size: 1.5rem;
 }
 
 .media-list {
   list-style: none;
-  margin: 2rem 0 0 16rem;
+  margin-top: 2rem;
   padding: 0;
 }
 
-.media-list li {
+.staticItem,
+.expandableItem .label {
   font-size: 1.75rem;
-  margin-bottom: 0.5rem;
+  margin: 0 0 0.5rem 16rem;
   display: flex;
   align-items: center;
+}
+
+.button {
+  border: none;
+  cursor: pointer;
 }
 
 .expand {
   height: 1.5rem;
   width: 1.5rem;
   background: url('./images/chevron_down.svg') no-repeat center;
-  border: 0.5px solid #c6c6c6;
-  border-radius: 10%;
-  cursor: pointer;
   margin-right: 1.5rem;
+}
+
+.expanded {
+  background: url('./images/chevron_up.svg') no-repeat center;
 }
 
 .large {
@@ -100,4 +108,87 @@ body {
 .tagline {
   font-size: 2rem;
   margin-left: 19rem;
+}
+
+.emailForm:not([hidden]) {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  background: #f6f6f6;
+  padding: 1.5rem 0 1.5rem 0;
+  margin-bottom: 1rem;
+}
+
+.active {
+  background: #eae4d0;
+}
+
+.credentials {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  width: 100%;
+  padding: 0;
+}
+
+.credential::marker {
+  color: #bb294b;
+  font-size: 1.5rem;
+}
+
+.credential {
+  width: 70%;
+  padding: 0 3rem 0 1.5rem;
+}
+
+.credential input {
+  box-sizing: border-box;
+  font-size: 1.5rem;
+  width: 100%;
+  height: 3rem;
+  border: 0.5px solid #c6c6c6;
+  border-radius: 0.25rem;
+  color: #1d1d1b;
+  margin-bottom: 0.75rem;
+  padding-left: 1.5rem;
+}
+
+.credential input::placeholder {
+  opacity: 0.25;
+}
+
+.add {
+  height: 3rem;
+  width: 3rem;
+  background: #977a13 url('./images/add.svg') no-repeat center/auto;
+  border-radius: 50%;
+}
+
+.add:disabled {
+  background-color: #b2b2b2;
+}
+
+footer {
+  position: absolute;
+  bottom: 0;
+  width: 100%;
+  height: 6rem;
+  background-color: #eae4d0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.submit {
+  width: 16rem;
+  height: 2.5rem;
+  border-radius: 1.25rem;
+  font-size: 1.5rem;
+  color: #fff;
+  background-color: #977a13;
+}
+
+.submit:disabled {
+  background-color: #d6caa0;
 }
