@@ -79,13 +79,16 @@ body {
   align-items: center;
 }
 
+.button {
+  border: none;
+  cursor: pointer;
+}
+
 .expand {
   height: 1.5rem;
   width: 1.5rem;
   background: url('./images/chevron_down.svg') no-repeat center;
-  cursor: pointer;
   margin-right: 1.5rem;
-  border: none;
 }
 
 .expanded {
@@ -114,6 +117,10 @@ body {
 
 .hide {
   display: none;
+}
+
+.active {
+  background: #eae4d0;
 }
 
 .credentials {
@@ -159,7 +166,6 @@ body {
   width: 3rem;
   background: url('./images/add.svg') no-repeat center/auto;
   background-color: #977a13;
-  border: none;
   border-radius: 50%;
 }
 
@@ -182,7 +188,6 @@ footer {
   width: 16rem;
   height: 2.5rem;
   border-radius: 1.25rem;
-  border: none;
   font-family: system-ui;
   font-size: 1.5rem;
   color: #fff;
