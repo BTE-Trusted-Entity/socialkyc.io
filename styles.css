@@ -26,7 +26,7 @@ li {
   font-weight: 400;
 }
 
-b {
+strong {
   font-family: 'Alef Bold';
 }
 
@@ -228,13 +228,10 @@ footer {
   overflow: hidden;
 }
 
-.alert header {
+.alert h3 {
   padding: 0.25rem 0 0.25rem 1rem;
   background: #c1af71;
   color: #fff;
-}
-
-.alert header h3 {
   font-family: 'Alef Bold';
   font-size: calc(14rem / 16);
 }

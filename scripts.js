@@ -38,7 +38,7 @@ function handleClose() {
   overlay.hidden = true;
 }
 
-document.getElementById('expand').addEventListener('click', handleExpand);
+expandButton.addEventListener('click', handleExpand);
 
 form.addEventListener('focusin', handleFocus);
 
