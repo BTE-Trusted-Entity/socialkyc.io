@@ -20,7 +20,7 @@
             Email Address
           </div>
 
-          <form id="emailForm" class="emailForm" hidden>
+          <form id="emailForm" class="emailForm inactive" hidden>
             <ol class="credentials">
               <li class="credential">
                 <input
@@ -40,13 +40,14 @@
 
             <button
               type="button"
+              id="add"
               class="button add"
               aria-label="Add credential"
               disabled
             ></button>
 
             <footer>
-              <button type="submit" class="button submit" disabled>
+              <button type="submit" id="submit" class="button submit" disabled>
                 Request Attestation
               </button>
             </footer>
@@ -72,6 +73,19 @@
           <button type="button" class="button expand"></button>Instagram
         </li>
       </ul>
+
+      <div id="overlay" class="overlay" hidden>
+        <h2 class="overlayHeading">Attestation</h2>
+        <div class="alert">
+          <header><h3>Email credential attestation request</h3></header>
+          <div class="main">
+            <h2>Email sent</h2>
+            <p>We've sent an email to <b>ingo@kilt.io</b></p>
+            <p>Please check your inbox!</p>
+            <button type="button" id="close" class="button close">OK</button>
+          </div>
+        </div>
+      </div>
     </div>
 
     <div class="right">
