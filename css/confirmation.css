@@ -16,6 +16,7 @@
 }
 
 .block {
+  overflow-wrap: break-word;
   color: #bb294b;
   font-size: 1.375rem;
 }
