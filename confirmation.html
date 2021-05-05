@@ -1,0 +1,37 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <link rel="stylesheet" type="text/css" href="css/styles.css" />
+    <link rel="stylesheet" type="text/css" href="css/confirmation.css" />
+    <title>Social KYC - Confirmation</title>
+  </head>
+  <body>
+    <div class="left">
+      <p class="confirmation">
+        Your email credential for <strong>ingo@kilt.io</strong> has been
+        attested via the KILT Blockchain in block
+      </p>
+      <p class="block">
+        0x1470baed4259acb180540ddb7a499cbf234cf120834169c8cb997462ea346909
+      </p>
+      <p class="prompt">
+        In order to use it you need to save your credential to your SPORRAN
+      </p>
+      <button type="button" id="save" class="button save">
+        Save Credential
+      </button>
+    </div>
+    <div class="right">
+      <p class="large">Hi.</p>
+      <p class="tagline">Share your life,<br />but not your personal data.</p>
+    </div>
+
+    <script defer>
+      function handleSave() {
+        window.sporranExtension.showSaveCredentialPopup({});
+      }
+      document.getElementById('save').addEventListener('click', handleSave);
+    </script>
+  </body>
+</html>
