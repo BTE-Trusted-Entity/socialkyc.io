@@ -3,6 +3,11 @@
   src: url('../fonts/Montserrat-SemiBold.woff2') format('woff2');
 }
 
+@font-face {
+  font-family: 'Montserrat Bold';
+  src: url('../fonts/Montserrat-Bold.woff2') format('woff2');
+}
+
 .main-container {
   width: 50%;
 }
@@ -51,4 +56,29 @@
 .subscribe-button {
   width: calc(337rem / 16);
   height: 3rem;
+}
+
+.subscribed h2 {
+  margin: 0;
+  font-size: 2rem;
+  font-family: 'Montserrat Bold';
+}
+
+.subscribed p {
+  margin-bottom: 1.25rem;
+}
+
+.back {
+  display: inline-block;
+  padding: 0.875rem 5rem;
+  background: #56baaa;
+  color: #fff;
+  text-transform: uppercase;
+  cursor: pointer;
+}
+
+.back:hover {
+  background: #fff;
+  color: #56baaa;
+  border: 2px solid #56baaa;
 }
