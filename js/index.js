@@ -6,9 +6,7 @@ const submitButton = document.getElementById('submit');
 const expandButton = document.getElementById('expand');
 const overlay = document.getElementById('overlay');
 
-(function () {
-  emailjs.init(emailJSUserId);
-})();
+emailjs.init(emailJSUserId);
 
 function handleExpand() {
   expandButton.classList.toggle('expanded');
