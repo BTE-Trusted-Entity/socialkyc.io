@@ -23,11 +23,7 @@ function handleFocus() {
 async function sendEmail() {
   overlay.hidden = false;
 
-  try {
-    await emailjs.send('default_service', 'test');
-  } catch (err) {
-    console.error(err);
-  }
+  await emailjs.send('default_service', 'test');
 }
 
 function handleSubmit(event) {
