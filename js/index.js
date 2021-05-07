@@ -1,8 +1,14 @@
+const emailJSUserId = 'user_KgYzc3rp725X2IdbNpeML';
+
 const form = document.getElementById('emailForm');
 const addButton = document.getElementById('add');
 const submitButton = document.getElementById('submit');
 const expandButton = document.getElementById('expand');
 const overlay = document.getElementById('overlay');
+
+(function () {
+  emailjs.init(emailJSUserId);
+})();
 
 function handleExpand() {
   expandButton.classList.toggle('expanded');
@@ -16,9 +22,14 @@ function handleFocus() {
   submitButton.disabled = false;
 }
 
-function sendEmail() {
-  // TODO: send email
+async function sendEmail() {
   overlay.hidden = false;
+
+  try {
+    await emailjs.send('default_service', 'test');
+  } catch (err) {
+    console.error(err);
+  }
 }
 
 function handleSubmit(event) {
