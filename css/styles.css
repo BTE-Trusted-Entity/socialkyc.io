@@ -16,7 +16,7 @@ body {
   width: 100%;
 }
 
-body{
+body {
   display: flex;
   background: #fff;
   color: #3c3c3b;
@@ -47,16 +47,16 @@ li::marker {
 
 .modal {
   position: absolute;
-  top: calc(50% - calc(167rem / 16));
-  bottom: calc(50% - calc(167rem / 16));
-  left: calc(50% - calc(167rem / 16));
-  right: calc(50% - calc(167rem / 16));
+  align-self: center;
   z-index: 10;
+  width: 100%;
+  text-align: center;
 }
 
 .image {
   width: 334px;
   height: 334px;
+  /* margin: 0 auto; */
 }
 
 .right,
@@ -111,8 +111,7 @@ li::marker {
 
 .button {
   border: none;
-  /* cursor: pointer; */
-
+  cursor: pointer;
 }
 
 .expand {
