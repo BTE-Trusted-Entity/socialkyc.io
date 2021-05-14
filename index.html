@@ -3,16 +3,17 @@
 <html lang="en">
   <head>
     <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
     <link rel="icon" href="images/favicon.ico" />
     <link rel="stylesheet" type="text/css" href="css/styles.css" />
     <title>Social KYC</title>
-    <script
-      type="text/javascript"
-      src="https://cdn.jsdelivr.net/npm/emailjs-com@2/dist/email.min.js"
-    ></script>
   </head>
 
   <body>
+    <div class="modal">
+      <img class="image" src="images/social_kyc_comming_soon.png" alt="coming soon" />
+    </div>
+
     <div class="left">
       <h1 class="heading">Your IDENTITY is yours!</h1>
       <h2 class="info">Create your social credentials here.</h2>
@@ -24,39 +25,6 @@
             <button type="button" id="expand" class="button expand"></button>
             Email Address
           </div>
-
-          <form id="emailForm" class="emailForm inactive" hidden>
-            <ol class="credentials">
-              <li class="credential">
-                <input
-                  type="text"
-                  name="name"
-                  placeholder="Your full name"
-                  required
-                />
-                <input
-                  type="email"
-                  name="email"
-                  placeholder="Your email address"
-                  required
-                />
-              </li>
-            </ol>
-
-            <button
-              type="button"
-              id="add"
-              class="button add"
-              aria-label="Add credential"
-              disabled
-            ></button>
-
-            <footer>
-              <button type="submit" id="submit" class="button submit" disabled>
-                Request Attestation
-              </button>
-            </footer>
-          </form>
         </li>
 
         <li class="staticItem">

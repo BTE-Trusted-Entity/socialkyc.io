@@ -1,11 +1,11 @@
 @font-face {
-  font-family: 'Alef Regular';
-  src: url('../fonts/Alef-Regular.ttf') format('truetype');
+  font-family: "Alef Regular";
+  src: url("../fonts/Alef-Regular.ttf") format("truetype");
 }
 
 @font-face {
-  font-family: 'Alef Bold';
-  src: url('../fonts/Alef-Bold.ttf') format('truetype');
+  font-family: "Alef Bold";
+  src: url("../fonts/Alef-Bold.ttf") format("truetype");
 }
 
 html,
@@ -16,18 +16,26 @@ body {
   width: 100%;
 }
 
+body{
+  display: flex;
+  background: #fff;
+  color: #3c3c3b;
+  flex-direction: row;
+  overflow: hidden;
+}
+
 h1,
 h2,
 h3,
 p,
 li {
   margin: 0;
-  font-family: 'Alef Regular';
+  font-family: "Alef Regular";
   font-weight: 400;
 }
 
 strong {
-  font-family: 'Alef Bold';
+  font-family: "Alef Bold";
 }
 
 input,
@@ -37,11 +45,18 @@ li::marker {
   font-weight: 300;
 }
 
-body {
-  display: flex;
-  background: #fff;
-  color: #3c3c3b;
-  overflow: hidden;
+.modal {
+  position: absolute;
+  top: calc(50% - calc(167rem / 16));
+  bottom: calc(50% - calc(167rem / 16));
+  left: calc(50% - calc(167rem / 16));
+  right: calc(50% - calc(167rem / 16));
+  z-index: 10;
+}
+
+.image {
+  width: 334px;
+  height: 334px;
 }
 
 .right,
@@ -50,7 +65,7 @@ body {
 }
 
 .left {
-  background: url('../images/logo.svg') no-repeat top 3rem right 3rem;
+  background: url("../images/logo.svg") no-repeat top 3rem right 3rem;
   position: relative;
 }
 
@@ -59,7 +74,7 @@ body {
       rgba(188, 40, 75, 0.7),
       rgba(188, 40, 75, 0.7)
     ),
-    url('../images/background.jpg');
+    url("../images/background.jpg");
   background-size: cover;
   color: #fff;
 }
@@ -91,22 +106,24 @@ body {
   margin: 0 0 0.5rem 16rem;
   display: flex;
   align-items: center;
+  color: #B2B2B2;
 }
 
 .button {
   border: none;
-  cursor: pointer;
+  /* cursor: pointer; */
+
 }
 
 .expand {
   height: 1.5rem;
   width: 1.5rem;
-  background: url('../images/chevron_down.svg') no-repeat center;
+  background: url("../images/chevron_down.svg") no-repeat center;
   margin-right: 1.5rem;
 }
 
 .expanded {
-  background: url('../images/chevron_up.svg') no-repeat center;
+  background: url("../images/chevron_up.svg") no-repeat center;
 }
 
 .large {
@@ -117,7 +134,7 @@ body {
 
 .tagline {
   font-size: 2rem;
-  margin-left: 19rem;
+  margin: 0 0 0 19rem;
 }
 
 .emailForm:not([hidden]) {
@@ -174,7 +191,7 @@ body {
 .add {
   height: 3rem;
   width: 3rem;
-  background: #977a13 url('../images/add.svg') no-repeat center/auto;
+  background: #977a13 url("../images/add.svg") no-repeat center/auto;
   border-radius: 50%;
 }
 
@@ -232,7 +249,7 @@ footer {
   padding: 0.25rem 0 0.25rem 1rem;
   background: #c1af71;
   color: #fff;
-  font-family: 'Alef Bold';
+  font-family: "Alef Bold";
   font-size: calc(14rem / 16);
 }
 
@@ -241,7 +258,7 @@ footer {
 }
 
 .alert h2 {
-  font-family: 'Alef Bold';
+  font-family: "Alef Bold";
   font-size: 2rem;
   margin-top: 1rem;
 }
@@ -259,4 +276,56 @@ footer {
   color: #fff;
   font-size: 1.5rem;
   margin: 1.25rem 0 1.5rem 0;
+}
+
+@media screen and (max-width: 1028px) {
+  body {
+    flex-direction: column;
+    overflow: auto;
+  }
+
+  .right,
+  .left {
+    width: 100%;
+  }
+
+  .tagline {
+    margin: 0 0 3rem 19rem;
+  }
+
+  .media-list {
+    margin-bottom: 4rem;
+  }
+}
+
+@media screen and (max-width: 540px) {
+  .large {
+    margin: 6rem 0 0 3rem;
+  }
+
+  .tagline {
+    margin: 0 0 3rem 9rem;
+  }
+
+  .heading {
+    margin: calc(214rem / 16) 0 2rem 3rem;
+  }
+
+  .info {
+    margin-left: 3rem;
+  }
+
+  .subline {
+    margin-left: 3rem;
+  }
+
+  .staticItem,
+  .expandableItem .label {
+    margin: 0 0 0.5rem 6rem;
+  }
+
+  .credential {
+    width: 60%;
+    padding: 0 1.5rem 0 1.5rem;
+  }
 }
