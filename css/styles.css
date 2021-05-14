@@ -1,11 +1,11 @@
 @font-face {
-  font-family: "Alef Regular";
-  src: url("../fonts/Alef-Regular.ttf") format("truetype");
+  font-family: 'Alef Regular';
+  src: url('../fonts/Alef-Regular.ttf') format('truetype');
 }
 
 @font-face {
-  font-family: "Alef Bold";
-  src: url("../fonts/Alef-Bold.ttf") format("truetype");
+  font-family: 'Alef Bold';
+  src: url('../fonts/Alef-Bold.ttf') format('truetype');
 }
 
 html,
@@ -30,12 +30,12 @@ h3,
 p,
 li {
   margin: 0;
-  font-family: "Alef Regular";
+  font-family: 'Alef Regular';
   font-weight: 400;
 }
 
 strong {
-  font-family: "Alef Bold";
+  font-family: 'Alef Bold';
 }
 
 input,
@@ -65,7 +65,7 @@ li::marker {
 }
 
 .left {
-  background: url("../images/logo.svg") no-repeat top 3rem right 3rem;
+  background: url('../images/logo.svg') no-repeat top 3rem right 3rem;
   position: relative;
 }
 
@@ -74,7 +74,7 @@ li::marker {
       rgba(188, 40, 75, 0.7),
       rgba(188, 40, 75, 0.7)
     ),
-    url("../images/background.jpg");
+    url('../images/background.jpg');
   background-size: cover;
   color: #fff;
 }
@@ -118,12 +118,12 @@ li::marker {
 .expand {
   height: 1.5rem;
   width: 1.5rem;
-  background: url("../images/chevron_down.svg") no-repeat center;
+  background: url('../images/chevron_down.svg') no-repeat center;
   margin-right: 1.5rem;
 }
 
 .expanded {
-  background: url("../images/chevron_up.svg") no-repeat center;
+  background: url('../images/chevron_up.svg') no-repeat center;
 }
 
 .large {
@@ -191,7 +191,7 @@ li::marker {
 .add {
   height: 3rem;
   width: 3rem;
-  background: #977a13 url("../images/add.svg") no-repeat center/auto;
+  background: #977a13 url('../images/add.svg') no-repeat center/auto;
   border-radius: 50%;
 }
 
@@ -249,7 +249,7 @@ footer {
   padding: 0.25rem 0 0.25rem 1rem;
   background: #c1af71;
   color: #fff;
-  font-family: "Alef Bold";
+  font-family: 'Alef Bold';
   font-size: calc(14rem / 16);
 }
 
@@ -258,7 +258,7 @@ footer {
 }
 
 .alert h2 {
-  font-family: "Alef Bold";
+  font-family: 'Alef Bold';
   font-size: 2rem;
   margin-top: 1rem;
 }
