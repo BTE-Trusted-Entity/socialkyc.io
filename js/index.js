@@ -26,16 +26,16 @@ async function sendEmail() {
   await emailjs.send('default_service', 'test');
 }
 
-function handleSubmit(event) {
+async function handleSubmit(event) {
   event.preventDefault();
 
-  window.sporranExtension.showClaimPopup(
+  await window.sporranExtension.showClaimPopup(
     {
       'Full Name': event.target.elements.name.value,
       Email: event.target.elements.email.value,
-    },
-    sendEmail
+    }
   );
+  await sendEmail();
 }
 
 function handleClose() {

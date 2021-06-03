@@ -2024,8 +2024,9 @@
         document.getElementById('subscription-form').hidden = true;
         document.getElementById('subscribed').hidden = false;
       }
-      function handleClick() {
-        window.sporranExtension.showShareCredentialPopup({}, handleSuccess);
+      async function handleClick() {
+        await window.sporranExtension.showShareCredentialPopup({});
+        handleSuccess();
       }
       document.getElementById('kyc').addEventListener('click', handleClick);
     </script>
