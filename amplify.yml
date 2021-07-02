@@ -3,10 +3,10 @@ frontend:
   phases:
     preBuild:
       commands:
-        - npm ci
+        - yarn install --frozen-lockfile
     build:
       commands:
-        - npm run build
+        - yarn run build
   artifacts:
     baseDirectory: /dist/
     files:
