@@ -3,6 +3,7 @@ frontend:
   phases:
     preBuild:
       commands:
+        - nvm use 14
         - yarn install --frozen-lockfile
     build:
       commands:
