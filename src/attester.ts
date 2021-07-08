@@ -1,14 +1,15 @@
 import { init, send } from 'emailjs-com';
+import { MessageBodyType } from '@kiltprotocol/types';
 
-const emailJSUserId = 'user_KgYzc3rp725X2IdbNpeML';
+import { getSession } from './session';
+
+init('user_KgYzc3rp725X2IdbNpeML');
 
 const form = document.getElementById('emailForm') as HTMLFormElement;
 const addButton = document.getElementById('add') as HTMLButtonElement;
 const submitButton = document.getElementById('submit') as HTMLButtonElement;
 const expandButton = document.getElementById('expand') as HTMLButtonElement;
 const overlay = document.getElementById('overlay');
-
-init(emailJSUserId);
 
 function handleExpand() {
   if (!form || !expandButton) {
@@ -43,18 +44,13 @@ async function sendEmail() {
 async function handleSubmit(event: Event) {
   event.preventDefault();
 
-  const target = event.target as unknown as {
-    elements: Record<string, HTMLInputElement>;
-  };
-
-  // TODO: remove ts-ignore when implementing Credentials API
-  // eslint-disable-next-line @typescript-eslint/ban-ts-comment
-  // @ts-ignore
-  await window.sporranExtension.showClaimPopup({
-    'Full Name': target.elements?.name?.value,
-    Email: target.elements?.email?.value,
+  const session = await getSession();
+  await session.listen(async (message) => {
+    if (message.body.type !== MessageBodyType.REQUEST_ATTESTATION_FOR_CLAIM) {
+      return;
+    }
+    await sendEmail();
   });
-  await sendEmail();
 }
 
 function handleClose() {

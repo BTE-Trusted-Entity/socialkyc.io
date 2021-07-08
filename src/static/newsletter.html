@@ -2019,16 +2019,6 @@
       ]);
       _stq.push(['clickTrackerInit', '161922130', '3826']);
     </script>
-    <script defer>
-      function handleSuccess() {
-        document.getElementById('subscription-form').hidden = true;
-        document.getElementById('subscribed').hidden = false;
-      }
-      async function handleClick() {
-        await window.sporranExtension.showShareCredentialPopup({});
-        handleSuccess();
-      }
-      document.getElementById('kyc').addEventListener('click', handleClick);
-    </script>
+    <script src="js/verifier.js" defer></script>
   </body>
 </html>
