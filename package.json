@@ -13,7 +13,8 @@
     "build": "env NODE_ENV=production webpack"
   },
   "dependencies": {
-    "@kiltprotocol/core": "^0.22.0",
+    "@kiltprotocol/core": "^0.23.0-beta.2",
+    "@kiltprotocol/messaging": "^0.23.0-beta.2",
     "emailjs-com": "^3.1.0"
   },
   "devDependencies": {

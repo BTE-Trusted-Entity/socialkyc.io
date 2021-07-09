@@ -1,7 +1,11 @@
 import { init, send } from 'emailjs-com';
-import { MessageBodyType } from '@kiltprotocol/types';
+import { MessageBodyType, ISubmitTerms } from '@kiltprotocol/types';
+import { Claim, Identity, Quote } from '@kiltprotocol/core';
+import Message from '@kiltprotocol/messaging';
 
-import { getSession } from './session';
+import { getSession } from './utilities/session';
+import { initKilt } from './utilities/initKilt';
+import { email } from './CTypes/email';
 
 init('user_KgYzc3rp725X2IdbNpeML');
 
@@ -44,13 +48,65 @@ async function sendEmail() {
 async function handleSubmit(event: Event) {
   event.preventDefault();
 
+  await initKilt();
+
   const session = await getSession();
   await session.listen(async (message) => {
-    if (message.body.type !== MessageBodyType.REQUEST_ATTESTATION_FOR_CLAIM) {
+    const { type } = message.body;
+    if (type === MessageBodyType.REJECT_TERMS) {
+      console.log('Terms rejected');
+      return;
+    }
+    if (type !== MessageBodyType.REQUEST_ATTESTATION_FOR_CLAIM) {
       return;
     }
     await sendEmail();
   });
+
+  const target = event.target as unknown as {
+    elements: Record<string, HTMLInputElement>;
+  };
+  const claimContents = {
+    'Full name': target.elements?.name?.value,
+    Email: target.elements?.email?.value,
+  };
+  const claim = Claim.fromCTypeAndClaimContents(
+    email,
+    claimContents,
+    session.account.address,
+  );
+
+  const demoIdentity = Identity.buildFromURI('//Alice');
+  const quoteContents = {
+    attesterAddress: demoIdentity.address,
+    cTypeHash: email.hash,
+    cost: {
+      gross: 233,
+      net: 23.3,
+      tax: { vat: 3.3 },
+    },
+    currency: 'KILT',
+    timeframe: new Date('2021-07-10'),
+    termsAndConditions: 'https://www.example.com/terms',
+  };
+  const quote = Quote.fromQuoteDataAndIdentity(quoteContents, demoIdentity);
+
+  const messageBody: ISubmitTerms = {
+    content: {
+      claim,
+      quote,
+      legitimations: [],
+      cTypes: [email],
+    },
+    type: MessageBodyType.SUBMIT_TERMS,
+  };
+  const message = new Message(
+    messageBody,
+    demoIdentity.getPublicIdentity(),
+    session.account,
+  );
+
+  await session.send(message);
 }
 
 function handleClose() {

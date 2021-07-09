@@ -1,5 +1,6 @@
-import { getSession } from './session';
+import { getSession } from './utilities/session';
 import { MessageBodyType } from '@kiltprotocol/types';
+import { initKilt } from './utilities/initKilt';
 
 const form = document.getElementById('subscription-form') as HTMLFormElement;
 const success = document.getElementById('subscribed') as HTMLDivElement;
@@ -11,6 +12,8 @@ function handleSuccess() {
 }
 
 async function handleClick() {
+  await initKilt();
+
   const session = await getSession();
 
   await session.listen(async (message) => {
