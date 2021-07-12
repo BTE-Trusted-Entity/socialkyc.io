@@ -1,6 +1,15 @@
 import { init, send } from 'emailjs-com';
-import { MessageBodyType, ISubmitTerms } from '@kiltprotocol/types';
-import { Claim, Identity, Quote } from '@kiltprotocol/core';
+import {
+  MessageBodyType,
+  IRequestAttestationForClaim,
+  ISubmitTerms,
+} from '@kiltprotocol/types';
+import {
+  Claim,
+  Identity,
+  Quote,
+  RequestForAttestation,
+} from '@kiltprotocol/core';
 import Message from '@kiltprotocol/messaging';
 
 import { getSession } from './utilities/session';
@@ -35,14 +44,14 @@ function handleFocus() {
   submitButton.disabled = false;
 }
 
-async function sendEmail() {
+async function sendEmail(parameters: { email: string; name: string }) {
   if (!overlay) {
     throw new Error('Elements missing');
   }
 
   overlay.hidden = false;
 
-  await send('default_service', 'test');
+  await send('default_service', 'test', parameters);
 }
 
 async function handleSubmit(event: Event) {
@@ -60,7 +69,18 @@ async function handleSubmit(event: Event) {
     if (type !== MessageBodyType.REQUEST_ATTESTATION_FOR_CLAIM) {
       return;
     }
-    await sendEmail();
+
+    const messageBody = message.body as IRequestAttestationForClaim;
+    const request = messageBody.content.requestForAttestation;
+    RequestForAttestation.verifyData(request);
+
+    const { rootHash } = request;
+    window.localStorage.setItem(rootHash, JSON.stringify(request));
+
+    const { contents } = request.claim;
+    const email = contents['Email'] as string;
+    const name = contents['Full name'] as string;
+    await sendEmail({ email, name });
   });
 
   const target = event.target as unknown as {
