@@ -4,7 +4,12 @@ import {
   IRequestAttestationForClaim,
   ISubmitTerms,
 } from '@kiltprotocol/types';
-import { Claim, Identity, Quote } from '@kiltprotocol/core';
+import {
+  Claim,
+  Identity,
+  Quote,
+  RequestForAttestation,
+} from '@kiltprotocol/core';
 import Message from '@kiltprotocol/messaging';
 
 import { getSession } from './utilities/session';
@@ -67,6 +72,8 @@ async function handleSubmit(event: Event) {
 
     const messageBody = message.body as IRequestAttestationForClaim;
     const request = messageBody.content.requestForAttestation;
+    RequestForAttestation.verifyData(request);
+
     const { rootHash } = request;
     window.localStorage.setItem(rootHash, JSON.stringify(request));
 
