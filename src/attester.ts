@@ -1,15 +1,20 @@
 import { init, send } from 'emailjs-com';
 import {
-  MessageBodyType,
   IRequestAttestationForClaim,
+  IRequestForAttestation,
+  ISubmitAttestationForClaim,
   ISubmitTerms,
+  MessageBodyType,
 } from '@kiltprotocol/types';
 import {
+  Attestation,
+  AttestedClaim,
   Claim,
   Identity,
   Quote,
   RequestForAttestation,
 } from '@kiltprotocol/core';
+import { BlockchainUtils } from '@kiltprotocol/chain-helpers';
 import Message from '@kiltprotocol/messaging';
 
 import { getSession } from './utilities/session';
@@ -96,7 +101,9 @@ async function handleSubmit(event: Event) {
     session.account.address,
   );
 
-  const demoIdentity = Identity.buildFromURI('//Alice');
+  const demoIdentity = Identity.buildFromMnemonic(
+    'receive clutch item involve chaos clutch furnace arrest claw isolate okay together',
+  );
   const quoteContents = {
     attesterAddress: demoIdentity.address,
     cTypeHash: email.hash,
@@ -129,6 +136,42 @@ async function handleSubmit(event: Event) {
   await session.send(message);
 }
 
+async function handleSave(event: Event) {
+  event.preventDefault();
+
+  const rootHash = window.localStorage.key(0) as string;
+  const requestJson = window.localStorage.getItem(rootHash) as string;
+  window.localStorage.removeItem(rootHash);
+  const request = JSON.parse(requestJson) as IRequestForAttestation;
+
+  await initKilt();
+  const demoIdentity = Identity.buildFromMnemonic(
+    'receive clutch item involve chaos clutch furnace arrest claw isolate okay together',
+  );
+  const demoPublicIdentity = demoIdentity.getPublicIdentity();
+
+  const session = await getSession();
+
+  const attestation = Attestation.fromRequestAndPublicIdentity(
+    request,
+    demoPublicIdentity,
+  );
+  const tx = await attestation.store();
+  await BlockchainUtils.signAndSubmitTx(tx, demoIdentity);
+
+  const attestedClaim = AttestedClaim.fromRequestAndAttestation(
+    request,
+    attestation,
+  );
+
+  const messageBody: ISubmitAttestationForClaim = {
+    content: attestedClaim,
+    type: MessageBodyType.SUBMIT_ATTESTATION_FOR_CLAIM,
+  };
+  const message = new Message(messageBody, demoPublicIdentity, session.account);
+  await session.send(message);
+}
+
 function handleClose() {
   if (!overlay) {
     throw new Error('Elements missing');
@@ -138,10 +181,12 @@ function handleClose() {
   overlay.hidden = true;
 }
 
-expandButton.addEventListener('click', handleExpand);
+expandButton?.addEventListener?.('click', handleExpand);
 
-form.addEventListener('focusin', handleFocus);
+form?.addEventListener?.('focusin', handleFocus);
 
-form.addEventListener('submit', handleSubmit);
+form?.addEventListener?.('submit', handleSubmit);
 
-document.getElementById('close')?.addEventListener('click', handleClose);
+document.getElementById('close')?.addEventListener?.('click', handleClose);
+
+document.getElementById('save')?.addEventListener?.('click', handleSave);

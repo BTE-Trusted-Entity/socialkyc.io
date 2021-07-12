@@ -28,7 +28,9 @@ export async function getSession(): Promise<PubSubSession> {
     throw new Error('No provider');
   }
 
-  const demoIdentity = Identity.buildFromURI('//Alice').getPublicIdentity();
+  const demoIdentity = Identity.buildFromMnemonic(
+    'receive clutch item involve chaos clutch furnace arrest claw isolate okay together',
+  ).getPublicIdentity();
   const demoName = 'SocialKYC Demo';
 
   return await provider.startSession(demoName, demoIdentity);
