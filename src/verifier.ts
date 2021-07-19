@@ -1,6 +1,6 @@
 import { IRequestClaimsForCTypes, MessageBodyType } from '@kiltprotocol/types';
-import { Identity } from '@kiltprotocol/core';
-import Message from '@kiltprotocol/messaging';
+import { AttestedClaim, Identity } from '@kiltprotocol/core';
+import Message, { errorCheckMessageBody } from '@kiltprotocol/messaging';
 
 import { getSession } from './utilities/session';
 import { initKilt } from './utilities/initKilt';
@@ -21,9 +21,19 @@ async function handleClick() {
   const session = await getSession();
 
   await session.listen(async (message) => {
-    if (message.body.type !== MessageBodyType.SUBMIT_CLAIMS_FOR_CTYPES) {
+    const { body } = message;
+    errorCheckMessageBody(body);
+
+    if (body.type !== MessageBodyType.SUBMIT_CLAIMS_FOR_CTYPES) {
       return;
     }
+
+    for (const attestedClaimData of body.content) {
+      const attestedClaim = AttestedClaim.fromAttestedClaim(attestedClaimData);
+      const isValid = await attestedClaim.verify();
+      console.log('Valid:', isValid, 'Claim:', attestedClaim);
+    }
+
     handleSuccess();
   });
 
