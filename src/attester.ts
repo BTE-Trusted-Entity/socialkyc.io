@@ -56,7 +56,23 @@ async function sendEmail(parameters: { email: string; name: string }) {
 
   overlay.hidden = false;
 
-  await send('default_service', 'test', parameters);
+  // await send('default_service', 'test', parameters);
+
+  // TODO: Extract URL to environment variable
+  try {
+    const response = await fetch('http://localhost:3000', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify(parameters),
+    });
+    console.log('Response: ', response);
+    const data = await response.json();
+    console.log('Data: ', data);
+  } catch (err) {
+    console.error(err);
+  }
 }
 
 async function handleSubmit(event: Event) {
