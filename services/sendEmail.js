@@ -2,7 +2,7 @@ import { SendEmailCommand } from '@aws-sdk/client-ses';
 
 import { sesClient } from './sesClient.js';
 
-export async function sendEmail(recipientName, recipientAddress) {
+export async function sendEmail(recipientName, recipientAddress, key) {
   const params = {
     Destination: {
       ToAddresses: [recipientAddress],
@@ -16,7 +16,7 @@ export async function sendEmail(recipientName, recipientAddress) {
       Body: {
         Text: {
           Charset: 'UTF-8',
-          Data: `Hello ${recipientName},\n\nThis is a test email.\n\nKind regards,\nSocialKYC`,
+          Data: `Hello ${recipientName},\n\nThis is a test. Please click the link to confirm your email: ${process.env.URL}/confirmation?key=${key} \n\nKind regards,\nSocialKYC`,
         },
       },
     },
