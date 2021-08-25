@@ -5,9 +5,14 @@ import { fileURLToPath } from 'url';
 import morgan from 'morgan';
 import rateLimit from 'express-rate-limit';
 import cryptoRandomString from 'crypto-random-string';
+import nunjucks from 'nunjucks';
 
-import { sendEmail } from './services/sendEmail.js';
-import { getEmail, initEmailCache, saveEmail } from './services/emailData.js';
+import { attestClaim, processRequest } from './backendServices/attestation.js';
+import {
+  getRequest,
+  initRequestCache,
+  cacheRequest,
+} from './backendServices/requestCache.js';
 
 dotenv.config();
 
@@ -20,29 +25,48 @@ app.use(express.static(path.join(__dirname, 'dist')));
 app.use(morgan('common'));
 app.use(express.json());
 
+nunjucks.configure(path.join(__dirname, 'templates'), {
+  express: app,
+});
+
 const emailLimiter = rateLimit({
   windowMs: 1 * 60 * 1000,
   max: 5,
   message: 'Too many requests, please try again in an hour.',
 });
 
-initEmailCache();
+initRequestCache();
 
 app.post('/', emailLimiter, async function (req, res) {
-  const { email, name } = req.body;
+  const request = JSON.parse(req.body.request);
 
-  const key = cryptoRandomString({ length: 20, type: 'base64' });
-  saveEmail(key, email, name);
-  await sendEmail(name, email, key);
+  const key = cryptoRandomString({ length: 20, type: 'url-safe' });
+  cacheRequest(key, request);
+
+  processRequest(key, request);
 
   res.sendStatus(200);
 });
 
-app.get('/confirmation', function (req, res) {
+app.get('/confirmation', async function (req, res) {
   const key = req.query.key;
-  const { email, name } = getEmail(key);
-  // TODO: attest the claim
-  res.sendFile(path.join(__dirname, 'dist/confirmation.html'));
+  const request = getRequest(key);
+
+  // TODO: use real attestation when SDK is fixed
+  // const attestation = await attestClaim(request);
+
+  const fakeAttestation = {
+    claimHash: request.rootHash,
+    cTypeHash: request.claim.cTypeHash,
+    owner: request.claim.owner,
+    delegationId: null,
+    revoked: false,
+  };
+
+  res.render('confirmation.njk', {
+    email: request.claim.contents['Email'],
+    attestation: fakeAttestation,
+  });
 });
 
 app.listen(port, () => {

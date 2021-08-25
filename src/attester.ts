@@ -1,27 +1,20 @@
-import { init, send } from 'emailjs-com';
 import {
   IRequestAttestationForClaim,
-  IRequestForAttestation,
   ISubmitAttestationForClaim,
   ISubmitTerms,
   MessageBodyType,
 } from '@kiltprotocol/types';
 import {
-  Attestation,
-  AttestedClaim,
   Claim,
   Identity,
   Quote,
   RequestForAttestation,
 } from '@kiltprotocol/core';
-import { BlockchainUtils } from '@kiltprotocol/chain-helpers';
 import Message from '@kiltprotocol/messaging';
 
 import { getSession } from './utilities/session';
 import { initKilt } from './utilities/initKilt';
 import { email } from './CTypes/email';
-
-init('user_KgYzc3rp725X2IdbNpeML');
 
 const form = document.getElementById('emailForm') as HTMLFormElement;
 const addButton = document.getElementById('add') as HTMLButtonElement;
@@ -49,14 +42,12 @@ function handleFocus() {
   submitButton.disabled = false;
 }
 
-async function sendEmail(parameters: { email: string; name: string }) {
+async function requestAttestation(parameters: { request: string }) {
   if (!overlay) {
     throw new Error('Elements missing');
   }
 
   overlay.hidden = false;
-
-  // await send('default_service', 'test', parameters);
 
   // TODO: Extract URL to environment variable
   try {
@@ -67,7 +58,6 @@ async function sendEmail(parameters: { email: string; name: string }) {
       },
       body: JSON.stringify(parameters),
     });
-    console.log('Response: ', response);
     const data = await response.json();
     console.log('Data: ', data);
   } catch (err) {
@@ -95,13 +85,7 @@ async function handleSubmit(event: Event) {
     const request = messageBody.content.requestForAttestation;
     RequestForAttestation.verifyData(request);
 
-    const { rootHash } = request;
-    window.localStorage.setItem(rootHash, JSON.stringify(request));
-
-    const { contents } = request.claim;
-    const email = contents['Email'] as string;
-    const name = contents['Full name'] as string;
-    await sendEmail({ email, name });
+    await requestAttestation({ request: JSON.stringify(request) });
   });
 
   const target = event.target as unknown as {
@@ -117,9 +101,11 @@ async function handleSubmit(event: Event) {
     session.account.address,
   );
 
+  // TODO: Use real identity
   const demoIdentity = Identity.buildFromMnemonic(
     'receive clutch item involve chaos clutch furnace arrest claw isolate okay together',
   );
+
   const quoteContents = {
     attesterAddress: demoIdentity.address,
     cTypeHash: email.hash,
@@ -155,36 +141,30 @@ async function handleSubmit(event: Event) {
 async function handleSave(event: Event) {
   event.preventDefault();
 
-  const rootHash = window.localStorage.key(0) as string;
-  const requestJson = window.localStorage.getItem(rootHash) as string;
-  window.localStorage.removeItem(rootHash);
-  const request = JSON.parse(requestJson) as IRequestForAttestation;
+  const session = await getSession();
 
-  await initKilt();
+  const attestation = window.localStorage.getItem('email-attestation');
+
+  if (!attestation) {
+    console.error('Unable to find attestation in local storage');
+    return;
+  }
+
+  const messageBody: ISubmitAttestationForClaim = {
+    content: { attestation: JSON.parse(attestation) },
+    type: MessageBodyType.SUBMIT_ATTESTATION_FOR_CLAIM,
+  };
+
+  // TODO: Use real identity
   const demoIdentity = Identity.buildFromMnemonic(
     'receive clutch item involve chaos clutch furnace arrest claw isolate okay together',
   );
-  const demoPublicIdentity = demoIdentity.getPublicIdentity();
 
-  const session = await getSession();
-
-  const attestation = Attestation.fromRequestAndPublicIdentity(
-    request,
-    demoPublicIdentity,
+  const message = new Message(
+    messageBody,
+    demoIdentity.getPublicIdentity(),
+    session.account,
   );
-  const tx = await attestation.store();
-  await BlockchainUtils.signAndSubmitTx(tx, demoIdentity);
-
-  const attestedClaim = AttestedClaim.fromRequestAndAttestation(
-    request,
-    attestation,
-  );
-
-  const messageBody: ISubmitAttestationForClaim = {
-    content: attestedClaim,
-    type: MessageBodyType.SUBMIT_ATTESTATION_FOR_CLAIM,
-  };
-  const message = new Message(messageBody, demoPublicIdentity, session.account);
   await session.send(message);
 }
 

@@ -10,8 +10,8 @@
   <body>
     <div class="left">
       <p class="confirmation">
-        Your email credential for <strong>ingo@kilt.io</strong> has been
-        attested via the KILT Blockchain in block
+        Your email credential for <strong>{{ email }}</strong> has been attested
+        via the KILT Blockchain in block
       </p>
       <p class="block">
         0x1470baed4259acb180540ddb7a499cbf234cf120834169c8cb997462ea346909
@@ -28,6 +28,10 @@
       <p class="tagline">Share your life,<br />but not your personal data.</p>
     </div>
 
+    <script>
+      const attestation = {{ attestation | dump | safe}}
+      window.localStorage.setItem('email-attestation', JSON.stringify(attestation))
+    </script>
     <script src="js/attester.js" defer></script>
   </body>
 </html>
