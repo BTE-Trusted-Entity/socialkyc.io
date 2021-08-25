@@ -7,12 +7,13 @@ import rateLimit from 'express-rate-limit';
 import cryptoRandomString from 'crypto-random-string';
 import nunjucks from 'nunjucks';
 
-import { attestClaim, processRequest } from './backendServices/attestation.js';
+// import { attestClaim } from './backendServices/attestation.js';
 import {
   getRequest,
   initRequestCache,
   cacheRequest,
 } from './backendServices/requestCache.js';
+import { sendEmail } from './backendServices/sendEmail.js';
 
 dotenv.config();
 
@@ -43,7 +44,7 @@ app.post('/', emailLimiter, async function (req, res) {
   const key = cryptoRandomString({ length: 20, type: 'url-safe' });
   cacheRequest(key, request);
 
-  processRequest(key, request);
+  await sendEmail(key, request);
 
   res.sendStatus(200);
 });
@@ -52,7 +53,7 @@ app.get('/confirmation', async function (req, res) {
   const key = req.query.key;
   const request = getRequest(key);
 
-  // TODO: use real attestation when SDK is fixed
+  // TODO: Use real attestation when implementing new credential API
   // const attestation = await attestClaim(request);
 
   const fakeAttestation = {
