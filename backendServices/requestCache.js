@@ -1,20 +1,16 @@
 import NodeCache from 'node-cache';
 
-let requestCache;
+const requestForAttestationCache = new NodeCache({ stdTTL: 5 * 60 });
 
-export function initRequestCache() {
-  requestCache = new NodeCache({ stdTTL: 60 * 5 });
-}
-
-export function cacheRequest(key, request) {
-  const saved = requestCache.set(key, request);
+export function cacheRequestForAttestation(key, requestForAttestation) {
+  const saved = requestForAttestationCache.set(key, requestForAttestation);
   if (!saved) {
     throw new Error('Error caching data');
   }
 }
 
-export function getRequest(key) {
-  const data = requestCache.get(key);
+export function getRequestForAttestation(key) {
+  const data = requestForAttestationCache.get(key);
   if (!data) {
     throw new Error('Data not found');
   }

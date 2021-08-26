@@ -2,8 +2,8 @@ import { SendEmailCommand } from '@aws-sdk/client-ses';
 
 import { sesClient } from './sesClient.js';
 
-export async function sendEmail(key, request) {
-  const { contents } = request.claim;
+export async function sendEmail(url, requestForAttestation) {
+  const { contents } = requestForAttestation.claim;
 
   const email = contents['Email'];
   const name = contents['Full name'];
@@ -21,14 +21,10 @@ export async function sendEmail(key, request) {
       Body: {
         Text: {
           Charset: 'UTF-8',
-          Data: `Hello ${name},\n\nThis is a test. Please click the link to confirm your email: ${process.env.URL}/confirmation?key=${key} \n\nKind regards,\nSocialKYC`,
+          Data: `Hello ${name},\n\nThis is a test. Please click the link to confirm your email: ${url} \n\nKind regards,\nSocialKYC`,
         },
       },
     },
   };
-  try {
-    await sesClient.send(new SendEmailCommand(params));
-  } catch (err) {
-    console.log('Error sending email: ', err.stack);
-  }
+  await sesClient.send(new SendEmailCommand(params));
 }

@@ -12,6 +12,7 @@ import {
   RequestForAttestation,
 } from '@kiltprotocol/core';
 import Message from '@kiltprotocol/messaging';
+import ky from 'ky';
 
 import { getSession } from './utilities/session';
 import { initKilt } from './utilities/initKilt';
@@ -50,17 +51,7 @@ async function requestAttestation(request: IRequestForAttestation) {
 
   overlay.hidden = false;
 
-  try {
-    await fetch('http://localhost:3000', {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-      },
-      body: JSON.stringify(request),
-    });
-  } catch (err) {
-    console.error(err);
-  }
+  await ky.post('/attest', { json: request });
 }
 
 async function handleSubmit(event: Event) {

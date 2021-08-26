@@ -2,9 +2,9 @@
 <html lang="en">
   <head>
     <meta charset="UTF-8" />
-    <link rel="icon" href="images/favicon.ico" />
-    <link rel="stylesheet" type="text/css" href="css/styles.css" />
-    <link rel="stylesheet" type="text/css" href="css/confirmation.css" />
+    <link rel="icon" href="/images/favicon.ico" />
+    <link rel="stylesheet" type="text/css" href="/css/styles.css" />
+    <link rel="stylesheet" type="text/css" href="/css/confirmation.css" />
     <title>Social KYC - Confirmation</title>
   </head>
   <body>
@@ -32,6 +32,6 @@
       const attestation = {{ attestation | dump | safe}}
       window.localStorage.setItem('email-attestation', JSON.stringify(attestation))
     </script>
-    <script src="js/attester.js" defer></script>
+    <script src="/js/attester.js" defer></script>
   </body>
 </html>

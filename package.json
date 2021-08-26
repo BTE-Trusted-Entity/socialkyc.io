@@ -10,8 +10,7 @@
     "lint": "eslint --max-warnings 0 --config ./.eslintrc.json \"src/**/*.ts*\"",
     "test": "jest",
     "dev": "env NODE_ENV=development webpack --watch",
-    "build": "env NODE_ENV=production webpack",
-    "start": "node server.js"
+    "build": "env NODE_ENV=production webpack"
   },
   "dependencies": {
     "@aws-sdk/client-ses": "^3.27.0",
@@ -21,6 +20,7 @@
     "dotenv": "^10.0.0",
     "express": "^4.17.1",
     "express-rate-limit": "^5.3.0",
+    "ky": "^0.28.5",
     "morgan": "^1.10.0",
     "node-cache": "^5.1.2",
     "nunjucks": "^3.2.3"

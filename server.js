@@ -1,7 +1,7 @@
 import dotenv from 'dotenv';
 import express from 'express';
-import path, { dirname } from 'path';
 import { fileURLToPath } from 'url';
+import path, { dirname } from 'node:path';
 import morgan from 'morgan';
 import rateLimit from 'express-rate-limit';
 import cryptoRandomString from 'crypto-random-string';
@@ -9,9 +9,8 @@ import nunjucks from 'nunjucks';
 
 // import { attestClaim } from './backendServices/attestation.js';
 import {
-  getRequest,
-  initRequestCache,
-  cacheRequest,
+  getRequestForAttestation,
+  cacheRequestForAttestation,
 } from './backendServices/requestCache.js';
 import { sendEmail } from './backendServices/sendEmail.js';
 
@@ -30,42 +29,45 @@ nunjucks.configure(path.join(__dirname, 'templates'), {
   express: app,
 });
 
-const emailLimiter = rateLimit({
+const requestLimiter = rateLimit({
   windowMs: 1 * 60 * 1000,
   max: 5,
   message: 'Too many requests, please try again in an hour.',
 });
 
-initRequestCache();
-
-app.post('/', emailLimiter, async function (req, res) {
+app.post('/attest', requestLimiter, async function (req, res, next) {
   const requestForAttestation = req.body;
 
   const key = cryptoRandomString({ length: 20, type: 'url-safe' });
-  cacheRequest(key, requestForAttestation);
+  cacheRequestForAttestation(key, requestForAttestation);
 
-  await sendEmail(key, requestForAttestation);
+  const url = `${process.env.URL}/confirmation/${key}`;
 
-  res.sendStatus(200);
+  try {
+    await sendEmail(url, requestForAttestation);
+    res.sendStatus(200);
+  } catch (error) {
+    next(error);
+  }
 });
 
-app.get('/confirmation', async function (req, res) {
-  const key = req.query.key;
-  const request = getRequest(key);
+app.get('/confirmation/:key', async function (req, res) {
+  const key = req.params.key;
+  const requestForAttestation = getRequestForAttestation(key);
 
   // TODO: Use real attestation when implementing new credential API
   // const attestation = await attestClaim(request);
 
   const fakeAttestation = {
-    claimHash: request.rootHash,
-    cTypeHash: request.claim.cTypeHash,
-    owner: request.claim.owner,
+    claimHash: requestForAttestation.rootHash,
+    cTypeHash: requestForAttestation.claim.cTypeHash,
+    owner: requestForAttestation.claim.owner,
     delegationId: null,
     revoked: false,
   };
 
   res.render('confirmation.njk', {
-    email: request.claim.contents['Email'],
+    email: requestForAttestation.claim.contents['Email'],
     attestation: fakeAttestation,
   });
 });
