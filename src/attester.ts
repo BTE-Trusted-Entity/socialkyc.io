@@ -1,5 +1,6 @@
 import {
   IRequestAttestationForClaim,
+  IRequestForAttestation,
   ISubmitAttestationForClaim,
   ISubmitTerms,
   MessageBodyType,
@@ -42,24 +43,21 @@ function handleFocus() {
   submitButton.disabled = false;
 }
 
-async function requestAttestation(parameters: { request: string }) {
+async function requestAttestation(request: IRequestForAttestation) {
   if (!overlay) {
     throw new Error('Elements missing');
   }
 
   overlay.hidden = false;
 
-  // TODO: Extract URL to environment variable
   try {
-    const response = await fetch('http://localhost:3000', {
+    await fetch('http://localhost:3000', {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
       },
-      body: JSON.stringify(parameters),
+      body: JSON.stringify(request),
     });
-    const data = await response.json();
-    console.log('Data: ', data);
   } catch (err) {
     console.error(err);
   }
@@ -85,7 +83,7 @@ async function handleSubmit(event: Event) {
     const request = messageBody.content.requestForAttestation;
     RequestForAttestation.verifyData(request);
 
-    await requestAttestation({ request: JSON.stringify(request) });
+    await requestAttestation(request);
   });
 
   const target = event.target as unknown as {

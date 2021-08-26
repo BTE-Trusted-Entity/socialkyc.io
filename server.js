@@ -39,12 +39,12 @@ const emailLimiter = rateLimit({
 initRequestCache();
 
 app.post('/', emailLimiter, async function (req, res) {
-  const request = JSON.parse(req.body.request);
+  const requestForAttestation = req.body;
 
   const key = cryptoRandomString({ length: 20, type: 'url-safe' });
-  cacheRequest(key, request);
+  cacheRequest(key, requestForAttestation);
 
-  await sendEmail(key, request);
+  await sendEmail(key, requestForAttestation);
 
   res.sendStatus(200);
 });

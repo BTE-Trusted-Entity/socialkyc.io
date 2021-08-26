@@ -3,7 +3,6 @@ import NodeCache from 'node-cache';
 let requestCache;
 
 export function initRequestCache() {
-  // data is cleared after 5 minutes
   requestCache = new NodeCache({ stdTTL: 60 * 5 });
 }
 
