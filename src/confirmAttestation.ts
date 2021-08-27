@@ -9,19 +9,11 @@ async function main() {
     .post('/attestation', { json: { key } })
     .json();
 
-  const emailElement = document.createElement('strong');
-  emailElement.textContent = email;
+  const leftContainer = document.getElementById('left');
 
-  const textBeforeEmail = document.getElementById('textBeforeEmail');
-  textBeforeEmail?.after(emailElement);
+  const htmlToInsert = `<p class="confirmation">Your email credential for <strong>${email}</strong> has been attested via the KILT Blockchain in block</p><p class="block">${blockHash}</p>`;
 
-  const block = document.createElement('p');
-  block.classList.add('block');
-  block.textContent = blockHash;
-
-  const confirmation = document.getElementById('confirmation');
-
-  confirmation?.after(block);
+  leftContainer?.insertAdjacentHTML('afterbegin', htmlToInsert);
 
   async function handleSave(event: Event) {
     event.preventDefault();
