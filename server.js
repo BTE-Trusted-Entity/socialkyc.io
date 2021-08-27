@@ -1,4 +1,3 @@
-import dotenv from 'dotenv';
 import express from 'express';
 import { fileURLToPath } from 'node:url';
 import path, { dirname } from 'node:path';
@@ -12,8 +11,6 @@ import {
   cacheRequestForAttestation,
 } from './backendServices/requestCache.js';
 import { sendEmail } from './backendServices/sendEmail.js';
-
-dotenv.config();
 
 const __dirname = dirname(fileURLToPath(import.meta.url));
 

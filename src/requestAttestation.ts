@@ -48,6 +48,13 @@ async function requestAttestation(request: IRequestForAttestation) {
     throw new Error('Elements missing');
   }
 
+  document
+    .getElementById('sent')
+    ?.insertAdjacentHTML(
+      'afterend',
+      `<p>We've sent an email to <strong>${request.claim.contents['Email']}</strong></p>`,
+    );
+
   overlay.hidden = false;
 
   await ky.post('/request-attestation', { json: request });
