@@ -5,6 +5,9 @@ import {
   MessageBodyType,
 } from '@kiltprotocol/types';
 import Message from '@kiltprotocol/messaging';
+import { NextFunction, Request, Response } from 'express';
+
+import { getRequestForAttestation } from '../utilities/requestCache';
 
 // Peregrine chain does not support the old Kilt Identities.
 // Attestations can only be done with DIDs on this chain.
@@ -73,4 +76,26 @@ export async function attestClaim(
     blockHash: fakeBlockHash,
     message,
   };
+}
+
+export async function attestation(
+  req: Request,
+  res: Response,
+  next: NextFunction,
+): Promise<void> {
+  const { key } = req.body;
+  const requestForAttestation = getRequestForAttestation(key);
+
+  try {
+    const { email, blockHash, message } = await attestClaim(
+      requestForAttestation,
+    );
+    res.json({
+      email,
+      blockHash,
+      message,
+    });
+  } catch (error) {
+    next(error);
+  }
 }
