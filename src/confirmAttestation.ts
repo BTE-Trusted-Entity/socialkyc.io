@@ -9,11 +9,15 @@ async function main() {
     .post('/attestation', { json: { key } })
     .json();
 
-  const leftContainer = document.getElementById('left');
+  const htmlToInsert = `
+    <p class="confirmation">
+      Your email credential for <strong>${email}</strong> has been attested via the KILT Blockchain in block
+    </p>
+    <p class="block">${blockHash}</p>`;
 
-  const htmlToInsert = `<p class="confirmation">Your email credential for <strong>${email}</strong> has been attested via the KILT Blockchain in block</p><p class="block">${blockHash}</p>`;
-
-  leftContainer?.insertAdjacentHTML('afterbegin', htmlToInsert);
+  document
+    .getElementById('left')
+    ?.insertAdjacentHTML('afterbegin', htmlToInsert);
 
   async function handleSave(event: Event) {
     event.preventDefault();
