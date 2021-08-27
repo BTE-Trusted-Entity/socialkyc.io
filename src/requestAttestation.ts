@@ -50,7 +50,7 @@ async function requestAttestation(request: IRequestForAttestation) {
 
   overlay.hidden = false;
 
-  await ky.post('/attest', { json: request });
+  await ky.post('/request-attestation', { json: request });
 }
 
 async function handleSubmit(event: Event) {

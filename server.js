@@ -30,21 +30,25 @@ const requestLimiter = rateLimit({
   message: 'Too many requests, please try again in an hour.',
 });
 
-app.post('/attest', requestLimiter, async function (req, res, next) {
-  const requestForAttestation = req.body;
+app.post(
+  '/request-attestation',
+  requestLimiter,
+  async function (req, res, next) {
+    const requestForAttestation = req.body;
 
-  const key = cryptoRandomString({ length: 20, type: 'url-safe' });
-  cacheRequestForAttestation(key, requestForAttestation);
+    const key = cryptoRandomString({ length: 20, type: 'url-safe' });
+    cacheRequestForAttestation(key, requestForAttestation);
 
-  const url = `${process.env.URL}/confirmation/${key}`;
+    const url = `${process.env.URL}/confirmation/${key}`;
 
-  try {
-    await sendEmail(url, requestForAttestation);
-    res.sendStatus(200);
-  } catch (error) {
-    next(error);
-  }
-});
+    try {
+      await sendEmail(url, requestForAttestation);
+      res.sendStatus(200);
+    } catch (error) {
+      next(error);
+    }
+  },
+);
 
 app.get('/confirmation/:key', function (req, res, next) {
   try {
@@ -58,7 +62,7 @@ app.get('/confirmation/:key', function (req, res, next) {
   res.sendFile(path.join(__dirname, 'dist', 'confirmation.html'));
 });
 
-app.post('/attestation', async function (req, res, next) {
+app.post('/attest', async function (req, res, next) {
   const { key } = req.body;
   const requestForAttestation = getRequestForAttestation(key);
 

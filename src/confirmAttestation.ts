@@ -6,7 +6,7 @@ async function main() {
   const key = window.location.href.split('/').pop();
 
   const { email, blockHash, message } = await ky
-    .post('/attestation', { json: { key } })
+    .post('/attest', { json: { key } })
     .json();
 
   const htmlToInsert = `
