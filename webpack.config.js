@@ -7,7 +7,8 @@ const require = createRequire(import.meta.url);
 
 export default {
   entry: {
-    attester: path.resolve('./src/attester.ts'),
+    requestAttestation: path.resolve('./src/requestAttestation.ts'),
+    confirmAttestation: path.resolve('./src/confirmAttestation.ts'),
     verifier: path.resolve('./src/verifier.ts'),
   },
   output: {

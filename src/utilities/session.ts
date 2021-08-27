@@ -28,6 +28,7 @@ export async function getSession(): Promise<PubSubSession> {
     throw new Error('No provider');
   }
 
+  // TODO: Use real identity
   const demoIdentity = Identity.buildFromMnemonic(
     'receive clutch item involve chaos clutch furnace arrest claw isolate okay together',
   ).getPublicIdentity();
