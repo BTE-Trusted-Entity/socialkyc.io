@@ -1,13 +1,12 @@
 import dotenv from 'dotenv';
 import express from 'express';
-import { fileURLToPath } from 'url';
+import { fileURLToPath } from 'node:url';
 import path, { dirname } from 'node:path';
 import morgan from 'morgan';
 import rateLimit from 'express-rate-limit';
 import cryptoRandomString from 'crypto-random-string';
-import nunjucks from 'nunjucks';
 
-// import { attestClaim } from './backendServices/attestation.js';
+import { attestClaim } from './backendServices/attestation.js';
 import {
   getRequestForAttestation,
   cacheRequestForAttestation,
@@ -24,10 +23,6 @@ const port = process.env.PORT || 3000;
 app.use(express.static(path.join(__dirname, 'dist')));
 app.use(morgan('common'));
 app.use(express.json());
-
-nunjucks.configure(path.join(__dirname, 'templates'), {
-  express: app,
-});
 
 const requestLimiter = rateLimit({
   windowMs: 1 * 60 * 1000,
@@ -51,25 +46,29 @@ app.post('/attest', requestLimiter, async function (req, res, next) {
   }
 });
 
-app.get('/confirmation/:key', async function (req, res) {
-  const key = req.params.key;
+app.get('/confirmation/:key', function (req, res) {
+  const { key } = req.params;
+  getRequestForAttestation(key);
+
+  res.sendFile(path.join(__dirname, 'dist', 'confirmation.html'));
+});
+
+app.post('/attestation', async function (req, res, next) {
+  const { key } = req.body;
   const requestForAttestation = getRequestForAttestation(key);
 
-  // TODO: Use real attestation when implementing new credential API
-  // const attestation = await attestClaim(request);
-
-  const fakeAttestation = {
-    claimHash: requestForAttestation.rootHash,
-    cTypeHash: requestForAttestation.claim.cTypeHash,
-    owner: requestForAttestation.claim.owner,
-    delegationId: null,
-    revoked: false,
-  };
-
-  res.render('confirmation.njk', {
-    email: requestForAttestation.claim.contents['Email'],
-    attestation: fakeAttestation,
-  });
+  try {
+    const { email, blockHash, message } = await attestClaim(
+      requestForAttestation,
+    );
+    res.json({
+      email,
+      blockHash,
+      message,
+    });
+  } catch (error) {
+    next(error);
+  }
 });
 
 app.listen(port, () => {

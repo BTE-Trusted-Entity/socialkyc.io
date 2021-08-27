@@ -22,8 +22,7 @@
     "express-rate-limit": "^5.3.0",
     "ky": "^0.28.5",
     "morgan": "^1.10.0",
-    "node-cache": "^5.1.2",
-    "nunjucks": "^3.2.3"
+    "node-cache": "^5.1.2"
   },
   "devDependencies": {
     "@babel/core": "^7.14.6",

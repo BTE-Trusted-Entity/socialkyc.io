@@ -6,15 +6,13 @@
     <link rel="stylesheet" type="text/css" href="/css/styles.css" />
     <link rel="stylesheet" type="text/css" href="/css/confirmation.css" />
     <title>Social KYC - Confirmation</title>
+    <script src="/js/confirmAttestation.js"></script>
   </head>
   <body>
-    <div class="left">
-      <p class="confirmation">
-        Your email credential for <strong>{{ email }}</strong> has been attested
-        via the KILT Blockchain in block
-      </p>
-      <p class="block">
-        0x1470baed4259acb180540ddb7a499cbf234cf120834169c8cb997462ea346909
+    <div id="left" class="left">
+      <p id="confirmation" class="confirmation">
+        <span id="textBeforeEmail">Your email credential for </span>
+        <span> has been attested via the KILT Blockchain in block </span>
       </p>
       <p class="prompt">
         In order to use your credential, you need to save it to your Sporran
@@ -27,11 +25,5 @@
       <p class="large">Hi.</p>
       <p class="tagline">Share your life,<br />but not your personal data.</p>
     </div>
-
-    <script>
-      const attestation = {{ attestation | dump | safe}}
-      window.localStorage.setItem('email-attestation', JSON.stringify(attestation))
-    </script>
-    <script src="/js/attester.js" defer></script>
   </body>
 </html>
