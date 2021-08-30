@@ -10,7 +10,7 @@ import Message from '@kiltprotocol/messaging';
 // Attestations can only be done with DIDs on this chain.
 // Fake attestation data necessary until code is refactored to use DIDs.
 
-interface attestationData {
+interface AttestationData {
   email: string;
   blockHash: string;
   message: Message;
@@ -18,7 +18,7 @@ interface attestationData {
 
 export async function attestClaim(
   requestForAttestation: IRequestForAttestation,
-): Promise<attestationData> {
+): Promise<AttestationData> {
   await init({ address: 'wss://kilt-peregrine-stg.kilt.io' });
 
   // TODO: Replace Identities with DIDs
