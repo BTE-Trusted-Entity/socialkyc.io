@@ -5,12 +5,12 @@ import morgan from 'morgan';
 import rateLimit from 'express-rate-limit';
 import cryptoRandomString from 'crypto-random-string';
 
-import { attestClaim } from './backendServices/attestation.js';
+import { attestClaim } from './backendServices/attestation';
 import {
   getRequestForAttestation,
   cacheRequestForAttestation,
-} from './backendServices/requestCache.js';
-import { sendEmail } from './backendServices/sendEmail.js';
+} from './backendServices/requestCache';
+import { sendEmail } from './backendServices/sendEmail';
 
 const __dirname = dirname(fileURLToPath(import.meta.url));
 
