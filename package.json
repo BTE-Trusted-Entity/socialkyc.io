@@ -11,7 +11,7 @@
     "test": "jest",
     "dev": "env NODE_ENV=development webpack --watch",
     "build": "env NODE_ENV=production webpack",
-    "start": "node dist/backend/server.mjs"
+    "start": "node dist/backend/server.cjs"
   },
   "dependencies": {
     "@aws-sdk/client-ses": "^3.28.0",

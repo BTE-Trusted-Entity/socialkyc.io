@@ -1,9 +1,8 @@
 import express from 'express';
-import { fileURLToPath } from 'node:url';
-import path, { dirname } from 'node:path';
+import { cwd } from 'node:process';
+import path from 'node:path';
 import morgan from 'morgan';
 import rateLimit from 'express-rate-limit';
-import cryptoRandomString from 'crypto-random-string';
 
 import { attestClaim } from './backendServices/attestation';
 import {
@@ -12,12 +11,12 @@ import {
 } from './backendServices/requestCache';
 import { sendEmail } from './backendServices/sendEmail';
 
-const __dirname = dirname(fileURLToPath(import.meta.url));
+const distFolder = path.join(cwd(), 'dist', 'frontend');
 
 const app = express();
 const port = process.env.PORT || 3000;
 
-app.use(express.static(path.join(__dirname, 'dist')));
+app.use(express.static(distFolder));
 app.use(morgan('common'));
 app.use(express.json());
 
@@ -32,6 +31,9 @@ app.post(
   requestLimiter,
   async function (req, res, next) {
     const requestForAttestation = req.body;
+
+    // the library uses ES6 syntax, has to be loaded this way
+    const cryptoRandomString = (await import('crypto-random-string')).default;
 
     const key = cryptoRandomString({ length: 20, type: 'url-safe' });
     cacheRequestForAttestation(key, requestForAttestation);
@@ -56,7 +58,7 @@ app.get('/confirmation/:key', function (req, res, next) {
     next(error);
   }
 
-  res.sendFile(path.join(__dirname, 'dist', 'confirmation.html'));
+  res.sendFile(path.join(distFolder, 'confirmation.html'));
 });
 
 app.post('/attest', async function (req, res, next) {

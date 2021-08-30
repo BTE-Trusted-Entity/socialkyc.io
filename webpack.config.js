@@ -9,9 +9,9 @@ const require = createRequire(import.meta.url);
 export default [
   {
     entry: {
-      requestAttestation: path.resolve('./src/requestAttestation.ts'),
-      confirmAttestation: path.resolve('./src/confirmAttestation.ts'),
-      verifier: path.resolve('./src/verifier.ts'),
+      requestAttestation: path.resolve('./src/frontend/requestAttestation.ts'),
+      confirmAttestation: path.resolve('./src/frontend/confirmAttestation.ts'),
+      verifier: path.resolve('./src/frontend/verifier.ts'),
     },
     output: {
       filename: 'js/[name].js',
@@ -40,7 +40,7 @@ export default [
       new CopyPlugin({
         patterns: [
           {
-            from: path.resolve('./src/static/'),
+            from: path.resolve('./src/frontend/static/'),
             to: path.resolve('./dist/frontend/'),
           },
         ],
@@ -48,17 +48,15 @@ export default [
     ],
   },
   {
-    target: 'es6',
+    externalsType: 'commonjs',
     externalsPresets: { node: true },
-    externals: [nodeExternals({ importType: 'module' })],
-    experiments: {
-      outputModule: true,
-    },
+    externals: [nodeExternals()],
     entry: {
-      server: path.resolve('./src/server.ts'),
+      server: path.resolve('./src/backend/server.ts'),
     },
     output: {
       path: path.resolve('./dist/backend'),
+      filename: '[name].cjs',
       chunkFormat: 'module',
     },
     module: {
