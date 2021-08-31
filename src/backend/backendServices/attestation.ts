@@ -1,12 +1,24 @@
 import { Identity, init } from '@kiltprotocol/core';
-import { MessageBodyType } from '@kiltprotocol/types';
+import {
+  IRequestForAttestation,
+  ISubmitAttestationForClaim,
+  MessageBodyType,
+} from '@kiltprotocol/types';
 import Message from '@kiltprotocol/messaging';
 
 // Peregrine chain does not support the old Kilt Identities.
 // Attestations can only be done with DIDs on this chain.
 // Fake attestation data necessary until code is refactored to use DIDs.
 
-export async function attestClaim(requestForAttestation) {
+interface AttestationData {
+  email: string;
+  blockHash: string;
+  message: Message;
+}
+
+export async function attestClaim(
+  requestForAttestation: IRequestForAttestation,
+): Promise<AttestationData> {
   await init({ address: 'wss://kilt-peregrine-stg.kilt.io' });
 
   // TODO: Replace Identities with DIDs
@@ -45,19 +57,19 @@ export async function attestClaim(requestForAttestation) {
   const fakeBlockHash =
     '0x1470baed4259acb180540ddb7a499cbf234cf120834169c8cb997462ea346909';
 
-  const messageBody = {
+  const messageBody: ISubmitAttestationForClaim = {
     content: { attestation: fakeAttestation },
     type: MessageBodyType.SUBMIT_ATTESTATION_FOR_CLAIM,
   };
 
-  const message = new Message.default(
+  const message = new Message(
     messageBody,
     demoDAppPublicIdentity,
     demoExtensionPublicIdentity,
   );
 
   return {
-    email: requestForAttestation.claim.contents['Email'],
+    email: requestForAttestation.claim.contents['Email'] as string,
     blockHash: fakeBlockHash,
     message,
   };

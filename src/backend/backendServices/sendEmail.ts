@@ -1,12 +1,16 @@
 import { SendEmailCommand } from '@aws-sdk/client-ses';
+import { IRequestForAttestation } from '@kiltprotocol/types';
 
-import { sesClient } from './sesClient.js';
+import { sesClient } from './sesClient';
 
-export async function sendEmail(url, requestForAttestation) {
+export async function sendEmail(
+  url: string,
+  requestForAttestation: IRequestForAttestation,
+): Promise<void> {
   const { contents } = requestForAttestation.claim;
 
-  const email = contents['Email'];
-  const name = contents['Full name'];
+  const email = contents['Email'] as string;
+  const name = contents['Full name'] as string;
 
   const params = {
     Destination: {

@@ -1,23 +1,24 @@
 import express from 'express';
-import { fileURLToPath } from 'node:url';
-import path, { dirname } from 'node:path';
+import { cwd } from 'node:process';
+import path from 'node:path';
 import morgan from 'morgan';
 import rateLimit from 'express-rate-limit';
-import cryptoRandomString from 'crypto-random-string';
 
-import { attestClaim } from './backendServices/attestation.js';
+import { IRequestForAttestation } from '@kiltprotocol/types';
+import { RequestForAttestation } from '@kiltprotocol/core';
+import { attestClaim } from './backendServices/attestation';
 import {
   getRequestForAttestation,
   cacheRequestForAttestation,
-} from './backendServices/requestCache.js';
-import { sendEmail } from './backendServices/sendEmail.js';
+} from './backendServices/requestCache';
+import { sendEmail } from './backendServices/sendEmail';
 
-const __dirname = dirname(fileURLToPath(import.meta.url));
+const distFolder = path.join(cwd(), 'dist', 'frontend');
 
 const app = express();
 const port = process.env.PORT || 3000;
 
-app.use(express.static(path.join(__dirname, 'dist')));
+app.use(express.static(distFolder));
 app.use(morgan('common'));
 app.use(express.json());
 
@@ -31,9 +32,13 @@ app.post(
   '/request-attestation',
   requestLimiter,
   async function (req, res, next) {
+    if (!RequestForAttestation.isIRequestForAttestation(req.body)) {
+      throw new Error('Invalid request for attestation');
+    }
+
     const requestForAttestation = req.body;
 
-    const key = cryptoRandomString({ length: 20, type: 'url-safe' });
+    const key = requestForAttestation.rootHash;
     cacheRequestForAttestation(key, requestForAttestation);
 
     const url = `${process.env.URL}/confirmation/${key}`;
@@ -56,7 +61,7 @@ app.get('/confirmation/:key', function (req, res, next) {
     next(error);
   }
 
-  res.sendFile(path.join(__dirname, 'dist', 'confirmation.html'));
+  res.sendFile(path.join(distFolder, 'confirmation.html'));
 });
 
 app.post('/attest', async function (req, res, next) {
