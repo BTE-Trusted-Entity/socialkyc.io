@@ -5,6 +5,7 @@ import morgan from 'morgan';
 import rateLimit from 'express-rate-limit';
 
 import { IRequestForAttestation } from '@kiltprotocol/types';
+import { RequestForAttestation } from '@kiltprotocol/core';
 import { attestClaim } from './backendServices/attestation';
 import {
   getRequestForAttestation,
@@ -31,7 +32,11 @@ app.post(
   '/request-attestation',
   requestLimiter,
   async function (req, res, next) {
-    const requestForAttestation = req.body as IRequestForAttestation;
+    if (!RequestForAttestation.isIRequestForAttestation(req.body)) {
+      throw new Error('Invalid request for attestation');
+    }
+
+    const requestForAttestation = req.body;
 
     const key = requestForAttestation.rootHash;
     cacheRequestForAttestation(key, requestForAttestation);
