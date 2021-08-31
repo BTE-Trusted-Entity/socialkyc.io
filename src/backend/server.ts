@@ -4,6 +4,7 @@ import path from 'node:path';
 import morgan from 'morgan';
 import rateLimit from 'express-rate-limit';
 
+import { IRequestForAttestation } from '@kiltprotocol/types';
 import { attestClaim } from './backendServices/attestation';
 import {
   getRequestForAttestation,
@@ -30,12 +31,9 @@ app.post(
   '/request-attestation',
   requestLimiter,
   async function (req, res, next) {
-    const requestForAttestation = req.body;
+    const requestForAttestation = req.body as IRequestForAttestation;
 
-    // the library uses ES6 syntax, has to be loaded this way
-    const cryptoRandomString = (await import('crypto-random-string')).default;
-
-    const key = cryptoRandomString({ length: 20, type: 'url-safe' });
+    const key = requestForAttestation.rootHash;
     cacheRequestForAttestation(key, requestForAttestation);
 
     const url = `${process.env.URL}/confirmation/${key}`;
