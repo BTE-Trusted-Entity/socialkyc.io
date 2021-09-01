@@ -19,7 +19,7 @@ jobs:
 
     - name: Build image
       run: |
-        docker build -t kilt/social-keyc-demo:latest .
+        docker build -t kilt/social-kyc-demo:latest .
     - name: Configure AWS credentials
       uses: aws-actions/configure-aws-credentials@v1
       with:
