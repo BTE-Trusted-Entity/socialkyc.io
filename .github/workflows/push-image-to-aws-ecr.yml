@@ -3,7 +3,7 @@ on:
     types: [ created ]
   push:
     branches:
-      - feature-ci-cd
+      - master
 
 name: Deploy to Amazon ECS
 
@@ -37,7 +37,7 @@ jobs:
         ECR_REPOSITORY: kilt/social-kyc-demo
         IMAGE_TAG: ${{ github.sha }}
       run: |
-        docker tag kilt/social-kyc-demo $ECR_REGISTRY/$ECR_REPOSITORY:latest-rc
+        docker tag kilt/social-kyc-demo $ECR_REGISTRY/$ECR_REPOSITORY:latest
         docker tag kilt/social-kyc-demo $ECR_REGISTRY/$ECR_REPOSITORY:$IMAGE_TAG
         docker push $ECR_REGISTRY/$ECR_REPOSITORY:$IMAGE_TAG
         docker push $ECR_REGISTRY/$ECR_REPOSITORY:latest-rc
