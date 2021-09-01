@@ -1,0 +1,37 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: social-kyc-demo
+spec:
+  selector:
+    app: social-kyc-demo
+  ports:
+    - name: "http"
+      protocol: TCP
+      port: 3000
+      targetPort: 3000
+status:
+  loadBalancer: {}
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: social-kyc-demo
+spec:
+  replicas: 1
+  revisionHistoryLimit: 1
+  selector:
+    matchLabels:
+      app: social-kyc-demo
+  template:
+    metadata:
+      labels:
+        app: social-kyc-demo
+    spec:
+      containers:
+        - name: social-kyc-demo
+          image: 348099934012.dkr.ecr.eu-central-1.amazonaws.com/kilt/social-kyc-demo:latest
+          imagePullPolicy: Always
+          ports:
+            - containerPort: 3000
+      restartPolicy: Always

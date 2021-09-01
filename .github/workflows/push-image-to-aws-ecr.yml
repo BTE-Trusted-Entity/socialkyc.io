@@ -3,7 +3,7 @@ on:
     types: [ created ]
   push:
     branches:
-      - main
+      - feature-ci-cd
 
 name: Deploy to Amazon ECS
 
