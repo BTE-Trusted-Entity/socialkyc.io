@@ -5,7 +5,13 @@ import {
   MessageBodyType,
 } from '@kiltprotocol/types';
 import Message from '@kiltprotocol/messaging';
-import { NextFunction, Request, Response } from 'express';
+import {
+  Request,
+  ResponseObject,
+  ResponseToolkit,
+  ServerRoute,
+} from '@hapi/hapi';
+import Boom from '@hapi/boom';
 
 import { getRequestForAttestation } from '../utilities/requestCache';
 
@@ -19,7 +25,7 @@ interface AttestationData {
   message: Message;
 }
 
-export async function attestClaim(
+async function attestClaim(
   requestForAttestation: IRequestForAttestation,
 ): Promise<AttestationData> {
   await init({ address: 'wss://kilt-peregrine-stg.kilt.io' });
@@ -78,24 +84,27 @@ export async function attestClaim(
   };
 }
 
-export async function attestation(
-  req: Request,
-  res: Response,
-  next: NextFunction,
-): Promise<void> {
-  const { key } = req.body;
-  const requestForAttestation = getRequestForAttestation(key);
-
-  try {
-    const { email, blockHash, message } = await attestClaim(
-      requestForAttestation,
-    );
-    res.json({
-      email,
-      blockHash,
-      message,
-    });
-  } catch (error) {
-    next(error);
+async function handler(
+  request: Request,
+  h: ResponseToolkit,
+): Promise<ResponseObject> {
+  const { key } = request.payload as { key: string };
+  if (!key) {
+    throw Boom.badRequest('No key provided');
   }
+
+  let requestForAttestation: IRequestForAttestation;
+  try {
+    requestForAttestation = getRequestForAttestation(key);
+  } catch {
+    throw Boom.notFound(`Key not found: ${key}`);
+  }
+
+  return h.response(await attestClaim(requestForAttestation));
 }
+
+export const attestation: ServerRoute = {
+  method: 'POST',
+  path: '/attest',
+  handler,
+};

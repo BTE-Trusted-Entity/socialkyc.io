@@ -1,6 +1,7 @@
 import { SendEmailCommand } from '@aws-sdk/client-ses';
-import rateLimit from 'express-rate-limit';
-import { NextFunction, Request, Response } from 'express';
+import { Request, ServerRoute } from '@hapi/hapi';
+import Boom from '@hapi/boom';
+import { RateLimiterMemory } from 'rate-limiter-flexible';
 import { IRequestForAttestation } from '@kiltprotocol/types';
 import { RequestForAttestation } from '@kiltprotocol/core';
 
@@ -8,13 +9,12 @@ import { configuration } from '../utilities/configuration';
 import { cacheRequestForAttestation } from '../utilities/requestCache';
 import { sesClient } from '../utilities/sesClient';
 
-const requestLimiter = rateLimit({
-  windowMs: 1 * 60 * 1000,
-  max: 5,
-  message: 'Too many requests, please try again in an hour.',
+const rateLimiter = new RateLimiterMemory({
+  duration: 1 * 60,
+  points: 5,
 });
 
-export async function send(
+async function send(
   url: string,
   requestForAttestation: IRequestForAttestation,
 ): Promise<void> {
@@ -44,28 +44,33 @@ export async function send(
   await sesClient.send(new SendEmailCommand(params));
 }
 
-export async function sendEmail(
-  req: Request,
-  res: Response,
-  next: NextFunction,
-): Promise<void> {
+async function handler(request: Request): Promise<string> {
   try {
-    if (!RequestForAttestation.isIRequestForAttestation(req.body)) {
-      throw new Error('Invalid request for attestation');
-    }
-
-    const requestForAttestation = req.body;
-
-    const key = requestForAttestation.rootHash;
-    cacheRequestForAttestation(key, requestForAttestation);
-
-    const url = `${configuration.baseUri}/confirmation/${key}`;
-
-    await send(url, requestForAttestation);
-    res.sendStatus(200);
-  } catch (error) {
-    next(error);
+    await rateLimiter.consume(request.info.remoteAddress);
+  } catch {
+    throw Boom.tooManyRequests(
+      'Too many requests, please try again in an hour.',
+    );
   }
+
+  if (!RequestForAttestation.isIRequestForAttestation(request.payload)) {
+    throw Boom.badRequest('Invalid request for attestation');
+  }
+
+  const requestForAttestation = request.payload;
+
+  const key = requestForAttestation.rootHash;
+  cacheRequestForAttestation(key, requestForAttestation);
+
+  const url = `${configuration.baseUri}/confirmation/${key}`;
+
+  await send(url, requestForAttestation);
+
+  return '';
 }
 
-export const request = [requestLimiter, sendEmail];
+export const request: ServerRoute = {
+  method: 'POST',
+  path: '/request-attestation',
+  handler,
+};

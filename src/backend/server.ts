@@ -1,31 +1,53 @@
-import express from 'express';
-import morgan from 'morgan';
+import Hapi from '@hapi/hapi';
+import inert from '@hapi/inert';
+import pino from 'hapi-pino';
 
 import { configuration } from './utilities/configuration';
 import { request } from './endpoints/sendEmail';
 import { confirmationHtml } from './endpoints/confirmationHtml';
 import { attestation } from './endpoints/attestation';
+import { staticFiles } from './endpoints/staticFiles';
 
-const app = express();
-
-app.use(express.static(configuration.distFolder));
-app.use(morgan('common'));
-app.use(express.json());
-
-app.post('/request-attestation', request);
-
-app.get('/confirmation/:key', confirmationHtml);
-
-app.post('/attest', attestation);
-
-const server = app.listen(configuration.port, () => {
-  console.log('Server started on port: ', configuration.port);
+const server = Hapi.server({
+  port: configuration.port,
+  host: '0.0.0.0',
 });
 
-process.on('SIGINT', () => {
-  server.close();
+async function stop() {
+  await server.stop({ timeout: 3000 });
+}
+
+const logger = {
+  plugin: pino,
+  options: {
+    prettyPrint: !configuration.isProduction,
+    ignoreTags: ['noLogs'],
+  },
+};
+
+(async () => {
+  await server.register(inert);
+  await server.register(logger);
+
+  server.route(staticFiles);
+  server.route(request);
+  server.route(confirmationHtml);
+  server.route(attestation);
+
+  await server.start();
+  console.log(`Server running on ${server.info.uri}`);
+})();
+
+process.on('SIGINT', async () => {
+  await stop();
 });
 
-process.on('SIGTERM', () => {
-  server.close();
+process.on('SIGTERM', async () => {
+  await stop();
+});
+
+process.on('unhandledRejection', async (error) => {
+  console.log(error);
+  await stop();
+  process.exit(1);
 });
