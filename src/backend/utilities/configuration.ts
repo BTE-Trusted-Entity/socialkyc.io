@@ -26,6 +26,7 @@ export const configuration = {
     secretAccessKey,
   },
   port: env.PORT || 3000,
+  isProduction: env.NODE_ENV === 'production',
   baseUri,
   distFolder: path.join(cwd(), 'dist', 'frontend'),
 };
