@@ -32,6 +32,19 @@ spec:
       containers:
         - name: social-kyc-demo
           image: 348099934012.dkr.ecr.eu-central-1.amazonaws.com/kilt/social-kyc-demo:latest
+          env:
+            - name: AWS_ACCESS_KEY_ID
+              valueFrom:
+                secretKeyRef:
+                  name: social-kyc-secrets
+                  key: aws-access-key-id
+            - name: AWS_SECRET_ACCESS_KEY
+              valueFrom:
+                secretKeyRef:
+                  name: social-kyc-secrets
+                  key: aws-secret-access-key
+            - name: AWS_REGION
+              value: "eu-central-1"
           imagePullPolicy: Always
           ports:
             - containerPort: 3000

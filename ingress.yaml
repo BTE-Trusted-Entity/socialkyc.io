@@ -13,6 +13,8 @@ metadata:
     alb.ingress.kubernetes.io/certificate-arn: arn:aws:acm:eu-central-1:348099934012:certificate/4d3f4b6c-d556-4ef6-b8df-f92dd6f0f470
     alb.ingress.kubernetes.io/actions.ssl-redirect: '{"Type": "redirect", "RedirectConfig": { "Protocol": "HTTPS", "Port": "443", "StatusCode": "HTTP_301"}}'
     alb.ingress.kubernetes.io/group.name: alb-ingress-group
+    alb.ingress.kubernetes.io/inbound-cidrs: 2003:ec:2701:3d00::/56,93.243.205.108
+
   labels:
     app: grafana-ingress
 spec:
