@@ -1520,6 +1520,14 @@
   dependencies:
     "@hapi/hoek" "9.x.x"
 
+"@hapi/basic@^6.0.0":
+  version "6.0.0"
+  resolved "https://registry.yarnpkg.com/@hapi/basic/-/basic-6.0.0.tgz#d8372a8eea9583f7077c60b8d55eb5f3a447d4ef"
+  integrity sha512-nWWSXNCq3WptnP3To2c8kfQiRFDUnd9FQOcMS0B85y1x/m12c0hhp+VdmK60BMe44k6WIog1n6g8f9gZOagqBg==
+  dependencies:
+    "@hapi/boom" "9.x.x"
+    "@hapi/hoek" "9.x.x"
+
 "@hapi/boom@*", "@hapi/boom@9.x.x", "@hapi/boom@^9.0.0", "@hapi/boom@^9.1.0", "@hapi/boom@^9.1.4":
   version "9.1.4"
   resolved "https://registry.yarnpkg.com/@hapi/boom/-/boom-9.1.4.tgz#1f9dad367c6a7da9f8def24b4a986fc5a7bd9db6"
@@ -2396,6 +2404,14 @@
     "@types/hapi__hapi" "*"
     "@types/node" "*"
     "@types/pino" "*"
+
+"@types/hapi__basic@^5.1.2":
+  version "5.1.2"
+  resolved "https://registry.yarnpkg.com/@types/hapi__basic/-/hapi__basic-5.1.2.tgz#5809c0bfa04facf2b5f18eae770c59d23cf20dcc"
+  integrity sha512-sqoQ34nwmRlNgQ5fdHHnghyVzs23aC2d30l9G1sKvdrh4PDV22bnQ+8fBCjoItT+0gGSuXIoG4qdoVZGBjH5EQ==
+  dependencies:
+    "@types/hapi__hapi" "*"
+    joi "^17.3.0"
 
 "@types/hapi__boom@^9.0.1":
   version "9.0.1"

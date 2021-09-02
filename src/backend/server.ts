@@ -7,6 +7,7 @@ import { request } from './endpoints/sendEmail';
 import { confirmationHtml } from './endpoints/confirmationHtml';
 import { attestation } from './endpoints/attestation';
 import { staticFiles } from './endpoints/staticFiles';
+import { configureAuthentication } from './utilities/configureAuthentication';
 
 const server = Hapi.server({
   port: configuration.port,
@@ -28,6 +29,7 @@ const logger = {
 (async () => {
   await server.register(inert);
   await server.register(logger);
+  await configureAuthentication(server);
 
   server.route(staticFiles);
   server.route(request);
