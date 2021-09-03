@@ -37,7 +37,7 @@ const logger = {
   server.route(attestation);
 
   await server.start();
-  console.log(`Server running on ${server.info.uri}`);
+  server.logger.log(`Server running on ${server.info.uri}`);
 })();
 
 process.on('SIGINT', async () => {
@@ -49,7 +49,7 @@ process.on('SIGTERM', async () => {
 });
 
 process.on('unhandledRejection', async (error) => {
-  console.log(error);
+  server.logger.error(String(error));
   await stop();
   process.exit(1);
 });
