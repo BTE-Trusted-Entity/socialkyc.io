@@ -8,7 +8,7 @@ async function validate(
   username: string,
   password: string,
 ): Promise<ValidateResponse> {
-  const isValid = username === 'test' && password === 'ZINK0skig@spos_geaw\\n';
+  const isValid = username === 'test' && password === 'ZINK0skig@spos_geaw';
 
   return {
     isValid,
