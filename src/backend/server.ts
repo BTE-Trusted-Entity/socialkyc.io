@@ -37,7 +37,7 @@ const logger = {
   server.route(attestation);
 
   await server.start();
-  server.logger.log(`Server running on ${server.info.uri}`);
+  server.logger.info(`Server running on ${server.info.uri}`);
 })();
 
 process.on('SIGINT', async () => {
