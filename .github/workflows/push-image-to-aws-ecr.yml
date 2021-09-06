@@ -3,7 +3,7 @@ on:
     types: [ created ]
   push:
     branches:
-      - main
+      - feat/k8s-auto-deployment
 
 name: Deploy to Amazon ECS
 
@@ -41,3 +41,7 @@ jobs:
         docker tag kilt/social-kyc-demo $ECR_REGISTRY/$ECR_REPOSITORY:$IMAGE_TAG
         docker push $ECR_REGISTRY/$ECR_REPOSITORY:$IMAGE_TAG
         docker push $ECR_REGISTRY/$ECR_REPOSITORY:latest
+    - name: Verify Kubernetes deployment
+      uses: kodermax/kubectl-aws-eks@master
+      with:
+        args: rollout restart deployment social-kyc-demo -n social-kyc
