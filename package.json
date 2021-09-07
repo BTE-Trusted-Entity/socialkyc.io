@@ -29,7 +29,7 @@
     "rate-limiter-flexible": "^2.2.4"
   },
   "devDependencies": {
-    "@babel/core": "^7.15.4",
+    "@babel/core": "^7.15.5",
     "@babel/preset-env": "^7.15.4",
     "@types/hapi-pino": "^8.0.2",
     "@types/hapi__basic": "^5.1.2",
