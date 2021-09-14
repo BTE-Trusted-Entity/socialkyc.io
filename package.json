@@ -37,7 +37,7 @@
     "@types/hapi__hapi": "^20.0.9",
     "@types/hapi__inert": "^5.2.3",
     "@typescript-eslint/eslint-plugin": "^4.31.0",
-    "@typescript-eslint/parser": "^4.31.0",
+    "@typescript-eslint/parser": "^4.31.1",
     "buffer": "^6.0.3",
     "copy-webpack-plugin": "^9.0.1",
     "crypto-browserify": "^3.12.0",
