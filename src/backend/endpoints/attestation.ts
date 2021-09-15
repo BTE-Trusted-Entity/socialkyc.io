@@ -1,4 +1,6 @@
-import { Identity, init } from '@kiltprotocol/core';
+import { Attestation, init, AttestedClaim } from '@kiltprotocol/core';
+import { BlockchainUtils } from '@kiltprotocol/chain-helpers';
+import { LightDidDetails } from '@kiltprotocol/did';
 import {
   IRequestForAttestation,
   ISubmitAttestationForClaim,
@@ -14,10 +16,10 @@ import {
 import Boom from '@hapi/boom';
 
 import { getRequestForAttestation } from '../utilities/requestCache';
-
-// Peregrine chain does not support the old Kilt Identities.
-// Attestations can only be done with DIDs on this chain.
-// Fake attestation data necessary until code is refactored to use DIDs.
+import {
+  deriveDidAuthenticationKeypair,
+  getKeypairByBackupPhrase,
+} from '../../frontend/utilities/did';
 
 interface AttestationData {
   email: string;
@@ -30,52 +32,43 @@ async function attestClaim(
 ): Promise<AttestationData> {
   await init({ address: 'wss://kilt-peregrine-stg.kilt.io' });
 
-  // TODO: Replace Identities with DIDs
-  const demoDAppIdentity = Identity.buildFromMnemonic(
+  const identityKeypair = getKeypairByBackupPhrase(
     'receive clutch item involve chaos clutch furnace arrest claw isolate okay together',
   );
-  const demoDAppPublicIdentity = demoDAppIdentity.getPublicIdentity();
 
-  const demoExtensionIdentity = Identity.buildFromMnemonic(
-    'dawn comic glove crumble merge proof angle wife pull oyster type vapor',
+  const didKeypair = deriveDidAuthenticationKeypair(identityKeypair);
+
+  const dAppDid = new LightDidDetails({ authenticationKey: didKeypair })['did'];
+
+  const extensionDid = requestForAttestation.claim.owner;
+
+  const attestation = Attestation.fromRequestAndDid(
+    requestForAttestation,
+    dAppDid,
   );
-  const demoExtensionPublicIdentity = demoExtensionIdentity.getPublicIdentity();
 
-  // const attestation = Attestation.fromRequestAndPublicIdentity(
-  //   request,
-  //   demoPublicIdentity,
-  // );
+  const tx = await attestation.store();
 
-  // const tx = await attestation.store();
+  const result = await BlockchainUtils.signAndSubmitTx(tx, didKeypair, {
+    resolveOn: BlockchainUtils.IS_IN_BLOCK,
+  });
 
-  // await BlockchainUtils.signAndSubmitTx(tx, demoIdentity);
+  console.log('Submittable result: ', result);
 
-  // const attestedClaim = AttestedClaim.fromRequestAndAttestation(
-  //   request,
-  //   attestation,
-  // );
-
-  const fakeAttestation = {
-    claimHash: requestForAttestation.rootHash,
-    cTypeHash: requestForAttestation.claim.cTypeHash,
-    owner: requestForAttestation.claim.owner,
-    delegationId: null,
-    revoked: false,
-  };
+  const attestedClaim = AttestedClaim.fromRequestAndAttestation(
+    requestForAttestation,
+    attestation,
+  );
 
   const fakeBlockHash =
     '0x1470baed4259acb180540ddb7a499cbf234cf120834169c8cb997462ea346909';
 
   const messageBody: ISubmitAttestationForClaim = {
-    content: { attestation: fakeAttestation },
+    content: { attestation: attestedClaim.attestation },
     type: MessageBodyType.SUBMIT_ATTESTATION_FOR_CLAIM,
   };
 
-  const message = new Message(
-    messageBody,
-    demoDAppPublicIdentity,
-    demoExtensionPublicIdentity,
-  );
+  const message = new Message(messageBody, dAppDid, extensionDid);
 
   return {
     email: requestForAttestation.claim.contents['Email'] as string,
