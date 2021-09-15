@@ -25,6 +25,5 @@ export function deriveDidAuthenticationKeypair(
 export function createLightDidDetails(backupPhrase: string): IDidDetails {
   const identityKeypair = getKeypairByBackupPhrase(backupPhrase);
   const authenticationKey = deriveDidAuthenticationKeypair(identityKeypair);
-  const didDetails = new LightDidDetails({ authenticationKey });
-  return didDetails;
+  return new LightDidDetails({ authenticationKey });
 }
