@@ -53,11 +53,7 @@ async function handler(request: Request): Promise<string> {
     );
   }
 
-  if (!RequestForAttestation.isIRequestForAttestation(request.payload)) {
-    throw Boom.badRequest('Invalid request for attestation');
-  }
-
-  const requestForAttestation = request.payload;
+  const requestForAttestation = request.payload as IRequestForAttestation;
 
   const key = requestForAttestation.rootHash;
   cacheRequestForAttestation(key, requestForAttestation);
@@ -73,4 +69,11 @@ export const request: ServerRoute = {
   method: 'POST',
   path: '/request-attestation',
   handler,
+  options: {
+    validate: {
+      payload: async (payload) => {
+        RequestForAttestation.isIRequestForAttestation(payload);
+      },
+    },
+  },
 };

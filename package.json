@@ -26,7 +26,8 @@
     "hapi-pino": "^8.3.0",
     "ky": "^0.28.5",
     "node-cache": "^5.1.2",
-    "rate-limiter-flexible": "^2.2.4"
+    "rate-limiter-flexible": "^2.2.4",
+    "zod": "^3.8.2"
   },
   "devDependencies": {
     "@babel/core": "^7.15.5",
