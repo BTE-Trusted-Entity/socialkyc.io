@@ -50,18 +50,13 @@ async function attestClaim(
   const tx = await attestation.store();
 
   const result = await BlockchainUtils.signAndSubmitTx(tx, didKeypair, {
-    resolveOn: BlockchainUtils.IS_IN_BLOCK,
+    resolveOn: BlockchainUtils.IS_FINALIZED,
   });
-
-  console.log('Submittable result: ', result);
 
   const attestedClaim = AttestedClaim.fromRequestAndAttestation(
     requestForAttestation,
     attestation,
   );
-
-  const fakeBlockHash =
-    '0x1470baed4259acb180540ddb7a499cbf234cf120834169c8cb997462ea346909';
 
   const messageBody: ISubmitAttestationForClaim = {
     content: { attestation: attestedClaim.attestation },
@@ -72,7 +67,7 @@ async function attestClaim(
 
   return {
     email: requestForAttestation.claim.contents['Email'] as string,
-    blockHash: fakeBlockHash,
+    blockHash: result.status.asInBlock.toString(),
     message,
   };
 }
