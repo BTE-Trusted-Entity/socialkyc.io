@@ -12,6 +12,7 @@ import {
   ServerRoute,
 } from '@hapi/hapi';
 import Boom from '@hapi/boom';
+import { z } from 'zod';
 
 import { getRequestForAttestation } from '../utilities/requestCache';
 
@@ -84,14 +85,17 @@ async function attestClaim(
   };
 }
 
+const zodPayload = z.object({
+  key: z.string(),
+});
+
+type Payload = z.infer<typeof zodPayload>;
+
 async function handler(
   request: Request,
   h: ResponseToolkit,
 ): Promise<ResponseObject> {
-  const { key } = request.payload as { key: string };
-  if (!key) {
-    throw Boom.badRequest('No key provided');
-  }
+  const { key } = request.payload as Payload;
 
   let requestForAttestation: IRequestForAttestation;
   try {
@@ -107,4 +111,9 @@ export const attestation: ServerRoute = {
   method: 'POST',
   path: '/attest',
   handler,
+  options: {
+    validate: {
+      payload: async (payload) => zodPayload.parse(payload),
+    },
+  },
 };
