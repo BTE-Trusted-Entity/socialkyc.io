@@ -1,6 +1,5 @@
 import { Attestation, AttestedClaim } from '@kiltprotocol/core';
 import { BlockchainUtils } from '@kiltprotocol/chain-helpers';
-import { LightDidDetails } from '@kiltprotocol/did';
 import {
   IRequestForAttestation,
   ISubmitAttestationForClaim,
@@ -18,10 +17,9 @@ import { z } from 'zod';
 
 import { getRequestForAttestation } from '../utilities/requestCache';
 import { fullDidPromise } from '../utilities/fullDid';
-import {
-  deriveDidAuthenticationKeypair,
-  getKeypairByBackupPhrase,
-} from '../../frontend/utilities/did';
+import { keypairsPromise } from '../utilities/keypairs';
+import { assertionKeystore } from '../utilities/keystores';
+import { configuration } from '../utilities/configuration';
 
 interface AttestationData {
   email: string;
@@ -32,37 +30,20 @@ interface AttestationData {
 async function attestClaim(
   requestForAttestation: IRequestForAttestation,
 ): Promise<AttestationData> {
-  const identityKeypair = getKeypairByBackupPhrase(
-    'receive clutch item involve chaos clutch furnace arrest claw isolate okay together',
-  );
-
-  const extensionDid = requestForAttestation.claim.owner;
-
-  const didKeypair = deriveDidAuthenticationKeypair(identityKeypair);
-
-  const dAppDidDetails = new LightDidDetails({ authenticationKey: didKeypair });
-
   const attestation = Attestation.fromRequestAndDid(
     requestForAttestation,
-    dAppDidDetails.did,
+    configuration.did,
   );
 
   const tx = await attestation.store();
 
   const fullDid = await fullDidPromise;
+  const extrinsic = await fullDid.authorizeExtrinsic(tx, assertionKeystore);
 
-  const extrinsic = await fullDid.authorizeExtrinsic(tx, {
-    sign: async ({ data, alg }) => ({
-      data: identityKeypair.derive('//did//assertion//0').sign(data, {
-        withType: false,
-      }),
-      alg,
-    }),
-  });
-
+  const keypairs = await keypairsPromise;
   const result = await BlockchainUtils.signAndSubmitTx(
     extrinsic,
-    identityKeypair,
+    keypairs.identity,
     {
       resolveOn: BlockchainUtils.IS_FINALIZED,
       reSign: true,
@@ -79,7 +60,11 @@ async function attestClaim(
     type: MessageBodyType.SUBMIT_ATTESTATION_FOR_CLAIM,
   };
 
-  const message = new Message(messageBody, dAppDidDetails.did, extensionDid);
+  const message = new Message(
+    messageBody,
+    configuration.did,
+    requestForAttestation.claim.owner,
+  );
 
   return {
     email: requestForAttestation.claim.contents['Email'] as string,

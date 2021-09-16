@@ -1,11 +1,8 @@
-import { IRequestClaimsForCTypes, MessageBodyType } from '@kiltprotocol/types';
-import { AttestedClaim } from '@kiltprotocol/core';
-import Message, { errorCheckMessageBody } from '@kiltprotocol/messaging';
+import { StatusCodes } from 'http-status-codes';
+import ky from 'ky';
+import { IMessage } from '@kiltprotocol/types';
 
 import { getSession } from './utilities/session';
-import { initKilt } from './utilities/initKilt';
-import { createLightDidDetails } from './utilities/did';
-import { email } from './CTypes/email';
 
 const form = document.getElementById('subscription-form') as HTMLFormElement;
 const success = document.getElementById('subscribed') as HTMLDivElement;
@@ -17,36 +14,29 @@ function handleSuccess() {
 }
 
 async function handleClick() {
-  await initKilt();
-
   const session = await getSession();
 
   await session.listen(async (message) => {
-    const { body } = message;
-    errorCheckMessageBody(body);
+    const result = await ky.post('/verify', { json: message });
 
-    if (body.type !== MessageBodyType.SUBMIT_CLAIMS_FOR_CTYPES) {
+    if (result.status !== StatusCodes.OK) {
+      console.log('Not attested');
       return;
     }
 
-    for (const attestedClaimData of body.content) {
-      const attestedClaim = AttestedClaim.fromAttestedClaim(attestedClaimData);
-      const isValid = await attestedClaim.verify();
-      console.log('Valid:', isValid, 'Claim:', attestedClaim);
-    }
+    const verifiedClaims = await result.json();
+    console.log(verifiedClaims);
 
     handleSuccess();
   });
 
-  const didDetails = createLightDidDetails(
-    'receive clutch item involve chaos clutch furnace arrest claw isolate okay together',
-  );
-
-  const messageBody: IRequestClaimsForCTypes = {
-    content: [{ cTypeHash: email.hash }],
-    type: MessageBodyType.REQUEST_CLAIMS_FOR_CTYPES,
-  };
-  const message = new Message(messageBody, didDetails['did'], session.account);
+  const message = (await ky
+    .post('/request-claims', {
+      json: {
+        did: session.account,
+      },
+    })
+    .json()) as IMessage;
 
   await session.send(message);
 }

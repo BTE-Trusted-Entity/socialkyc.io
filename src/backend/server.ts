@@ -9,6 +9,10 @@ import { confirmationHtml } from './endpoints/confirmationHtml';
 import { attestation } from './endpoints/attestation';
 import { staticFiles } from './endpoints/staticFiles';
 import { liveness } from './endpoints/liveness';
+import { quote } from './endpoints/quote';
+import { did } from './endpoints/did';
+import { verify } from './endpoints/verify';
+import { requestClaims } from './endpoints/requestClaims';
 import { configureAuthentication } from './utilities/configureAuthentication';
 import { configureDevErrors } from './utilities/configureDevErrors';
 import { fullDidPromise } from './utilities/fullDid';
@@ -39,9 +43,13 @@ const logger = {
 
   server.route(liveness);
   server.route(staticFiles);
+  server.route(did);
+  server.route(quote);
   server.route(request);
   server.route(confirmationHtml);
   server.route(attestation);
+  server.route(requestClaims);
+  server.route(verify);
 
   await manager.start();
 })();
