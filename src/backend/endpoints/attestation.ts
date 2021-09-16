@@ -1,4 +1,6 @@
-import { Identity, init } from '@kiltprotocol/core';
+import { Attestation, AttestedClaim } from '@kiltprotocol/core';
+import { BlockchainUtils } from '@kiltprotocol/chain-helpers';
+import { LightDidDetails } from '@kiltprotocol/did';
 import {
   IRequestForAttestation,
   ISubmitAttestationForClaim,
@@ -15,10 +17,11 @@ import Boom from '@hapi/boom';
 import { z } from 'zod';
 
 import { getRequestForAttestation } from '../utilities/requestCache';
-
-// Peregrine chain does not support the old Kilt Identities.
-// Attestations can only be done with DIDs on this chain.
-// Fake attestation data necessary until code is refactored to use DIDs.
+import { fullDidPromise } from '../utilities/fullDid';
+import {
+  deriveDidAuthenticationKeypair,
+  getKeypairByBackupPhrase,
+} from '../../frontend/utilities/did';
 
 interface AttestationData {
   email: string;
@@ -29,58 +32,58 @@ interface AttestationData {
 async function attestClaim(
   requestForAttestation: IRequestForAttestation,
 ): Promise<AttestationData> {
-  await init({ address: 'wss://kilt-peregrine-stg.kilt.io' });
-
-  // TODO: Replace Identities with DIDs
-  const demoDAppIdentity = Identity.buildFromMnemonic(
+  const identityKeypair = getKeypairByBackupPhrase(
     'receive clutch item involve chaos clutch furnace arrest claw isolate okay together',
   );
-  const demoDAppPublicIdentity = demoDAppIdentity.getPublicIdentity();
 
-  const demoExtensionIdentity = Identity.buildFromMnemonic(
-    'dawn comic glove crumble merge proof angle wife pull oyster type vapor',
+  const extensionDid = requestForAttestation.claim.owner;
+
+  const didKeypair = deriveDidAuthenticationKeypair(identityKeypair);
+
+  const dAppDidDetails = new LightDidDetails({ authenticationKey: didKeypair });
+
+  const attestation = Attestation.fromRequestAndDid(
+    requestForAttestation,
+    dAppDidDetails.did,
   );
-  const demoExtensionPublicIdentity = demoExtensionIdentity.getPublicIdentity();
 
-  // const attestation = Attestation.fromRequestAndPublicIdentity(
-  //   request,
-  //   demoPublicIdentity,
-  // );
+  const tx = await attestation.store();
 
-  // const tx = await attestation.store();
+  const fullDid = await fullDidPromise;
 
-  // await BlockchainUtils.signAndSubmitTx(tx, demoIdentity);
+  const extrinsic = await fullDid.authorizeExtrinsic(tx, {
+    sign: async ({ data, alg }) => ({
+      data: identityKeypair.derive('//did//assertion//0').sign(data, {
+        withType: false,
+      }),
+      alg,
+    }),
+  });
 
-  // const attestedClaim = AttestedClaim.fromRequestAndAttestation(
-  //   request,
-  //   attestation,
-  // );
+  const result = await BlockchainUtils.signAndSubmitTx(
+    extrinsic,
+    identityKeypair,
+    {
+      resolveOn: BlockchainUtils.IS_FINALIZED,
+      reSign: true,
+    },
+  );
 
-  const fakeAttestation = {
-    claimHash: requestForAttestation.rootHash,
-    cTypeHash: requestForAttestation.claim.cTypeHash,
-    owner: requestForAttestation.claim.owner,
-    delegationId: null,
-    revoked: false,
-  };
-
-  const fakeBlockHash =
-    '0x1470baed4259acb180540ddb7a499cbf234cf120834169c8cb997462ea346909';
+  const attestedClaim = AttestedClaim.fromRequestAndAttestation(
+    requestForAttestation,
+    attestation,
+  );
 
   const messageBody: ISubmitAttestationForClaim = {
-    content: { attestation: fakeAttestation },
+    content: { attestation: attestedClaim.attestation },
     type: MessageBodyType.SUBMIT_ATTESTATION_FOR_CLAIM,
   };
 
-  const message = new Message(
-    messageBody,
-    demoDAppPublicIdentity,
-    demoExtensionPublicIdentity,
-  );
+  const message = new Message(messageBody, dAppDidDetails.did, extensionDid);
 
   return {
     email: requestForAttestation.claim.contents['Email'] as string,
-    blockHash: fakeBlockHash,
+    blockHash: result.status.asFinalized.toString(),
     message,
   };
 }
@@ -104,7 +107,12 @@ async function handler(
     throw Boom.notFound(`Key not found: ${key}`);
   }
 
-  return h.response(await attestClaim(requestForAttestation));
+  try {
+    const response = await attestClaim(requestForAttestation);
+    return h.response(response);
+  } catch (error) {
+    throw Boom.internal('Attestation failed', error);
+  }
 }
 
 export const attestation: ServerRoute = {

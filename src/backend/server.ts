@@ -11,6 +11,7 @@ import { staticFiles } from './endpoints/staticFiles';
 import { liveness } from './endpoints/liveness';
 import { configureAuthentication } from './utilities/configureAuthentication';
 import { configureDevErrors } from './utilities/configureDevErrors';
+import { fullDidPromise } from './utilities/fullDid';
 
 const server = Hapi.server({
   port: configuration.port,
@@ -29,6 +30,8 @@ const logger = {
 };
 
 (async () => {
+  await fullDidPromise;
+
   await server.register(inert);
   await server.register(logger);
   await configureAuthentication(server);

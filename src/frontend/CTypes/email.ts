@@ -1,5 +1,7 @@
-import { CType, Identity } from '@kiltprotocol/core';
+import { CType } from '@kiltprotocol/core';
 import { BlockchainUtils } from '@kiltprotocol/chain-helpers';
+import { getKeypairByBackupPhrase } from '../utilities/did';
+import { fullDidPromise } from '../../backend/utilities/fullDid';
 
 /** Run this function once to store the CType */
 export async function storeEmailCType(): Promise<void> {
@@ -19,11 +21,22 @@ export async function storeEmailCType(): Promise<void> {
 
   const tx = await draft.store();
 
-  const identity = Identity.buildFromMnemonic(
+  const identityKeypair = getKeypairByBackupPhrase(
     'receive clutch item involve chaos clutch furnace arrest claw isolate okay together',
   );
 
-  await BlockchainUtils.signAndSubmitTx(tx, identity);
+  const fullDid = await fullDidPromise;
+
+  const extrinsic = await fullDid.authorizeExtrinsic(tx, {
+    sign: async ({ data, alg }) => ({
+      data: identityKeypair.derive('//did//assertion//0').sign(data, {
+        withType: false,
+      }),
+      alg,
+    }),
+  });
+
+  await BlockchainUtils.signAndSubmitTx(extrinsic, identityKeypair);
 
   console.log('Pass this object to CType.fromCType', draft);
 }

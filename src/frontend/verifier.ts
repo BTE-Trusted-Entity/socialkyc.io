@@ -1,9 +1,10 @@
 import { IRequestClaimsForCTypes, MessageBodyType } from '@kiltprotocol/types';
-import { AttestedClaim, Identity } from '@kiltprotocol/core';
+import { AttestedClaim } from '@kiltprotocol/core';
 import Message, { errorCheckMessageBody } from '@kiltprotocol/messaging';
 
 import { getSession } from './utilities/session';
 import { initKilt } from './utilities/initKilt';
+import { createLightDidDetails } from './utilities/did';
 import { email } from './CTypes/email';
 
 const form = document.getElementById('subscription-form') as HTMLFormElement;
@@ -37,17 +38,15 @@ async function handleClick() {
     handleSuccess();
   });
 
-  const demoIdentity = Identity.buildFromURI('//Alice');
+  const didDetails = createLightDidDetails(
+    'receive clutch item involve chaos clutch furnace arrest claw isolate okay together',
+  );
 
   const messageBody: IRequestClaimsForCTypes = {
     content: [{ cTypeHash: email.hash }],
     type: MessageBodyType.REQUEST_CLAIMS_FOR_CTYPES,
   };
-  const message = new Message(
-    messageBody,
-    demoIdentity.getPublicIdentity(),
-    session.account,
-  );
+  const message = new Message(messageBody, didDetails['did'], session.account);
 
   await session.send(message);
 }

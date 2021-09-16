@@ -4,17 +4,17 @@ import {
   ISubmitTerms,
   MessageBodyType,
 } from '@kiltprotocol/types';
-import {
-  Claim,
-  Identity,
-  Quote,
-  RequestForAttestation,
-} from '@kiltprotocol/core';
+import { Claim, Quote, RequestForAttestation } from '@kiltprotocol/core';
+import { LightDidDetails } from '@kiltprotocol/did';
 import Message from '@kiltprotocol/messaging';
 import ky from 'ky';
 
 import { getSession } from './utilities/session';
 import { initKilt } from './utilities/initKilt';
+import {
+  deriveDidAuthenticationKeypair,
+  getKeypairByBackupPhrase,
+} from './utilities/did';
 import { email } from './CTypes/email';
 
 const form = document.getElementById('emailForm') as HTMLFormElement;
@@ -93,16 +93,19 @@ async function handleSubmit(event: Event) {
   const claim = Claim.fromCTypeAndClaimContents(
     email,
     claimContents,
-    session.account.address,
+    session.account,
   );
 
-  // TODO: Use real identity
-  const demoIdentity = Identity.buildFromMnemonic(
+  const identityKeypair = getKeypairByBackupPhrase(
     'receive clutch item involve chaos clutch furnace arrest claw isolate okay together',
   );
 
+  const didKeypair = deriveDidAuthenticationKeypair(identityKeypair);
+
+  const didDetails = new LightDidDetails({ authenticationKey: didKeypair });
+
   const quoteContents = {
-    attesterAddress: demoIdentity.address,
+    attesterDid: didDetails['did'],
     cTypeHash: email.hash,
     cost: {
       gross: 233,
@@ -113,7 +116,17 @@ async function handleSubmit(event: Event) {
     timeframe: new Date('2021-07-10'),
     termsAndConditions: 'https://www.example.com/terms',
   };
-  const quote = Quote.fromQuoteDataAndIdentity(quoteContents, demoIdentity);
+
+  const quote = await Quote.fromQuoteDataAndIdentity(
+    quoteContents,
+    didDetails,
+    {
+      sign: async ({ data, alg }) => ({
+        data: didKeypair.sign(data, { withType: false }),
+        alg,
+      }),
+    },
+  );
 
   const messageBody: ISubmitTerms = {
     content: {
@@ -124,11 +137,8 @@ async function handleSubmit(event: Event) {
     },
     type: MessageBodyType.SUBMIT_TERMS,
   };
-  const message = new Message(
-    messageBody,
-    demoIdentity.getPublicIdentity(),
-    session.account,
-  );
+
+  const message = new Message(messageBody, didDetails['did'], session.account);
 
   await session.send(message);
 }
