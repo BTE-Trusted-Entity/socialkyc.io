@@ -1,5 +1,5 @@
+import ky from 'ky';
 import { IDidDetails, IMessage } from '@kiltprotocol/types';
-import { createLightDidDetails } from './did';
 
 // TODO: switch to IEncryptedMessage
 interface PubSubSession {
@@ -28,9 +28,7 @@ export async function getSession(): Promise<PubSubSession> {
     throw new Error('No provider');
   }
 
-  const { did } = createLightDidDetails(
-    'receive clutch item involve chaos clutch furnace arrest claw isolate okay together',
-  );
+  const did = (await ky.get('/did').text()) as IDidDetails['did'];
   const dAppName = 'SocialKYC Demo';
 
   return await provider.startSession(dAppName, did);
