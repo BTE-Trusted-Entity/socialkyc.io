@@ -13,6 +13,20 @@ import { KeyRelationship } from '@kiltprotocol/types';
 import { BlockchainUtils } from '@kiltprotocol/chain-helpers';
 import { initKilt } from '../../frontend/utilities/initKilt';
 
+function getKeyRelationships() {
+  const identityKeypair = getKeypairByBackupPhrase(
+    'receive clutch item involve chaos clutch furnace arrest claw isolate okay together',
+  );
+
+  const didAuthKeypair = deriveDidAuthenticationKeypair(identityKeypair);
+
+  const didAssertionKeypair = identityKeypair.derive('//did//assertion//0');
+  return {
+    [KeyRelationship.authentication]: didAuthKeypair,
+    [KeyRelationship.assertionMethod]: didAssertionKeypair,
+  };
+}
+
 export async function createFullDid(): Promise<void> {
   await initKilt();
 
@@ -65,17 +79,3 @@ export const fullDidPromise = (async () => {
     services: didDetails.getServices(),
   });
 })();
-
-function getKeyRelationships() {
-  const identityKeypair = getKeypairByBackupPhrase(
-    'receive clutch item involve chaos clutch furnace arrest claw isolate okay together',
-  );
-
-  const didAuthKeypair = deriveDidAuthenticationKeypair(identityKeypair);
-
-  const didAssertionKeypair = identityKeypair.derive('//did//assertion//0');
-  return {
-    [KeyRelationship.authentication]: didAuthKeypair,
-    [KeyRelationship.assertionMethod]: didAssertionKeypair,
-  };
-}
