@@ -5,11 +5,7 @@ import {
   ResponseToolkit,
   ServerRoute,
 } from '@hapi/hapi';
-import {
-  IMessage,
-  ISubmitClaimsForCTypes,
-  MessageBodyType,
-} from '@kiltprotocol/types';
+import { IMessage, MessageBodyType } from '@kiltprotocol/types';
 import { AttestedClaim } from '@kiltprotocol/core';
 import { errorCheckMessageBody } from '@kiltprotocol/messaging';
 

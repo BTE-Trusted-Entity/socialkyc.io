@@ -10,7 +10,6 @@ import Boom from '@hapi/boom';
 import { RateLimiterMemory } from 'rate-limiter-flexible';
 import {
   IMessage,
-  IRequestAttestationForClaim,
   IRequestForAttestation,
   MessageBodyType,
 } from '@kiltprotocol/types';
