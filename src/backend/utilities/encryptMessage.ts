@@ -22,7 +22,7 @@ export async function encryptMessage(
     .getKeys(KeyRelationship.keyAgreement)
     .pop();
   if (!receiverEncryptionKey) {
-    throw new Error('Recipient key agreement key not found');
+    throw new Error('Receiver key agreement key not found');
   }
 
   const { encryptionKey } = await fullDidPromise;
