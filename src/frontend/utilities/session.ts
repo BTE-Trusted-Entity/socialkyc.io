@@ -1,19 +1,24 @@
 import ky from 'ky';
-import { IDidDetails, IMessage } from '@kiltprotocol/types';
+import { IDidDetails, IEncryptedMessage } from '@kiltprotocol/types';
 
-// TODO: switch to IEncryptedMessage
 interface PubSubSession {
-  listen: (callback: (message: IMessage) => Promise<void>) => Promise<void>;
+  listen: (
+    callback: (message: IEncryptedMessage) => Promise<void>,
+  ) => Promise<void>;
   close: () => Promise<void>;
-  send: (message: IMessage) => Promise<void>;
-  account: IDidDetails['did'];
+  send: (message: IEncryptedMessage) => Promise<void>;
+  identity: IDidDetails['did'];
+  encryptedChallenge: string;
+  nonce: string;
 }
 
 interface InjectedWindowProvider {
   startSession: (
-    origin: string,
-    account: IDidDetails['did'],
+    dAppName: string,
+    dAppDID: IDidDetails['did'],
+    challenge: string,
   ) => Promise<PubSubSession>;
+  name: string;
   version: string;
   specVersion: '0.1';
 }
@@ -31,5 +36,9 @@ export async function getSession(): Promise<PubSubSession> {
   const did = (await ky.get('/did').text()) as IDidDetails['did'];
   const dAppName = 'SocialKYC Demo';
 
-  return await provider.startSession(dAppName, did);
+  return await provider.startSession(
+    dAppName,
+    did,
+    '0123456789012345678901234', // TODO: real challenge
+  );
 }
