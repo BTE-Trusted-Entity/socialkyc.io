@@ -39,7 +39,7 @@ export const fullDidPromise = (async () => {
 
   const didDetails = await DefaultResolver.resolveDoc(configuration.did);
   if (!didDetails) {
-    throw new Error(`Could not resolve the own did ${configuration.did}`);
+    throw new Error(`Could not resolve the own DID ${configuration.did}`);
   }
 
   const fullDid = new FullDidDetails({

@@ -15,7 +15,7 @@ export async function encryptMessage(
 ): Promise<IEncryptedMessage> {
   const receiver = await DefaultResolver.resolveDoc(receiverDid);
   if (!receiver) {
-    throw new Error(`Cannot resolve the receiver did ${receiverDid}`);
+    throw new Error(`Cannot resolve the receiver DID ${receiverDid}`);
   }
 
   const receiverEncryptionKey = receiver
