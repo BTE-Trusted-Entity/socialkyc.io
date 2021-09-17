@@ -23,7 +23,7 @@ export async function storeEmailCType(): Promise<void> {
 
   const tx = await draft.store();
 
-  const fullDid = await fullDidPromise;
+  const { fullDid } = await fullDidPromise;
   const extrinsic = await fullDid.authorizeExtrinsic(tx, assertionKeystore);
 
   const keypairs = await keypairsPromise;

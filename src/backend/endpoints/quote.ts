@@ -14,6 +14,7 @@ import { email } from '../CTypes/email';
 import { fullDidPromise } from '../utilities/fullDid';
 import { configuration } from '../utilities/configuration';
 import { authenticationKeystore } from '../utilities/keystores';
+import { encryptMessage } from '../utilities/encryptMessage';
 
 const zodPayload = z.object({
   name: z.string(),
@@ -53,9 +54,10 @@ async function handler(
       termsAndConditions: 'https://www.example.com/terms',
     };
 
+    const { fullDid } = await fullDidPromise;
     const quote = await Quote.fromQuoteDataAndIdentity(
       quoteContents,
-      await fullDidPromise,
+      fullDid,
       authenticationKeystore,
     );
 
@@ -70,8 +72,9 @@ async function handler(
     };
 
     const message = new Message(messageBody, configuration.did, payload.did);
+    const encrypted = await encryptMessage(message, payload.did);
 
-    return h.response(message);
+    return h.response(encrypted);
   } catch (error) {
     return Boom.boomify(error as Error);
   }
