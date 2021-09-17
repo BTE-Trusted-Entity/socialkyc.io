@@ -12,13 +12,14 @@ import { keypairsPromise } from './keypairs';
 import { configuration } from './configuration';
 import { authenticationKeystore } from './keystores';
 
-const { authentication, assertionMethod } = KeyRelationship;
+const { authentication, assertionMethod, keyAgreement } = KeyRelationship;
 
 export async function createFullDid(): Promise<void> {
   const keypairs = await keypairsPromise;
   const relationships = {
     [authentication]: keypairs.authentication,
     [assertionMethod]: keypairs.assertion,
+    [keyAgreement]: { ...keypairs.keyAgreement, type: 'x25519' },
   };
 
   const { extrinsic, did } = await DidUtils.writeDidFromPublicKeys(
@@ -47,6 +48,7 @@ export const fullDidPromise = (async () => {
     keyRelationships: {
       [authentication]: didDetails.getKeyIds(authentication),
       [assertionMethod]: didDetails.getKeyIds(assertionMethod),
+      [keyAgreement]: didDetails.getKeyIds(keyAgreement),
     },
     lastTxIndex: await DidChain.queryLastTxIndex(didDetails.did),
     services: didDetails.getServices(),
