@@ -11,6 +11,7 @@ import Message from '@kiltprotocol/messaging';
 
 import { email } from '../CTypes/email';
 import { configuration } from '../utilities/configuration';
+import { encryptMessage } from '../utilities/encryptMessage';
 
 const zodPayload = z.object({
   did: z.string(),
@@ -30,8 +31,9 @@ async function handler(
   };
 
   const message = new Message(messageBody, configuration.did, payload.did);
+  const encrypted = await encryptMessage(message, payload.did);
 
-  return h.response(message);
+  return h.response(encrypted);
 }
 
 export const requestClaims: ServerRoute = {

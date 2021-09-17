@@ -1,6 +1,6 @@
 import { StatusCodes } from 'http-status-codes';
 import ky from 'ky';
-import { IMessage } from '@kiltprotocol/types';
+import { IEncryptedMessage } from '@kiltprotocol/types';
 
 import { getSession } from './utilities/session';
 
@@ -33,10 +33,10 @@ async function handleClick() {
   const message = (await ky
     .post('/request-claims', {
       json: {
-        did: session.account,
+        did: session.identity,
       },
     })
-    .json()) as IMessage;
+    .json()) as IEncryptedMessage;
 
   await session.send(message);
 }

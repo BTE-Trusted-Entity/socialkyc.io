@@ -12,13 +12,14 @@ import { keypairsPromise } from './keypairs';
 import { configuration } from './configuration';
 import { authenticationKeystore } from './keystores';
 
-const { authentication, assertionMethod } = KeyRelationship;
+const { authentication, assertionMethod, keyAgreement } = KeyRelationship;
 
 export async function createFullDid(): Promise<void> {
   const keypairs = await keypairsPromise;
   const relationships = {
     [authentication]: keypairs.authentication,
     [assertionMethod]: keypairs.assertion,
+    [keyAgreement]: { ...keypairs.keyAgreement, type: 'x25519' },
   };
 
   const { extrinsic, did } = await DidUtils.writeDidFromPublicKeys(
@@ -38,17 +39,25 @@ export const fullDidPromise = (async () => {
 
   const didDetails = await DefaultResolver.resolveDoc(configuration.did);
   if (!didDetails) {
-    throw new Error();
+    throw new Error(`Could not resolve the own DID ${configuration.did}`);
   }
 
-  return new FullDidDetails({
+  const fullDid = new FullDidDetails({
     did: didDetails.did,
     keys: didDetails.getKeys(),
     keyRelationships: {
       [authentication]: didDetails.getKeyIds(authentication),
       [assertionMethod]: didDetails.getKeyIds(assertionMethod),
+      [keyAgreement]: didDetails.getKeyIds(keyAgreement),
     },
     lastTxIndex: await DidChain.queryLastTxIndex(didDetails.did),
     services: didDetails.getServices(),
   });
+
+  const encryptionKey = fullDid.getKeys(KeyRelationship.keyAgreement).pop();
+  if (!encryptionKey) {
+    throw new Error('Key agreement key not found');
+  }
+
+  return { fullDid, encryptionKey };
 })();

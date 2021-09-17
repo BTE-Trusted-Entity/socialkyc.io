@@ -1,6 +1,7 @@
 import { Attestation, AttestedClaim } from '@kiltprotocol/core';
 import { BlockchainUtils } from '@kiltprotocol/chain-helpers';
 import {
+  IEncryptedMessage,
   IRequestForAttestation,
   ISubmitAttestationForClaim,
   MessageBodyType,
@@ -20,11 +21,12 @@ import { fullDidPromise } from '../utilities/fullDid';
 import { keypairsPromise } from '../utilities/keypairs';
 import { assertionKeystore } from '../utilities/keystores';
 import { configuration } from '../utilities/configuration';
+import { encryptMessage } from '../utilities/encryptMessage';
 
 interface AttestationData {
   email: string;
   blockHash: string;
-  message: Message;
+  message: IEncryptedMessage;
 }
 
 async function attestClaim(
@@ -37,7 +39,7 @@ async function attestClaim(
 
   const tx = await attestation.store();
 
-  const fullDid = await fullDidPromise;
+  const { fullDid } = await fullDidPromise;
   const extrinsic = await fullDid.authorizeExtrinsic(tx, assertionKeystore);
 
   const keypairs = await keypairsPromise;
@@ -60,16 +62,14 @@ async function attestClaim(
     type: MessageBodyType.SUBMIT_ATTESTATION_FOR_CLAIM,
   };
 
-  const message = new Message(
-    messageBody,
-    configuration.did,
-    requestForAttestation.claim.owner,
-  );
+  const receiver = requestForAttestation.claim.owner;
+  const message = new Message(messageBody, configuration.did, receiver);
+  const encrypted = await encryptMessage(message, receiver);
 
   return {
     email: requestForAttestation.claim.contents['Email'] as string,
     blockHash: result.status.asFinalized.toString(),
-    message,
+    message: encrypted,
   };
 }
 

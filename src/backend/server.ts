@@ -10,7 +10,7 @@ import { attestation } from './endpoints/attestation';
 import { staticFiles } from './endpoints/staticFiles';
 import { liveness } from './endpoints/liveness';
 import { quote } from './endpoints/quote';
-import { did } from './endpoints/did';
+import { challenge } from './endpoints/challenge';
 import { verify } from './endpoints/verify';
 import { requestClaims } from './endpoints/requestClaims';
 import { configureAuthentication } from './utilities/configureAuthentication';
@@ -43,7 +43,7 @@ const logger = {
 
   server.route(liveness);
   server.route(staticFiles);
-  server.route(did);
+  server.route(challenge);
   server.route(quote);
   server.route(request);
   server.route(confirmationHtml);

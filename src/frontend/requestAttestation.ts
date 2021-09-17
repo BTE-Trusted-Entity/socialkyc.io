@@ -1,6 +1,6 @@
 import { StatusCodes } from 'http-status-codes';
 import ky from 'ky';
-import { IMessage } from '@kiltprotocol/types';
+import { IEncryptedMessage } from '@kiltprotocol/types';
 
 import { getSession } from './utilities/session';
 
@@ -65,10 +65,12 @@ async function handleSubmit(event: Event) {
   const json = {
     name: target.elements?.name?.value,
     email: target.elements?.email?.value,
-    did: session.account,
+    did: session.identity,
   };
 
-  const message = (await ky.post('/quote', { json }).json()) as IMessage;
+  const message = (await ky
+    .post('/quote', { json })
+    .json()) as IEncryptedMessage;
 
   await session.send(message);
 }

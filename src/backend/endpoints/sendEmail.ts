@@ -8,17 +8,18 @@ import {
 } from '@hapi/hapi';
 import Boom from '@hapi/boom';
 import { RateLimiterMemory } from 'rate-limiter-flexible';
-import {
-  IMessage,
-  IRequestForAttestation,
-  MessageBodyType,
-} from '@kiltprotocol/types';
+import { IRequestForAttestation, MessageBodyType } from '@kiltprotocol/types';
 import { errorCheckMessageBody } from '@kiltprotocol/messaging';
 import { RequestForAttestation } from '@kiltprotocol/core';
 
 import { configuration } from '../utilities/configuration';
 import { cacheRequestForAttestation } from '../utilities/requestCache';
 import { sesClient } from '../utilities/sesClient';
+import { decryptMessage } from '../utilities/decryptMessage';
+import {
+  Payload,
+  validateEncryptedMessage,
+} from '../utilities/validateEncryptedMessage';
 
 const rateLimiter = new RateLimiterMemory({
   duration: 1 * 60,
@@ -67,7 +68,9 @@ async function handler(
     );
   }
 
-  const message = request.payload as IMessage;
+  const encrypted = request.payload as Payload;
+  const message = await decryptMessage(encrypted);
+
   const messageBody = message.body;
   errorCheckMessageBody(messageBody);
 
@@ -102,10 +105,7 @@ export const request: ServerRoute = {
   handler,
   options: {
     validate: {
-      payload: async () => {
-        // RequestForAttestation.isIRequestForAttestation(payload);
-        // TODO: validator for IMessage
-      },
+      payload: validateEncryptedMessage,
     },
   },
 };
