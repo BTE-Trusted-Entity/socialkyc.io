@@ -33,12 +33,15 @@ export async function getSession(): Promise<PubSubSession> {
     throw new Error('No provider');
   }
 
-  const did = (await ky.get('/did').text()) as IDidDetails['did'];
+  const { did, challenge, key } = await ky.get('/challenge').json();
   const dAppName = 'SocialKYC Demo';
 
-  return await provider.startSession(
-    dAppName,
-    did,
-    '0123456789012345678901234', // TODO: real challenge
-  );
+  const session = await provider.startSession(dAppName, did, challenge);
+
+  const { identity, encryptedChallenge, nonce } = session;
+  await ky.post('/challenge', {
+    json: { identity, encryptedChallenge, nonce, key },
+  });
+
+  return session;
 }
