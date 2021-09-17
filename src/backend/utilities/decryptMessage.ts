@@ -12,7 +12,7 @@ export async function decryptMessage(
 
   const senderDetails = await DefaultResolver.resolveDoc(did);
   if (!senderDetails) {
-    throw new Error(`Cannot resolve the sender did of key ${senderKeyId}`);
+    throw new Error(`Cannot resolve the sender DID of key ${senderKeyId}`);
   }
 
   return Message.decrypt(encrypted, encryptionKeystore, { senderDetails });
