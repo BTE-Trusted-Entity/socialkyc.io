@@ -19,11 +19,8 @@ if (!baseUri) {
   throw new Error('No base URI provided');
 }
 
-const did =
-  env.DID || 'did:kilt:4pehddkhEanexVTTzWAtrrfo2R7xPnePpuiJLC7shQU894aY';
-const backupPhrase =
-  env.SECRET_BACKUP_PHRASE ||
-  'receive clutch item involve chaos clutch furnace arrest claw isolate okay together';
+const did = env.DID;
+const backupPhrase = env.SECRET_BACKUP_PHRASE;
 
 if (!did || !backupPhrase) {
   throw new Error('No DID or no backup phrase provided');
