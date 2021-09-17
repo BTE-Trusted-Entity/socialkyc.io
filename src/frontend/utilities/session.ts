@@ -15,7 +15,7 @@ interface PubSubSession {
 interface InjectedWindowProvider {
   startSession: (
     dAppName: string,
-    dAppDID: IDidDetails['did'],
+    dAppDid: IDidDetails['did'],
     challenge: string,
   ) => Promise<PubSubSession>;
   name: string;
