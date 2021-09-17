@@ -19,6 +19,16 @@ if (!baseUri) {
   throw new Error('No base URI provided');
 }
 
+const did =
+  env.DID || 'did:kilt:4pehddkhEanexVTTzWAtrrfo2R7xPnePpuiJLC7shQU894aY';
+const backupPhrase =
+  env.SECRET_BACKUP_PHRASE ||
+  'receive clutch item involve chaos clutch furnace arrest claw isolate okay together';
+
+if (!did || !backupPhrase) {
+  throw new Error('No DID or no backup phrase provided');
+}
+
 export const configuration = {
   aws: {
     region,
@@ -29,4 +39,6 @@ export const configuration = {
   isProduction: env.NODE_ENV === 'production',
   baseUri,
   distFolder: path.join(cwd(), 'dist', 'frontend'),
+  did,
+  backupPhrase,
 };

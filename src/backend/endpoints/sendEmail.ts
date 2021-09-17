@@ -1,8 +1,19 @@
+import { StatusCodes } from 'http-status-codes';
 import { SendEmailCommand } from '@aws-sdk/client-ses';
-import { Request, ServerRoute } from '@hapi/hapi';
+import {
+  Request,
+  ResponseObject,
+  ResponseToolkit,
+  ServerRoute,
+} from '@hapi/hapi';
 import Boom from '@hapi/boom';
 import { RateLimiterMemory } from 'rate-limiter-flexible';
-import { IRequestForAttestation } from '@kiltprotocol/types';
+import {
+  IMessage,
+  IRequestForAttestation,
+  MessageBodyType,
+} from '@kiltprotocol/types';
+import { errorCheckMessageBody } from '@kiltprotocol/messaging';
 import { RequestForAttestation } from '@kiltprotocol/core';
 
 import { configuration } from '../utilities/configuration';
@@ -44,7 +55,10 @@ async function send(
   await sesClient.send(new SendEmailCommand(params));
 }
 
-async function handler(request: Request): Promise<string> {
+async function handler(
+  request: Request,
+  h: ResponseToolkit,
+): Promise<ResponseObject | string> {
   try {
     await rateLimiter.consume(request.info.remoteAddress);
   } catch {
@@ -53,7 +67,24 @@ async function handler(request: Request): Promise<string> {
     );
   }
 
-  const requestForAttestation = request.payload as IRequestForAttestation;
+  const message = request.payload as IMessage;
+  const messageBody = message.body;
+  errorCheckMessageBody(messageBody);
+
+  const { type } = messageBody;
+  if (type === MessageBodyType.REJECT_TERMS) {
+    return h.response().code(StatusCodes.ACCEPTED);
+  }
+  if (type !== MessageBodyType.REQUEST_ATTESTATION_FOR_CLAIM) {
+    return h.response().code(StatusCodes.NOT_ACCEPTABLE);
+  }
+
+  const { requestForAttestation } = messageBody.content;
+  if (!RequestForAttestation.isIRequestForAttestation(requestForAttestation)) {
+    throw Boom.badRequest('Invalid request for attestation');
+  }
+
+  RequestForAttestation.verifyData(requestForAttestation);
 
   const key = requestForAttestation.rootHash;
   cacheRequestForAttestation(key, requestForAttestation);
@@ -62,7 +93,7 @@ async function handler(request: Request): Promise<string> {
 
   await send(url, requestForAttestation);
 
-  return '';
+  return requestForAttestation.claim.contents['Email'] as string;
 }
 
 export const request: ServerRoute = {
@@ -71,8 +102,9 @@ export const request: ServerRoute = {
   handler,
   options: {
     validate: {
-      payload: async (payload) => {
-        RequestForAttestation.isIRequestForAttestation(payload);
+      payload: async () => {
+        // RequestForAttestation.isIRequestForAttestation(payload);
+        // TODO: validator for IMessage
       },
     },
   },

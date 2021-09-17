@@ -1,9 +1,4 @@
 import {
-  getKeypairByBackupPhrase,
-  deriveDidAuthenticationKeypair,
-} from '../../frontend/utilities/did';
-
-import {
   DefaultResolver,
   DidUtils,
   DidChain,
@@ -11,55 +6,37 @@ import {
 } from '@kiltprotocol/did';
 import { KeyRelationship } from '@kiltprotocol/types';
 import { BlockchainUtils } from '@kiltprotocol/chain-helpers';
-import { initKilt } from '../../frontend/utilities/initKilt';
 
-function getKeyRelationships() {
-  const identityKeypair = getKeypairByBackupPhrase(
-    'receive clutch item involve chaos clutch furnace arrest claw isolate okay together',
-  );
+import { initKilt } from './initKilt';
+import { keypairsPromise } from './keypairs';
+import { configuration } from './configuration';
+import { authenticationKeystore } from './keystores';
 
-  const didAuthKeypair = deriveDidAuthenticationKeypair(identityKeypair);
-
-  const didAssertionKeypair = identityKeypair.derive('//did//assertion//0');
-  return {
-    [KeyRelationship.authentication]: didAuthKeypair,
-    [KeyRelationship.assertionMethod]: didAssertionKeypair,
-  };
-}
+const { authentication, assertionMethod } = KeyRelationship;
 
 export async function createFullDid(): Promise<void> {
-  await initKilt();
-
-  const relationships = getKeyRelationships();
+  const keypairs = await keypairsPromise;
+  const relationships = {
+    [authentication]: keypairs.authentication,
+    [assertionMethod]: keypairs.assertion,
+  };
 
   const { extrinsic, did } = await DidUtils.writeDidFromPublicKeys(
-    {
-      sign: async ({ data, alg }) => ({
-        data: relationships[KeyRelationship.authentication].sign(data, {
-          withType: false,
-        }),
-        alg,
-      }),
-    },
+    authenticationKeystore,
     relationships,
   );
 
-  console.log(did);
+  console.log('This is your generated DID:', did);
 
-  const identityKeypair = getKeypairByBackupPhrase(
-    'receive clutch item involve chaos clutch furnace arrest claw isolate okay together',
-  );
-
-  await BlockchainUtils.signAndSubmitTx(extrinsic, identityKeypair, {
+  await BlockchainUtils.signAndSubmitTx(extrinsic, keypairs.identity, {
     resolveOn: BlockchainUtils.IS_FINALIZED,
   });
 }
 
 export const fullDidPromise = (async () => {
   await initKilt();
-  const didDetails = await DefaultResolver.resolveDoc(
-    'did:kilt:4pehddkhEanexVTTzWAtrrfo2R7xPnePpuiJLC7shQU894aY',
-  );
+
+  const didDetails = await DefaultResolver.resolveDoc(configuration.did);
   if (!didDetails) {
     throw new Error();
   }
@@ -68,12 +45,8 @@ export const fullDidPromise = (async () => {
     did: didDetails.did,
     keys: didDetails.getKeys(),
     keyRelationships: {
-      [KeyRelationship.authentication]: didDetails.getKeyIds(
-        KeyRelationship.authentication,
-      ),
-      [KeyRelationship.assertionMethod]: didDetails.getKeyIds(
-        KeyRelationship.assertionMethod,
-      ),
+      [authentication]: didDetails.getKeyIds(authentication),
+      [assertionMethod]: didDetails.getKeyIds(assertionMethod),
     },
     lastTxIndex: await DidChain.queryLastTxIndex(didDetails.did),
     services: didDetails.getServices(),

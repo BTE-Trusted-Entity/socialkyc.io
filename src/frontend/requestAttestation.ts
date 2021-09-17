@@ -1,21 +1,8 @@
-import {
-  IRequestAttestationForClaim,
-  IRequestForAttestation,
-  ISubmitTerms,
-  MessageBodyType,
-} from '@kiltprotocol/types';
-import { Claim, Quote, RequestForAttestation } from '@kiltprotocol/core';
-import { LightDidDetails } from '@kiltprotocol/did';
-import Message from '@kiltprotocol/messaging';
+import { StatusCodes } from 'http-status-codes';
 import ky from 'ky';
+import { IMessage } from '@kiltprotocol/types';
 
 import { getSession } from './utilities/session';
-import { initKilt } from './utilities/initKilt';
-import {
-  deriveDidAuthenticationKeypair,
-  getKeypairByBackupPhrase,
-} from './utilities/did';
-import { email } from './CTypes/email';
 
 const form = document.getElementById('emailForm') as HTMLFormElement;
 const addButton = document.getElementById('add') as HTMLButtonElement;
@@ -43,102 +30,45 @@ function handleFocus() {
   submitButton.disabled = false;
 }
 
-async function requestAttestation(request: IRequestForAttestation) {
-  if (!overlay) {
-    throw new Error('Elements missing');
-  }
-
-  document
-    .getElementById('sent')
-    ?.insertAdjacentHTML(
-      'afterend',
-      `<p>We've sent an email to <strong>${request.claim.contents['Email']}</strong></p>`,
-    );
-
-  overlay.hidden = false;
-
-  await ky.post('/request-attestation', { json: request });
-}
-
 async function handleSubmit(event: Event) {
   event.preventDefault();
 
-  await initKilt();
-
   const session = await getSession();
   await session.listen(async (message) => {
-    const { type } = message.body;
-    if (type === MessageBodyType.REJECT_TERMS) {
+    const result = await ky.post('/request-attestation', { json: message });
+
+    if (result.status === StatusCodes.ACCEPTED) {
       console.log('Terms rejected');
-      return;
     }
-    if (type !== MessageBodyType.REQUEST_ATTESTATION_FOR_CLAIM) {
+
+    if (result.status !== StatusCodes.OK) {
+      console.log('Not attested');
       return;
     }
 
-    const messageBody = message.body as IRequestAttestationForClaim;
-    const request = messageBody.content.requestForAttestation;
-    RequestForAttestation.verifyData(request);
+    const email = await result.text();
+    document
+      .getElementById('sent')
+      ?.insertAdjacentHTML(
+        'afterend',
+        `<p>We've sent an email to <strong>${email}</strong></p>`,
+      );
 
-    await requestAttestation(request);
+    if (overlay) {
+      overlay.hidden = false;
+    }
   });
 
   const target = event.target as unknown as {
     elements: Record<string, HTMLInputElement>;
   };
-  const claimContents = {
-    'Full name': target.elements?.name?.value,
-    Email: target.elements?.email?.value,
-  };
-  const claim = Claim.fromCTypeAndClaimContents(
-    email,
-    claimContents,
-    session.account,
-  );
-
-  const identityKeypair = getKeypairByBackupPhrase(
-    'receive clutch item involve chaos clutch furnace arrest claw isolate okay together',
-  );
-
-  const didKeypair = deriveDidAuthenticationKeypair(identityKeypair);
-
-  const didDetails = new LightDidDetails({ authenticationKey: didKeypair });
-
-  const quoteContents = {
-    attesterDid: didDetails['did'],
-    cTypeHash: email.hash,
-    cost: {
-      gross: 233,
-      net: 23.3,
-      tax: { vat: 3.3 },
-    },
-    currency: 'KILT',
-    timeframe: new Date('2021-07-10'),
-    termsAndConditions: 'https://www.example.com/terms',
+  const json = {
+    name: target.elements?.name?.value,
+    email: target.elements?.email?.value,
+    did: session.account,
   };
 
-  const quote = await Quote.fromQuoteDataAndIdentity(
-    quoteContents,
-    didDetails,
-    {
-      sign: async ({ data, alg }) => ({
-        data: didKeypair.sign(data, { withType: false }),
-        alg,
-      }),
-    },
-  );
-
-  const messageBody: ISubmitTerms = {
-    content: {
-      claim,
-      quote,
-      legitimations: [],
-      cTypes: [email],
-    },
-    type: MessageBodyType.SUBMIT_TERMS,
-  };
-
-  const message = new Message(messageBody, didDetails['did'], session.account);
+  const message = (await ky.post('/quote', { json }).json()) as IMessage;
 
   await session.send(message);
 }
