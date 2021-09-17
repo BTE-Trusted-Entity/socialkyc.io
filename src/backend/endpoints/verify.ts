@@ -5,17 +5,21 @@ import {
   ResponseToolkit,
   ServerRoute,
 } from '@hapi/hapi';
-import { IEncryptedMessage, MessageBodyType } from '@kiltprotocol/types';
+import { MessageBodyType } from '@kiltprotocol/types';
 import { AttestedClaim } from '@kiltprotocol/core';
 import { errorCheckMessageBody } from '@kiltprotocol/messaging';
 
 import { decryptMessage } from '../utilities/decryptMessage';
+import {
+  Payload,
+  validateEncryptedMessage,
+} from '../utilities/validateEncryptedMessage';
 
 async function handler(
   request: Request,
   h: ResponseToolkit,
 ): Promise<ResponseObject> {
-  const encrypted = request.payload as IEncryptedMessage;
+  const encrypted = request.payload as Payload;
   const message = await decryptMessage(encrypted);
 
   const messageBody = message.body;
@@ -42,10 +46,7 @@ export const verify: ServerRoute = {
   handler,
   options: {
     validate: {
-      payload: async () => {
-        // RequestForAttestation.isIRequestForAttestation(payload);
-        // TODO: validator for IEncryptedMessage
-      },
+      payload: validateEncryptedMessage,
     },
   },
 };
