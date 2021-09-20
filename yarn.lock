@@ -2390,10 +2390,10 @@
   dependencies:
     "@types/node" "*"
 
-"@types/hapi-pino@^8.0.2":
-  version "8.0.2"
-  resolved "https://registry.yarnpkg.com/@types/hapi-pino/-/hapi-pino-8.0.2.tgz#a22aaa4d627af731fa14e6b32fe3a40e3eee4338"
-  integrity sha512-2dDTy9GhTGZ45XaSPPJgcvi4WlClXxE+imZuM4VO05lM8k07M4swBgYYAcsbbF1Ag4nyUg2TftkoN5+SsvuA9w==
+"@types/hapi-pino@^8.0.3":
+  version "8.0.3"
+  resolved "https://registry.yarnpkg.com/@types/hapi-pino/-/hapi-pino-8.0.3.tgz#c4cddceeed4a8c18ff392ddc787aac82f252fee3"
+  integrity sha512-01w6TKgPPH9GjZTtcD257ZLmoPo0L0GSdJOdQurHlS4RZdYOL5N/Stw47WVgLyrQ8/7Gd++qSGTBMFspm2K8Yw==
   dependencies:
     "@types/hapi__hapi" "*"
     "@types/node" "*"
