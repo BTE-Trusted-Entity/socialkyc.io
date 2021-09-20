@@ -15,15 +15,19 @@ function base64ToUInt8Array(base64: string) {
   return Uint8Array.from(Buffer.from(base64, 'base64'));
 }
 
+function hexToUInt8Array(hex: string) {
+  return Uint8Array.from(Buffer.from(hex, 'hex'));
+}
+
 async function didConfigResource() {
   const fullDidDetails = await fullDidPromise;
   const { authentication } = KeyRelationship;
 
-  const publicKey = fullDidDetails.getKeyIds(authentication)[0];
+  const publicKey = fullDidDetails.getKeys(authentication)[0];
 
   const header = {
     alg: signingAlg,
-    kid: publicKey,
+    kid: publicKey.id,
   };
 
   const payload = {
@@ -60,7 +64,7 @@ async function didConfigResource() {
   const response = await authenticationKeystore.sign({
     alg: signingAlg,
     data: base64ToUInt8Array(unsignedJWT),
-    publicKey: base64ToUInt8Array(publicKey),
+    publicKey: hexToUInt8Array(publicKey.publicKeyHex),
   });
 
   const base64UrlSignature = Buffer.from(response.data).toString('base64url');
