@@ -14,7 +14,7 @@
     "start": "node dist/backend/server.cjs"
   },
   "dependencies": {
-    "@aws-sdk/client-ses": "^3.31.0",
+    "@aws-sdk/client-ses": "^3.32.0",
     "@hapi/basic": "^6.0.0",
     "@hapi/boom": "^9.1.4",
     "@hapi/hapi": "^20.1.5",
