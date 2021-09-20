@@ -47,11 +47,11 @@ export const encryptionKeystore: Pick<NaclBoxCapable, 'encrypt' | 'decrypt'> = {
     const decrypted = naclOpen(
       data,
       nonce,
-      keyAgreement.secretKey,
       peerPublicKey,
+      keyAgreement.secretKey,
     );
     if (!decrypted) {
-      throw new Error('failed to decrypt with given key');
+      throw new Error('Failed to decrypt with given key');
     }
 
     return {

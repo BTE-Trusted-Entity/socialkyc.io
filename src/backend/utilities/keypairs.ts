@@ -27,7 +27,12 @@ export const keypairsPromise = (async () => {
   const keyAgreement = naclBoxKeypairFromSecret(
     identity
       .derive('//did//keyAgreement//0')
-      .sign('0123456789012345678901234567890123456789012345678901234567890123'),
+      .encryptMessage(
+        new Uint8Array(24).fill(0),
+        new Uint8Array(24).fill(0),
+        new Uint8Array(24).fill(0),
+      )
+      .slice(24), // first 24 bytes are the nonce
   );
 
   return {

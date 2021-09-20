@@ -1,6 +1,7 @@
 import { Attestation, AttestedClaim } from '@kiltprotocol/core';
 import { BlockchainUtils } from '@kiltprotocol/chain-helpers';
 import {
+  IDidDetails,
   IEncryptedMessage,
   IRequestForAttestation,
   ISubmitAttestationForClaim,
@@ -31,6 +32,7 @@ interface AttestationData {
 
 async function attestClaim(
   requestForAttestation: IRequestForAttestation,
+  did: IDidDetails['did'],
 ): Promise<AttestationData> {
   const attestation = Attestation.fromRequestAndDid(
     requestForAttestation,
@@ -62,9 +64,8 @@ async function attestClaim(
     type: MessageBodyType.SUBMIT_ATTESTATION_FOR_CLAIM,
   };
 
-  const receiver = requestForAttestation.claim.owner;
-  const message = new Message(messageBody, configuration.did, receiver);
-  const encrypted = await encryptMessage(message, receiver);
+  const message = new Message(messageBody, configuration.did, did);
+  const encrypted = await encryptMessage(message, did);
 
   return {
     email: requestForAttestation.claim.contents['Email'] as string,
@@ -75,6 +76,7 @@ async function attestClaim(
 
 const zodPayload = z.object({
   key: z.string(),
+  did: z.string(),
 });
 
 type Payload = z.infer<typeof zodPayload>;
@@ -83,7 +85,7 @@ async function handler(
   request: Request,
   h: ResponseToolkit,
 ): Promise<ResponseObject> {
-  const { key } = request.payload as Payload;
+  const { key, did } = request.payload as Payload;
 
   let requestForAttestation: IRequestForAttestation;
   try {
@@ -93,7 +95,7 @@ async function handler(
   }
 
   try {
-    const response = await attestClaim(requestForAttestation);
+    const response = await attestClaim(requestForAttestation, did);
     return h.response(response);
   } catch (error) {
     throw Boom.internal('Attestation failed', error);

@@ -5,8 +5,11 @@ import { getSession } from './utilities/session';
 async function main() {
   const key = window.location.href.split('/').pop();
 
+  const session = await getSession();
+  const did = session.identity;
+
   const { email, blockHash, message } = await ky
-    .post('/attest', { json: { key }, timeout: 60 * 1000 })
+    .post('/attest', { json: { key, did }, timeout: 60 * 1000 })
     .json();
 
   const htmlToInsert = `
@@ -22,12 +25,11 @@ async function main() {
   async function handleSave(event: Event) {
     event.preventDefault();
 
-    const session = await getSession();
-
     await session.send(message);
   }
 
   document.getElementById('save')?.addEventListener?.('click', handleSave);
 }
 
-main();
+// Give the extention time to inject itself
+setTimeout(main, 1000);
