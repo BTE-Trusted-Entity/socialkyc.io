@@ -41,14 +41,9 @@ jobs:
         docker tag kilt/social-kyc-demo $ECR_REGISTRY/$ECR_REPOSITORY:$IMAGE_TAG
         docker push $ECR_REGISTRY/$ECR_REPOSITORY:$IMAGE_TAG
         docker push $ECR_REGISTRY/$ECR_REPOSITORY:latest
-    - name: deploy to cluster
-      uses: steebchen/kubectl@v2.0.0
+    - name: Rollout restart Kubernetes deployment
+      uses: kodermax/kubectl-aws-eks@master
+      env:
+        KUBE_CONFIG_DATA: ${{ secrets.KUBE_CONFIG_DATA }}
       with:
-        config: ${{ secrets.KUBE_CONFIG_DATA }}
-        command: rollout restart deployment social-kyc-demo --namespace social-kyc
-    - name: verify deployment
-      uses: steebchen/kubectl@v2.0.0
-      with:
-        config: ${{ secrets.KUBE_CONFIG_DATA }}
-        version: v1.21.0
-        command: rollout status deployment social-kyc-demo
+        args: rollout restart deployment social-kyc-demo --namespace social-kyc
