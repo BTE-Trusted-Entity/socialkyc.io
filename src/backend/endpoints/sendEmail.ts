@@ -1,13 +1,25 @@
+import { StatusCodes } from 'http-status-codes';
 import { SendEmailCommand } from '@aws-sdk/client-ses';
-import { Request, ServerRoute } from '@hapi/hapi';
+import {
+  Request,
+  ResponseObject,
+  ResponseToolkit,
+  ServerRoute,
+} from '@hapi/hapi';
 import Boom from '@hapi/boom';
 import { RateLimiterMemory } from 'rate-limiter-flexible';
-import { IRequestForAttestation } from '@kiltprotocol/types';
+import { IRequestForAttestation, MessageBodyType } from '@kiltprotocol/types';
+import { errorCheckMessageBody } from '@kiltprotocol/messaging';
 import { RequestForAttestation } from '@kiltprotocol/core';
 
 import { configuration } from '../utilities/configuration';
 import { cacheRequestForAttestation } from '../utilities/requestCache';
 import { sesClient } from '../utilities/sesClient';
+import { decryptMessage } from '../utilities/decryptMessage';
+import {
+  Payload,
+  validateEncryptedMessage,
+} from '../utilities/validateEncryptedMessage';
 
 const rateLimiter = new RateLimiterMemory({
   duration: 1 * 60,
@@ -44,7 +56,10 @@ async function send(
   await sesClient.send(new SendEmailCommand(params));
 }
 
-async function handler(request: Request): Promise<string> {
+async function handler(
+  request: Request,
+  h: ResponseToolkit,
+): Promise<ResponseObject | string> {
   try {
     await rateLimiter.consume(request.info.remoteAddress);
   } catch {
@@ -53,11 +68,26 @@ async function handler(request: Request): Promise<string> {
     );
   }
 
-  if (!RequestForAttestation.isIRequestForAttestation(request.payload)) {
+  const encrypted = request.payload as Payload;
+  const message = await decryptMessage(encrypted);
+
+  const messageBody = message.body;
+  errorCheckMessageBody(messageBody);
+
+  const { type } = messageBody;
+  if (type === MessageBodyType.REJECT_TERMS) {
+    return h.response().code(StatusCodes.ACCEPTED);
+  }
+  if (type !== MessageBodyType.REQUEST_ATTESTATION_FOR_CLAIM) {
+    return h.response().code(StatusCodes.NOT_ACCEPTABLE);
+  }
+
+  const { requestForAttestation } = messageBody.content;
+  if (!RequestForAttestation.isIRequestForAttestation(requestForAttestation)) {
     throw Boom.badRequest('Invalid request for attestation');
   }
 
-  const requestForAttestation = request.payload;
+  RequestForAttestation.verifyData(requestForAttestation);
 
   const key = requestForAttestation.rootHash;
   cacheRequestForAttestation(key, requestForAttestation);
@@ -66,11 +96,16 @@ async function handler(request: Request): Promise<string> {
 
   await send(url, requestForAttestation);
 
-  return '';
+  return requestForAttestation.claim.contents['Email'] as string;
 }
 
 export const request: ServerRoute = {
   method: 'POST',
   path: '/request-attestation',
   handler,
+  options: {
+    validate: {
+      payload: validateEncryptedMessage,
+    },
+  },
 };

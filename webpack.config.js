@@ -1,10 +1,6 @@
 import path from 'path';
 import CopyPlugin from 'copy-webpack-plugin';
-import webpack from 'webpack';
-import { createRequire } from 'module';
 import nodeExternals from 'webpack-node-externals';
-
-const require = createRequire(import.meta.url);
 
 export default [
   {
@@ -27,16 +23,8 @@ export default [
     },
     resolve: {
       extensions: ['.ts', '.js'],
-      fallback: {
-        crypto: require.resolve('crypto-browserify'),
-        stream: require.resolve('stream-browserify'),
-      },
     },
     plugins: [
-      new webpack.ProvidePlugin({
-        Buffer: ['buffer', 'Buffer'],
-        process: ['process'],
-      }),
       new CopyPlugin({
         patterns: [
           {

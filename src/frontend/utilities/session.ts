@@ -1,19 +1,24 @@
-import { IMessage, IPublicIdentity } from '@kiltprotocol/types';
-import { Identity } from '@kiltprotocol/core';
+import ky from 'ky';
+import { IDidDetails, IEncryptedMessage } from '@kiltprotocol/types';
 
-// TODO: switch to IEncryptedMessage
 interface PubSubSession {
-  listen: (callback: (message: IMessage) => Promise<void>) => Promise<void>;
+  listen: (
+    callback: (message: IEncryptedMessage) => Promise<void>,
+  ) => Promise<void>;
   close: () => Promise<void>;
-  send: (message: IMessage) => Promise<void>;
-  account: IPublicIdentity;
+  send: (message: IEncryptedMessage) => Promise<void>;
+  identity: IDidDetails['did'];
+  encryptedChallenge: string;
+  nonce: string;
 }
 
 interface InjectedWindowProvider {
   startSession: (
-    origin: string,
-    account: IPublicIdentity,
+    dAppName: string,
+    dAppDid: IDidDetails['did'],
+    challenge: string,
   ) => Promise<PubSubSession>;
+  name: string;
   version: string;
   specVersion: '0.1';
 }
@@ -28,11 +33,15 @@ export async function getSession(): Promise<PubSubSession> {
     throw new Error('No provider');
   }
 
-  // TODO: Use real identity
-  const demoIdentity = Identity.buildFromMnemonic(
-    'receive clutch item involve chaos clutch furnace arrest claw isolate okay together',
-  ).getPublicIdentity();
-  const demoName = 'SocialKYC Demo';
+  const { did, challenge, key } = await ky.get('/challenge').json();
+  const dAppName = 'SocialKYC Demo';
 
-  return await provider.startSession(demoName, demoIdentity);
+  const session = await provider.startSession(dAppName, did, challenge);
+
+  const { identity, encryptedChallenge, nonce } = session;
+  await ky.post('/challenge', {
+    json: { identity, encryptedChallenge, nonce, key },
+  });
+
+  return session;
 }

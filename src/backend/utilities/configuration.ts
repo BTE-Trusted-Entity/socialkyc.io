@@ -19,6 +19,13 @@ if (!baseUri) {
   throw new Error('No base URI provided');
 }
 
+const did = env.DID;
+const backupPhrase = env.SECRET_BACKUP_PHRASE;
+
+if (!did || !backupPhrase) {
+  throw new Error('No DID or no backup phrase provided');
+}
+
 export const configuration = {
   aws: {
     region,
@@ -29,4 +36,6 @@ export const configuration = {
   isProduction: env.NODE_ENV === 'production',
   baseUri,
   distFolder: path.join(cwd(), 'dist', 'frontend'),
+  did,
+  backupPhrase,
 };

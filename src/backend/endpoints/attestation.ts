@@ -1,5 +1,8 @@
-import { Identity, init } from '@kiltprotocol/core';
+import { Attestation, AttestedClaim } from '@kiltprotocol/core';
+import { BlockchainUtils } from '@kiltprotocol/chain-helpers';
 import {
+  IDidDetails,
+  IEncryptedMessage,
   IRequestForAttestation,
   ISubmitAttestationForClaim,
   MessageBodyType,
@@ -12,86 +15,77 @@ import {
   ServerRoute,
 } from '@hapi/hapi';
 import Boom from '@hapi/boom';
+import { z } from 'zod';
 
 import { getRequestForAttestation } from '../utilities/requestCache';
-
-// Peregrine chain does not support the old Kilt Identities.
-// Attestations can only be done with DIDs on this chain.
-// Fake attestation data necessary until code is refactored to use DIDs.
+import { fullDidPromise } from '../utilities/fullDid';
+import { keypairsPromise } from '../utilities/keypairs';
+import { assertionKeystore } from '../utilities/keystores';
+import { configuration } from '../utilities/configuration';
+import { encryptMessage } from '../utilities/encryptMessage';
 
 interface AttestationData {
   email: string;
   blockHash: string;
-  message: Message;
+  message: IEncryptedMessage;
 }
 
 async function attestClaim(
   requestForAttestation: IRequestForAttestation,
+  claimerDid: IDidDetails['did'],
 ): Promise<AttestationData> {
-  await init({ address: 'wss://kilt-peregrine-stg.kilt.io' });
-
-  // TODO: Replace Identities with DIDs
-  const demoDAppIdentity = Identity.buildFromMnemonic(
-    'receive clutch item involve chaos clutch furnace arrest claw isolate okay together',
+  const attestation = Attestation.fromRequestAndDid(
+    requestForAttestation,
+    configuration.did,
   );
-  const demoDAppPublicIdentity = demoDAppIdentity.getPublicIdentity();
 
-  const demoExtensionIdentity = Identity.buildFromMnemonic(
-    'dawn comic glove crumble merge proof angle wife pull oyster type vapor',
+  const tx = await attestation.store();
+
+  const { fullDid } = await fullDidPromise;
+  const extrinsic = await fullDid.authorizeExtrinsic(tx, assertionKeystore);
+
+  const keypairs = await keypairsPromise;
+  const result = await BlockchainUtils.signAndSubmitTx(
+    extrinsic,
+    keypairs.identity,
+    {
+      resolveOn: BlockchainUtils.IS_FINALIZED,
+      reSign: true,
+    },
   );
-  const demoExtensionPublicIdentity = demoExtensionIdentity.getPublicIdentity();
 
-  // const attestation = Attestation.fromRequestAndPublicIdentity(
-  //   request,
-  //   demoPublicIdentity,
-  // );
-
-  // const tx = await attestation.store();
-
-  // await BlockchainUtils.signAndSubmitTx(tx, demoIdentity);
-
-  // const attestedClaim = AttestedClaim.fromRequestAndAttestation(
-  //   request,
-  //   attestation,
-  // );
-
-  const fakeAttestation = {
-    claimHash: requestForAttestation.rootHash,
-    cTypeHash: requestForAttestation.claim.cTypeHash,
-    owner: requestForAttestation.claim.owner,
-    delegationId: null,
-    revoked: false,
-  };
-
-  const fakeBlockHash =
-    '0x1470baed4259acb180540ddb7a499cbf234cf120834169c8cb997462ea346909';
+  const attestedClaim = AttestedClaim.fromRequestAndAttestation(
+    requestForAttestation,
+    attestation,
+  );
 
   const messageBody: ISubmitAttestationForClaim = {
-    content: { attestation: fakeAttestation },
+    content: { attestation: attestedClaim.attestation },
     type: MessageBodyType.SUBMIT_ATTESTATION_FOR_CLAIM,
   };
 
-  const message = new Message(
-    messageBody,
-    demoDAppPublicIdentity,
-    demoExtensionPublicIdentity,
-  );
+  const message = new Message(messageBody, configuration.did, claimerDid);
+  const encrypted = await encryptMessage(message, claimerDid);
 
   return {
     email: requestForAttestation.claim.contents['Email'] as string,
-    blockHash: fakeBlockHash,
-    message,
+    blockHash: result.status.asFinalized.toString(),
+    message: encrypted,
   };
 }
+
+const zodPayload = z.object({
+  key: z.string(),
+  did: z.string(),
+});
+
+type Payload = z.infer<typeof zodPayload>;
 
 async function handler(
   request: Request,
   h: ResponseToolkit,
 ): Promise<ResponseObject> {
-  const { key } = request.payload as { key: string };
-  if (!key) {
-    throw Boom.badRequest('No key provided');
-  }
+  const { key, did } = request.payload as Payload;
 
   let requestForAttestation: IRequestForAttestation;
   try {
@@ -100,11 +94,21 @@ async function handler(
     throw Boom.notFound(`Key not found: ${key}`);
   }
 
-  return h.response(await attestClaim(requestForAttestation));
+  try {
+    const response = await attestClaim(requestForAttestation, did);
+    return h.response(response);
+  } catch (error) {
+    throw Boom.internal('Attestation failed', error);
+  }
 }
 
 export const attestation: ServerRoute = {
   method: 'POST',
   path: '/attest',
   handler,
+  options: {
+    validate: {
+      payload: async (payload) => zodPayload.parse(payload),
+    },
+  },
 };
