@@ -32,7 +32,7 @@ interface AttestationData {
 
 async function attestClaim(
   requestForAttestation: IRequestForAttestation,
-  did: IDidDetails['did'],
+  claimerDid: IDidDetails['did'],
 ): Promise<AttestationData> {
   const attestation = Attestation.fromRequestAndDid(
     requestForAttestation,
@@ -64,8 +64,8 @@ async function attestClaim(
     type: MessageBodyType.SUBMIT_ATTESTATION_FOR_CLAIM,
   };
 
-  const message = new Message(messageBody, configuration.did, did);
-  const encrypted = await encryptMessage(message, did);
+  const message = new Message(messageBody, configuration.did, claimerDid);
+  const encrypted = await encryptMessage(message, claimerDid);
 
   return {
     email: requestForAttestation.claim.contents['Email'] as string,
