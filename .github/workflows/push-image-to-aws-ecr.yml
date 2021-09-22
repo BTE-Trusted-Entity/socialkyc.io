@@ -43,5 +43,7 @@ jobs:
         docker push $ECR_REGISTRY/$ECR_REPOSITORY:latest
     - name: Verify Kubernetes deployment
       uses: kodermax/kubectl-aws-eks@master
+      env:
+        KUBE_CONFIG_DATA: ${{ secrets.KUBE_CONFIG_DATA }}
       with:
         args: -n social-kyc delete pods $(kubectl -n social-kyc get pods --no-headers -o custom-columns=":metadata.name")
