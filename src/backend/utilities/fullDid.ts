@@ -1,10 +1,13 @@
+import { KeyringPair } from '@polkadot/keyring/types';
+import { Keypair } from '@polkadot/util-crypto/types';
 import {
   DefaultResolver,
   DidUtils,
   DidChain,
   FullDidDetails,
 } from '@kiltprotocol/did';
-import { KeyRelationship } from '@kiltprotocol/types';
+import { KeyRelationship, IDidKeyDetails } from '@kiltprotocol/types';
+import { Crypto } from '@kiltprotocol/utils';
 import { BlockchainUtils } from '@kiltprotocol/chain-helpers';
 
 import { initKilt } from './initKilt';
@@ -34,6 +37,29 @@ export async function createFullDid(): Promise<void> {
   });
 }
 
+async function compareKeys(
+  derived: KeyringPair | Keypair,
+  fullDid: FullDidDetails,
+  relationship: KeyRelationship,
+): Promise<void> {
+  const derivedHex = Crypto.u8aToHex(derived.publicKey);
+  const resolved = fullDid.getKeys(relationship).pop() as IDidKeyDetails;
+  const resolvedHex = resolved.publicKeyHex;
+  if (derivedHex !== resolvedHex) {
+    throw new Error(
+      `Derived key for ${relationship} does not match resolved one ${resolved.id}`,
+    );
+  }
+}
+
+async function compareAllKeys(fullDid: FullDidDetails): Promise<void> {
+  const keypairs = await keypairsPromise;
+
+  await compareKeys(keypairs.authentication, fullDid, authentication);
+  await compareKeys(keypairs.assertion, fullDid, assertionMethod);
+  await compareKeys(keypairs.keyAgreement, fullDid, keyAgreement);
+}
+
 export const fullDidPromise = (async () => {
   await initKilt();
 
@@ -54,7 +80,9 @@ export const fullDidPromise = (async () => {
     services: didDetails.getServices(),
   });
 
-  const encryptionKey = fullDid.getKeys(KeyRelationship.keyAgreement).pop();
+  await compareAllKeys(fullDid);
+
+  const encryptionKey = fullDid.getKeys(keyAgreement).pop();
   if (!encryptionKey) {
     throw new Error('Key agreement key not found');
   }

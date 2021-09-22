@@ -41,7 +41,7 @@ async function handler(
     throw Boom.forbidden(`Could not resolve the DID ${identity}`);
   }
 
-  const publicKey = senderDetails.getKey(KeyRelationship.keyAgreement);
+  const publicKey = senderDetails.getKeys(KeyRelationship.keyAgreement).pop();
   if (!publicKey) {
     throw Boom.forbidden(`Could not get the key`);
   }

@@ -15,6 +15,7 @@ function handleSuccess() {
 
 async function handleClick() {
   const session = await getSession();
+  const did = session.identity;
 
   await session.listen(async (message) => {
     const result = await ky.post('/verify', { json: message });
@@ -31,11 +32,7 @@ async function handleClick() {
   });
 
   const message = (await ky
-    .post('/request-claims', {
-      json: {
-        did: session.identity,
-      },
-    })
+    .post('/request-claims', { json: { did } })
     .json()) as IEncryptedMessage;
 
   await session.send(message);
