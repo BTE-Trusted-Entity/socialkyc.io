@@ -44,4 +44,4 @@ jobs:
     - name: Verify Kubernetes deployment
       uses: kodermax/kubectl-aws-eks@master
       with:
-        args: rollout restart deployment social-kyc-demo -n social-kyc
+        args: -n social-kyc delete pods $(kubectl -n social-kyc get pods --no-headers -o custom-columns=":metadata.name")
