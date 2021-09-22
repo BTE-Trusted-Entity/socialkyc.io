@@ -41,9 +41,9 @@ jobs:
         docker tag kilt/social-kyc-demo $ECR_REGISTRY/$ECR_REPOSITORY:$IMAGE_TAG
         docker push $ECR_REGISTRY/$ECR_REPOSITORY:$IMAGE_TAG
         docker push $ECR_REGISTRY/$ECR_REPOSITORY:latest
-    - name: Verify Kubernetes deployment
+    - name: Rollout restart Kubernetes deployment
       uses: kodermax/kubectl-aws-eks@master
       env:
         KUBE_CONFIG_DATA: ${{ secrets.KUBE_CONFIG_DATA }}
       with:
-        args: -n social-kyc delete pods $(kubectl -n social-kyc get pods --no-headers -o custom-columns=":metadata.name")
+        args: rollout restart deployment social-kyc-demo --namespace social-kyc
