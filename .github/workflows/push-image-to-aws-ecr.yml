@@ -42,10 +42,10 @@ jobs:
         docker push $ECR_REGISTRY/$ECR_REPOSITORY:$IMAGE_TAG
         docker push $ECR_REGISTRY/$ECR_REPOSITORY:latest
     - name: deploy to cluster
-        uses: steebchen/kubectl@v2.0.0
-        with:
-          config: ${{ secrets.KUBE_CONFIG_DATA }}
-          command: rollout restart deployment social-kyc-demo --namespace social-kyc
+      uses: steebchen/kubectl@v2.0.0
+      with:
+        config: ${{ secrets.KUBE_CONFIG_DATA }}
+        command: rollout restart deployment social-kyc-demo --namespace social-kyc
     - name: verify deployment
       uses: steebchen/kubectl@v2.0.0
       with:
