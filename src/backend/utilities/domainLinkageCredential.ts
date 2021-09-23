@@ -1,43 +1,35 @@
-import type { IAttestedClaim } from '@kiltprotocol/types';
-import { IDidDetails, IClaimContents } from '@kiltprotocol/types';
+import { IAttestedClaim, DidSignature } from '@kiltprotocol/types';
+import { ClaimUtils } from '@kiltprotocol/core';
+import { AnyJson } from '@polkadot/types/types';
 import {
   DEFAULT_VERIFIABLECREDENTIAL_CONTEXT,
   DEFAULT_VERIFIABLECREDENTIAL_TYPE,
-  KILT_ATTESTED_PROOF_TYPE,
-  KILT_CREDENTIAL_DIGEST_PROOF_TYPE,
   KILT_SELF_SIGNED_PROOF_TYPE,
   KILT_CREDENTIAL_CONTEXT_URL,
   KILT_VERIFIABLECREDENTIAL_TYPE,
 } from '@kiltprotocol/vc-export/lib/constants';
-import type {
-  AttestedProof,
-  CredentialDigestProof,
-  Proof,
-  SelfSignedProof,
-} from '@kiltprotocol/vc-export/lib/types';
+import { VerifiableCredential } from '@kiltprotocol/vc-export/lib/types';
 
-const WELL_KNOWN_DID_CONTEXT =
-  'https://identity.foundation/.well-known/did-configuration/v1';
+// taken from https://github.com/KILTprotocol/sdk-js/blob/develop/packages/vc-export/src/exportToVerifiableCredential.ts
 
-const WELL_KNOWN_DID_TYPE = 'DomainLinkageCredential';
+const context = [
+  DEFAULT_VERIFIABLECREDENTIAL_CONTEXT,
+  'https://identity.foundation/.well-known/did-configuration/v1',
+  KILT_CREDENTIAL_CONTEXT_URL,
+];
 
-interface DomainLinkageCredential {
-  '@context': string[];
-  issuer: IDidDetails['did'];
-  issuanceDate: string;
-  expirationDate: string;
-  type: string[];
-  credentialSubject: IClaimContents;
-  proof: Proof | Proof[];
+interface DomainLinkageCredential
+  extends Omit<VerifiableCredential, '@context' | 'id' | 'legitimationIds'> {
+  '@context': typeof context;
 }
 
 export function fromAttestedClaim(
   input: IAttestedClaim,
 ): DomainLinkageCredential {
-  const { claimHashes, claimerSignature } = input.request;
-
-  const credentialSubject = input.request.claim.contents;
-
+  const { credentialSubject } = ClaimUtils.toJsonLD(
+    input.request.claim,
+    false,
+  ) as Record<string, Record<string, AnyJson>>;
   const issuer = input.attestation.owner;
 
   // add current date bc we have no issuance date on credential
@@ -47,54 +39,32 @@ export function fromAttestedClaim(
     Date.now() + 1000 * 60 * 60 * 24 * 365 * 5,
   ).toISOString(); // 5 years
 
-  const proof: Proof[] = [];
-
-  const VC: DomainLinkageCredential = {
-    '@context': [
-      DEFAULT_VERIFIABLECREDENTIAL_CONTEXT,
-      WELL_KNOWN_DID_CONTEXT,
-      KILT_CREDENTIAL_CONTEXT_URL,
-    ],
-    issuer,
-    issuanceDate,
-    expirationDate,
-    type: [
-      DEFAULT_VERIFIABLECREDENTIAL_TYPE,
-      WELL_KNOWN_DID_TYPE,
-      KILT_VERIFIABLECREDENTIAL_TYPE,
-    ],
-    credentialSubject,
-    proof,
+  const claimerSignature = input.request.claimerSignature as DidSignature & {
+    challenge: string;
   };
 
   // add self-signed proof
-  if (claimerSignature) {
-    const sSProof: SelfSignedProof = {
+  const proof = [
+    {
       type: KILT_SELF_SIGNED_PROOF_TYPE,
       proofPurpose: 'assertionMethod',
       verificationMethod: claimerSignature.keyId,
       signature: claimerSignature.signature,
       challenge: claimerSignature.challenge,
-    };
-    VC.proof.push(sSProof);
-  }
+    },
+  ];
 
-  // add attestation proof
-  const attProof: AttestedProof = {
-    type: KILT_ATTESTED_PROOF_TYPE,
-    proofPurpose: 'assertionMethod',
-    attester: input.attestation.owner,
+  return {
+    '@context': context,
+    issuer,
+    issuanceDate,
+    expirationDate,
+    type: [
+      DEFAULT_VERIFIABLECREDENTIAL_TYPE,
+      'DomainLinkageCredential',
+      KILT_VERIFIABLECREDENTIAL_TYPE,
+    ],
+    credentialSubject,
+    proof,
   };
-  VC.proof.push(attProof);
-
-  // add hashed properties proof
-  const cDProof: CredentialDigestProof = {
-    type: KILT_CREDENTIAL_DIGEST_PROOF_TYPE,
-    proofPurpose: 'assertionMethod',
-    nonces: input.request.claimNonceMap,
-    claimHashes,
-  };
-  VC.proof.push(cDProof);
-
-  return VC;
 }
