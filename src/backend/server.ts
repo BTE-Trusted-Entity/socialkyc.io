@@ -13,6 +13,7 @@ import { quote } from './endpoints/quote';
 import { challenge } from './endpoints/challenge';
 import { verify } from './endpoints/verify';
 import { requestClaims } from './endpoints/requestClaims';
+import { wellKnownDidConfig } from './endpoints/wellKnownDidConfig';
 import { configureAuthentication } from './utilities/configureAuthentication';
 import { configureDevErrors } from './utilities/configureDevErrors';
 import { fullDidPromise } from './utilities/fullDid';
@@ -50,6 +51,7 @@ const logger = {
   server.route(attestation);
   server.route(requestClaims);
   server.route(verify);
+  server.route(wellKnownDidConfig);
 
   await manager.start();
 })();
