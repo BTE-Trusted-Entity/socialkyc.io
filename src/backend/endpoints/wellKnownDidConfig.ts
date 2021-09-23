@@ -10,9 +10,11 @@ import {
   Attestation,
   AttestedClaim,
 } from '@kiltprotocol/core';
-import VCUtils from '@kiltprotocol/vc-export';
-import { configuration } from '../utilities/configuration';
 import { domainLinkage } from '../CTypes/domainLinkage';
+import { configuration } from '../utilities/configuration';
+import { fromAttestedClaim } from '../utilities/domainLinkageCredential';
+import { fullDidPromise } from '../utilities/fullDid';
+import { assertionKeystore } from '../utilities/keystores';
 
 async function attestDomainLinkage() {
   const claimContents = {
@@ -32,27 +34,33 @@ async function attestDomainLinkage() {
     throw new Error('Invalid request for attestation');
   }
 
+  const { fullDid } = await fullDidPromise;
+
+  const selfSignedRequest = await requestForAttestation.signWithDid(
+    assertionKeystore,
+    fullDid,
+  );
+
   const attestation = Attestation.fromRequestAndDid(
-    requestForAttestation,
+    selfSignedRequest,
     configuration.did,
   );
 
   return AttestedClaim.fromRequestAndAttestation(
-    requestForAttestation,
+    selfSignedRequest,
     attestation,
   );
 }
 
 async function didConfigResource() {
   const attestedClaim = await attestDomainLinkage();
-  const VC = VCUtils.fromAttestedClaim(attestedClaim);
-  console.log('VC:', VC);
-  return VC;
 
-  // return {
-  //   '@context': 'https://identity.foundation/.well-known/did-configuration/v1',
-  //   linked_dids: [signedCredential],
-  // };
+  const domainLinkageCredential = fromAttestedClaim(attestedClaim);
+
+  return {
+    '@context': 'https://identity.foundation/.well-known/did-configuration/v1',
+    linked_dids: [domainLinkageCredential],
+  };
 }
 
 async function handler(

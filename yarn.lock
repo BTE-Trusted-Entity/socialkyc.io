@@ -1990,7 +1990,7 @@
     "@kiltprotocol/utils" "0.24.0-2"
     typescript-logging "^0.6.4"
 
-"@kiltprotocol/core@0.24.0-2", "@kiltprotocol/core@^0.24.0-1":
+"@kiltprotocol/core@0.24.0-2", "@kiltprotocol/core@^0.24.0-2":
   version "0.24.0-2"
   resolved "https://registry.yarnpkg.com/@kiltprotocol/core/-/core-0.24.0-2.tgz#2aa89870e6b8c088c2e7c0b4dd364cb53b9431a0"
   integrity sha512-6qmE5LztVP4jJXNNS1Z4/m+8CrsHeBtSxtfRMVcmnmXnLRPDMGikf3FPR2urzOpzvf9/Es5h0TDEfXAHrdcymA==
@@ -2064,20 +2064,7 @@
     tweetnacl "^1.0.3"
     uuid "^8.1.0"
 
-"@kiltprotocol/utils@0.24.0-2":
-  version "0.24.0-2"
-  resolved "https://registry.yarnpkg.com/@kiltprotocol/utils/-/utils-0.24.0-2.tgz#16ab40d678da5cda55fd2ff03170ab288c3678a3"
-  integrity sha512-66rEThrHzjhYFzfpQbvJnP+yTaFMoECdBRMu5j6/f87bkO+AwIkzKXwCIt3mHzpkHlNtVZ6fAz5lnhV9RqLyIg==
-  dependencies:
-    "@kiltprotocol/types" "0.24.0-2"
-    "@polkadot/keyring" "^7.1.2"
-    "@polkadot/types" "^5.4.1"
-    "@polkadot/util" "^7.1.2"
-    "@polkadot/util-crypto" "^7.1.2"
-    tweetnacl "^1.0.3"
-    uuid "^8.1.0"
-
-"@kiltprotocol/vc-export@^0.24.0-1":
+"@kiltprotocol/vc-export@^0.24.0-2":
   version "0.24.0-2"
   resolved "https://registry.yarnpkg.com/@kiltprotocol/vc-export/-/vc-export-0.24.0-2.tgz#ca9b5acdee04cc16789c0f57a1a4aa13b8945516"
   integrity sha512-aTo9GX9HG78JjpIIxiRn8jX/9/BYf5VyaKKfCUTJXdvZrLjpeA5TUZqtgTAq/RgWMAC28vrhY92yQLCiNWyLYg==
@@ -2966,6 +2953,16 @@ atomic-sleep@^1.0.0:
   version "1.0.0"
   resolved "https://registry.yarnpkg.com/atomic-sleep/-/atomic-sleep-1.0.0.tgz#eb85b77a601fc932cfe432c5acd364a9e2c9075b"
   integrity sha512-kNOjDqAh7px0XWNI+4QbzoiR/nTkHAWNud2uvnJquD1/x5a7EQZMJT0AczqK0Qn67oY/TTQ1LbUKajZpp3I9tQ==
+
+aws-sign2@~0.7.0:
+  version "0.7.0"
+  resolved "https://registry.yarnpkg.com/aws-sign2/-/aws-sign2-0.7.0.tgz#b46e890934a9591f2d2f6f86d7e6a9f1b3fe76a8"
+  integrity sha1-tG6JCTSpWR8tL2+G1+ap8bP+dqg=
+
+aws4@^1.8.0:
+  version "1.11.0"
+  resolved "https://registry.yarnpkg.com/aws4/-/aws4-1.11.0.tgz#d61f46d83b2519250e2784daf5b09479a8b41c59"
+  integrity sha512-xh1Rl34h6Fi1DC2WWKfxUTVqRsNnr6LsKz2+hfwDxQJWmrx8+c7ylaqBMcHfl1U1r2dsifOvKX3LQuLNZ+XSvA==
 
 babel-jest@^27.2.1:
   version "27.2.1"
