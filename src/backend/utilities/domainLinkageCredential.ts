@@ -1,11 +1,12 @@
-import { IAttestedClaim, DidSignature } from '@kiltprotocol/types';
-import { ClaimUtils } from '@kiltprotocol/core';
-import { AnyJson } from '@polkadot/types/types';
+import {
+  IAttestedClaim,
+  DidSignature,
+  IClaimContents,
+} from '@kiltprotocol/types';
 import {
   DEFAULT_VERIFIABLECREDENTIAL_CONTEXT,
   DEFAULT_VERIFIABLECREDENTIAL_TYPE,
   KILT_SELF_SIGNED_PROOF_TYPE,
-  KILT_CREDENTIAL_CONTEXT_URL,
   KILT_VERIFIABLECREDENTIAL_TYPE,
 } from '@kiltprotocol/vc-export/lib/constants';
 import { VerifiableCredential } from '@kiltprotocol/vc-export/lib/types';
@@ -15,21 +16,21 @@ import { VerifiableCredential } from '@kiltprotocol/vc-export/lib/types';
 const context = [
   DEFAULT_VERIFIABLECREDENTIAL_CONTEXT,
   'https://identity.foundation/.well-known/did-configuration/v1',
-  KILT_CREDENTIAL_CONTEXT_URL,
 ];
 
 interface DomainLinkageCredential
-  extends Omit<VerifiableCredential, '@context' | 'id' | 'legitimationIds'> {
+  extends Omit<
+    VerifiableCredential,
+    '@context' | 'id' | 'legitimationIds' | 'credentialSubject'
+  > {
   '@context': typeof context;
+  credentialSubject: IClaimContents;
 }
 
 export function fromAttestedClaim(
   input: IAttestedClaim,
 ): DomainLinkageCredential {
-  const { credentialSubject } = ClaimUtils.toJsonLD(
-    input.request.claim,
-    false,
-  ) as Record<string, Record<string, AnyJson>>;
+  const credentialSubject = input.request.claim.contents;
   const issuer = input.attestation.owner;
 
   // add current date bc we have no issuance date on credential
