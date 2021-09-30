@@ -29,7 +29,7 @@
     "ky": "^0.28.5",
     "node-cache": "^5.1.2",
     "rate-limiter-flexible": "^2.2.4",
-    "zod": "^3.8.2"
+    "zod": "^3.9.5"
   },
   "devDependencies": {
     "@babel/core": "^7.15.5",
