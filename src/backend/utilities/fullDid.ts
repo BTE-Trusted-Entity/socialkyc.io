@@ -21,7 +21,7 @@ export async function createFullDid(): Promise<void> {
   const keypairs = await keypairsPromise;
   const relationships = {
     [authentication]: keypairs.authentication,
-    [assertionMethod]: keypairs.authentication,
+    [assertionMethod]: keypairs.assertion,
     [keyAgreement]: { ...keypairs.keyAgreement, type: 'x25519' },
   };
 
@@ -56,7 +56,7 @@ async function compareAllKeys(fullDid: FullDidDetails): Promise<void> {
   const keypairs = await keypairsPromise;
 
   await compareKeys(keypairs.authentication, fullDid, authentication);
-  await compareKeys(keypairs.authentication, fullDid, assertionMethod);
+  await compareKeys(keypairs.assertion, fullDid, assertionMethod);
   await compareKeys(keypairs.keyAgreement, fullDid, keyAgreement);
 }
 
