@@ -14,7 +14,7 @@
     "start": "node dist/backend/server.cjs"
   },
   "dependencies": {
-    "@aws-sdk/client-ses": "^3.33.0",
+    "@aws-sdk/client-ses": "^3.34.0",
     "@hapi/basic": "^6.0.0",
     "@hapi/boom": "^9.1.4",
     "@hapi/hapi": "^20.2.0",
@@ -24,7 +24,7 @@
     "@kiltprotocol/vc-export": "^0.24.0-2",
     "dotenv": "^10.0.0",
     "exiting": "^6.0.1",
-    "hapi-pino": "^8.3.0",
+    "hapi-pino": "^8.4.0",
     "http-status-codes": "^2.1.4",
     "ky": "^0.28.5",
     "node-cache": "^5.1.2",
