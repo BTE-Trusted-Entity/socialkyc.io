@@ -7,7 +7,7 @@ import {
 import { configuration } from './configuration';
 import { domainLinkage } from '../CTypes/domainLinkage';
 import { fullDidPromise } from './fullDid';
-import { assertionKeystore } from './keystores';
+import { authenticationKeystore } from './keystores';
 import { fromAttestedClaim } from './domainLinkageCredential';
 
 async function attestDomainLinkage() {
@@ -26,8 +26,9 @@ async function attestDomainLinkage() {
 
   const { fullDid } = await fullDidPromise;
 
+  // Always signs with authentication key, even if assertion keystore is specified
   const selfSignedRequest = await requestForAttestation.signWithDid(
-    assertionKeystore,
+    authenticationKeystore,
     fullDid,
   );
 
