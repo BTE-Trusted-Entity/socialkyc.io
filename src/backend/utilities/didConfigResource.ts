@@ -30,7 +30,7 @@ async function attestDomainLinkage() {
   const { fullDid } = await fullDidPromise;
 
   const { signature, keyId } = await DidUtils.signWithDid(
-    new Uint8Array([...Crypto.coToUInt8(requestForAttestation.rootHash)]),
+    Crypto.coToUInt8(requestForAttestation.rootHash),
     fullDid,
     assertionKeystore,
     fullDid.getKeyIds(KeyRelationship.assertionMethod)[0],
