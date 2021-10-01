@@ -63,10 +63,12 @@ async function compareAllKeys(fullDid: FullDidDetails): Promise<void> {
 export const fullDidPromise = (async () => {
   await initKilt();
 
-  const didDetails = await DefaultResolver.resolveDoc(configuration.did);
-  if (!didDetails) {
+  const didDocument = await DefaultResolver.resolveDoc(configuration.did);
+  if (!didDocument) {
     throw new Error(`Could not resolve the own DID ${configuration.did}`);
   }
+
+  const { details: didDetails } = didDocument;
 
   const fullDid = new FullDidDetails({
     did: didDetails.did,
