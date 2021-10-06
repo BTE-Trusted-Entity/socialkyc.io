@@ -1,35 +1,40 @@
-import { IAttestedClaim, DidSignature } from '@kiltprotocol/types';
-import { ClaimUtils } from '@kiltprotocol/core';
-import { AnyJson } from '@polkadot/types/types';
+import {
+  IAttestedClaim,
+  DidSignature,
+  IClaimContents,
+} from '@kiltprotocol/types';
 import {
   DEFAULT_VERIFIABLECREDENTIAL_CONTEXT,
   DEFAULT_VERIFIABLECREDENTIAL_TYPE,
   KILT_SELF_SIGNED_PROOF_TYPE,
-  KILT_CREDENTIAL_CONTEXT_URL,
   KILT_VERIFIABLECREDENTIAL_TYPE,
 } from '@kiltprotocol/vc-export/lib/constants';
-import { VerifiableCredential } from '@kiltprotocol/vc-export/lib/types';
+import { VerifiableCredential, Proof } from '@kiltprotocol/vc-export/lib/types';
 
 // taken from https://github.com/KILTprotocol/sdk-js/blob/develop/packages/vc-export/src/exportToVerifiableCredential.ts
 
 const context = [
   DEFAULT_VERIFIABLECREDENTIAL_CONTEXT,
   'https://identity.foundation/.well-known/did-configuration/v1',
-  KILT_CREDENTIAL_CONTEXT_URL,
 ];
 
 interface DomainLinkageCredential
-  extends Omit<VerifiableCredential, '@context' | 'id' | 'legitimationIds'> {
+  extends Omit<
+    VerifiableCredential,
+    '@context' | 'id' | 'legitimationIds' | 'credentialSubject' | 'proof'
+  > {
   '@context': typeof context;
+  credentialSubject: IClaimContents;
+  proof: Proof;
 }
 
 export function fromAttestedClaim(
   input: IAttestedClaim,
 ): DomainLinkageCredential {
-  const { credentialSubject } = ClaimUtils.toJsonLD(
-    input.request.claim,
-    false,
-  ) as Record<string, Record<string, AnyJson>>;
+  const credentialSubject = {
+    ...input.request.claim.contents,
+    rootHash: input.request.rootHash,
+  };
   const issuer = input.attestation.owner;
 
   // add current date bc we have no issuance date on credential
@@ -44,15 +49,13 @@ export function fromAttestedClaim(
   };
 
   // add self-signed proof
-  const proof = [
-    {
-      type: KILT_SELF_SIGNED_PROOF_TYPE,
-      proofPurpose: 'assertionMethod',
-      verificationMethod: claimerSignature.keyId,
-      signature: claimerSignature.signature,
-      challenge: claimerSignature.challenge,
-    },
-  ];
+  const proof = {
+    type: KILT_SELF_SIGNED_PROOF_TYPE,
+    proofPurpose: 'assertionMethod',
+    verificationMethod: claimerSignature.keyId,
+    signature: claimerSignature.signature,
+    challenge: claimerSignature.challenge,
+  };
 
   return {
     '@context': context,

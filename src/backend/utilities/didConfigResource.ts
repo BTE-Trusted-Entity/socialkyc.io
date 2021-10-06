@@ -9,6 +9,9 @@ import { domainLinkage } from '../CTypes/domainLinkage';
 import { fullDidPromise } from './fullDid';
 import { assertionKeystore } from './keystores';
 import { fromAttestedClaim } from './domainLinkageCredential';
+import { DidUtils } from '@kiltprotocol/did';
+import { Crypto } from '@kiltprotocol/utils';
+import { KeyRelationship } from '@kiltprotocol/types';
 
 async function attestDomainLinkage() {
   const claimContents = {
@@ -26,9 +29,16 @@ async function attestDomainLinkage() {
 
   const { fullDid } = await fullDidPromise;
 
-  const selfSignedRequest = await requestForAttestation.signWithDid(
-    assertionKeystore,
+  const { signature, keyId } = await DidUtils.signWithDid(
+    Crypto.coToUInt8(requestForAttestation.rootHash),
     fullDid,
+    assertionKeystore,
+    fullDid.getKeyIds(KeyRelationship.assertionMethod)[0],
+  );
+
+  const selfSignedRequest = await requestForAttestation.addSignature(
+    signature,
+    keyId,
   );
 
   const attestation = Attestation.fromRequestAndDid(
