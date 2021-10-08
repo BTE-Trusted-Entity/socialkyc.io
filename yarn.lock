@@ -2425,10 +2425,10 @@
   dependencies:
     "@types/node" "*"
 
-"@types/hapi-pino@^8.0.3":
-  version "8.0.3"
-  resolved "https://registry.yarnpkg.com/@types/hapi-pino/-/hapi-pino-8.0.3.tgz#c4cddceeed4a8c18ff392ddc787aac82f252fee3"
-  integrity sha512-01w6TKgPPH9GjZTtcD257ZLmoPo0L0GSdJOdQurHlS4RZdYOL5N/Stw47WVgLyrQ8/7Gd++qSGTBMFspm2K8Yw==
+"@types/hapi-pino@^8.0.4":
+  version "8.0.4"
+  resolved "https://registry.yarnpkg.com/@types/hapi-pino/-/hapi-pino-8.0.4.tgz#ca06c14d52bc4a1c3f0ed365c273d92e8074d62e"
+  integrity sha512-wgPpfYI2OdZQIrKDALl9ko5jeSWwRkNc6Yh+EjGkmi2CZTFMRgbu2SOoNDqsqKr62Qzkt6O9XVKZ008gFOKqGg==
   dependencies:
     "@types/hapi__hapi" "*"
     "@types/node" "*"
