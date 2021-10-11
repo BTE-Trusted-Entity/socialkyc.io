@@ -34,7 +34,7 @@
   "devDependencies": {
     "@babel/core": "^7.15.8",
     "@babel/preset-env": "^7.15.8",
-    "@types/hapi-pino": "^8.0.3",
+    "@types/hapi-pino": "^8.0.4",
     "@types/hapi__basic": "^5.1.2",
     "@types/hapi__boom": "^9.0.1",
     "@types/hapi__hapi": "^20.0.9",
