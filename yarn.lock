@@ -4244,10 +4244,10 @@ hapi-dev-errors@^4.0.0:
     youch "~2.0.10"
     youch-terminal "~1.0.0"
 
-hapi-pino@^8.4.0:
-  version "8.4.0"
-  resolved "https://registry.yarnpkg.com/hapi-pino/-/hapi-pino-8.4.0.tgz#5b17d4ad5dab74c2e70c203bf60bdc3d0f09ea45"
-  integrity sha512-6ijL1IHOtR1tz3z4/q8NsFA/WWejc5aBnLhRX1FFpNic+RR1XIh8/RrSvI+WJg9tjTwTwU8dsK3vpM6BCKMY/Q==
+hapi-pino@^8.5.0:
+  version "8.5.0"
+  resolved "https://registry.yarnpkg.com/hapi-pino/-/hapi-pino-8.5.0.tgz#ab36dfeb0059479e66fa6363e8f3ec2dc6a575d2"
+  integrity sha512-p0phuePalD8965r6mboCBLIMWRO2vQAx+VSnXhTKxnF/4Sf+dk8Uze7109w9QfhlvGMqvBTEF6SxGStObBB/Lw==
   dependencies:
     "@hapi/hoek" "^9.0.0"
     abstract-logging "^2.0.0"
