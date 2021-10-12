@@ -24,7 +24,7 @@ async function handleSubmit(event: Event) {
     elements: Record<string, HTMLInputElement>;
   };
 
-  const ctype = target.elements.ctype.value;
+  const cType = target.elements.ctype.value;
 
   const session = await getSession();
   const did = session.identity;
@@ -60,7 +60,7 @@ async function handleSubmit(event: Event) {
   });
 
   const message = (await ky
-    .post('/request-credential', { json: { did, ctype } })
+    .post('/request-credential', { json: { did, cType } })
     .json()) as IEncryptedMessage;
 
   await session.send(message);
