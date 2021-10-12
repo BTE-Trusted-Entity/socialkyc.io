@@ -13,34 +13,40 @@ import Message from '@kiltprotocol/messaging';
 import { email } from '../CTypes/email';
 import { configuration } from '../utilities/configuration';
 import { encryptMessage } from '../utilities/encryptMessage';
+import { CType } from '@kiltprotocol/core';
 
 const zodPayload = z.object({
   did: z.string(),
-  ctype: z.string(),
+  cType: z.string(),
 });
 
 type Payload = z.infer<typeof zodPayload>;
+
+const cTypes: Record<string, CType['hash']> = {
+  email: email.hash,
+  // twitter: twitter.hash,
+};
+
+function getCTypeHash(cType: string) {
+  const cTypeHash = cTypes[cType];
+
+  // TODO: uncomment when twitter credential verification is implemented
+  // if ((ctype = cTypes.twitter)) {
+  //   cTypeHash = twitter.hash;
+  // }
+  if (cTypeHash) {
+    return cTypeHash;
+  }
+  throw Boom.badRequest(`Verification not offered for ${cType} CType`);
+}
 
 async function handler(
   request: Request,
   h: ResponseToolkit,
 ): Promise<ResponseObject> {
-  const { did, ctype } = request.payload as Payload;
+  const { did, cType } = request.payload as Payload;
 
-  let cTypeHash: string | undefined;
-
-  if (ctype === 'email') {
-    cTypeHash = email.hash;
-  }
-
-  // TODO: uncomment when twitter credential verification is implemented
-  // if ((ctype = 'twitter')) {
-  //   cTypeHash = twitter.hash;
-  // }
-
-  if (!cTypeHash) {
-    throw Boom.badRequest('Verification not offered for selected CType');
-  }
+  const cTypeHash = getCTypeHash(cType);
 
   // TODO: Handle challenge when new Message interface is available which corresponds with Credential API spec
 
