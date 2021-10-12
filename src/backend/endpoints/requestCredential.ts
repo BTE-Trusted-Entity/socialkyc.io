@@ -7,13 +7,13 @@ import {
 import Boom from '@hapi/boom';
 import { z } from 'zod';
 
+import { CType } from '@kiltprotocol/core';
 import { IRequestClaimsForCTypes, MessageBodyType } from '@kiltprotocol/types';
 import Message from '@kiltprotocol/messaging';
 
 import { email } from '../CTypes/email';
 import { configuration } from '../utilities/configuration';
 import { encryptMessage } from '../utilities/encryptMessage';
-import { CType } from '@kiltprotocol/core';
 
 const zodPayload = z.object({
   did: z.string(),
@@ -30,10 +30,6 @@ const cTypes: Record<string, CType['hash']> = {
 function getCTypeHash(cType: string) {
   const cTypeHash = cTypes[cType];
 
-  // TODO: uncomment when twitter credential verification is implemented
-  // if ((ctype = cTypes.twitter)) {
-  //   cTypeHash = twitter.hash;
-  // }
   if (cTypeHash) {
     return cTypeHash;
   }
