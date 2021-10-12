@@ -12,7 +12,7 @@ import { liveness } from './endpoints/liveness';
 import { quote } from './endpoints/quote';
 import { challenge } from './endpoints/challenge';
 import { verify } from './endpoints/verify';
-import { requestClaims } from './endpoints/requestClaims';
+import { requestCredential } from './endpoints/requestCredential';
 import { wellKnownDidConfig } from './endpoints/wellKnownDidConfig';
 import { configureAuthentication } from './utilities/configureAuthentication';
 import { configureDevErrors } from './utilities/configureDevErrors';
@@ -49,7 +49,7 @@ const logger = {
   server.route(request);
   server.route(confirmationHtml);
   server.route(attestation);
-  server.route(requestClaims);
+  server.route(requestCredential);
   server.route(verify);
   server.route(wellKnownDidConfig);
 

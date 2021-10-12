@@ -29,15 +29,11 @@ async function handler(
     return h.response().code(StatusCodes.NOT_ACCEPTABLE);
   }
 
-  const attestedClaims = messageBody.content.map((attestedClaimData) =>
-    AttestedClaim.fromAttestedClaim(attestedClaimData),
-  );
-  for (const attestedClaim of attestedClaims) {
-    const isValid = await attestedClaim.verify();
-    console.log('Valid:', isValid, 'Claim:', attestedClaim);
-  }
+  const credential = AttestedClaim.fromAttestedClaim(messageBody.content[0]);
 
-  return h.response(attestedClaims);
+  const isAttested = await credential.verify();
+
+  return h.response({ credential, isAttested });
 }
 
 export const verify: ServerRoute = {
