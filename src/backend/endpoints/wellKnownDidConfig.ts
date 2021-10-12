@@ -17,4 +17,5 @@ export const wellKnownDidConfig: ServerRoute = {
   method: 'GET',
   path: '/.well-known/did-configuration.json',
   handler,
+  options: { cors: true },
 };
