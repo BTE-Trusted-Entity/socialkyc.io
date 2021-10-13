@@ -17,8 +17,15 @@ const ctypeHash = document.getElementById('ctypeHash') as HTMLOutputElement;
 const status = document.getElementById('status') as HTMLOutputElement;
 const json = document.getElementById('json') as HTMLPreElement;
 
+function handleBeforeUnload(event: Event) {
+  event.preventDefault();
+  event.returnValue = false;
+}
+
 async function handleSubmit(event: Event) {
   event.preventDefault();
+
+  window.addEventListener('beforeunload', handleBeforeUnload);
 
   const target = event.target as unknown as {
     elements: Record<string, HTMLInputElement>;
@@ -26,44 +33,50 @@ async function handleSubmit(event: Event) {
 
   const cType = target.elements.ctype.value;
 
-  const session = await getSession();
-  const did = session.identity;
+  try {
+    const session = await getSession();
+    const did = session.identity;
 
-  await session.listen(async (message) => {
-    const result = await ky.post('/verify', { json: message });
+    await session.listen(async (message) => {
+      const result = await ky.post('/verify', { json: message });
 
-    if (result.status !== StatusCodes.OK) {
-      console.log('Credential verification failed');
-      return;
-    }
+      window.removeEventListener('beforeunload', handleBeforeUnload);
 
-    const { credential, isAttested } = (await result.json()) as {
-      credential: IAttestedClaim;
-      isAttested: boolean;
-    };
+      if (result.status !== StatusCodes.OK) {
+        console.log('Credential verification failed');
+        return;
+      }
 
-    claimerDid.textContent = credential.request.claim.owner;
-    attesterDid.textContent = credential.attestation.owner;
-    ctypeHash.textContent = credential.attestation.cTypeHash;
+      const { credential, isAttested } = (await result.json()) as {
+        credential: IAttestedClaim;
+        isAttested: boolean;
+      };
 
-    if (credential.attestation.revoked) {
-      status.textContent = 'Revoked';
-    } else if (isAttested) {
-      status.textContent = 'Attested';
-    } else {
-      status.textContent = 'Not Attested';
-    }
+      claimerDid.textContent = credential.request.claim.owner;
+      attesterDid.textContent = credential.attestation.owner;
+      ctypeHash.textContent = credential.attestation.cTypeHash;
 
-    json.textContent = JSON.stringify(credential, null, 4);
+      if (credential.attestation.revoked) {
+        status.textContent = 'Revoked';
+      } else if (isAttested) {
+        status.textContent = 'Attested';
+      } else {
+        status.textContent = 'Not Attested';
+      }
 
-    shared.hidden = false;
-  });
+      json.textContent = JSON.stringify(credential, null, 4);
 
-  const message = (await ky
-    .post('/request-credential', { json: { did, cType } })
-    .json()) as IEncryptedMessage;
+      shared.hidden = false;
+    });
 
-  await session.send(message);
+    const message = (await ky
+      .post('/request-credential', { json: { did, cType } })
+      .json()) as IEncryptedMessage;
+
+    await session.send(message);
+  } catch {
+    window.removeEventListener('beforeunload', handleBeforeUnload);
+  }
 }
 
 credentialForm.addEventListener('submit', handleSubmit);
