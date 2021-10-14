@@ -32,6 +32,7 @@ strong {
 
 input,
 button,
+.button,
 li::marker {
   font-family: system-ui;
   font-weight: 300;
