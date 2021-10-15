@@ -8,11 +8,6 @@
   src: url('../fonts/Overpass-SemiBold.ttf');
 }
 
-@font-face {
-  font-family: 'Overpass Light';
-  src: url('../fonts/Overpass-Light.ttf');
-}
-
 html,
 body {
   margin: 0;
@@ -156,10 +151,6 @@ main {
 
 .closed {
   transform: rotate(-90deg);
-}
-
-.opened {
-  transform: none;
 }
 
 .emailForm {
