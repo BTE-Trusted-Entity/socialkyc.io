@@ -1,11 +1,16 @@
 @font-face {
-  font-family: 'Alef Regular';
-  src: url('../fonts/Alef-Regular.ttf') format('truetype');
+  font-family: 'Overpass Regular';
+  src: url('../fonts/Overpass-Regular.ttf');
 }
 
 @font-face {
-  font-family: 'Alef Bold';
-  src: url('../fonts/Alef-Bold.ttf') format('truetype');
+  font-family: 'Overpass Semibold';
+  src: url('../fonts/Overpass-SemiBold.ttf');
+}
+
+@font-face {
+  font-family: 'Overpass Light';
+  src: url('../fonts/Overpass-Light.ttf');
 }
 
 html,
@@ -14,35 +19,20 @@ body {
   padding: 0;
   height: 100%;
   width: 100%;
-}
-
-h1,
-h2,
-h3,
-p,
-li {
-  margin: 0;
-  font-family: 'Alef Regular';
-  font-weight: 400;
-}
-
-strong {
-  font-family: 'Alef Bold';
-}
-
-input,
-button,
-.button,
-li::marker {
-  font-family: system-ui;
-  font-weight: 300;
+  color: #fff;
 }
 
 body {
+  background: url('../images/background.png') no-repeat center/cover;
+}
+
+strong {
+  font-family: 'Overpass Semibold';
+}
+
+main {
   display: flex;
-  background: #fff;
-  color: #3c3c3b;
-  overflow: hidden;
+  height: 100%;
 }
 
 .right,
@@ -51,47 +41,87 @@ body {
 }
 
 .left {
-  background: url('../images/logo.svg') no-repeat top 3rem right 3rem;
+  background: url('../images/logo.svg') no-repeat top 3rem right 1.5rem;
   position: relative;
+  display: flex;
+  align-items: flex-end;
+  justify-content: flex-end;
 }
 
-.right {
-  background-image: linear-gradient(
-      rgba(188, 40, 75, 0.7),
-      rgba(188, 40, 75, 0.7)
+.container {
+  box-sizing: border-box;
+  display: flex;
+  flex-direction: column;
+  height: 80%;
+  width: 93%;
+  border-radius: 0.625rem;
+  background: linear-gradient(
+      180deg,
+      rgba(255, 255, 255, 0.1) 0%,
+      rgba(0, 0, 0, 0.12) 100%
     ),
-    url('../images/background.jpg');
-  background-size: cover;
-  color: #fff;
+    rgba(32, 1, 49, 0.6);
+  padding-bottom: 2.5rem;
+  box-shadow: -2px -2px 9px 0 rgba(255, 255, 255, 0.2),
+    2px 2px 9px 0 rgba(0, 0, 0, 0.2);
 }
 
 .heading {
-  margin: calc(214rem / 16) 0 2rem 6.5rem;
-  font-size: 2rem;
+  font-family: 'Overpass Semibold';
+  font-size: 1rem;
+  margin: 3.5rem 0 2rem 3rem;
+}
+
+.scrollContainer {
+  height: 86%;
+  padding: 0 4rem 0 3rem;
+  overflow-y: scroll;
 }
 
 .info {
-  margin-left: 6.5rem;
-  font-size: 2rem;
+  font-family: 'Overpass Semibold';
+  margin-bottom: 3rem;
+}
+
+.lists {
+  padding-left: 0.75rem;
+  padding-bottom: 2rem;
 }
 
 .subline {
-  margin-left: 6.5rem;
-  font-size: 1.5rem;
+  font-family: 'Overpass Semibold';
+  font-size: 0.875rem;
+  margin: 1.25rem 0 1.25rem 0;
 }
 
-.media-list {
+.mediaList {
   list-style: none;
-  margin-top: 2rem;
+  margin-top: 1.25rem;
+  width: 100%;
   padding: 0;
+  margin: 0;
 }
 
-.staticItem,
-.expandableItem .label {
-  font-size: 1.75rem;
-  margin: 0 0 0.5rem 16rem;
-  display: flex;
+.expandableItem {
+  width: 100%;
+  box-sizing: border-box;
+  padding-top: 0.75rem;
+  padding-left: 2rem;
+  padding-right: 2rem;
+}
+
+.expanded {
+  padding-bottom: 2rem;
+  background-color: rgba(187, 41, 75, 0.1);
+  box-shadow: 0 0 10px 0 rgba(255, 255, 255, 0.3);
+  border-radius: 0.625rem;
+}
+
+.itemLabel {
+  font-family: 'Overpass Semibold';
+  display: inline-flex;
   align-items: center;
+  margin: 0;
 }
 
 .button {
@@ -99,165 +129,138 @@ body {
   cursor: pointer;
 }
 
-.expand {
-  height: 1.5rem;
-  width: 1.5rem;
-  background: url('../images/chevron_down.svg') no-repeat center;
-  margin-right: 1.5rem;
+.accordion {
+  height: 1.25rem;
+  width: 1.25rem;
+  background: url('../images/chevron_down.svg') no-repeat center/contain #180026;
+  margin-right: 0.5rem;
+  border: 0.75px solid #ffffff;
+  border-radius: 0.25rem;
 }
 
-.expanded {
-  background: url('../images/chevron_up.svg') no-repeat center;
+.closed {
+  transform: rotate(-90deg);
+}
+
+.opened {
+  transform: none;
+}
+
+.emailForm {
+  display: flex;
+  flex-direction: column;
+  margin-top: 2.25rem;
+}
+
+.formLabel {
+  font-family: 'Overpass Regular';
+  font-size: 0.875rem;
+  color: #fff;
+}
+
+.formInput {
+  font-family: 'Overpass Regular';
+  font-size: 0.875rem;
+  color: #fff;
+  display: block;
+  width: 85%;
+  height: 2.125rem;
+  border: 0.75px solid #fff;
+  border-radius: 0.625rem;
+  background: rgba(187, 41, 75, 0.35);
+  color: #fff;
+  box-shadow: 2px 2px 4px 0 rgba(0, 0, 0, 0.3),
+    -2px -2px 4px 0 rgba(255, 255, 255, 0.3);
+  margin-bottom: 1.25rem;
+  margin-top: 0.25rem;
+}
+
+.buttonPrimary {
+  height: 2rem;
+  padding: 0 1.75rem;
+  align-self: center;
+  display: inline-flex;
+  justify-content: center;
+  align-items: center;
+  margin: 4rem 0 4rem 0;
+  border-radius: 1rem;
+  font-family: 'Overpass Semibold';
+  font-size: 0.875rem;
+  text-transform: uppercase;
+  color: #fff;
+  background-color: #e43366;
+  box-shadow: 2px 2px 3px 1px rgba(0, 0, 0, 0.15),
+    -2px -2px 3px 1px rgba(255, 255, 255, 0.3);
+  text-decoration: none;
+}
+
+.buttonPrimary:active {
+  transform: translateY(2px);
+  box-shadow: 2px 0 3px 1px rgba(0, 0, 0, 0.15),
+    -2px -2px 3px 1px rgba(255, 255, 255, 0.3);
+}
+
+.buttonPrimary:disabled {
+  background-color: #797979;
+}
+
+.success {
+  font-family: 'Overpass Regular';
+  text-align: center;
+}
+
+.right {
+  background: url('../images/hexagon.png') no-repeat center/70%;
+  position: relative;
 }
 
 .large {
-  margin: 11rem 0 0 7rem;
-  line-height: 1;
-  font-size: calc(235rem / 16);
+  font-family: 'Overpass Semibold';
+  font-size: 4rem;
 }
 
 .tagline {
-  font-size: 2rem;
-  margin-left: 19rem;
-}
-
-.emailForm:not([hidden]) {
+  position: absolute;
+  top: 30%;
+  left: 20%;
   display: flex;
   flex-direction: column;
-  align-items: center;
-  padding: 1.5rem 0 1.5rem 0;
-  margin-bottom: 1rem;
-}
-
-.inactive {
-  background: #f6f6f6;
-}
-
-.active {
-  background: #eae4d0;
-}
-
-.credentials {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
-  width: 100%;
-  padding: 0;
-}
-
-.credential::marker {
-  color: #bb294b;
+  width: calc(402rem / 16);
+  font-family: 'Overpass Regular';
   font-size: 1.5rem;
+  line-height: 2.25rem;
 }
 
-.credential {
-  width: 70%;
-  padding: 0 3rem 0 1.5rem;
-}
-
-.credential input {
-  box-sizing: border-box;
-  font-size: 1.5rem;
-  width: 100%;
-  height: 3rem;
-  border: 0.5px solid #c6c6c6;
-  border-radius: 0.25rem;
-  color: #1d1d1b;
-  margin-bottom: 0.75rem;
-  padding-left: 1.5rem;
-}
-
-.credential input::placeholder {
-  opacity: 0.25;
-}
-
-.add {
-  height: 3rem;
-  width: 3rem;
-  background: #977a13 url('../images/add.svg') no-repeat center/auto;
-  border-radius: 50%;
-}
-
-.add:disabled {
-  background-color: #b2b2b2;
+.textRight {
+  align-self: flex-end;
 }
 
 footer {
   position: absolute;
   bottom: 0;
+  height: 2.5rem;
   width: 100%;
-  height: 6rem;
-  background-color: #eae4d0;
   display: flex;
-  align-items: center;
+  flex-direction: column;
   justify-content: center;
+  align-items: center;
+  background-color: #030006;
+  font-family: 'Overpass Semibold';
+  font-size: 0.875rem;
 }
 
-.submit {
-  width: 16rem;
-  height: 2.5rem;
-  border-radius: 1.25rem;
-  font-size: 1.5rem;
-  color: #fff;
-  background-color: #977a13;
+.navList {
+  list-style: none;
+  padding: 0;
+  margin: 0;
 }
 
-.submit:disabled {
-  background-color: #d6caa0;
+.navItem {
+  display: inline-block;
+  cursor: pointer;
 }
 
-.overlay {
-  box-sizing: border-box;
-  position: absolute;
-  bottom: 0;
-  width: 100%;
-  height: 50%;
-  background: #eae4d0;
-  padding: 2rem 6.25rem 0 6.25rem;
-}
-
-.overlayHeading {
-  font-size: 1.5rem;
-  margin-bottom: 1.5rem;
-}
-
-.alert {
-  border-radius: 0.375rem;
-  box-shadow: 0.25rem 0.25rem 1rem 0 #b2b2b2;
-  background: #fff;
-  overflow: hidden;
-}
-
-.alert h3 {
-  padding: 0.25rem 0 0.25rem 1rem;
-  background: #c1af71;
-  color: #fff;
-  font-family: 'Alef Bold';
-  font-size: calc(14rem / 16);
-}
-
-.alert .main {
-  text-align: center;
-}
-
-.alert h2 {
-  font-family: 'Alef Bold';
-  font-size: 2rem;
-  margin-top: 1rem;
-}
-
-.alert p {
-  font-size: 1.5rem;
-  margin-top: 0.75rem;
-}
-
-.close {
-  width: calc(120rem / 16);
-  height: 2.5rem;
-  border-radius: 1.25rem;
-  background: #977a13;
-  color: #fff;
-  font-size: 1.5rem;
-  margin: 1.25rem 0 1.5rem 0;
+.navItem:first-child::after {
+  content: ' | ';
+  color: #bb294b;
 }
