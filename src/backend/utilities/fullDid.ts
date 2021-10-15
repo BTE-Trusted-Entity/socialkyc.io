@@ -27,6 +27,7 @@ export async function createFullDid(): Promise<void> {
 
   const { extrinsic, did } = await DidUtils.writeDidFromPublicKeys(
     authenticationKeystore,
+    keypairs.authentication.address,
     relationships,
   );
 
@@ -79,7 +80,6 @@ export const fullDidPromise = (async () => {
       [keyAgreement]: didDetails.getKeyIds(keyAgreement),
     },
     lastTxIndex: await DidChain.queryLastTxIndex(didDetails.did),
-    services: didDetails.getServices(),
   });
 
   await compareAllKeys(fullDid);

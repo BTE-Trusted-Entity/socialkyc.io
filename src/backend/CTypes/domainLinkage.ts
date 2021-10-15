@@ -24,10 +24,14 @@ export async function storeDomainLinkageCType(): Promise<void> {
   const tx = await draft.store();
 
   const { fullDid } = await fullDidPromise;
-  const extrinsic = await fullDid.authorizeExtrinsic(tx, assertionKeystore);
+  const { identity } = await keypairsPromise;
+  const extrinsic = await fullDid.authorizeExtrinsic(
+    tx,
+    assertionKeystore,
+    identity.address,
+  );
 
-  const keypairs = await keypairsPromise;
-  await BlockchainUtils.signAndSubmitTx(extrinsic, keypairs.identity);
+  await BlockchainUtils.signAndSubmitTx(extrinsic, identity);
 
   console.log('Pass this object to CType.fromCType', draft);
 }

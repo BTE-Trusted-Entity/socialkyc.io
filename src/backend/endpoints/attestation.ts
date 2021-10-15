@@ -42,17 +42,17 @@ async function attestClaim(
   const tx = await attestation.store();
 
   const { fullDid } = await fullDidPromise;
-  const extrinsic = await fullDid.authorizeExtrinsic(tx, assertionKeystore);
-
-  const keypairs = await keypairsPromise;
-  const result = await BlockchainUtils.signAndSubmitTx(
-    extrinsic,
-    keypairs.identity,
-    {
-      resolveOn: BlockchainUtils.IS_FINALIZED,
-      reSign: true,
-    },
+  const { identity } = await keypairsPromise;
+  const extrinsic = await fullDid.authorizeExtrinsic(
+    tx,
+    assertionKeystore,
+    identity.address,
   );
+
+  const result = await BlockchainUtils.signAndSubmitTx(extrinsic, identity, {
+    resolveOn: BlockchainUtils.IS_FINALIZED,
+    reSign: true,
+  });
 
   const attestedClaim = AttestedClaim.fromRequestAndAttestation(
     requestForAttestation,
