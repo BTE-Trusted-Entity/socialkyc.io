@@ -215,8 +215,33 @@ main {
 }
 
 .right {
-  background: url('../images/hexagon.png') no-repeat center/70%;
   position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.hexagon {
+  filter: drop-shadow(-3px -3px 4px rgba(255, 255, 255, 0.3));
+  width: 70%;
+  max-width: 900px;
+  aspect-ratio: 545 / 570;
+}
+
+.hexagon::before {
+  content: '';
+  background: url('../images/hexagon.jpg') no-repeat center/cover;
+  clip-path: polygon(
+    40.17% 0.37%,
+    89.98% 17.02%,
+    99.82% 66.58%,
+    59.83% 99.51%,
+    10.02% 82.86%,
+    0.18% 33.3%
+  );
+  width: 100%;
+  height: 100%;
+  display: block;
 }
 
 .large {
@@ -227,17 +252,17 @@ main {
 .tagline {
   position: absolute;
   top: 30%;
-  left: 20%;
+  left: 50%;
+  transform: translate(-50%);
   display: flex;
   flex-direction: column;
-  width: 60%;
   font-family: 'Overpass Regular';
   font-size: 1.5rem;
   line-height: 2.25rem;
 }
 
 .textRight {
-  align-self: flex-end;
+  padding-left: 7rem;
 }
 
 footer {
