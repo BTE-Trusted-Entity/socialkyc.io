@@ -79,7 +79,7 @@ function App(): JSX.Element {
   );
 
   return (
-    <div className="container">
+    <div className="leftContainer">
       <h1 className="heading">Your IDENTITY is yours!</h1>
       <div className="scrollContainer">
         <section className="info">

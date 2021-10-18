@@ -22,7 +22,7 @@ body {
 }
 
 strong {
-  font-family: 'Overpass Semibold';
+  font-family: 'Overpass Semibold', 'sans-serif';
 }
 
 main {
@@ -45,7 +45,7 @@ main {
   justify-content: flex-end;
 }
 
-.container {
+.leftContainer {
   box-sizing: border-box;
   display: flex;
   flex-direction: column;
@@ -64,7 +64,7 @@ main {
 }
 
 .heading {
-  font-family: 'Overpass Semibold';
+  font-family: 'Overpass Semibold', sans-serif;
   font-size: 1rem;
   margin: 3.5rem 0 2rem 3rem;
 }
@@ -92,7 +92,7 @@ main {
 }
 
 .info {
-  font-family: 'Overpass Semibold';
+  font-family: 'Overpass Semibold', 'sans-serif';
   margin-bottom: 3rem;
 }
 
@@ -102,7 +102,7 @@ main {
 }
 
 .subline {
-  font-family: 'Overpass Semibold';
+  font-family: 'Overpass Semibold', 'sans-serif';
   font-size: 0.875rem;
   margin: 1.25rem 0 1.25rem 0;
 }
@@ -131,7 +131,7 @@ main {
 }
 
 .itemLabel {
-  font-family: 'Overpass Semibold';
+  font-family: 'Overpass Semibold', 'sans-serif';
   display: inline-flex;
   align-items: center;
   margin: 0;
@@ -162,13 +162,13 @@ main {
 }
 
 .formLabel {
-  font-family: 'Overpass Regular';
+  font-family: 'Overpass Regular', 'sans-serif';
   font-size: 0.875rem;
   color: #fff;
 }
 
 .formInput {
-  font-family: 'Overpass Regular';
+  font-family: 'Overpass Regular', 'sans-serif';
   font-size: 0.875rem;
   color: #fff;
   display: block;
@@ -193,7 +193,7 @@ main {
   align-items: center;
   margin: 4rem 0 4rem 0;
   border-radius: 1rem;
-  font-family: 'Overpass Semibold';
+  font-family: 'Overpass Semibold', 'sans-serif';
   font-size: 0.875rem;
   text-transform: uppercase;
   color: #fff;
@@ -212,7 +212,7 @@ main {
 }
 
 .success {
-  font-family: 'Overpass Regular';
+  font-family: 'Overpass Regular', 'sans-serif';
   text-align: center;
 }
 
@@ -247,7 +247,7 @@ main {
 }
 
 .large {
-  font-family: 'Overpass Semibold';
+  font-family: 'Overpass Semibold', 'sans-serif';
   font-size: 4rem;
 }
 
@@ -257,7 +257,7 @@ main {
   left: 10%;
   display: flex;
   flex-direction: column;
-  font-family: 'Overpass Regular';
+  font-family: 'Overpass Regular', 'sans-serif';
   font-size: 1.5rem;
   line-height: 2.25rem;
 }
@@ -276,7 +276,7 @@ footer {
   justify-content: center;
   align-items: center;
   background-color: #030006;
-  font-family: 'Overpass Semibold';
+  font-family: 'Overpass Semibold', 'sans-serif';
   font-size: 0.875rem;
 }
 
