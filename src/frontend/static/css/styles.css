@@ -221,14 +221,15 @@ main {
   justify-content: center;
 }
 
-.hexagon {
+.rightContainer {
   filter: drop-shadow(-3px -3px 4px rgba(255, 255, 255, 0.3));
   width: 70%;
   max-width: 900px;
   aspect-ratio: 545 / 570;
+  position: relative;
 }
 
-.hexagon::before {
+.rightContainer::before {
   content: '';
   background: url('../images/hexagon.jpg') no-repeat center/cover;
   clip-path: polygon(
@@ -251,9 +252,8 @@ main {
 
 .tagline {
   position: absolute;
-  top: 25%;
-  left: 50%;
-  transform: translate(-50%);
+  top: 15%;
+  left: 10%;
   display: flex;
   flex-direction: column;
   font-family: 'Overpass Regular';
