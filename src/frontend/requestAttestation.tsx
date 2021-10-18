@@ -5,7 +5,7 @@ import {
   MemoryRouter,
   Route,
   Switch,
-  useHistory,
+  useLocation,
 } from 'react-router-dom';
 import cx from 'classnames';
 import { StatusCodes } from 'http-status-codes';
@@ -20,10 +20,18 @@ function handleBeforeUnload(event: Event) {
 }
 
 function App(): JSX.Element {
-  const history = useHistory();
+  const { pathname } = useLocation();
 
-  const [focused, setFocused] = useState(false);
-  const handleFocus = useCallback(() => setFocused(true), []);
+  const [nameInput, setNameInput] = useState('');
+  const [emailInput, setEmailInput] = useState('');
+
+  const handleNameInput = useCallback((event) => {
+    setNameInput(event.target.value);
+  }, []);
+
+  const handleEmailInput = useCallback((event) => {
+    setEmailInput(event.target.value);
+  }, []);
 
   const [email, setEmail] = useState('');
 
@@ -50,16 +58,11 @@ function App(): JSX.Element {
           }
 
           setEmail(await result.text());
-
-          history.push('/email/overlay');
         });
 
-        const target = event.target as unknown as {
-          elements: Record<string, HTMLInputElement>;
-        };
         const json = {
-          name: target.elements?.name?.value,
-          email: target.elements?.email?.value,
+          name: nameInput,
+          email: emailInput,
           did: session.identity,
         };
 
@@ -72,93 +75,127 @@ function App(): JSX.Element {
         window.removeEventListener('beforeunload', handleBeforeUnload);
       }
     },
-    [history],
+    [nameInput, emailInput],
   );
 
   return (
-    <div>
+    <div className="leftContainer">
       <h1 className="heading">Your IDENTITY is yours!</h1>
-      <h2 className="info">Create your social credentials here.</h2>
-      <p className="subline">(You can select more than one)</p>
-
-      <ul className="media-list">
-        <li className="expandableItem">
-          <div className="label">
-            <Switch>
-              <Route path="/email">
-                <Link to="/" type="button" className="button expand expanded" />
-              </Route>
-              <Route>
-                <Link to="/email" type="button" className="button expand" />
-              </Route>
-            </Switch>
-            Email Address
-          </div>
-
-          <Route path="/email">
-            <form
-              className={cx('emailForm inactive', { active: focused })}
-              onSubmit={handleSubmit}
-              onFocus={handleFocus}
+      <div className="scrollContainer">
+        <section className="info">
+          <p className="subline">
+            Create your decentralized social credentials here. Your personal
+            data is distributed on the KILT blockchain and only YOU have the key
+            to it.
+          </p>
+          <p className="subline">
+            socialKYC will not store, share or sell any of your data.
+            <br />
+            We forget about you as soon as we’ve verified your identity. Your
+            data is all yours!
+          </p>
+        </section>
+        <section className="lists">
+          <h2 className="subline ">Featured Credentials</h2>
+          <ul className="mediaList">
+            <li
+              className={cx('expandableItem', {
+                expanded: pathname === '/email',
+              })}
             >
-              <ol className="credentials">
-                <li className="credential">
-                  <input
-                    type="text"
-                    name="name"
-                    placeholder="Your full name"
-                    required
-                  />
-                  <input
-                    type="email"
-                    name="email"
-                    placeholder="Your email address"
-                    required
-                  />
-                </li>
-              </ol>
+              <p className="itemLabel">
+                <Switch>
+                  <Route path="/email">
+                    <Link
+                      to="/"
+                      type="button"
+                      className="button accordion opened"
+                    />
+                  </Route>
+                  <Route>
+                    <Link
+                      to="/email"
+                      type="button"
+                      className="button accordion closed"
+                    />
+                  </Route>
+                </Switch>
+                Email
+              </p>
+              <Route path="/email">
+                {email ? (
+                  <div className="success">
+                    <p>
+                      We’ve sent an email to <strong>{email}</strong>
+                    </p>
+                    <p>Please check your inbox!</p>
+                    <Link to="/" type="button" className="button buttonPrimary">
+                      OK
+                    </Link>
+                  </div>
+                ) : (
+                  <form className="emailForm" onSubmit={handleSubmit}>
+                    <label className="formLabel">
+                      Your full name
+                      <input
+                        className="formInput"
+                        onInput={handleNameInput}
+                        type="text"
+                        name="name"
+                        required
+                      />
+                    </label>
 
-              <button
-                type="button"
-                className="button add"
-                aria-label="Add credential"
-                disabled={!focused}
-              />
+                    <label className="formLabel">
+                      Your email address
+                      <input
+                        className="formInput"
+                        onInput={handleEmailInput}
+                        type="email"
+                        name="email"
+                        required
+                      />
+                    </label>
 
-              <footer>
-                <button
-                  type="submit"
-                  className="button submit"
-                  disabled={!focused}
-                >
-                  Request Attestation
-                </button>
-              </footer>
-            </form>
-          </Route>
-        </li>
-      </ul>
-
-      <Route path="/email/overlay">
-        <div className="overlay">
-          <h2 className="overlayHeading">Attestation</h2>
-          <div className="alert">
-            <h3>Email credential attestation request</h3>
-            <div className="main">
-              <h2>Email sent</h2>
-              {email && (
-                <p>
-                  We’ve sent an email to <strong>{email}</strong>
-                </p>
-              )}
-              <p>Please check your inbox!</p>
-              <Link to="/" type="button" className="button close">
-                OK
-              </Link>
-            </div>
-          </div>
-        </div>
-      </Route>
+                    <button
+                      type="submit"
+                      className="button buttonPrimary"
+                      disabled={!nameInput || !emailInput}
+                    >
+                      Choose Sporran Identity
+                    </button>
+                  </form>
+                )}
+              </Route>
+            </li>
+            <li
+              className={cx('expandableItem', {
+                expanded: pathname === '/twitter',
+              })}
+            >
+              <p className="itemLabel">
+                <Switch>
+                  <Route path="/twitter">
+                    <Link
+                      to="/"
+                      type="button"
+                      className="button accordion opened"
+                    />
+                  </Route>
+                  <Route>
+                    <Link
+                      to=""
+                      type="button"
+                      className="button accordion closed"
+                    />
+                  </Route>
+                </Switch>
+                Twitter
+              </p>
+            </li>
+          </ul>
+        </section>
+      </div>
     </div>
   );
 }
