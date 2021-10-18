@@ -27,12 +27,14 @@ strong {
 
 main {
   display: flex;
+  justify-content: center;
   height: 100%;
 }
 
 .right,
 .left {
   width: 50%;
+  max-width: 1000px;
 }
 
 .left {
@@ -224,7 +226,6 @@ main {
 .rightContainer {
   filter: drop-shadow(-3px -3px 4px rgba(255, 255, 255, 0.3));
   width: 70%;
-  max-width: 900px;
   aspect-ratio: 545 / 570;
   position: relative;
 }
