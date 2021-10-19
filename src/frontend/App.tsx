@@ -8,7 +8,7 @@ import {
   useLocation,
 } from 'react-router-dom';
 import cx from 'classnames';
-import { isChrome, isFirefox } from 'react-device-detect';
+import { detect } from 'detect-browser';
 
 import { apiWindow } from './utilities/session';
 
@@ -29,7 +29,10 @@ function App(): JSX.Element {
     return () => clearInterval(id);
   }, []);
 
-  const isSupportedBrowser = isChrome || isFirefox;
+  const browser = detect();
+
+  const isSupportedBrowser =
+    browser && (browser.name === 'chrome' || browser.name === 'firefox');
 
   return (
     <div className="leftContainer">
@@ -87,7 +90,7 @@ function App(): JSX.Element {
               browser. We recommend the SPORRAN extension that you can download
               and install here:
             </p>
-            {isChrome ? (
+            {browser.name === 'chrome' ? (
               <a
                 className="button webstore chrome"
                 href="https://chrome.google.com/webstore/detail/djdnajgjcbjhhbdblkegbcgodlkkfhcl"

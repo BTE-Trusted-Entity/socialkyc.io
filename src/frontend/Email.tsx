@@ -64,8 +64,12 @@ export function Email(): JSX.Element {
           .post('/quote', { json })
           .json()) as IEncryptedMessage;
 
+        console.log('Message: ', message);
+
         await session.send(message);
-      } catch {
+        console.log('1');
+      } catch (error) {
+        console.error(error);
         window.removeEventListener('beforeunload', handleBeforeUnload);
       }
     },
