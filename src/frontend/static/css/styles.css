@@ -201,6 +201,7 @@ main {
   flex-direction: column;
   align-items: center;
   padding-bottom: 9rem;
+  margin-bottom: 1rem;
   background: url('../images/sporran-logo.svg') no-repeat bottom;
 }
 
