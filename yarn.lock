@@ -7320,7 +7320,7 @@ youch@~2.0.10:
     mustache "^3.0.0"
     stack-trace "0.0.10"
 
-zod@^3.10.0:
-  version "3.10.0"
-  resolved "https://registry.yarnpkg.com/zod/-/zod-3.10.0.tgz#6885658e388e47d6d25c296b25987aad4c48aa2d"
-  integrity sha512-T5wUCAJ5Z0uh3Q+S5ZzsNBkoybd1nqgeGhNRnqt1e/Rwolxugkt4BNYqwq+wBAxb0zrLC5jA2maehpXixD+bFw==
+zod@^3.10.1:
+  version "3.10.1"
+  resolved "https://registry.yarnpkg.com/zod/-/zod-3.10.1.tgz#ea5fdbb9d6ed0abc3c3000be9b768d692c2d5275"
+  integrity sha512-ZnIzDr3vhppKW7yTAlvUQ7QJir5yoL14DgZ6DjYNb4/D4DxFdZeysF6Q5hAahU7KXtaiTgYkGO/qiAD83YN3ig==
