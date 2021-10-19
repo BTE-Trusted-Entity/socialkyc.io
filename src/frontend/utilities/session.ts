@@ -23,7 +23,7 @@ interface InjectedWindowProvider {
   specVersion: '0.1';
 }
 
-const apiWindow = window as unknown as {
+export const apiWindow = window as unknown as {
   kilt: { sporran?: InjectedWindowProvider };
 };
 
