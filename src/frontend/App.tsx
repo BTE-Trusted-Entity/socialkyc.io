@@ -32,7 +32,12 @@ function App(): JSX.Element {
   const browser = detect();
 
   const isSupportedBrowser =
-    browser && (browser.name === 'chrome' || browser.name === 'firefox');
+    browser &&
+    browser.os !== 'iOS' &&
+    browser.os !== 'Android OS' &&
+    (browser.name === 'chrome' || browser.name === 'firefox');
+
+  const canInstall = !hasSporran && isSupportedBrowser;
 
   return (
     <div className="leftContainer">
@@ -51,7 +56,8 @@ function App(): JSX.Element {
             data is all yours!
           </p>
         </section>
-        {hasSporran ? (
+
+        {hasSporran && (
           <section className="lists">
             <h2 className="subline ">Featured Credentials</h2>
             <ul className="mediaList">
@@ -83,29 +89,31 @@ function App(): JSX.Element {
               </li>
             </ul>
           </section>
-        ) : isSupportedBrowser ? (
+        )}
+
+        {canInstall && (
           <section className="install">
             <p className="warning">
               Please make sure to have a wallet extension installed for your
-              browser. We recommend the SPORRAN extension that you can download
+              browser. We recommend the Sporran extension that you can download
               and install here:
             </p>
-            {browser.name === 'chrome' ? (
+            {browser.name === 'chrome' && (
               <a
                 className="button webstore chrome"
                 href="https://chrome.google.com/webstore/detail/djdnajgjcbjhhbdblkegbcgodlkkfhcl"
               />
-            ) : (
+            )}
+            {browser.name === 'firefox' && (
               <a
                 className=" button webstore firefox"
                 href="https://addons.mozilla.org/firefox/addon/sporran/"
               />
             )}
           </section>
-        ) : (
-          // TODO: Handle case of unsupported browser or mobile device
-          <section></section>
         )}
+
+        {/* TODO: Handle case of unsupported browser or mobile device */}
       </div>
     </div>
   );
