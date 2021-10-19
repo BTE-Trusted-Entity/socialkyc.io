@@ -5,7 +5,7 @@ import nodeExternals from 'webpack-node-externals';
 export default [
   {
     entry: {
-      requestAttestation: path.resolve('./src/frontend/requestAttestation.tsx'),
+      App: path.resolve('./src/frontend/App.tsx'),
       confirmAttestation: path.resolve('./src/frontend/confirmAttestation.ts'),
       verifier: path.resolve('./src/frontend/verifier.ts'),
     },

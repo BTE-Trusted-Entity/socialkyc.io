@@ -1,9 +1,4 @@
 @font-face {
-  font-family: 'Overpass Regular';
-  src: url('../fonts/Overpass-Regular.ttf');
-}
-
-@font-face {
   font-family: 'Overpass Semibold';
   src: url('../fonts/Overpass-SemiBold.ttf');
 }
@@ -15,14 +10,11 @@ body {
   height: 100%;
   width: 100%;
   color: #fff;
+  font-family: 'Overpass Semibold', 'sans-serif';
 }
 
 body {
   background: url('../images/background-dark.svg') no-repeat center/cover;
-}
-
-strong {
-  font-family: 'Overpass Semibold', 'sans-serif';
 }
 
 main {
@@ -64,7 +56,6 @@ main {
 }
 
 .heading {
-  font-family: 'Overpass Semibold', sans-serif;
   font-size: 1rem;
   margin: 3.5rem 0 2rem 3rem;
 }
@@ -92,7 +83,6 @@ main {
 }
 
 .info {
-  font-family: 'Overpass Semibold', 'sans-serif';
   margin-bottom: 3rem;
 }
 
@@ -102,7 +92,6 @@ main {
 }
 
 .subline {
-  font-family: 'Overpass Semibold', 'sans-serif';
   font-size: 0.875rem;
   margin: 1.25rem 0 1.25rem 0;
 }
@@ -131,7 +120,6 @@ main {
 }
 
 .itemLabel {
-  font-family: 'Overpass Semibold', 'sans-serif';
   display: inline-flex;
   align-items: center;
   margin: 0;
@@ -162,13 +150,11 @@ main {
 }
 
 .formLabel {
-  font-family: 'Overpass Regular', 'sans-serif';
   font-size: 0.875rem;
   color: #fff;
 }
 
 .formInput {
-  font-family: 'Overpass Regular', 'sans-serif';
   font-size: 0.875rem;
   color: #fff;
   display: block;
@@ -193,7 +179,6 @@ main {
   align-items: center;
   margin: 4rem 0 4rem 0;
   border-radius: 1rem;
-  font-family: 'Overpass Semibold', 'sans-serif';
   font-size: 0.875rem;
   text-transform: uppercase;
   color: #fff;
@@ -211,8 +196,37 @@ main {
   background-color: #797979;
 }
 
+.install {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding-bottom: 9rem;
+  background: url('../images/sporran-logo.svg') no-repeat bottom;
+}
+
+.warning {
+  font-size: 0.875rem;
+  text-align: center;
+  padding-top: 6rem;
+  margin-bottom: 2rem;
+  background: url('../images/exclamation.svg') no-repeat top;
+}
+
+.webstore {
+  display: inline-block;
+  height: 3rem;
+  width: 11rem;
+}
+
+.chrome {
+  background: url('../images/chrome.svg') no-repeat center;
+}
+
+.firefox {
+  background: url('../images/firefox.svg') no-repeat center;
+}
+
 .success {
-  font-family: 'Overpass Regular', 'sans-serif';
   text-align: center;
 }
 
@@ -247,7 +261,6 @@ main {
 }
 
 .large {
-  font-family: 'Overpass Semibold', 'sans-serif';
   font-size: 4rem;
 }
 
@@ -257,7 +270,6 @@ main {
   left: 10%;
   display: flex;
   flex-direction: column;
-  font-family: 'Overpass Regular', 'sans-serif';
   font-size: 1.5rem;
   line-height: 2.25rem;
 }
@@ -276,7 +288,6 @@ footer {
   justify-content: center;
   align-items: center;
   background-color: #030006;
-  font-family: 'Overpass Semibold', 'sans-serif';
   font-size: 0.875rem;
 }
 
