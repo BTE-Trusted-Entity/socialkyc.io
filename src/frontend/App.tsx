@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react';
+import { useEffect, useState, useCallback } from 'react';
 import { render } from 'react-dom';
 import {
   Link,
@@ -10,7 +10,8 @@ import {
 import cx from 'classnames';
 import { detect } from 'detect-browser';
 
-import { apiWindow } from './utilities/session';
+import { apiWindow, getSession } from './utilities/session';
+import { handleBeforeUnload } from './utilities/handleBeforeUnload';
 
 import { Email } from './Email';
 
@@ -43,6 +44,33 @@ function App(): JSX.Element {
   const showWebstoreLink = !hasSporran && isSupportedBrowser;
   const showWebsiteLink = !hasSporran && isUnsupportedBrowser;
 
+  const [authorized, setAuthorized] = useState(false);
+
+  const [processing, setProcessing] = useState(false);
+
+  useEffect(() => {
+    if (processing === true) {
+      window.addEventListener('beforeunload', handleBeforeUnload);
+    }
+    if (processing === false) {
+      window.removeEventListener('beforeunload', handleBeforeUnload);
+    }
+  }, [processing]);
+
+  const handleConnectClick = useCallback(async (event) => {
+    event.preventDefault();
+    setProcessing(true);
+
+    try {
+      await getSession();
+      setAuthorized(true);
+      setProcessing(false);
+    } catch (error) {
+      console.error(error);
+      setProcessing(false);
+    }
+  }, []);
+
   return (
     <div className="leftContainer">
       <h1 className="heading">Your IDENTITY, back in your hands!</h1>
@@ -60,7 +88,23 @@ function App(): JSX.Element {
           </p>
         </section>
 
-        {hasSporran && (
+        {hasSporran && !authorized && (
+          <section className="connectContainer">
+            <div className={cx('connect', { blur: processing })}>
+              <p className="subline">Please authorize access to your wallet</p>
+              <button
+                type="button"
+                className="button buttonPrimary"
+                onClick={handleConnectClick}
+              >
+                Connect to wallet
+              </button>
+            </div>
+            {processing && <div className="spinner"></div>}
+          </section>
+        )}
+
+        {hasSporran && authorized && (
           <section className="lists">
             <h2 className="subline ">Featured Credentials</h2>
             <ul className="mediaList">

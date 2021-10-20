@@ -7,6 +7,7 @@ import { StatusCodes } from 'http-status-codes';
 import { IEncryptedMessage } from '@kiltprotocol/types';
 
 import { getSession } from './utilities/session';
+import { handleBeforeUnload } from './utilities/handleBeforeUnload';
 
 export function Email(): JSX.Element {
   const { pathname } = useLocation();
@@ -23,11 +24,6 @@ export function Email(): JSX.Element {
   }, []);
 
   const [email, setEmail] = useState('');
-
-  function handleBeforeUnload(event: Event) {
-    event.preventDefault();
-    event.returnValue = false;
-  }
 
   const handleSubmit = useCallback(
     async (event) => {
@@ -133,7 +129,7 @@ export function Email(): JSX.Element {
 
             <button
               type="submit"
-              className="button buttonPrimary"
+              className="button buttonPrimary chooseIdentity"
               disabled={!nameInput || !emailInput}
             >
               Choose Sporran Identity
