@@ -11,7 +11,10 @@ import cx from 'classnames';
 import { detect } from 'detect-browser';
 
 import { apiWindow, getSession } from './utilities/session';
-import { handleBeforeUnload } from './utilities/handleBeforeUnload';
+import {
+  addUnloadListener,
+  removeUnloadListener,
+} from './utilities/unloadListener';
 
 import { Email } from './Email';
 
@@ -50,10 +53,10 @@ function App(): JSX.Element {
 
   useEffect(() => {
     if (processing === true) {
-      window.addEventListener('beforeunload', handleBeforeUnload);
+      addUnloadListener();
     }
     if (processing === false) {
-      window.removeEventListener('beforeunload', handleBeforeUnload);
+      removeUnloadListener();
     }
   }, [processing]);
 
