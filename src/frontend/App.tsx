@@ -123,7 +123,7 @@ function App(): JSX.Element {
               browser. We recommend the
               <br />
               <a className="textLink" href="https://www.sporran.org/">
-                Sporran extension
+                Sporran extension.
               </a>
             </p>
           </section>
