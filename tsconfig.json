@@ -1,10 +1,11 @@
 {
+  "files": ["./src/backend/server.ts"],
   "compilerOptions": {
-    "target": "ES2019",
-    "module": "ESNext",
+    "target": "ES2020",
+    "module": "CommonJS",
     "moduleResolution": "node",
     "rootDir": "./src",
-    "typeRoots": ["./node_modules/@types"],
+    "typeRoots": ["./node_modules/@types", "./src/@types"],
     "outDir": "dist",
     "strict": true,
     "sourceMap": true,
