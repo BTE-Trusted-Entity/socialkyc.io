@@ -31,13 +31,17 @@ function App(): JSX.Element {
 
   const browser = detect();
 
-  const isSupportedBrowser =
-    browser &&
-    browser.os !== 'iOS' &&
-    browser.os !== 'Android OS' &&
-    (browser.name === 'chrome' || browser.name === 'firefox');
+  const isDesktop =
+    browser && browser.os !== 'iOS' && browser.os !== 'Android OS';
 
-  const canInstall = !hasSporran && isSupportedBrowser;
+  const isSupportedBrowser =
+    isDesktop && (browser.name === 'chrome' || browser.name === 'firefox');
+
+  const isUnsupportedBrowser =
+    isDesktop && browser.name !== 'chrome' && browser.name !== 'firefox';
+
+  const showWebstoreLink = !hasSporran && isSupportedBrowser;
+  const showWebsiteLink = !hasSporran && isUnsupportedBrowser;
 
   return (
     <div className="leftContainer">
@@ -90,7 +94,7 @@ function App(): JSX.Element {
           </section>
         )}
 
-        {canInstall && (
+        {showWebstoreLink && (
           <section className="install">
             <p className="warning">
               Please make sure to have a wallet extension installed for your
@@ -112,7 +116,20 @@ function App(): JSX.Element {
           </section>
         )}
 
-        {/* TODO: Handle case of unsupported browser or mobile device */}
+        {showWebsiteLink && (
+          <section className="install ">
+            <p className="warning">
+              Please make sure to have a wallet extension installed for your
+              browser. We recommend the
+              <br />
+              <a className="textLink" href="https://www.sporran.org/">
+                Sporran extension
+              </a>
+            </p>
+          </section>
+        )}
+
+        {/* TODO: Handle case of mobile device */}
       </div>
     </div>
   );
