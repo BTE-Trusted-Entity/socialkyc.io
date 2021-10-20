@@ -41,19 +41,18 @@ function App(): JSX.Element {
 
   return (
     <div className="leftContainer">
-      <h1 className="heading">Your IDENTITY is yours!</h1>
+      <h1 className="heading">Your IDENTITY, back in your hands!</h1>
       <div className="scrollContainer">
         <section className="info">
           <p className="subline">
             Create your decentralized social credentials here. Your personal
-            data is distributed on the KILT blockchain and only YOU have the key
-            to it.
+            data will be anchored on the KILT blockchain and only you will
+            decide who can access it.
           </p>
           <p className="subline">
-            socialKYC will not store, share or sell any of your data.
+            SocialKYC does not store, share or sell any of your data.
             <br />
-            We forget about you as soon as we’ve verified your identity. Your
-            data is all yours!
+            The service forgets about you after verifying your identity.
           </p>
         </section>
 

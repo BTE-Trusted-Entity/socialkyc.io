@@ -57,7 +57,7 @@ main {
 
 .heading {
   font-size: 1rem;
-  margin: 3.5rem 0 2rem 3rem;
+  margin: 3.5rem 0 1rem 3rem;
 }
 
 .scrollContainer {
@@ -93,7 +93,7 @@ main {
 
 .subline {
   font-size: 0.875rem;
-  margin: 1.25rem 0 1.25rem 0;
+  margin-bottom: 1.25rem;
 }
 
 .mediaList {
@@ -208,7 +208,7 @@ main {
 .warning {
   font-size: 0.875rem;
   text-align: center;
-  padding-top: 6rem;
+  padding-top: 5.5rem;
   margin-bottom: 2rem;
   background: url('../images/exclamation.svg') no-repeat top;
 }
