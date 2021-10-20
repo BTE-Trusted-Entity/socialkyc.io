@@ -18,6 +18,16 @@ import {
 
 import { Email } from './Email';
 
+function usePreventNavigation(active: boolean) {
+  useEffect(() => {
+    if (active) {
+      addUnloadListener();
+    } else {
+      removeUnloadListener();
+    }
+  }, [active]);
+}
+
 function App(): JSX.Element {
   const { pathname } = useLocation();
 
@@ -51,14 +61,7 @@ function App(): JSX.Element {
 
   const [processing, setProcessing] = useState(false);
 
-  useEffect(() => {
-    if (processing === true) {
-      addUnloadListener();
-    }
-    if (processing === false) {
-      removeUnloadListener();
-    }
-  }, [processing]);
+  usePreventNavigation(processing);
 
   const handleConnectClick = useCallback(async (event) => {
     event.preventDefault();
@@ -67,9 +70,9 @@ function App(): JSX.Element {
     try {
       await getSession();
       setAuthorized(true);
-      setProcessing(false);
     } catch (error) {
       console.error(error);
+    } finally {
       setProcessing(false);
     }
   }, []);
@@ -93,12 +96,13 @@ function App(): JSX.Element {
 
         {hasSporran && !authorized && (
           <section className="connectContainer">
-            <div className={cx('connect', { blur: processing })}>
+            <div className={cx('connect', { processing })}>
               <p className="subline">Please authorize access to your wallet</p>
               <button
                 type="button"
                 className="button buttonPrimary"
                 onClick={handleConnectClick}
+                disabled={processing}
               >
                 Connect to wallet
               </button>

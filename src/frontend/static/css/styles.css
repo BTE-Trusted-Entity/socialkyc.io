@@ -278,7 +278,7 @@ main {
   justify-content: center;
 }
 
-.blur {
+.processing {
   filter: blur(5px);
 }
 
