@@ -49,7 +49,7 @@ jobs:
         ECR_REPOSITORY: kilt/social-kyc-demo
         IMAGE_TAG: ${{ github.sha }}
       with:
-        args: set image deployment/$ECR_REPOSITORY $ECR_REPOSITORY=$ECR_REGISTRY/$ECR_REPOSITORY:$IMAGE_TAG --namespace=social-kyc
+        args: rollout restart deployment social-kyc-demo --namespace=social-kyc
 
     - name: verify deployment
       uses: kodermax/kubectl-aws-eks@master
