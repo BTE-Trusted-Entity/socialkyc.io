@@ -13,10 +13,12 @@ export async function encryptMessage(
   message: Message,
   receiverDid: IDidDetails['did'],
 ): Promise<IEncryptedMessage> {
-  const receiver = await DefaultResolver.resolveDoc(receiverDid);
-  if (!receiver) {
+  const didDocument = await DefaultResolver.resolveDoc(receiverDid);
+  if (!didDocument) {
     throw new Error(`Cannot resolve the receiver DID ${receiverDid}`);
   }
+
+  const { details: receiver } = didDocument;
 
   const receiverEncryptionKey = receiver
     .getKeys(KeyRelationship.keyAgreement)

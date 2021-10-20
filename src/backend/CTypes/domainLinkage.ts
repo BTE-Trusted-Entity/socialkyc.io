@@ -6,15 +6,15 @@ import { keypairsPromise } from '../utilities/keypairs';
 import { assertionKeystore } from '../utilities/keystores';
 
 /** Run this function once to store the CType */
-export async function storeEmailCType(): Promise<void> {
+export async function storeDomainLinkageCType(): Promise<void> {
   const draft = CType.fromSchema({
     $schema: 'http://kilt-protocol.org/draft-01/ctype#',
-    title: 'Email',
+    title: 'Domain Linkage Credential',
     properties: {
-      'Full name': {
+      id: {
         type: 'string',
       },
-      Email: {
+      origin: {
         type: 'string',
       },
     },
@@ -36,22 +36,22 @@ export async function storeEmailCType(): Promise<void> {
   console.log('Pass this object to CType.fromCType', draft);
 }
 
-// This object was logged by storeEmailCType()
-export const email = CType.fromCType({
+// This object was logged by storeDomainLinkageCType()
+export const domainLinkage = CType.fromCType({
   schema: {
     $schema: 'http://kilt-protocol.org/draft-01/ctype#',
-    title: 'Email',
+    title: 'Domain Linkage Credential',
     properties: {
-      'Full name': {
+      id: {
         type: 'string',
       },
-      Email: {
+      origin: {
         type: 'string',
       },
     },
     type: 'object',
-    $id: 'kilt:ctype:0xbfad60977bc18cf9dfd76da88624ce219361f337b4332d5c42c047499f4b93c7',
+    $id: 'kilt:ctype:0x9d271c790775ee831352291f01c5d04c7979713a5896dcf5e81708184cc5c643',
   },
   owner: null,
-  hash: '0xbfad60977bc18cf9dfd76da88624ce219361f337b4332d5c42c047499f4b93c7',
+  hash: '0x9d271c790775ee831352291f01c5d04c7979713a5896dcf5e81708184cc5c643',
 });

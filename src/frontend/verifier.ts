@@ -1,41 +1,82 @@
 import { StatusCodes } from 'http-status-codes';
 import ky from 'ky';
-import { IEncryptedMessage } from '@kiltprotocol/types';
+import { IAttestedClaim, IEncryptedMessage } from '@kiltprotocol/types';
 
 import { getSession } from './utilities/session';
 
-const form = document.getElementById('subscription-form') as HTMLFormElement;
-const success = document.getElementById('subscribed') as HTMLDivElement;
-const signUp = document.getElementById('kyc') as HTMLButtonElement;
+const credentialForm = document.getElementById(
+  'credentialForm',
+) as HTMLFormElement;
+const shared = document.getElementById('shared') as HTMLElement;
 
-function handleSuccess() {
-  form.hidden = true;
-  success.hidden = false;
+const claimerDid = document.getElementById('claimer-did') as HTMLOutputElement;
+const attesterDid = document.getElementById(
+  'attester-did',
+) as HTMLOutputElement;
+const ctypeHash = document.getElementById('ctypeHash') as HTMLOutputElement;
+const status = document.getElementById('status') as HTMLOutputElement;
+const json = document.getElementById('json') as HTMLPreElement;
+
+function handleBeforeUnload(event: Event) {
+  event.preventDefault();
+  event.returnValue = false;
 }
 
-async function handleClick() {
-  const session = await getSession();
-  const did = session.identity;
+async function handleSubmit(event: Event) {
+  event.preventDefault();
 
-  await session.listen(async (message) => {
-    const result = await ky.post('/verify', { json: message });
+  window.addEventListener('beforeunload', handleBeforeUnload);
 
-    if (result.status !== StatusCodes.OK) {
-      console.log('Not attested');
-      return;
-    }
+  const target = event.target as unknown as {
+    elements: Record<string, HTMLInputElement>;
+  };
 
-    const verifiedClaims = await result.json();
-    console.log(verifiedClaims);
+  const cType = target.elements.ctype.value;
 
-    handleSuccess();
-  });
+  try {
+    const session = await getSession();
+    const did = session.identity;
 
-  const message = (await ky
-    .post('/request-claims', { json: { did } })
-    .json()) as IEncryptedMessage;
+    await session.listen(async (message) => {
+      const result = await ky.post('/verify', { json: message });
 
-  await session.send(message);
+      window.removeEventListener('beforeunload', handleBeforeUnload);
+
+      if (result.status !== StatusCodes.OK) {
+        console.log('Credential verification failed');
+        return;
+      }
+
+      const { credential, isAttested } = (await result.json()) as {
+        credential: IAttestedClaim;
+        isAttested: boolean;
+      };
+
+      claimerDid.textContent = credential.request.claim.owner;
+      attesterDid.textContent = credential.attestation.owner;
+      ctypeHash.textContent = credential.attestation.cTypeHash;
+
+      if (credential.attestation.revoked) {
+        status.textContent = 'Revoked';
+      } else if (isAttested) {
+        status.textContent = 'Attested';
+      } else {
+        status.textContent = 'Not Attested';
+      }
+
+      json.textContent = JSON.stringify(credential, null, 4);
+
+      shared.hidden = false;
+    });
+
+    const message = (await ky
+      .post('/request-credential', { json: { did, cType } })
+      .json()) as IEncryptedMessage;
+
+    await session.send(message);
+  } catch {
+    window.removeEventListener('beforeunload', handleBeforeUnload);
+  }
 }
 
-signUp.addEventListener('click', handleClick);
+credentialForm.addEventListener('submit', handleSubmit);

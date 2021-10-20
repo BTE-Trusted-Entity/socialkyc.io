@@ -27,6 +27,7 @@ export async function createFullDid(): Promise<void> {
 
   const { extrinsic, did } = await DidUtils.writeDidFromPublicKeys(
     authenticationKeystore,
+    keypairs.authentication.address,
     relationships,
   );
 
@@ -63,10 +64,12 @@ async function compareAllKeys(fullDid: FullDidDetails): Promise<void> {
 export const fullDidPromise = (async () => {
   await initKilt();
 
-  const didDetails = await DefaultResolver.resolveDoc(configuration.did);
-  if (!didDetails) {
+  const didDocument = await DefaultResolver.resolveDoc(configuration.did);
+  if (!didDocument) {
     throw new Error(`Could not resolve the own DID ${configuration.did}`);
   }
+
+  const { details: didDetails } = didDocument;
 
   const fullDid = new FullDidDetails({
     did: didDetails.did,
@@ -77,7 +80,6 @@ export const fullDidPromise = (async () => {
       [keyAgreement]: didDetails.getKeyIds(keyAgreement),
     },
     lastTxIndex: await DidChain.queryLastTxIndex(didDetails.did),
-    services: didDetails.getServices(),
   });
 
   await compareAllKeys(fullDid);

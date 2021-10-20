@@ -5,7 +5,7 @@ import nodeExternals from 'webpack-node-externals';
 export default [
   {
     entry: {
-      requestAttestation: path.resolve('./src/frontend/requestAttestation.ts'),
+      App: path.resolve('./src/frontend/App.tsx'),
       confirmAttestation: path.resolve('./src/frontend/confirmAttestation.ts'),
       verifier: path.resolve('./src/frontend/verifier.ts'),
     },
@@ -16,13 +16,13 @@ export default [
     module: {
       rules: [
         {
-          test: /\.ts$/,
+          test: /\.tsx?$/,
           use: 'ts-loader',
         },
       ],
     },
     resolve: {
-      extensions: ['.ts', '.js'],
+      extensions: ['.ts', '.tsx', '.js'],
     },
     plugins: [
       new CopyPlugin({

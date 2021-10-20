@@ -36,10 +36,12 @@ async function handler(
   const payload = request.payload as Payload;
   const { identity, encryptedChallenge, nonce, key } = payload;
 
-  const senderDetails = await DefaultResolver.resolveDoc(identity);
-  if (!senderDetails) {
+  const didDocument = await DefaultResolver.resolveDoc(identity);
+  if (!didDocument) {
     throw Boom.forbidden(`Could not resolve the DID ${identity}`);
   }
+
+  const { details: senderDetails } = didDocument;
 
   const publicKey = senderDetails.getKeys(KeyRelationship.keyAgreement).pop();
   if (!publicKey) {

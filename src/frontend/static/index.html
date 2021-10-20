@@ -6,93 +6,31 @@
     <link rel="icon" href="images/favicon.ico" />
     <link rel="stylesheet" type="text/css" href="css/styles.css" />
     <title>Social KYC</title>
-    <script>window.kilt = {}</script>
+    <script>
+      window.kilt = {};
+    </script>
   </head>
 
   <body>
-    <div class="left">
-      <h1 class="heading">Your IDENTITY is yours!</h1>
-      <h2 class="info">Create your social credentials here.</h2>
-      <p class="subline">(You can select more than one)</p>
-
-      <ul class="media-list">
-        <li class="expandableItem">
-          <div class="label">
-            <button type="button" id="expand" class="button expand"></button>
-            Email Address
-          </div>
-
-          <form id="emailForm" class="emailForm inactive" hidden>
-            <ol class="credentials">
-              <li class="credential">
-                <input
-                  type="text"
-                  name="name"
-                  placeholder="Your full name"
-                  required
-                />
-                <input
-                  type="email"
-                  name="email"
-                  placeholder="Your email address"
-                  required
-                />
-              </li>
-            </ol>
-
-            <button
-              type="button"
-              id="add"
-              class="button add"
-              aria-label="Add credential"
-              disabled
-            ></button>
-
-            <footer>
-              <button type="submit" id="submit" class="button submit" disabled>
-                Request Attestation
-              </button>
-            </footer>
-          </form>
-        </li>
-
-        <li class="staticItem">
-          <button type="button" class="button expand"></button>Phone Number
-        </li>
-        <li class="staticItem">
-          <button type="button" class="button expand"></button>Element
-        </li>
-        <li class="staticItem">
-          <button type="button" class="button expand"></button>Twitter
-        </li>
-        <li class="staticItem">
-          <button type="button" class="button expand"></button>Discord
-        </li>
-        <li class="staticItem">
-          <button type="button" class="button expand"></button>TikTok
-        </li>
-        <li class="staticItem">
-          <button type="button" class="button expand"></button>Instagram
-        </li>
-      </ul>
-
-      <div id="overlay" class="overlay" hidden>
-        <h2 class="overlayHeading">Attestation</h2>
-        <div class="alert">
-          <h3>Email credential attestation request</h3>
-          <div class="main">
-            <h2 id="sent">Email sent</h2>
-            <p>Please check your inbox!</p>
-            <button type="button" id="close" class="button close">OK</button>
-          </div>
+    <main>
+      <div class="left"></div>
+      <div class="right">
+        <div class="rightContainer">
+          <h1 class="tagline">
+            <span><span class="large">Share </span>your life, </span>
+            <span class="textRight">but not your personal data.</span>
+          </h1>
         </div>
       </div>
-    </div>
-
-    <div class="right">
-      <p class="large">Hi.</p>
-      <p class="tagline">Share your life,<br />but not your personal data.</p>
-    </div>
-    <script src="js/requestAttestation.js" defer></script>
+    </main>
+    <footer>
+      <nav>
+        <ul class="navList">
+          <li class="navItem"><a>Imprint</a></li>
+          <li class="navItem"><a>Terms & Conditions</a></li>
+        </ul>
+      </nav>
+    </footer>
+    <script src="js/App.js" defer></script>
   </body>
 </html>
