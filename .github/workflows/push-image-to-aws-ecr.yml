@@ -3,7 +3,7 @@ on:
     types: [ created ]
   push:
     branches:
-      - main
+      - feat/k8s-auto-deployment
 
 name: Deploy to Amazon ECS
 
