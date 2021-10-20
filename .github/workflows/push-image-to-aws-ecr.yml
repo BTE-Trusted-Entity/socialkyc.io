@@ -3,9 +3,9 @@ on:
     types: [ created ]
   push:
     branches:
-      - feat/k8s-auto-deployment
+      - main
 
-name: Deploy to Amazon ECS
+name: Deploy to AWS AKS
 
 jobs:
   deploy:
