@@ -5,7 +5,7 @@ on:
     branches:
       - main
 
-name: Deploy to Amazon ECS
+name: Deploy to AWS AKS
 
 jobs:
   deploy:
@@ -17,9 +17,6 @@ jobs:
     - name: Checkout
       uses: actions/checkout@v2.3.5
 
-    - name: Build image
-      run: |
-        docker build -t kilt/social-kyc-demo:latest .
     - name: Configure AWS credentials
       uses: aws-actions/configure-aws-credentials@v1
       with:
@@ -30,6 +27,9 @@ jobs:
     - name: Login to Amazon ECR
       id: login-ecr
       uses: aws-actions/amazon-ecr-login@v1
+    - name: Build image
+      run: |
+        docker build -t kilt/social-kyc-demo:latest .
 
     - name: Tag, and push image to Amazon ECR
       env:
@@ -41,3 +41,19 @@ jobs:
         docker tag kilt/social-kyc-demo $ECR_REGISTRY/$ECR_REPOSITORY:$IMAGE_TAG
         docker push $ECR_REGISTRY/$ECR_REPOSITORY:$IMAGE_TAG
         docker push $ECR_REGISTRY/$ECR_REPOSITORY:latest
+    - name: Deploy to kilt cluster
+      uses: kodermax/kubectl-aws-eks@master
+      env:
+        KUBE_CONFIG_DATA: ${{ secrets.KUBE_CONFIG }}
+        ECR_REGISTRY: ${{ steps.login-ecr.outputs.registry }}
+        ECR_REPOSITORY: kilt/social-kyc-demo
+        IMAGE_TAG: ${{ github.sha }}
+      with:
+        args: rollout restart deployment social-kyc-demo -n social-kyc
+
+    - name: Verify deployment
+      uses: kodermax/kubectl-aws-eks@master
+      env:
+        KUBE_CONFIG_DATA: ${{ secrets.KUBE_CONFIG }}
+      with:
+        args: rollout status deployment social-kyc-demo -n social-kyc
