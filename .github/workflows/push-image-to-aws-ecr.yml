@@ -3,7 +3,7 @@ on:
     types: [ created ]
   push:
     branches:
-      - main
+      - feat/k8s-auto-deployment
 
 name: Deploy to AWS AKS
 
@@ -41,8 +41,8 @@ jobs:
         docker tag kilt/social-kyc-demo $ECR_REGISTRY/$ECR_REPOSITORY:$IMAGE_TAG
         docker push $ECR_REGISTRY/$ECR_REPOSITORY:$IMAGE_TAG
         docker push $ECR_REGISTRY/$ECR_REPOSITORY:latest
-    - name: deploy to kilt cluster
-      uses: kodermax/kubectl-aws-eks@master
+    - name: Deploy to kilt cluster
+      uses: kodermax/kubectl-aws-eks@v1.0.8
       env:
         KUBE_CONFIG_DATA: ${{ secrets.KUBE_CONFIG }}
         ECR_REGISTRY: ${{ steps.login-ecr.outputs.registry }}
@@ -51,8 +51,8 @@ jobs:
       with:
         args: rollout restart deployment social-kyc-demo -n social-kyc
 
-    - name: verify deployment
-      uses: kodermax/kubectl-aws-eks@master
+    - name: Verify deployment
+      uses: kodermax/kubectl-aws-eks@v1.0.8
       env:
         KUBE_CONFIG_DATA: ${{ secrets.KUBE_CONFIG }}
       with:
