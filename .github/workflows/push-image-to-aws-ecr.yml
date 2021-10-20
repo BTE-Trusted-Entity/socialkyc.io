@@ -5,7 +5,7 @@ on:
     branches:
       - feat/k8s-auto-deployment
 
-name: Deploy to Amazon ECS
+name: Deploy to AWS EKS
 
 jobs:
   deploy:
