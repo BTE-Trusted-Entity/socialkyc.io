@@ -6,7 +6,14 @@ on:
       - feat/k8s-auto-deployment
 
 name: Deploy to AWS EKS
-
+env:
+  RELEASE_REVISION: "pr-${{ github.event.pull_request.number }}-${{ github.event.pull_request.head.sha }}"
+  AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
+  AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+  AWS_REGION: ${{ secrets.AWS_REGION }}
+  KUBE_CONFIG_DATA: ${{ secrets.KUBE_CONFIG }}
+  KUBE_NAMESPACE: social-kyc
+  ECR_REPOSITORY: kilt/social-kyc-demo
 jobs:
   deploy:
     name: Build image and push to Amazon ECR
@@ -15,45 +22,71 @@ jobs:
 
     steps:
     - name: Checkout
-      uses: actions/checkout@v2.3.5
+      uses: actions/checkout@v2
+      with:
+        ref: ${{ github.event.pull_request.head.sha }}
 
-    - name: Build image
-      run: |
-        docker build -t kilt/social-kyc-demo:latest .
     - name: Configure AWS credentials
       uses: aws-actions/configure-aws-credentials@v1
       with:
-        aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
-        aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
-        aws-region: eu-central-1
+        aws-access-key-id: ${{ env.AWS_ACCESS_KEY_ID }}
+        aws-secret-access-key: ${{ env.AWS_SECRET_ACCESS_KEY }}
+        aws-region: ${{ env.AWS_REGION }}
 
     - name: Login to Amazon ECR
       id: login-ecr
       uses: aws-actions/amazon-ecr-login@v1
-
-    - name: Tag, and push image to Amazon ECR
+    - name: Set up Docker Buildx
+      id: buildx
+      uses: docker/setup-buildx-action@master
+    - name: Docker cache layers
+      uses: actions/cache@v2
+      with:
+        path: /tmp/.buildx-cache
+        key: ${{ runner.os }}-single-buildx-${{ github.sha }}
+        restore-keys: |
+          ${{ runner.os }}-single-buildx
+    - name: Build & Push Image
       env:
         ECR_REGISTRY: ${{ steps.login-ecr.outputs.registry }}
-        ECR_REPOSITORY: kilt/social-kyc-demo
-        IMAGE_TAG: ${{ github.sha }}
+        RELEASE_IMAGE: ${{ steps.login-ecr.outputs.registry }}/${{ env.ECR_REPOSITORY }}:${{ env.RELEASE_REVISION }}
       run: |
-        docker tag kilt/social-kyc-demo $ECR_REGISTRY/$ECR_REPOSITORY:latest
-        docker tag kilt/social-kyc-demo $ECR_REGISTRY/$ECR_REPOSITORY:$IMAGE_TAG
-        docker push $ECR_REGISTRY/$ECR_REPOSITORY:$IMAGE_TAG
-        docker push $ECR_REGISTRY/$ECR_REPOSITORY:latest
-    - name: deploy to cluster
+        docker buildx create --use
+
+        docker buildx build \
+          --cache-from=type=local,src=/tmp/.buildx-cache \
+          --cache-to=type=local,dest=/tmp/.buildx-cache-new \
+          --tag ${{ env.RELEASE_IMAGE }} \
+          --target release \
+          --push \
+          .
+
+        rm -rf /tmp/.buildx-cache
+        mv /tmp/.buildx-cache-new /tmp/.buildx-cache
+
+#    - name: Tag, and push image to Amazon ECR
+#      env:
+#        ECR_REGISTRY: ${{ steps.login-ecr.outputs.registry }}
+#        ECR_REPOSITORY: kilt/social-kyc-demo
+#        IMAGE_TAG: ${{ github.sha }}
+#      run: |
+#        docker tag kilt/social-kyc-demo $ECR_REGISTRY/$ECR_REPOSITORY:latest
+#        docker tag kilt/social-kyc-demo $ECR_REGISTRY/$ECR_REPOSITORY:$IMAGE_TAG
+#        docker push $ECR_REGISTRY/$ECR_REPOSITORY:$IMAGE_TAG
+#        docker push $ECR_REGISTRY/$ECR_REPOSITORY:latest
+    - name: deploy to kilt cluster
       uses: kodermax/kubectl-aws-eks@master
       env:
-        KUBE_CONFIG_DATA: ${{ secrets.KUBE_CONFIG_DATA }}
+        KUBE_CONFIG_DATA: ${{ secrets.KUBE_CONFIG }}
         ECR_REGISTRY: ${{ steps.login-ecr.outputs.registry }}
         ECR_REPOSITORY: kilt/social-kyc-demo
         IMAGE_TAG: ${{ github.sha }}
       with:
-        args: rollout restart deployment social-kyc-demo --namespace=social-kyc
+        args: rollout restart deployment social-kyc-demo -n social-kyc
 
     - name: verify deployment
       uses: kodermax/kubectl-aws-eks@master
       env:
-        KUBE_CONFIG_DATA: ${{ secrets.KUBE_CONFIG_DATA }}
+        KUBE_CONFIG_DATA: ${{ secrets.KUBE_CONFIG }}
       with:
-        args: rollout status deployment/social-kyc-demo --namespace=social-kyc
+        args: rollout status deployment social-kyc-demo -n social-kyc
