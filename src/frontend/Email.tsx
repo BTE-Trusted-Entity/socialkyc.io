@@ -7,6 +7,10 @@ import { StatusCodes } from 'http-status-codes';
 import { IEncryptedMessage } from '@kiltprotocol/types';
 
 import { getSession } from './utilities/session';
+import {
+  addUnloadListener,
+  removeUnloadListener,
+} from './utilities/unloadListener';
 
 export function Email(): JSX.Element {
   const { pathname } = useLocation();
@@ -24,15 +28,11 @@ export function Email(): JSX.Element {
 
   const [email, setEmail] = useState('');
 
-  function handleBeforeUnload(event: Event) {
-    event.preventDefault();
-    event.returnValue = false;
-  }
-
   const handleSubmit = useCallback(
     async (event) => {
       event.preventDefault();
-      window.addEventListener('beforeunload', handleBeforeUnload);
+      addUnloadListener();
+
       try {
         const session = await getSession();
         await session.listen(async (message) => {
@@ -40,7 +40,7 @@ export function Email(): JSX.Element {
             json: message,
           });
 
-          window.removeEventListener('beforeunload', handleBeforeUnload);
+          removeUnloadListener();
 
           if (result.status === StatusCodes.ACCEPTED) {
             console.log('Terms rejected');
@@ -69,7 +69,7 @@ export function Email(): JSX.Element {
         await session.send(message);
       } catch (error) {
         console.error(error);
-        window.removeEventListener('beforeunload', handleBeforeUnload);
+        removeUnloadListener();
       }
     },
     [nameInput, emailInput],
@@ -133,7 +133,7 @@ export function Email(): JSX.Element {
 
             <button
               type="submit"
-              className="button buttonPrimary"
+              className="button buttonPrimary chooseIdentity"
               disabled={!nameInput || !emailInput}
             >
               Choose Sporran Identity
