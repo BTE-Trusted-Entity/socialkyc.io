@@ -18,6 +18,31 @@ import {
 
 import { Email } from './Email';
 
+function useHasSporran() {
+  const [hasSporran, setHasSporran] = useState<boolean | 'loading'>('loading');
+
+  useEffect(() => {
+    const intervalId = setInterval(() => {
+      if (Boolean(apiWindow.kilt.sporran)) {
+        setHasSporran(true);
+      }
+    }, 100);
+
+    const timeoutId = setTimeout(() => {
+      if (hasSporran === 'loading') {
+        setHasSporran(false);
+      }
+    }, 500);
+
+    return () => {
+      clearInterval(intervalId);
+      clearInterval(timeoutId);
+    };
+  }, [hasSporran]);
+
+  return hasSporran;
+}
+
 function usePreventNavigation(active: boolean) {
   useEffect(() => {
     if (active) {
@@ -31,27 +56,6 @@ function usePreventNavigation(active: boolean) {
 function App(): JSX.Element {
   const { pathname } = useLocation();
 
-  const [hasSporran, setHasSporran] = useState(false);
-
-  const [showConditionalContent, setShowConditionalContent] = useState(false);
-
-  useEffect(() => {
-    const intervalId = setInterval(() => {
-      if (Boolean(apiWindow.kilt.sporran)) {
-        setHasSporran(true);
-      }
-    }, 100);
-
-    const timeoutId = setTimeout(() => {
-      setShowConditionalContent(true);
-    }, 500);
-
-    return () => {
-      clearInterval(intervalId);
-      clearInterval(timeoutId);
-    };
-  }, []);
-
   const browser = detect();
 
   const isDesktop =
@@ -62,6 +66,8 @@ function App(): JSX.Element {
 
   const isUnsupportedBrowser =
     isDesktop && browser.name !== 'chrome' && browser.name !== 'firefox';
+
+  const hasSporran = useHasSporran();
 
   const showWebstoreLink = !hasSporran && isSupportedBrowser;
   const showWebsiteLink = !hasSporran && isUnsupportedBrowser;
@@ -103,99 +109,94 @@ function App(): JSX.Element {
           </p>
         </section>
 
-        {!showConditionalContent && <div className="spinner"></div>}
+        {hasSporran === 'loading' && <div className="spinner"></div>}
 
-        {showConditionalContent && (
-          <Fragment>
-            {hasSporran && !authorized && (
-              <section className="connectContainer">
-                <div className={cx('connect', { processing })}>
-                  <p className="subline">
-                    Please authorize access to your wallet
-                  </p>
-                  <button
-                    type="button"
-                    className="button buttonPrimary"
-                    onClick={handleConnectClick}
-                    disabled={processing}
-                  >
-                    Connect to wallet
-                  </button>
-                </div>
-                {processing && <div className="spinner"></div>}
-              </section>
-            )}
-
-            {hasSporran && authorized && (
-              <section className="lists">
-                <h2 className="subline ">Featured Credentials</h2>
-                <ul className="mediaList">
-                  <Email />
-                  <li
-                    className={cx('expandableItem', {
-                      expanded: pathname === '/twitter',
-                    })}
-                  >
-                    <p className="itemLabel">
-                      <Switch>
-                        <Route path="/twitter">
-                          <Link
-                            to="/"
-                            type="button"
-                            className="button accordion opened"
-                          />
-                        </Route>
-                        <Route>
-                          <Link
-                            to=""
-                            type="button"
-                            className="button accordion closed"
-                          />
-                        </Route>
-                      </Switch>
-                      Twitter
-                    </p>
-                  </li>
-                </ul>
-              </section>
-            )}
-
-            {showWebstoreLink && (
-              <section className="install">
-                <p className="warning">
-                  Please make sure to have a wallet extension installed for your
-                  browser. We recommend the Sporran extension that you can
-                  download and install here:
-                </p>
-                {browser.name === 'chrome' && (
-                  <a
-                    className="button webstore chrome"
-                    href="https://chrome.google.com/webstore/detail/djdnajgjcbjhhbdblkegbcgodlkkfhcl"
-                  />
-                )}
-                {browser.name === 'firefox' && (
-                  <a
-                    className=" button webstore firefox"
-                    href="https://addons.mozilla.org/firefox/addon/sporran/"
-                  />
-                )}
-              </section>
-            )}
-
-            {showWebsiteLink && (
-              <section className="install ">
-                <p className="warning">
-                  Please make sure to have a wallet extension installed for your
-                  browser. We recommend the
-                  <br />
-                  <a className="textLink" href="https://www.sporran.org/">
-                    Sporran extension.
-                  </a>
-                </p>
-              </section>
-            )}
-          </Fragment>
+        {hasSporran === true && !authorized && (
+          <section className="connectContainer">
+            <div className={cx('connect', { processing })}>
+              <p className="subline">Please authorize access to your wallet</p>
+              <button
+                type="button"
+                className="button buttonPrimary"
+                onClick={handleConnectClick}
+                disabled={processing}
+              >
+                Connect to wallet
+              </button>
+            </div>
+            {processing && <div className="spinner"></div>}
+          </section>
         )}
+
+        {hasSporran === true && authorized && (
+          <section className="lists">
+            <h2 className="subline ">Featured Credentials</h2>
+            <ul className="mediaList">
+              <Email />
+              <li
+                className={cx('expandableItem', {
+                  expanded: pathname === '/twitter',
+                })}
+              >
+                <p className="itemLabel">
+                  <Switch>
+                    <Route path="/twitter">
+                      <Link
+                        to="/"
+                        type="button"
+                        className="button accordion opened"
+                      />
+                    </Route>
+                    <Route>
+                      <Link
+                        to=""
+                        type="button"
+                        className="button accordion closed"
+                      />
+                    </Route>
+                  </Switch>
+                  Twitter
+                </p>
+              </li>
+            </ul>
+          </section>
+        )}
+
+        {showWebstoreLink && (
+          <section className="install">
+            <p className="warning">
+              Please make sure to have a wallet extension installed for your
+              browser. We recommend the Sporran extension that you can download
+              and install here:
+            </p>
+            {browser.name === 'chrome' && (
+              <a
+                className="button webstore chrome"
+                href="https://chrome.google.com/webstore/detail/djdnajgjcbjhhbdblkegbcgodlkkfhcl"
+              />
+            )}
+            {browser.name === 'firefox' && (
+              <a
+                className=" button webstore firefox"
+                href="https://addons.mozilla.org/firefox/addon/sporran/"
+              />
+            )}
+          </section>
+        )}
+
+        {showWebsiteLink && (
+          <section className="install ">
+            <p className="warning">
+              Please make sure to have a wallet extension installed for your
+              browser. We recommend the
+              <br />
+              <a className="textLink" href="https://www.sporran.org/">
+                Sporran extension.
+              </a>
+            </p>
+          </section>
+        )}
+
         {/* TODO: Handle case of mobile device */}
       </div>
     </div>
