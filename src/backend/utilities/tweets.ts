@@ -75,7 +75,7 @@ async function onTweet(handleTweet: (tweet: MappedTweet) => void) {
   });
 }
 
-/** Map of Twitter usernames to the promises waiting for the tweet */
+/** Map of Twitter usernames to the codes and promises waiting for the tweet */
 export const tweetsListeners: Record<
   string,
   [string, ControlledPromise<void>]
