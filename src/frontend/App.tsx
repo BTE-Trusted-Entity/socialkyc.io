@@ -18,6 +18,37 @@ import {
 
 import { Email } from './Email';
 
+interface HasSporran {
+  data?: {
+    hasSporran: boolean;
+  };
+}
+
+function useHasSporran(): HasSporran {
+  const [hasSporran, setHasSporran] = useState<boolean | null>(null);
+
+  useEffect(() => {
+    const intervalId = setInterval(() => {
+      if (Boolean(apiWindow.kilt.sporran)) {
+        setHasSporran(true);
+      }
+    }, 100);
+
+    const timeoutId = setTimeout(() => {
+      if (hasSporran === null) {
+        setHasSporran(false);
+      }
+    }, 500);
+
+    return () => {
+      clearInterval(intervalId);
+      clearInterval(timeoutId);
+    };
+  }, [hasSporran]);
+
+  return typeof hasSporran === 'boolean' ? { data: { hasSporran } } : {};
+}
+
 function usePreventNavigation(active: boolean) {
   useEffect(() => {
     if (active) {
@@ -31,17 +62,6 @@ function usePreventNavigation(active: boolean) {
 function App(): JSX.Element {
   const { pathname } = useLocation();
 
-  const [hasSporran, setHasSporran] = useState(false);
-
-  useEffect(() => {
-    const id = setInterval(() => {
-      if (Boolean(apiWindow.kilt.sporran)) {
-        setHasSporran(true);
-      }
-    }, 100);
-    return () => clearInterval(id);
-  }, []);
-
   const browser = detect();
 
   const isDesktop =
@@ -53,8 +73,11 @@ function App(): JSX.Element {
   const isUnsupportedBrowser =
     isDesktop && browser.name !== 'chrome' && browser.name !== 'firefox';
 
-  const showWebstoreLink = !hasSporran && isSupportedBrowser;
-  const showWebsiteLink = !hasSporran && isUnsupportedBrowser;
+  const { data } = useHasSporran();
+  const hasSporran = data?.hasSporran;
+
+  const showWebstoreLink = hasSporran === false && isSupportedBrowser;
+  const showWebsiteLink = hasSporran === false && isUnsupportedBrowser;
 
   const [authorized, setAuthorized] = useState(false);
 
@@ -92,6 +115,8 @@ function App(): JSX.Element {
             The service forgets about you after verifying your identity.
           </p>
         </section>
+
+        {!data && <div className="spinner"></div>}
 
         {hasSporran && !authorized && (
           <section className="connectContainer">
