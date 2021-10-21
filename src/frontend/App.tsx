@@ -25,7 +25,7 @@ interface HasSporran {
 }
 
 function useHasSporran(): HasSporran {
-  const [hasSporran, setHasSporran] = useState<boolean | 'loading'>('loading');
+  const [hasSporran, setHasSporran] = useState<boolean | null>(null);
 
   useEffect(() => {
     const intervalId = setInterval(() => {
@@ -35,7 +35,7 @@ function useHasSporran(): HasSporran {
     }, 100);
 
     const timeoutId = setTimeout(() => {
-      if (hasSporran === 'loading') {
+      if (hasSporran === null) {
         setHasSporran(false);
       }
     }, 500);
