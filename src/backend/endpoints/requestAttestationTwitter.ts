@@ -1,5 +1,4 @@
 import { StatusCodes } from 'http-status-codes';
-import { SendEmailCommand } from '@aws-sdk/client-ses';
 import {
   Request,
   ResponseObject,
