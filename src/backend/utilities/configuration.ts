@@ -14,6 +14,11 @@ if (!region || !accessKeyId || !secretAccessKey) {
   throw new Error('No AWS access values provided');
 }
 
+const twitterSecretBearerToken = env.TWITTER_SECRET_BEARER_TOKEN;
+if (!twitterSecretBearerToken) {
+  throw new Error('No base URI provided');
+}
+
 const baseUri = env.URL;
 if (!baseUri) {
   throw new Error('No base URI provided');
@@ -38,4 +43,5 @@ export const configuration = {
   distFolder: path.join(cwd(), 'dist', 'frontend'),
   did,
   backupPhrase,
+  twitterSecretBearerToken,
 };

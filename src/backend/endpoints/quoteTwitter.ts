@@ -6,19 +6,16 @@ import {
 } from '@hapi/hapi';
 import Boom from '@hapi/boom';
 import { z } from 'zod';
-import { Claim, Quote } from '@kiltprotocol/core';
+import { Claim } from '@kiltprotocol/core';
 import { ISubmitTerms, MessageBodyType } from '@kiltprotocol/types';
 import Message from '@kiltprotocol/messaging';
 
-import { email } from '../CTypes/email';
-import { fullDidPromise } from '../utilities/fullDid';
+import { twitter } from '../CTypes/twitter';
 import { configuration } from '../utilities/configuration';
-import { authenticationKeystore } from '../utilities/keystores';
 import { encryptMessage } from '../utilities/encryptMessage';
 
 const zodPayload = z.object({
-  name: z.string(),
-  email: z.string(),
+  twitter: z.string(),
   did: z.string(),
 });
 
@@ -32,41 +29,19 @@ async function handler(
 
   try {
     const claimContents = {
-      'Full name': payload.name,
-      Email: payload.email,
+      Twitter: payload.twitter,
     };
     const claim = Claim.fromCTypeAndClaimContents(
-      email,
+      twitter,
       claimContents,
       payload.did,
-    );
-
-    const quoteContents = {
-      attesterDid: configuration.did,
-      cTypeHash: email.hash,
-      cost: {
-        gross: 233,
-        net: 23.3,
-        tax: { vat: 3.3 },
-      },
-      currency: 'KILT',
-      timeframe: new Date('2021-07-10'),
-      termsAndConditions: 'https://www.example.com/terms',
-    };
-
-    const { fullDid } = await fullDidPromise;
-    const quote = await Quote.fromQuoteDataAndIdentity(
-      quoteContents,
-      fullDid,
-      authenticationKeystore,
     );
 
     const messageBody: ISubmitTerms = {
       content: {
         claim,
-        quote,
         legitimations: [],
-        cTypes: [email],
+        cTypes: [twitter],
       },
       type: MessageBodyType.SUBMIT_TERMS,
     };
@@ -80,9 +55,9 @@ async function handler(
   }
 }
 
-export const quote: ServerRoute = {
+export const quoteTwitter: ServerRoute = {
   method: 'POST',
-  path: '/quote',
+  path: '/quote-twitter',
   handler,
   options: {
     validate: {
