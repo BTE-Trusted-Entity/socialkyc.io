@@ -1,4 +1,4 @@
-import { useEffect, useState, useCallback, Fragment } from 'react';
+import { useEffect, useState, useCallback } from 'react';
 import { render } from 'react-dom';
 import {
   Link,
@@ -18,7 +18,13 @@ import {
 
 import { Email } from './Email';
 
-function useHasSporran() {
+interface HasSporran {
+  data?: {
+    hasSporran: boolean;
+  };
+}
+
+function useHasSporran(): HasSporran {
   const [hasSporran, setHasSporran] = useState<boolean | 'loading'>('loading');
 
   useEffect(() => {
@@ -40,7 +46,7 @@ function useHasSporran() {
     };
   }, [hasSporran]);
 
-  return hasSporran;
+  return typeof hasSporran === 'boolean' ? { data: { hasSporran } } : {};
 }
 
 function usePreventNavigation(active: boolean) {
@@ -67,10 +73,11 @@ function App(): JSX.Element {
   const isUnsupportedBrowser =
     isDesktop && browser.name !== 'chrome' && browser.name !== 'firefox';
 
-  const hasSporran = useHasSporran();
+  const { data } = useHasSporran();
+  const hasSporran = data?.hasSporran;
 
-  const showWebstoreLink = !hasSporran && isSupportedBrowser;
-  const showWebsiteLink = !hasSporran && isUnsupportedBrowser;
+  const showWebstoreLink = hasSporran === false && isSupportedBrowser;
+  const showWebsiteLink = hasSporran === false && isUnsupportedBrowser;
 
   const [authorized, setAuthorized] = useState(false);
 
@@ -109,9 +116,9 @@ function App(): JSX.Element {
           </p>
         </section>
 
-        {hasSporran === 'loading' && <div className="spinner"></div>}
+        {!data && <div className="spinner"></div>}
 
-        {hasSporran === true && !authorized && (
+        {hasSporran && !authorized && (
           <section className="connectContainer">
             <div className={cx('connect', { processing })}>
               <p className="subline">Please authorize access to your wallet</p>
@@ -128,7 +135,7 @@ function App(): JSX.Element {
           </section>
         )}
 
-        {hasSporran === true && authorized && (
+        {hasSporran && authorized && (
           <section className="lists">
             <h2 className="subline ">Featured Credentials</h2>
             <ul className="mediaList">
