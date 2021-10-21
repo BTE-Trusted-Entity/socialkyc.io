@@ -23,9 +23,10 @@ import { keypairsPromise } from '../utilities/keypairs';
 import { assertionKeystore } from '../utilities/keystores';
 import { configuration } from '../utilities/configuration';
 import { encryptMessage } from '../utilities/encryptMessage';
+import { tweetsListeners } from '../utilities/tweets';
 
 interface AttestationData {
-  email: string;
+  twitter: string;
   blockHash: string;
   message: IEncryptedMessage;
 }
@@ -68,7 +69,7 @@ async function attestClaim(
   const encrypted = await encryptMessage(message, claimerDid);
 
   return {
-    email: requestForAttestation.claim.contents['Email'] as string,
+    twitter: requestForAttestation.claim.contents['Twitter'] as string,
     blockHash: result.status.asFinalized.toString(),
     message: encrypted,
   };
@@ -76,6 +77,7 @@ async function attestClaim(
 
 const zodPayload = z.object({
   key: z.string(),
+  twitter: z.string(),
   did: z.string(),
 });
 
@@ -85,7 +87,7 @@ async function handler(
   request: Request,
   h: ResponseToolkit,
 ): Promise<ResponseObject> {
-  const { key, did } = request.payload as Payload;
+  const { key, twitter, did } = request.payload as Payload;
 
   let requestForAttestation: IRequestForAttestation;
   try {
@@ -94,7 +96,14 @@ async function handler(
     throw Boom.notFound(`Key not found: ${key}`);
   }
 
+  if (!tweetsListeners[twitter]) {
+    throw Boom.notFound(`Twitter handle not found: ${twitter}`);
+  }
+
   try {
+    const confirmation = tweetsListeners[twitter][1];
+    await confirmation.promise;
+
     const response = await attestClaim(requestForAttestation, did);
     return h.response(response);
   } catch (error) {
@@ -102,9 +111,9 @@ async function handler(
   }
 }
 
-export const attestation: ServerRoute = {
+export const attestationTwitter: ServerRoute = {
   method: 'POST',
-  path: '/attest',
+  path: '/attest-twitter',
   handler,
   options: {
     validate: {

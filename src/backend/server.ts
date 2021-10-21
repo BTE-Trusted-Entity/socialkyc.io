@@ -5,11 +5,14 @@ import exiting from 'exiting';
 
 import { configuration } from './utilities/configuration';
 import { request } from './endpoints/sendEmail';
+import { requestTwitter } from './endpoints/requestAttestationTwitter';
 import { confirmationHtml } from './endpoints/confirmationHtml';
-import { attestation } from './endpoints/attestation';
+import { attestationEmail } from './endpoints/attestationEmail';
+import { attestationTwitter } from './endpoints/attestationTwitter';
 import { staticFiles } from './endpoints/staticFiles';
 import { liveness } from './endpoints/liveness';
-import { quote } from './endpoints/quote';
+import { quoteEmail } from './endpoints/quoteEmail';
+import { quoteTwitter } from './endpoints/quoteTwitter';
 import { challenge } from './endpoints/challenge';
 import { verify } from './endpoints/verify';
 import { requestCredential } from './endpoints/requestCredential';
@@ -17,6 +20,7 @@ import { wellKnownDidConfig } from './endpoints/wellKnownDidConfig';
 import { configureAuthentication } from './utilities/configureAuthentication';
 import { configureDevErrors } from './utilities/configureDevErrors';
 import { fullDidPromise } from './utilities/fullDid';
+import { listenForTweets } from './utilities/tweets';
 
 const server = Hapi.server({
   port: configuration.port,
@@ -45,13 +49,18 @@ const logger = {
   server.route(liveness);
   server.route(staticFiles);
   server.route(challenge);
-  server.route(quote);
+  server.route(quoteEmail);
+  server.route(quoteTwitter);
   server.route(request);
+  server.route(requestTwitter);
   server.route(confirmationHtml);
-  server.route(attestation);
+  server.route(attestationEmail);
+  server.route(attestationTwitter);
   server.route(requestCredential);
   server.route(verify);
   server.route(wellKnownDidConfig);
+
+  await listenForTweets();
 
   await manager.start();
 })();
