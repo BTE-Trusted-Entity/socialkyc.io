@@ -38,7 +38,6 @@ function App(): JSX.Element {
       if (Boolean(apiWindow.kilt.sporran)) {
         setHasSporran(true);
       }
-      clearInterval(id);
     }, 100);
     return () => clearInterval(id);
   }, []);
