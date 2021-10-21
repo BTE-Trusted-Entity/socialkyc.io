@@ -86,6 +86,7 @@ main {
   overflow-y: scroll;
   scrollbar-width: thin;
   scrollbar-color: var(--color-magenta) rgba(var(--color-magenta-rgb), 0.5);
+  position: relative;
 }
 
 .scrollContainer::-webkit-scrollbar {
