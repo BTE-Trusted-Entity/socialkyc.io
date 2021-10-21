@@ -1,7 +1,7 @@
-dist
-node_modules
-.idea
-.env
-.DS_Store
-yarn-error.log
+/dist
+/node_modules
+/.idea
+/.env
+/.DS_Store
+/yarn-error.log
 /.parcel-cache
