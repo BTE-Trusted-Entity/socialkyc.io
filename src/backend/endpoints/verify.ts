@@ -14,6 +14,7 @@ import {
   Payload,
   validateEncryptedMessage,
 } from '../utilities/validateEncryptedMessage';
+import { paths } from './paths';
 
 async function handler(
   request: Request,
@@ -38,7 +39,7 @@ async function handler(
 
 export const verify: ServerRoute = {
   method: 'POST',
-  path: '/verify',
+  path: paths.verify,
   handler,
   options: {
     validate: {

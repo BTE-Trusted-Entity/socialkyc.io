@@ -24,6 +24,7 @@ import { assertionKeystore } from '../utilities/keystores';
 import { configuration } from '../utilities/configuration';
 import { encryptMessage } from '../utilities/encryptMessage';
 import { tweetsListeners } from '../utilities/tweets';
+import { paths } from './paths';
 
 interface AttestationData {
   twitter: string;
@@ -113,7 +114,7 @@ async function handler(
 
 export const attestationTwitter: ServerRoute = {
   method: 'POST',
-  path: '/attest-twitter',
+  path: paths.attestTwitter,
   handler,
   options: {
     validate: {

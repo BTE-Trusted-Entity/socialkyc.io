@@ -11,6 +11,7 @@ import {
   addUnloadListener,
   removeUnloadListener,
 } from './utilities/unloadListener';
+import { paths } from '../backend/endpoints/paths';
 
 export function Email(): JSX.Element {
   const { pathname } = useLocation();
@@ -36,7 +37,7 @@ export function Email(): JSX.Element {
       try {
         const session = await getSession();
         await session.listen(async (message) => {
-          const result = await ky.post('/request-attestation', {
+          const result = await ky.post(paths.requestAttestationEmail, {
             json: message,
           });
 
@@ -61,7 +62,7 @@ export function Email(): JSX.Element {
         };
 
         const message = (await ky
-          .post('/quote', { json })
+          .post(paths.quoteEmail, { json })
           .json()) as IEncryptedMessage;
 
         console.log('Message: ', message);

@@ -1,6 +1,7 @@
 import ky from 'ky';
 
 import { getSession } from './utilities/session';
+import { paths } from '../backend/endpoints/paths';
 
 async function main() {
   const key = window.location.href.split('/').pop();
@@ -9,7 +10,7 @@ async function main() {
   const did = session.identity;
 
   const { email, blockHash, message } = await ky
-    .post('/attest', { json: { key, did }, timeout: 60 * 1000 })
+    .post(paths.attestEmail, { json: { key, did }, timeout: 60 * 1000 })
     .json();
 
   const htmlToInsert = `

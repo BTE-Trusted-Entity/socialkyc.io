@@ -23,6 +23,7 @@ import { keypairsPromise } from '../utilities/keypairs';
 import { assertionKeystore } from '../utilities/keystores';
 import { configuration } from '../utilities/configuration';
 import { encryptMessage } from '../utilities/encryptMessage';
+import { paths } from './paths';
 
 interface AttestationData {
   email: string;
@@ -104,7 +105,7 @@ async function handler(
 
 export const attestationEmail: ServerRoute = {
   method: 'POST',
-  path: '/attest',
+  path: paths.attestEmail,
   handler,
   options: {
     validate: {

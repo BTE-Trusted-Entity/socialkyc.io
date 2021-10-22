@@ -13,6 +13,7 @@ import Message from '@kiltprotocol/messaging';
 import { twitter } from '../CTypes/twitter';
 import { configuration } from '../utilities/configuration';
 import { encryptMessage } from '../utilities/encryptMessage';
+import { paths } from './paths';
 
 const zodPayload = z.object({
   twitter: z.string(),
@@ -57,7 +58,7 @@ async function handler(
 
 export const quoteTwitter: ServerRoute = {
   method: 'POST',
-  path: '/quote-twitter',
+  path: paths.quoteTwitter,
   handler,
   options: {
     validate: {

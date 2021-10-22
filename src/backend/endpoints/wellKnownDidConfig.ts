@@ -5,6 +5,7 @@ import {
   ServerRoute,
 } from '@hapi/hapi';
 import { didConfigResourcePromise } from '../utilities/didConfigResource';
+import { paths } from './paths';
 
 async function handler(
   request: Request,
@@ -15,7 +16,7 @@ async function handler(
 
 export const wellKnownDidConfig: ServerRoute = {
   method: 'GET',
-  path: '/.well-known/did-configuration.json',
+  path: paths.wellKnownDidConfiguration,
   handler,
   options: { cors: true },
 };

@@ -13,6 +13,7 @@ import Message from '@kiltprotocol/messaging';
 import { email } from '../CTypes/email';
 import { configuration } from '../utilities/configuration';
 import { encryptMessage } from '../utilities/encryptMessage';
+import { paths } from './paths';
 
 const zodPayload = z.object({
   name: z.string(),
@@ -59,7 +60,7 @@ async function handler(
 
 export const quoteEmail: ServerRoute = {
   method: 'POST',
-  path: '/quote',
+  path: paths.quoteEmail,
   handler,
   options: {
     validate: {

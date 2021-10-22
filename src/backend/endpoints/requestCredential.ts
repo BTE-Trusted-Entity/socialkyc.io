@@ -14,6 +14,7 @@ import Message from '@kiltprotocol/messaging';
 import { email } from '../CTypes/email';
 import { configuration } from '../utilities/configuration';
 import { encryptMessage } from '../utilities/encryptMessage';
+import { paths } from './paths';
 
 const zodPayload = z.object({
   did: z.string(),
@@ -59,7 +60,7 @@ async function handler(
 
 export const requestCredential: ServerRoute = {
   method: 'POST',
-  path: '/request-credential',
+  path: paths.requestCredential,
   handler,
   options: {
     validate: {
