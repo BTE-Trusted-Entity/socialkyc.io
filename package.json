@@ -9,7 +9,7 @@
     "prettify": "prettier --write \"src/**/*.ts*\"",
     "lint": "eslint --max-warnings 0 --config ./.eslintrc.json \"src/**/*.ts*\"",
     "test": "jest",
-    "dev": "tsc --watch & yarn parcel --dist-dir dist/frontend",
+    "dev": "tsc --watch & yarn parcel watch --dist-dir dist/frontend",
     "build": "tsc && yarn parcel build",
     "start": "echo '{\"type\":\"commonjs\"}' > dist/package.json && node dist/backend/server.js",
     "dev-start": "echo '{\"type\":\"commonjs\"}' > dist/package.json && supervisor --watch dist/backend/server.js dist/backend/server.js"
