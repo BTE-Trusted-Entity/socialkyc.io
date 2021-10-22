@@ -1,17 +1,22 @@
 export const paths = {
   home: '/',
-
-  attestEmail: '/attest',
-  attestTwitter: '/attest-twitter',
-  challenge: '/challenge',
   confirmationHtml: '/confirmation/{key}',
-  quoteEmail: '/quote',
-  quoteTwitter: '/quote-twitter',
-  requestAttestationEmail: '/request-attestation',
-  requestAttestationTwitter: '/request-attestation-twitter',
-  requestCredential: '/request-credential',
-  verify: '/verify',
   wellKnownDidConfiguration: '/.well-known/did-configuration.json',
+
+  attestEmail: '/api/attest',
+  attestTwitter: '/api/attest-twitter',
+
+  challenge: '/api/challenge',
+
+  quoteEmail: '/api/quote',
+  quoteTwitter: '/api/quote-twitter',
+
+  requestAttestationEmail: '/api/request-attestation',
+  requestAttestationTwitter: '/api/request-attestation-twitter',
+
+  requestCredential: '/api/request-credential',
+
+  verify: '/api/verify',
 
   staticFiles: '/{param*}',
 
