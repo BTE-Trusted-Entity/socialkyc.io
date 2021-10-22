@@ -1,5 +1,6 @@
 import ky from 'ky';
 import { IDidDetails, IEncryptedMessage } from '@kiltprotocol/types';
+import { paths } from '../../backend/endpoints/paths';
 
 interface PubSubSession {
   listen: (
@@ -33,13 +34,13 @@ export async function getSession(): Promise<PubSubSession> {
     throw new Error('No provider');
   }
 
-  const { did, challenge, key } = await ky.get('/challenge').json();
+  const { did, challenge, key } = await ky.get(paths.challenge).json();
   const dAppName = 'SocialKYC Demo';
 
   const session = await provider.startSession(dAppName, did, challenge);
 
   const { identity, encryptedChallenge, nonce } = session;
-  await ky.post('/challenge', {
+  await ky.post(paths.challenge, {
     json: { identity, encryptedChallenge, nonce, key },
   });
 

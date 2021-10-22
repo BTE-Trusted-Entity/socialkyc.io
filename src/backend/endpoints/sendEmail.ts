@@ -20,6 +20,7 @@ import {
   Payload,
   validateEncryptedMessage,
 } from '../utilities/validateEncryptedMessage';
+import { paths } from './paths';
 
 const rateLimiter = new RateLimiterMemory({
   duration: 1 * 60,
@@ -92,7 +93,8 @@ async function handler(
   const key = requestForAttestation.rootHash;
   cacheRequestForAttestation(key, requestForAttestation);
 
-  const url = `${configuration.baseUri}/confirmation/${key}`;
+  const path = paths.confirmationHtml.replace('{key}', key);
+  const url = `${configuration.baseUri}${path}`;
 
   await send(url, requestForAttestation);
 
@@ -101,7 +103,7 @@ async function handler(
 
 export const request: ServerRoute = {
   method: 'POST',
-  path: '/request-attestation',
+  path: paths.requestAttestationEmail,
   handler,
   options: {
     validate: {

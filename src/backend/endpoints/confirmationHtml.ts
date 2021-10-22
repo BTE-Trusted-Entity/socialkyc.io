@@ -11,6 +11,7 @@ import { z } from 'zod';
 
 import { configuration } from '../utilities/configuration';
 import { getRequestForAttestation } from '../utilities/requestCache';
+import { paths } from './paths';
 
 const zodParams = z.object({
   key: z.string(),
@@ -35,7 +36,7 @@ async function handler(
 
 export const confirmationHtml: ServerRoute = {
   method: 'GET',
-  path: '/confirmation/{key}',
+  path: paths.confirmationHtml,
   handler,
   options: {
     validate: {

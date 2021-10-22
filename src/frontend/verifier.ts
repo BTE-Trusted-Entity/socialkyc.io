@@ -3,6 +3,7 @@ import ky from 'ky';
 import { IAttestedClaim, IEncryptedMessage } from '@kiltprotocol/types';
 
 import { getSession } from './utilities/session';
+import { paths } from '../backend/endpoints/paths';
 
 const credentialForm = document.getElementById(
   'credentialForm',
@@ -38,7 +39,7 @@ async function handleSubmit(event: Event) {
     const did = session.identity;
 
     await session.listen(async (message) => {
-      const result = await ky.post('/verify', { json: message });
+      const result = await ky.post(paths.verify, { json: message });
 
       window.removeEventListener('beforeunload', handleBeforeUnload);
 
@@ -70,7 +71,7 @@ async function handleSubmit(event: Event) {
     });
 
     const message = (await ky
-      .post('/request-credential', { json: { did, cType } })
+      .post(paths.requestCredential, { json: { did, cType } })
       .json()) as IEncryptedMessage;
 
     await session.send(message);

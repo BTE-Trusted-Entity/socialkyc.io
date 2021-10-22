@@ -17,6 +17,7 @@ import { randomAsHex } from '@polkadot/util-crypto';
 import { configuration } from '../utilities/configuration';
 import { encryptionKeystore } from '../utilities/keystores';
 import { keypairsPromise } from '../utilities/keypairs';
+import { paths } from './paths';
 
 const zodPayload = z.object({
   identity: z.string(),
@@ -80,7 +81,7 @@ function getChallenge() {
   };
 }
 
-const path = '/challenge';
+const path = paths.challenge;
 
 export const challenge: ServerRoute[] = [
   {
