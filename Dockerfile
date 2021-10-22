@@ -7,8 +7,11 @@ FROM base AS builder
 # get the sources
 COPY . ./
 
+# one of dependencies uses node-gyp which requires build tools
+RUN apk add --update --no-cache python3 g++ make && ln -sf python3 /usr/bin/python
+
 # install build dependencies, build the app
-RUN yarn install --frozen-lockfile && yarn cache clean --all && yarn build
+RUN yarn install --frozen-lockfile --ignore-optional && yarn cache clean --all && yarn build
 
 FROM base AS release
 
@@ -18,7 +21,7 @@ ENV NODE_ENV production
 # carry over the dependencies data
 COPY package.json yarn.lock ./
 # install the production dependencies only (depends on NODE_ENV)
-RUN yarn install --frozen-lockfile && yarn cache clean --all
+RUN yarn install --frozen-lockfile --ignore-optional && yarn cache clean --all
 
 # carry over the built code
 COPY --from=builder /app/dist dist
