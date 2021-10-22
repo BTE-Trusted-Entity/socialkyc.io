@@ -9,9 +9,10 @@
     "prettify": "prettier --write \"src/**/*.ts*\"",
     "lint": "eslint --max-warnings 0 --config ./.eslintrc.json \"src/**/*.ts*\"",
     "test": "jest",
-    "dev": "tsc && yarn parcel",
-    "build": "tsc && yarn parcel build --dist-dir dist/frontend",
-    "start": "echo '{\"type\":\"commonjs\"}' > dist/package.json && node dist/backend/server.js"
+    "dev": "tsc --watch & yarn parcel --dist-dir dist/frontend",
+    "build": "tsc && yarn parcel build",
+    "start": "echo '{\"type\":\"commonjs\"}' > dist/package.json && node dist/backend/server.js",
+    "dev-start": "echo '{\"type\":\"commonjs\"}' > dist/package.json && supervisor --watch dist/backend/server.js dist/backend/server.js"
   },
   "dependencies": {
     "@aws-sdk/client-ses": "^3.37.0",
@@ -62,6 +63,7 @@
     "jest": "^27.3.1",
     "parcel": "^2.0.0",
     "prettier": "^2.4.1",
+    "supervisor": "^0.12.0",
     "ts-jest": "^27.0.7",
     "typescript": "^4.4.4"
   },
