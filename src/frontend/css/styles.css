@@ -1,20 +1,5 @@
-@font-face {
-  font-family: 'Overpass Semibold';
-  src: url('../fonts/Overpass-SemiBold.ttf');
-}
-
-:root {
-  --color-magenta: #e43366;
-  --color-magenta-rgb: 228, 51, 102;
-  --color-white: #fff;
-  --color-white-rgb: 255, 255, 255;
-  --color-black-rgb: 0, 0, 0;
-  --color-grey: #797979;
-
-  font-family: 'Overpass Semibold', 'sans-serif';
-  font-size: 16px;
-  color: var(--color-white);
-}
+@import url('../components/Theme/Theme.module.css');
+@import url('../components/Typography/Typography.module.css');
 
 html,
 body {
@@ -41,7 +26,7 @@ main {
 }
 
 .left {
-  background: url('../images/logo.svg') no-repeat top 5% right 3% / auto 9%;
+  background: url('../components/Branding/logo.svg') no-repeat top 5% right 3% / auto 9%;
   position: relative;
   display: flex;
   align-items: flex-end;

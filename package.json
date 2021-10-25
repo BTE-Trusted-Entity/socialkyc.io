@@ -8,7 +8,7 @@
   "scripts": {
     "prettify": "prettier --write \"src/**/*.ts*\"",
     "lint": "eslint --max-warnings 0 --config ./.eslintrc.json \"src/**/*.ts*\"",
-    "css": "tcm --namedExports --pattern 'src/frontend/**/*.module.css'",
+    "css": "tcm --namedExports --pattern 'src/frontend/**/*.module.css' && eslint --fix --config ./.eslintrc.json \"src/**/*.css.d.ts\"",
     "test": "jest",
     "dev": "tsc --watch & yarn parcel watch --dist-dir dist/frontend",
     "build": "tsc && yarn parcel build",
