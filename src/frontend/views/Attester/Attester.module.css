@@ -107,7 +107,7 @@
   align-items: center;
   padding-bottom: 9rem;
   margin-bottom: 1rem;
-  background: url('../../images/sporran-logo.svg') no-repeat bottom;
+  background: url('../../components/Branding/sporran-logo.svg') no-repeat bottom;
 }
 
 .warning {
@@ -165,19 +165,5 @@
 }
 
 .spinner {
-  width: 3.25rem;
-  height: 3.25rem;
-  position: absolute;
-  left: 50%;
-  top: 50%;
-  transform: translate(-50%, -50%);
-}
-
-.spinner::before {
-  content: '';
-  display: inline-block;
-  width: 100%;
-  height: 100%;
-  background: url('../../images/spinner.svg') no-repeat center/auto;
-  animation: rotation 1.5s infinite linear;
+  composes: spinner from '../../components/Spinner/Spinner.module.css';
 }
