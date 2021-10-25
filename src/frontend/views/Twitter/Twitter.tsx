@@ -12,8 +12,10 @@ import ky from 'ky';
 import { IEncryptedMessage } from '@kiltprotocol/types';
 import { StatusCodes } from 'http-status-codes';
 
-import { getSession } from './utilities/session';
-import { usePreventNavigation } from './utilities/usePreventNavigation';
+import { getSession } from '../../utilities/session';
+import { usePreventNavigation } from '../../utilities/usePreventNavigation';
+
+import * as styles from './Twitter.module.css';
 
 interface RequestAttestationData {
   key: string;
@@ -88,12 +90,15 @@ export function Twitter(): JSX.Element {
             (await result.json()) as RequestAttestationData;
           setCode(code);
 
-          const json = { key, twitter, did: session.identity };
           const attestationData = (await ky
-            .post('./attest-twitter', { json })
+            .post('./attest-twitter', {
+              json: { key, twitter, did: session.identity },
+            })
             .json()) as AttestationData;
 
           console.log('Attestation data: ', attestationData);
+
+          // TODO: https://kiltprotocol.atlassian.net/browse/SK-521
         });
 
         const json = {
@@ -125,18 +130,20 @@ export function Twitter(): JSX.Element {
   useHandleOutsideClick(explainerRef, setShowExplainer);
 
   return (
-    <li className={cx('expandableItem', { expanded })}>
-      <p className="itemLabel">
+    <li
+      className={cx(styles.expandableItem, {
+        [styles.expanded]: expanded,
+        [styles.processing]: processing,
+      })}
+    >
+      {processing && <div className={styles.spinner}></div>}
+      <p className={styles.itemLabel}>
         <Switch>
           <Route path="/twitter">
-            <Link to="/" type="button" className="button accordion opened" />
+            <Link to="/" type="button" className={styles.accordion} />
           </Route>
           <Route>
-            <Link
-              to="/twitter"
-              type="button"
-              className="button accordion closed"
-            />
+            <Link to="/twitter" type="button" className={styles.closed} />
           </Route>
         </Switch>
         Twitter
@@ -144,12 +151,12 @@ export function Twitter(): JSX.Element {
       <Route path="/twitter">
         <section>
           {!code && (
-            <form className="form" onSubmit={handleSubmit}>
-              <label className="formLabel">
+            <form className={styles.form} onSubmit={handleSubmit}>
+              <label className={styles.formLabel}>
                 Your Twitter handle
-                <div className="formInput twitterInputContainer">
+                <div className={styles.twitterInputContainer}>
                   <input
-                    className="twitterInput"
+                    className={styles.twitterInput}
                     onInput={handleInput}
                     type="text"
                     name="twitterHandle"
@@ -157,10 +164,12 @@ export function Twitter(): JSX.Element {
                   />
                 </div>
               </label>
-              <p className="subline">Validity: one year ({expiryDate})</p>
+              <p className={styles.subline}>
+                Validity: one year ({expiryDate})
+              </p>
               <button
                 type="submit"
-                className="button buttonPrimary chooseIdentity"
+                className={styles.chooseIdentity}
                 disabled={!twitterHandle}
               >
                 Choose Sporran Identity
@@ -170,13 +179,13 @@ export function Twitter(): JSX.Element {
         </section>
       </Route>
       {expanded && (
-        <div className="explainerContainer" ref={explainerRef}>
+        <div className={styles.explainerContainer} ref={explainerRef}>
           <button
-            className="button showExplainer"
+            className={styles.toggleExplainer}
             onClick={handleToggleExplainer}
           ></button>
           {showExplainer && (
-            <p className="explainer">
+            <p className={styles.explainer}>
               After you typed in your Twitter handle, please choose an identity
               in your wallet to associate with your Twitter credential. In order
               to verify your credential we will prompt you to Tweet from this

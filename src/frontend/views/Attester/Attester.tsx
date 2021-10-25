@@ -6,7 +6,7 @@ import { apiWindow, getSession } from '../../utilities/session';
 import { usePreventNavigation } from '../../utilities/usePreventNavigation';
 
 import { Email } from '../Email/Email';
-import { Twitter } from '../Twitter';
+import { Twitter } from '../Twitter/Twitter';
 
 import * as styles from './Attester.module.css';
 
@@ -99,7 +99,11 @@ export function Attester(): JSX.Element {
 
         {hasSporran && !authorized && (
           <section className={styles.connectContainer}>
-            <div className={cx('connect', { processing })}>
+            <div
+              className={cx(styles.connect, {
+                [styles.processing]: processing,
+              })}
+            >
               <p className={styles.subline}>
                 Please authorize access to your wallet
               </p>

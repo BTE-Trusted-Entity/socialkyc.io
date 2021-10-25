@@ -1,0 +1,99 @@
+.expandableItem {
+  composes: expandableItem from '../../components/Expandable/Expandable.module.css';
+}
+
+.expanded {
+  composes: expanded from '../../components/Expandable/Expandable.module.css';
+}
+
+.itemLabel {
+  display: inline-flex;
+  align-items: center;
+  margin: 0;
+}
+
+.accordion {
+  composes: accordion from '../../components/Accordion/Accordion.module.css';
+}
+
+.closed {
+  composes: closed from '../../components/Accordion/Accordion.module.css';
+}
+
+.form {
+  display: flex;
+  flex-direction: column;
+  margin-top: 2.25rem;
+}
+
+.formLabel {
+  font-size: 0.875rem;
+}
+
+.twitterInputContainer {
+  composes: input from '../../components/Input/Input.module.css';
+  display: flex;
+  align-items: center;
+}
+
+.twitterInputContainer::before {
+  content: '@';
+  font-size: 0.875rem;
+}
+
+.twitterInput {
+  width: 100%;
+  background: transparent;
+  color: inherit;
+  font-size: inherit;
+  border: none;
+}
+
+.subline {
+  font-size: 0.875rem;
+  margin-bottom: 1.25rem;
+}
+
+.chooseIdentity {
+  composes: buttonPrimary from '../../components/Button/Button.module.css';
+  margin-top: 7rem;
+}
+
+.explainerContainer {
+  position: absolute;
+  top: 1.75rem;
+  right: 0.75rem;
+  width: 80%;
+  margin: 0;
+  display: flex;
+  justify-content: flex-end;
+}
+
+.toggleExplainer {
+  composes: button from '../../components/Button/Button.module.css';
+  width: 0.875rem;
+  height: 0.875rem;
+  margin-right: 1.5rem;
+  margin-bottom: 0.5rem;
+  background: url('../../images/info.svg') no-repeat center/100%;
+}
+
+.explainer {
+  position: absolute;
+  top: 0.5rem;
+  border: 0.75px solid var(--color-white);
+  border-radius: 0.625rem;
+  background-color: var(--color-magenta);
+  color: var(--color-white);
+  font-size: 0.875rem;
+  padding: 0.75rem;
+  line-height: 1.375rem;
+}
+
+.processing {
+  filter: blur(5px);
+}
+
+.spinner {
+  composes: spinner from '../../components/Spinner/Spinner.module.css';
+}
