@@ -1,4 +1,4 @@
-import { useCallback, useState } from 'react';
+import { useCallback, useState, Fragment } from 'react';
 import { Switch, useLocation, Route } from 'react-router';
 import { Link } from 'react-router-dom';
 import cx from 'classnames';
@@ -151,12 +151,12 @@ export function Twitter(): JSX.Element {
       </Route>
       {expanded && (
         <Explainer>
-          <p className={styles.explainer}>
+          <>
             After you typed in your Twitter handle, please choose an identity in
             your wallet to associate with your Twitter credential. In order to
             verify your credential we will prompt you to Tweet from this
             account.
-          </p>
+          </>
         </Explainer>
       )}
     </li>

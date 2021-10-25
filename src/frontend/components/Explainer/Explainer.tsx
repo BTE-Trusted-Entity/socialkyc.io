@@ -26,7 +26,7 @@ export function Explainer({ children }: Props): JSX.Element {
         className={styles.toggleExplainer}
         onClick={handleToggleExplainer}
       ></button>
-      {showExplainer && children}
+      {showExplainer && <p className={styles.explainer}>{children}</p>}
     </div>
   );
 }
