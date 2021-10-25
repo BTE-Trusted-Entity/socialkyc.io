@@ -10,4 +10,3 @@ export const emailForm: string;
 export const formLabel: string;
 export const formInput: string;
 export const success: string;
-

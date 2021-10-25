@@ -23,4 +23,3 @@ export const connect: string;
 export const processing: string;
 export const spinner: string;
 export const rotation: string;
-
