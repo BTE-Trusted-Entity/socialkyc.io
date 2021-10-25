@@ -1,0 +1,30 @@
+.button {
+  border: none;
+  cursor: pointer;
+}
+
+.buttonPrimary {
+  composes: button;
+  height: 2rem;
+  padding: 0 1.75rem;
+  align-self: center;
+  display: inline-flex;
+  justify-content: center;
+  align-items: center;
+  border-radius: 1rem;
+  font-size: 0.875rem;
+  text-transform: uppercase;
+  color: var(--color-white);
+  background-color: var(--color-magenta);
+  box-shadow: 2px 2px 3px 1px rgba(var(--color-black-rgb), 0.15),
+    -2px -2px 3px 1px rgba(var(--color-white-rgb), 0.3);
+  text-decoration: none;
+}
+
+.buttonPrimary:active {
+  transform: translateY(2px);
+}
+
+.buttonPrimary:disabled {
+  background-color: var(--color-grey);
+}
