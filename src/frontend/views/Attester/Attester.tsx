@@ -120,8 +120,8 @@ export function Attester(): JSX.Element {
           <section className={styles.lists}>
             <h2 className={styles.subline}>Featured Credentials</h2>
             <ul className={styles.mediaList}>
-              <Email />
               <Twitter />
+              <Email />
             </ul>
           </section>
         )}

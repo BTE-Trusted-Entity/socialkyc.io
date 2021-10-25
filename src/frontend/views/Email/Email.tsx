@@ -107,7 +107,7 @@ export function Email(): JSX.Element {
             </Link>
           </div>
         ) : (
-          <form className={styles.emailForm} onSubmit={handleSubmit}>
+          <form className={styles.form} onSubmit={handleSubmit}>
             <label className={styles.formLabel}>
               Your full name
               <input

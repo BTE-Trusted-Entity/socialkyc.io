@@ -23,7 +23,7 @@ import { paths } from './paths';
 async function handler(
   request: Request,
   h: ResponseToolkit,
-): Promise<ResponseObject | string> {
+): Promise<ResponseObject> {
   const encrypted = request.payload as Payload;
   const message = await decryptMessage(encrypted);
 
@@ -54,7 +54,7 @@ async function handler(
   const confirmation = makeControlledPromise<void>();
   tweetsListeners[username] = [code, confirmation];
 
-  return code;
+  return h.response({ key, code, username });
 }
 
 export const requestTwitter: ServerRoute = {
