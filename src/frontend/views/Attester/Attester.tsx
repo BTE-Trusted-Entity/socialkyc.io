@@ -1,22 +1,17 @@
-import { useEffect, useState, useCallback } from 'react';
-import { render } from 'react-dom';
-import {
-  Link,
-  MemoryRouter,
-  Route,
-  Switch,
-  useLocation,
-} from 'react-router-dom';
+import { useCallback, useEffect, useState } from 'react';
+import { Link, Route, Switch, useLocation } from 'react-router-dom';
 import cx from 'classnames';
 import { detect } from 'detect-browser';
 
-import { apiWindow, getSession } from './utilities/session';
+import { apiWindow, getSession } from '../../utilities/session';
 import {
   addUnloadListener,
   removeUnloadListener,
-} from './utilities/unloadListener';
+} from '../../utilities/unloadListener';
 
-import { Email } from './Email';
+import { Email } from '../Email/Email';
+
+import * as styles from './Attester.module.css';
 
 interface HasSporran {
   data?: {
@@ -59,7 +54,7 @@ function usePreventNavigation(active: boolean) {
   }, [active]);
 }
 
-function App(): JSX.Element {
+export function Attester(): JSX.Element {
   const { pathname } = useLocation();
 
   const browser = detect();
@@ -100,66 +95,60 @@ function App(): JSX.Element {
   }, []);
 
   return (
-    <div className="leftContainer">
-      <h1 className="heading">Your IDENTITY, back in your hands!</h1>
-      <div className="scrollContainer">
-        <section className="info">
-          <p className="subline">
+    <div className={styles.leftContainer}>
+      <h1 className={styles.heading}>Your IDENTITY, back in your hands!</h1>
+      <div className={styles.scrollContainer}>
+        <section className={styles.info}>
+          <p className={styles.subline}>
             Create your decentralized social credentials here. Your personal
             data will be anchored on the KILT blockchain and only you will
             decide who can access it.
           </p>
-          <p className="subline">
+          <p className={styles.subline}>
             SocialKYC does not store, share or sell any of your data.
             <br />
             The service forgets about you after verifying your identity.
           </p>
         </section>
 
-        {!data && <div className="spinner"></div>}
+        {!data && <div className={styles.spinner}></div>}
 
         {hasSporran && !authorized && (
-          <section className="connectContainer">
+          <section className={styles.connectContainer}>
             <div className={cx('connect', { processing })}>
-              <p className="subline">Please authorize access to your wallet</p>
+              <p className={styles.subline}>
+                Please authorize access to your wallet
+              </p>
               <button
                 type="button"
-                className="button buttonPrimary"
+                className={styles.buttonPrimary}
                 onClick={handleConnectClick}
                 disabled={processing}
               >
                 Connect to wallet
               </button>
             </div>
-            {processing && <div className="spinner"></div>}
+            {processing && <div className={styles.spinner}></div>}
           </section>
         )}
 
         {hasSporran && authorized && (
-          <section className="lists">
-            <h2 className="subline ">Featured Credentials</h2>
-            <ul className="mediaList">
+          <section className={styles.lists}>
+            <h2 className={styles.subline}>Featured Credentials</h2>
+            <ul className={styles.mediaList}>
               <Email />
               <li
-                className={cx('expandableItem', {
-                  expanded: pathname === '/twitter',
+                className={cx(styles.expandableItem, {
+                  [styles.expanded]: pathname === '/twitter',
                 })}
               >
-                <p className="itemLabel">
+                <p className={styles.itemLabel}>
                   <Switch>
                     <Route path="/twitter">
-                      <Link
-                        to="/"
-                        type="button"
-                        className="button accordion opened"
-                      />
+                      <Link to="/" type="button" className={styles.accordion} />
                     </Route>
                     <Route>
-                      <Link
-                        to=""
-                        type="button"
-                        className="button accordion closed"
-                      />
+                      <Link to="" type="button" className={styles.closed} />
                     </Route>
                   </Switch>
                   Twitter
@@ -170,21 +159,21 @@ function App(): JSX.Element {
         )}
 
         {showWebstoreLink && (
-          <section className="install">
-            <p className="warning">
+          <section className={styles.install}>
+            <p className={styles.warning}>
               Please make sure to have a wallet extension installed for your
               browser. We recommend the Sporran extension that you can download
               and install here:
             </p>
             {browser.name === 'chrome' && (
               <a
-                className="button webstore chrome"
+                className={styles.chrome}
                 href="https://chrome.google.com/webstore/detail/djdnajgjcbjhhbdblkegbcgodlkkfhcl"
               />
             )}
             {browser.name === 'firefox' && (
               <a
-                className=" button webstore firefox"
+                className={styles.firefox}
                 href="https://addons.mozilla.org/firefox/addon/sporran/"
               />
             )}
@@ -192,12 +181,12 @@ function App(): JSX.Element {
         )}
 
         {showWebsiteLink && (
-          <section className="install ">
-            <p className="warning">
+          <section className={styles.install}>
+            <p className={styles.warning}>
               Please make sure to have a wallet extension installed for your
               browser. We recommend the
               <br />
-              <a className="textLink" href="https://www.sporran.org/">
+              <a className={styles.textLink} href="https://www.sporran.org/">
                 Sporran extension.
               </a>
             </p>
@@ -209,10 +198,3 @@ function App(): JSX.Element {
     </div>
   );
 }
-
-render(
-  <MemoryRouter>
-    <App />
-  </MemoryRouter>,
-  document.querySelector('.left'),
-);

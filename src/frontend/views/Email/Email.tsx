@@ -6,12 +6,14 @@ import ky from 'ky';
 import { StatusCodes } from 'http-status-codes';
 import { IEncryptedMessage } from '@kiltprotocol/types';
 
-import { getSession } from './utilities/session';
+import { getSession } from '../../utilities/session';
 import {
   addUnloadListener,
   removeUnloadListener,
-} from './utilities/unloadListener';
-import { paths } from '../backend/endpoints/paths';
+} from '../../utilities/unloadListener';
+import { paths } from '../../../backend/endpoints/paths';
+
+import * as styles from './Email.module.css';
 
 export function Email(): JSX.Element {
   const { pathname } = useLocation();
@@ -78,42 +80,38 @@ export function Email(): JSX.Element {
 
   return (
     <li
-      className={cx('expandableItem', {
-        expanded: pathname === '/email',
+      className={cx(styles.expandableItem, {
+        [styles.expanded]: pathname === '/email',
       })}
     >
-      <p className="itemLabel">
+      <p className={styles.itemLabel}>
         <Switch>
           <Route path="/email">
-            <Link to="/" type="button" className="button accordion opened" />
+            <Link to="/" type="button" className={styles.accordion} />
           </Route>
           <Route>
-            <Link
-              to="/email"
-              type="button"
-              className="button accordion closed"
-            />
+            <Link to="/email" type="button" className={styles.closed} />
           </Route>
         </Switch>
         Email
       </p>
       <Route path="/email">
         {email ? (
-          <div className="success">
+          <div className={styles.success}>
             <p>
               We’ve sent an email to <strong>{email}</strong>
             </p>
             <p>Please check your inbox!</p>
-            <Link to="/" type="button" className="button buttonPrimary">
+            <Link to="/" type="button" className={styles.buttonPrimary}>
               OK
             </Link>
           </div>
         ) : (
-          <form className="emailForm" onSubmit={handleSubmit}>
-            <label className="formLabel">
+          <form className={styles.emailForm} onSubmit={handleSubmit}>
+            <label className={styles.formLabel}>
               Your full name
               <input
-                className="formInput"
+                className={styles.formInput}
                 onInput={handleNameInput}
                 type="text"
                 name="name"
@@ -121,10 +119,10 @@ export function Email(): JSX.Element {
               />
             </label>
 
-            <label className="formLabel">
+            <label className={styles.formLabel}>
               Your email address
               <input
-                className="formInput"
+                className={styles.formInput}
                 onInput={handleEmailInput}
                 type="email"
                 name="email"
@@ -134,7 +132,7 @@ export function Email(): JSX.Element {
 
             <button
               type="submit"
-              className="button buttonPrimary chooseIdentity"
+              className={styles.chooseIdentity}
               disabled={!nameInput || !emailInput}
             >
               Choose Sporran Identity

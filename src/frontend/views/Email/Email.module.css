@@ -1,0 +1,60 @@
+.accordion {
+  composes: accordion from '../../components/Accordion/Accordion.module.css';
+}
+
+.closed {
+  composes: closed from '../../components/Accordion/Accordion.module.css';
+}
+
+.buttonPrimary {
+  composes: buttonPrimary from '../../components/Button/Button.module.css';
+}
+
+.expandableItem {
+  composes: expandableItem from '../../components/Expandable/Expandable.module.css';
+}
+
+.expanded {
+  composes: expanded from '../../components/Expandable/Expandable.module.css';
+}
+
+.chooseIdentity {
+  composes: buttonPrimary;
+  margin: 4rem 0 4rem 0;
+}
+
+.itemLabel {
+  display: inline-flex;
+  align-items: center;
+  margin: 0;
+}
+
+.emailForm {
+  display: flex;
+  flex-direction: column;
+  margin-top: 2.25rem;
+}
+
+.formLabel {
+  font-size: 0.875rem;
+}
+
+.formInput {
+  font-size: 0.875rem;
+  display: block;
+  width: 85%;
+  height: 2.125rem;
+  border: 0.75px solid var(--color-white);
+  border-radius: 0.625rem;
+  background: rgba(187, 41, 75, 0.35);
+  color: var(--color-white);
+  box-shadow: 2px 2px 4px 0 rgba(var(--color-black-rgb), 0.3),
+    -2px -2px 4px 0 rgba(var(--color-white-rgb), 0.3);
+  margin-bottom: 1.25rem;
+  margin-top: 0.25rem;
+  padding-left: 0.5rem;
+}
+
+.success {
+  text-align: center;
+}
