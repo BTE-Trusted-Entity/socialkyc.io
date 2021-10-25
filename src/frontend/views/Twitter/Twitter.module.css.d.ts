@@ -10,8 +10,6 @@ export const twitterInputContainer: string;
 export const twitterInput: string;
 export const subline: string;
 export const chooseIdentity: string;
-export const explainerContainer: string;
-export const toggleExplainer: string;
 export const explainer: string;
 export const processing: string;
 export const spinner: string;

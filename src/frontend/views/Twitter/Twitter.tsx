@@ -1,10 +1,4 @@
-import {
-  useCallback,
-  useRef,
-  useState,
-  useEffect,
-  MutableRefObject,
-} from 'react';
+import { useCallback, useState } from 'react';
 import { Switch, useLocation, Route } from 'react-router';
 import { Link } from 'react-router-dom';
 import cx from 'classnames';
@@ -14,6 +8,8 @@ import { StatusCodes } from 'http-status-codes';
 
 import { getSession } from '../../utilities/session';
 import { usePreventNavigation } from '../../utilities/usePreventNavigation';
+
+import { Explainer } from '../../components/Explainer/Explainer';
 
 import * as styles from './Twitter.module.css';
 
@@ -32,21 +28,6 @@ interface AttestationData {
 const expiryDate = new Date(
   new Date().setFullYear(new Date().getFullYear() + 1),
 ).toLocaleDateString();
-
-function useHandleOutsideClick(
-  ref: MutableRefObject<HTMLElement>,
-  showRef: (value: React.SetStateAction<boolean>) => void,
-): void {
-  useEffect(() => {
-    function handleOutsideClick(event) {
-      if (ref.current && !ref.current.contains(event.target)) {
-        showRef(false);
-      }
-    }
-    document.addEventListener('mousedown', handleOutsideClick);
-    return () => document.removeEventListener('mousedown', handleOutsideClick);
-  }, [ref, showRef]);
-}
 
 export function Twitter(): JSX.Element {
   const { pathname } = useLocation();
@@ -71,7 +52,6 @@ export function Twitter(): JSX.Element {
       try {
         const session = await getSession();
 
-        //TODO: listen
         await session.listen(async (message) => {
           const result = await ky.post('/request-attestation-twitter', {
             json: message,
@@ -119,15 +99,6 @@ export function Twitter(): JSX.Element {
     },
     [twitterHandle],
   );
-
-  const [showExplainer, setShowExplainer] = useState(false);
-
-  const handleToggleExplainer = useCallback(() => {
-    setShowExplainer(!showExplainer);
-  }, [showExplainer]);
-
-  const explainerRef = useRef();
-  useHandleOutsideClick(explainerRef, setShowExplainer);
 
   return (
     <li
@@ -179,20 +150,14 @@ export function Twitter(): JSX.Element {
         </section>
       </Route>
       {expanded && (
-        <div className={styles.explainerContainer} ref={explainerRef}>
-          <button
-            className={styles.toggleExplainer}
-            onClick={handleToggleExplainer}
-          ></button>
-          {showExplainer && (
-            <p className={styles.explainer}>
-              After you typed in your Twitter handle, please choose an identity
-              in your wallet to associate with your Twitter credential. In order
-              to verify your credential we will prompt you to Tweet from this
-              account.
-            </p>
-          )}
-        </div>
+        <Explainer>
+          <p className={styles.explainer}>
+            After you typed in your Twitter handle, please choose an identity in
+            your wallet to associate with your Twitter credential. In order to
+            verify your credential we will prompt you to Tweet from this
+            account.
+          </p>
+        </Explainer>
       )}
     </li>
   );
