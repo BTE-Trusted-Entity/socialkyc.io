@@ -1,6 +1,5 @@
 import { useCallback, useState } from 'react';
-import { Switch, useLocation, Route } from 'react-router';
-import { Link } from 'react-router-dom';
+import { Link, Switch, useLocation, Route } from 'react-router-dom';
 import cx from 'classnames';
 import ky from 'ky';
 import { IEncryptedMessage } from '@kiltprotocol/types';

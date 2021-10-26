@@ -1,6 +1,5 @@
 import { useCallback, useState } from 'react';
-import { Route, Switch, useLocation } from 'react-router';
-import { Link } from 'react-router-dom';
+import { Link, Route, Switch, useLocation } from 'react-router-dom';
 import cx from 'classnames';
 import ky from 'ky';
 import { StatusCodes } from 'http-status-codes';
