@@ -1,15 +1,12 @@
 import { useCallback, useEffect, useState } from 'react';
-import { Link, Route, Switch, useLocation } from 'react-router-dom';
 import cx from 'classnames';
 import { detect } from 'detect-browser';
 
 import { apiWindow, getSession } from '../../utilities/session';
-import {
-  addUnloadListener,
-  removeUnloadListener,
-} from '../../utilities/unloadListener';
+import { usePreventNavigation } from '../../utilities/usePreventNavigation';
 
 import { Email } from '../Email/Email';
+import { Twitter } from '../Twitter/Twitter';
 
 import * as styles from './Attester.module.css';
 
@@ -44,19 +41,7 @@ function useHasSporran(): HasSporran {
   return typeof hasSporran === 'boolean' ? { data: { hasSporran } } : {};
 }
 
-function usePreventNavigation(active: boolean) {
-  useEffect(() => {
-    if (active) {
-      addUnloadListener();
-    } else {
-      removeUnloadListener();
-    }
-  }, [active]);
-}
-
 export function Attester(): JSX.Element {
-  const { pathname } = useLocation();
-
   const browser = detect();
 
   const isDesktop =
@@ -77,7 +62,6 @@ export function Attester(): JSX.Element {
   const [authorized, setAuthorized] = useState(false);
 
   const [processing, setProcessing] = useState(false);
-
   usePreventNavigation(processing);
 
   const handleConnectClick = useCallback(async (event) => {
@@ -115,7 +99,11 @@ export function Attester(): JSX.Element {
 
         {hasSporran && !authorized && (
           <section className={styles.connectContainer}>
-            <div className={cx('connect', { processing })}>
+            <div
+              className={cx(styles.connect, {
+                [styles.processing]: processing,
+              })}
+            >
               <p className={styles.subline}>
                 Please authorize access to your wallet
               </p>
@@ -136,24 +124,8 @@ export function Attester(): JSX.Element {
           <section className={styles.lists}>
             <h2 className={styles.subline}>Featured Credentials</h2>
             <ul className={styles.mediaList}>
+              <Twitter />
               <Email />
-              <li
-                className={cx(styles.expandableItem, {
-                  [styles.expanded]: pathname === '/twitter',
-                })}
-              >
-                <p className={styles.itemLabel}>
-                  <Switch>
-                    <Route path="/twitter">
-                      <Link to="/" type="button" className={styles.accordion} />
-                    </Route>
-                    <Route>
-                      <Link to="" type="button" className={styles.closed} />
-                    </Route>
-                  </Switch>
-                  Twitter
-                </p>
-              </li>
             </ul>
           </section>
         )}

@@ -1,0 +1,15 @@
+.input {
+  font-size: 0.875rem;
+  display: block;
+  width: 85%;
+  height: 2.125rem;
+  border: 0.75px solid var(--color-white);
+  border-radius: 0.625rem;
+  background: rgba(187, 41, 75, 0.35);
+  color: var(--color-white);
+  box-shadow: 2px 2px 4px 0 rgba(var(--color-black-rgb), 0.3),
+    -2px -2px 4px 0 rgba(var(--color-white-rgb), 0.3);
+  margin-bottom: 1.25rem;
+  margin-top: 0.25rem;
+  padding: 0 0.5rem 0 0.5rem;
+}

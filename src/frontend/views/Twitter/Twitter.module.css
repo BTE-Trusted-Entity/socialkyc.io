@@ -1,0 +1,73 @@
+.expandableItem {
+  composes: expandableItem from '../../components/Expandable/Expandable.module.css';
+}
+
+.expanded {
+  composes: expanded from '../../components/Expandable/Expandable.module.css';
+}
+
+.itemLabel {
+  display: inline-flex;
+  align-items: center;
+  margin: 0;
+}
+
+.accordion {
+  composes: accordion from '../../components/Accordion/Accordion.module.css';
+}
+
+.closed {
+  composes: closed from '../../components/Accordion/Accordion.module.css';
+}
+
+.form {
+  display: flex;
+  flex-direction: column;
+  margin-top: 2.25rem;
+}
+
+.formLabel {
+  font-size: 0.875rem;
+}
+
+.twitterInputContainer {
+  composes: input from '../../components/Input/Input.module.css';
+  display: flex;
+  align-items: center;
+}
+
+.twitterInputContainer::before {
+  content: '@';
+  font-size: 0.875rem;
+}
+
+.twitterInput {
+  width: 100%;
+  background: transparent;
+  color: inherit;
+  font-size: inherit;
+  border: none;
+  padding: 0.25rem 0.25rem 0.25rem 0;
+}
+
+.subline {
+  font-size: 0.875rem;
+  margin-bottom: 1.25rem;
+}
+
+.chooseIdentity {
+  composes: buttonPrimary from '../../components/Button/Button.module.css';
+  margin-top: 7rem;
+}
+
+.explainer {
+  composes: explainer from '../../components/Explainer/Explainer.module.css';
+}
+
+.processing {
+  filter: blur(5px);
+}
+
+.spinner {
+  composes: spinner from '../../components/Spinner/Spinner.module.css';
+}

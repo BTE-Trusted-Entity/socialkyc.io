@@ -26,7 +26,8 @@ main {
 }
 
 .left {
-  background: url('../components/Branding/logo.svg') no-repeat top 5% right 3% / auto 9%;
+  background: url('../components/Branding/logo.svg') no-repeat top 5% right 3% /
+    auto 9%;
   position: relative;
   display: flex;
   align-items: flex-end;

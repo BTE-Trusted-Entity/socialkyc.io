@@ -7,10 +7,8 @@ import { StatusCodes } from 'http-status-codes';
 import { IEncryptedMessage } from '@kiltprotocol/types';
 
 import { getSession } from '../../utilities/session';
-import {
-  addUnloadListener,
-  removeUnloadListener,
-} from '../../utilities/unloadListener';
+import { usePreventNavigation } from '../../utilities/usePreventNavigation';
+
 import { paths } from '../../../backend/endpoints/paths';
 
 import * as styles from './Email.module.css';
@@ -31,10 +29,13 @@ export function Email(): JSX.Element {
 
   const [email, setEmail] = useState('');
 
+  const [processing, setProcessing] = useState(false);
+  usePreventNavigation(processing);
+
   const handleSubmit = useCallback(
     async (event) => {
       event.preventDefault();
-      addUnloadListener();
+      setProcessing(true);
 
       try {
         const session = await getSession();
@@ -42,8 +43,6 @@ export function Email(): JSX.Element {
           const result = await ky.post(paths.requestAttestationEmail, {
             json: message,
           });
-
-          removeUnloadListener();
 
           if (result.status === StatusCodes.ACCEPTED) {
             console.log('Terms rejected');
@@ -72,7 +71,8 @@ export function Email(): JSX.Element {
         await session.send(message);
       } catch (error) {
         console.error(error);
-        removeUnloadListener();
+      } finally {
+        setProcessing(false);
       }
     },
     [nameInput, emailInput],
@@ -107,7 +107,7 @@ export function Email(): JSX.Element {
             </Link>
           </div>
         ) : (
-          <form className={styles.emailForm} onSubmit={handleSubmit}>
+          <form className={styles.form} onSubmit={handleSubmit}>
             <label className={styles.formLabel}>
               Your full name
               <input

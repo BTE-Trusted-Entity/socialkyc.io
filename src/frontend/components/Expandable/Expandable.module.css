@@ -1,9 +1,10 @@
 .expandableItem {
   width: 100%;
   box-sizing: border-box;
-  padding-top: 0.75rem;
+  padding-top: 1.5rem;
   padding-left: 2rem;
   padding-right: 2rem;
+  margin-bottom: 0.5rem;
 }
 
 .expanded {
@@ -11,4 +12,5 @@
   background-color: rgba(187, 41, 75, 0.1);
   box-shadow: 0 0 10px 0 rgba(var(--color-white-rgb), 0.3);
   border-radius: 0.625rem;
+  position: relative;
 }
