@@ -151,12 +151,9 @@ export function Twitter(): JSX.Element {
       </Route>
       {expanded && (
         <Explainer>
-          <>
-            After you type in your Twitter handle, please choose an identity in
-            your wallet to associate with your Twitter credential. In order to
-            verify your credential we will prompt you to Tweet from this
-            account.
-          </>
+          After you type in your Twitter handle, please choose an identity in
+          your wallet to associate with your Twitter credential. In order to
+          verify your credential we will prompt you to Tweet from this account.
         </Explainer>
       )}
     </li>
