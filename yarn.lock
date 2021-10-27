@@ -2066,12 +2066,35 @@
     "@polkadot/types" "^5.4.1"
     tweetnacl "^1.0.3"
 
+"@kiltprotocol/types@0.24.0-6":
+  version "0.24.0-6"
+  resolved "https://registry.yarnpkg.com/@kiltprotocol/types/-/types-0.24.0-6.tgz#7f15e9a7d083439d48021c68558b6c8a1a2fdfed"
+  integrity sha512-IIPgx0pJ/3xrg5diRyGOLc/tachsmGVtMZhQ7nGeIKXIgj+x2sftCkX5FRw/ZiAUZIAUriByDfFVOMBPQU/Jdw==
+  dependencies:
+    "@polkadot/api" "^5.4.1"
+    "@polkadot/keyring" "^7.1.2"
+    "@polkadot/types" "^5.4.1"
+    tweetnacl "^1.0.3"
+
 "@kiltprotocol/utils@0.24.0-5":
   version "0.24.0-5"
   resolved "https://registry.yarnpkg.com/@kiltprotocol/utils/-/utils-0.24.0-5.tgz#8b650d9d60808fc420c966dfc14de570f59020d8"
   integrity sha512-1VnzVOrVYsNG0uLOC0fFDw2T/RQZXglE2ZM+tyZ223Opgv7IO1P8kk0eGyxSV0fTc/ftXCioSKJIMR0QE95hYw==
   dependencies:
     "@kiltprotocol/types" "0.24.0-5"
+    "@polkadot/keyring" "^7.1.2"
+    "@polkadot/types" "^5.4.1"
+    "@polkadot/util" "^7.1.2"
+    "@polkadot/util-crypto" "^7.1.2"
+    tweetnacl "^1.0.3"
+    uuid "^8.1.0"
+
+"@kiltprotocol/utils@0.24.0-6":
+  version "0.24.0-6"
+  resolved "https://registry.yarnpkg.com/@kiltprotocol/utils/-/utils-0.24.0-6.tgz#4b6703005bbe3ff980fbc94b01648fa5fda43c21"
+  integrity sha512-QCUMiUhR/PvdDFqqOu76rk43GECnIYACJ7ZRIomSRkstBL9FOUKWJU/4FHiI1XfN9J53VWEcDzAq6i3Q3CHSvg==
+  dependencies:
+    "@kiltprotocol/types" "0.24.0-6"
     "@polkadot/keyring" "^7.1.2"
     "@polkadot/types" "^5.4.1"
     "@polkadot/util" "^7.1.2"
@@ -9970,7 +9993,7 @@ youch@~2.0.10:
     mustache "^3.0.0"
     stack-trace "0.0.10"
 
-zod@^3.11.4:
-  version "3.11.4"
-  resolved "https://registry.yarnpkg.com/zod/-/zod-3.11.4.tgz#20346a8fe4fc50a62d38ccf021cae99fe4d18930"
-  integrity sha512-mXwAZ1otD0Q7WbXTqP5CgkTa6dXXDD2Yq9PCTbcb5dfxXrHgt6UTh5y7ZKTK8H3f8eElzYOVsFyMfzmGKGhiLQ==
+zod@^3.11.6:
+  version "3.11.6"
+  resolved "https://registry.yarnpkg.com/zod/-/zod-3.11.6.tgz#e43a5e0c213ae2e02aefe7cb2b1a6fa3d7f1f483"
+  integrity sha512-daZ80A81I3/9lIydI44motWe6n59kRBfNzTuS2bfzVh1nAXi667TOTWWtatxyG+fwgNUiagSj/CWZwRRbevJIg==
