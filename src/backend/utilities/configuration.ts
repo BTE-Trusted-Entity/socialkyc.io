@@ -16,7 +16,7 @@ if (!region || !accessKeyId || !secretAccessKey) {
 
 const twitterSecretBearerToken = env.TWITTER_SECRET_BEARER_TOKEN;
 if (!twitterSecretBearerToken) {
-  throw new Error('No base URI provided');
+  throw new Error('No Twitter token provided');
 }
 
 const baseUri = env.URL;
