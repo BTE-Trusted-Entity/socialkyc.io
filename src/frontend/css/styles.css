@@ -50,7 +50,7 @@ main {
 
 .rightContainer::before {
   content: '';
-  background: url('../images/hexagon.jpg') no-repeat center/cover;
+  background: url('../images/hexagons/phones.jpg') no-repeat center/cover;
   clip-path: polygon(
     40.17% 0.37%,
     89.98% 17.02%,
@@ -64,22 +64,27 @@ main {
   display: block;
 }
 
-.large {
-  font-size: 4rem;
-}
-
-.tagline {
+.rightHeadline {
   position: absolute;
   top: 15%;
   left: 10%;
   display: flex;
   flex-direction: column;
-  font-size: 1.5rem;
-  line-height: 2.25rem;
+  font-size: 1rem;
+  line-height: 1.25;
 }
 
-.textRight {
-  padding-left: 7rem;
+.rightHeadlineTop {
+  font-size: 1.5em;
+}
+
+.large {
+  font-size: 2.75em;
+}
+
+.rightHeadlineBottom {
+  font-size: 1.5em;
+  padding-left: 7em;
 }
 
 footer {
@@ -109,4 +114,42 @@ footer {
 .navItem:first-child::after {
   content: ' | ';
   color: var(--color-magenta);
+}
+
+@media screen and (max-width: 1500px) {
+  .rightHeadline {
+    font-size: 0.9rem;
+  }
+}
+
+@media screen and (max-width: 1400px) {
+  .rightHeadline {
+    font-size: 0.8rem;
+  }
+}
+
+@media screen and (max-width: 1300px) {
+  .rightHeadline {
+    font-size: 0.7rem;
+  }
+}
+
+@media screen and (max-width: 1200px) {
+  .rightHeadline {
+    font-size: 0.6rem;
+  }
+}
+
+@media screen and (max-width: 950px) {
+  .leftHeadline,
+  .rightHeadline {
+    font-size: 0.5rem;
+  }
+}
+
+@media screen and (max-width: 800px) {
+  .leftHeadline,
+  .rightHeadline {
+    font-size: 0.4rem;
+  }
 }

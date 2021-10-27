@@ -21,6 +21,7 @@ import { configureAuthentication } from './utilities/configureAuthentication';
 import { configureDevErrors } from './utilities/configureDevErrors';
 import { fullDidPromise } from './utilities/fullDid';
 import { listenForTweets } from './utilities/tweets';
+import { notFoundHandler } from './utilities/notFoundHandler';
 
 const server = Hapi.server({
   port: configuration.port,
@@ -59,6 +60,8 @@ const logger = {
   server.route(requestCredential);
   server.route(verify);
   server.route(wellKnownDidConfig);
+
+  server.ext('onPreResponse', notFoundHandler);
 
   await listenForTweets();
 
