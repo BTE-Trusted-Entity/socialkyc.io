@@ -1,15 +1,3 @@
-.container {
-  position: relative;
-}
-
-.expandableItem {
-  composes: expandableItem from '../../components/Expandable/Expandable.module.css';
-}
-
-.expanded {
-  composes: expanded from '../../components/Expandable/Expandable.module.css';
-}
-
 .itemLabel {
   display: inline-flex;
   align-items: center;
@@ -66,13 +54,4 @@
 
 .explainer {
   composes: explainer from '../../components/Explainer/Explainer.module.css';
-}
-
-.processing {
-  filter: blur(5px);
-  pointer-events: none;
-}
-
-.spinner {
-  composes: spinner from '../../components/Spinner/Spinner.module.css';
 }

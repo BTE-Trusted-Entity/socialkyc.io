@@ -1,6 +1,5 @@
 import { useCallback, useState } from 'react';
 import { Link, Route, Switch, useLocation } from 'react-router-dom';
-import cx from 'classnames';
 import ky from 'ky';
 import { StatusCodes } from 'http-status-codes';
 import { IEncryptedMessage } from '@kiltprotocol/types';
@@ -8,21 +7,19 @@ import { IEncryptedMessage } from '@kiltprotocol/types';
 import { getSession } from '../../utilities/session';
 import { usePreventNavigation } from '../../utilities/usePreventNavigation';
 
+import { Expandable } from '../../components/Expandable/Expandable';
+
 import { paths } from '../../../backend/endpoints/paths';
 
 import * as styles from './Email.module.css';
 
 export function Email(): JSX.Element {
   const { pathname } = useLocation();
+  const expanded = pathname === '/email';
 
-  const [nameInput, setNameInput] = useState('');
   const [emailInput, setEmailInput] = useState('');
 
-  const handleNameInput = useCallback((event) => {
-    setNameInput(event.target.value);
-  }, []);
-
-  const handleEmailInput = useCallback((event) => {
+  const handleInput = useCallback((event) => {
     setEmailInput(event.target.value);
   }, []);
 
@@ -56,7 +53,6 @@ export function Email(): JSX.Element {
         });
 
         const json = {
-          name: nameInput,
           email: emailInput,
           did: session.identity,
         };
@@ -74,71 +70,58 @@ export function Email(): JSX.Element {
         setProcessing(false);
       }
     },
-    [nameInput, emailInput],
+    [emailInput],
   );
 
   return (
-    <li
-      className={cx(styles.expandableItem, {
-        [styles.expanded]: pathname === '/email',
-      })}
-    >
-      <p className={styles.itemLabel}>
-        <Switch>
-          <Route path="/email">
-            <Link to="/" type="button" className={styles.accordion} />
-          </Route>
-          <Route>
-            <Link to="/email" type="button" className={styles.closed} />
-          </Route>
-        </Switch>
-        Email
-      </p>
-      <Route path="/email">
-        {email ? (
-          <div className={styles.success}>
-            <p>
-              We’ve sent an email to <strong>{email}</strong>
-            </p>
-            <p>Please check your inbox!</p>
-            <Link to="/" type="button" className={styles.buttonPrimary}>
-              OK
-            </Link>
-          </div>
-        ) : (
-          <form className={styles.form} onSubmit={handleSubmit}>
-            <label className={styles.formLabel}>
-              Your full name
-              <input
-                className={styles.formInput}
-                onInput={handleNameInput}
-                type="text"
-                name="name"
-                required
-              />
-            </label>
+    <Expandable expanded={expanded} processing={processing}>
+      <>
+        <p className={styles.itemLabel}>
+          <Switch>
+            <Route path="/email">
+              <Link to="/" type="button" className={styles.accordion} />
+            </Route>
+            <Route>
+              <Link to="/email" type="button" className={styles.closed} />
+            </Route>
+          </Switch>
+          Email
+        </p>
+        <Route path="/email">
+          {email ? (
+            <div className={styles.success}>
+              <p>
+                We’ve sent an email to <strong>{email}</strong>
+              </p>
+              <p>Please check your inbox!</p>
+              <Link to="/" type="button" className={styles.buttonPrimary}>
+                OK
+              </Link>
+            </div>
+          ) : (
+            <form className={styles.form} onSubmit={handleSubmit}>
+              <label className={styles.formLabel}>
+                Your email address
+                <input
+                  className={styles.formInput}
+                  onInput={handleInput}
+                  type="email"
+                  name="email"
+                  required
+                />
+              </label>
 
-            <label className={styles.formLabel}>
-              Your email address
-              <input
-                className={styles.formInput}
-                onInput={handleEmailInput}
-                type="email"
-                name="email"
-                required
-              />
-            </label>
-
-            <button
-              type="submit"
-              className={styles.chooseIdentity}
-              disabled={!nameInput || !emailInput}
-            >
-              Choose Sporran Identity
-            </button>
-          </form>
-        )}
-      </Route>
-    </li>
+              <button
+                type="submit"
+                className={styles.chooseIdentity}
+                disabled={!emailInput}
+              >
+                Choose Sporran Identity
+              </button>
+            </form>
+          )}
+        </Route>
+      </>
+    </Expandable>
   );
 }

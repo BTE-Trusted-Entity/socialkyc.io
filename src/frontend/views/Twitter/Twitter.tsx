@@ -1,6 +1,5 @@
 import { useCallback, useState } from 'react';
 import { Link, Switch, useLocation, Route } from 'react-router-dom';
-import cx from 'classnames';
 import ky from 'ky';
 import { IEncryptedMessage } from '@kiltprotocol/types';
 import { StatusCodes } from 'http-status-codes';
@@ -10,6 +9,7 @@ import { usePreventNavigation } from '../../utilities/usePreventNavigation';
 import { paths } from '../../../backend/endpoints/paths';
 
 import { Explainer } from '../../components/Explainer/Explainer';
+import { Expandable } from '../../components/Expandable/Expandable';
 
 import * as styles from './Twitter.module.css';
 
@@ -101,15 +101,8 @@ export function Twitter(): JSX.Element {
   );
 
   return (
-    <li className={styles.container}>
-      {expanded && processing && <div className={styles.spinner}></div>}
-
-      <section
-        className={cx(styles.expandableItem, {
-          [styles.expanded]: expanded,
-          [styles.processing]: processing && expanded,
-        })}
-      >
+    <Expandable expanded={expanded} processing={processing}>
+      <>
         {expanded && (
           <Explainer>
             After you type in your Twitter handle, please choose an identity in
@@ -161,7 +154,7 @@ export function Twitter(): JSX.Element {
             )}
           </section>
         </Route>
-      </section>
-    </li>
+      </>
+    </Expandable>
   );
 }
