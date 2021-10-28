@@ -3,6 +3,7 @@ import { keyBy, castArray } from 'lodash';
 
 import { configuration } from './configuration';
 import { ControlledPromise } from './makeControlledPromise';
+import { logger } from './logger';
 
 const client = new Twitter({
   bearer_token: configuration.twitterSecretBearerToken,
@@ -49,11 +50,10 @@ async function onChunk(handleChunk: (chunk: Chunk) => void) {
         handleChunk(chunk);
       }
       // The stream has been closed by Twitter. It is usually safe to reconnect.
-      // TODO: proper pino logging
-      console.log('Stream disconnected healthily. Reconnecting.');
+      logger.info('Stream disconnected healthily. Reconnecting.');
     } catch (error) {
       // An error occurred so we reconnect to the stream.
-      console.warn('Stream disconnected with error. Retrying.', error);
+      logger.error(error, 'Stream disconnected with error. Retrying.');
     }
 
     // wait before reconnecting
@@ -70,7 +70,7 @@ async function onTweet(handleTweet: (tweet: MappedTweet) => void) {
         handleTweet({ text, username });
       }
     } catch (error) {
-      console.error('Error handling chunk', chunk, error);
+      logger.error(error, 'Error handling chunk');
     }
   });
 }
