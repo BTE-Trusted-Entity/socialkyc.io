@@ -2056,7 +2056,7 @@
   resolved "https://registry.yarnpkg.com/@kiltprotocol/type-definitions/-/type-definitions-0.1.23.tgz#c54475dad7849dc4654975da33590872fc9acdde"
   integrity sha512-5bGUDo8aVTWttwUrV1gyRUlbBn9zllv6/ofAda9ejMbjY5o99YqsAWlXg1mro6BqE3rcF/i0tGbIdO9Z0tOttA==
 
-"@kiltprotocol/types@0.24.0-7", "@kiltprotocol/types@^0.24.0-7":
+"@kiltprotocol/types@0.24.0-7":
   version "0.24.0-7"
   resolved "https://registry.yarnpkg.com/@kiltprotocol/types/-/types-0.24.0-7.tgz#fd25b45883cf3da2ddc48abaad414a5e68189a85"
   integrity sha512-gULLTzDdVY5RXdxIbx4oUYovfbL+ALrTqsAA1LsCpcIRJ90PMIpXN/18o3XWvm7QB1dnqKMsIFB9FRwZZKla0w==
@@ -2066,12 +2066,35 @@
     "@polkadot/types" "6.4.2"
     tweetnacl "^1.0.3"
 
-"@kiltprotocol/utils@0.24.0-7", "@kiltprotocol/utils@^0.24.0-7":
+"@kiltprotocol/types@0.24.0-8", "@kiltprotocol/types@^0.24.0-7":
+  version "0.24.0-8"
+  resolved "https://registry.yarnpkg.com/@kiltprotocol/types/-/types-0.24.0-8.tgz#0f26d7d8949fceb13537273a3808f8fbff1783b3"
+  integrity sha512-MKNlin1HIeqmMaBuvsY/0pwntTy4QLMYiE9EdxY+MWfDdr4cRdc/V1HVQb1UbWDhZqhN0E3PZlkFdP/8eGOhYg==
+  dependencies:
+    "@polkadot/api" "6.4.2"
+    "@polkadot/keyring" "7.5.1"
+    "@polkadot/types" "6.4.2"
+    tweetnacl "^1.0.3"
+
+"@kiltprotocol/utils@0.24.0-7":
   version "0.24.0-7"
   resolved "https://registry.yarnpkg.com/@kiltprotocol/utils/-/utils-0.24.0-7.tgz#1837a523f871b383868957dd9fafa532898e8ea2"
   integrity sha512-KHjvIMRk9MZMFozZvK2g3lwU2MkpjMdvMyuySckgwehnIPahhMLtKm/y95r6cGCPMoDR7jNBkEJOmW3IElDgGA==
   dependencies:
     "@kiltprotocol/types" "0.24.0-7"
+    "@polkadot/keyring" "7.5.1"
+    "@polkadot/types" "6.4.2"
+    "@polkadot/util" "7.5.1"
+    "@polkadot/util-crypto" "7.5.1"
+    tweetnacl "^1.0.3"
+    uuid "^8.1.0"
+
+"@kiltprotocol/utils@^0.24.0-8":
+  version "0.24.0-8"
+  resolved "https://registry.yarnpkg.com/@kiltprotocol/utils/-/utils-0.24.0-8.tgz#35acbf008eea2fc42a436a5d857cf6f4a5a43b6b"
+  integrity sha512-mhqn3KP/7dZPCCp/d7yYKnPfZUcr6yM0ugOlfIe6MlZFeu9Z4pC1r8sUSTVL2SY+xx47YODvau10+NrgPmmygA==
+  dependencies:
+    "@kiltprotocol/types" "0.24.0-8"
     "@polkadot/keyring" "7.5.1"
     "@polkadot/types" "6.4.2"
     "@polkadot/util" "7.5.1"
