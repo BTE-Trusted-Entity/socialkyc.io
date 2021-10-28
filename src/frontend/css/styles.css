@@ -66,8 +66,8 @@ main {
 
 .rightHeadline {
   position: absolute;
-  top: 15%;
-  left: 10%;
+  top: 10%;
+  left: 0;
   display: flex;
   flex-direction: column;
   font-size: 1rem;
@@ -78,8 +78,8 @@ main {
   font-size: 1.5em;
 }
 
-.large {
-  font-size: 2.75em;
+.rightHeadlineCenter {
+  font-size: 4em;
 }
 
 .rightHeadlineBottom {
