@@ -1,5 +1,5 @@
-.accordion {
-  composes: accordion from '../../components/Accordion/Accordion.module.css';
+.open {
+  composes: open from '../../components/Accordion/Accordion.module.css';
 }
 
 .closed {
@@ -21,12 +21,6 @@
 .chooseIdentity {
   composes: buttonPrimary;
   margin: 4rem 0 4rem 0;
-}
-
-.itemLabel {
-  display: inline-flex;
-  align-items: center;
-  margin: 0;
 }
 
 .form {

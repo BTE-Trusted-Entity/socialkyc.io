@@ -1,14 +1,29 @@
-.accordion {
-  composes: button from '../Button/Button.module.css';
+.open,
+.closed {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  text-decoration: none;
+  color: var(--color-white);
+  position: relative;
+  z-index: 2;
+}
+
+.open::before {
+  content: '';
   height: 1.25rem;
   width: 1.25rem;
   background: url('chevron-down.svg') no-repeat center/contain #180026;
-  margin-right: 0.5rem;
   border: 0.75px solid var(--color-white);
   border-radius: 0.25rem;
+  transform: rotate(180deg);
 }
 
-.closed {
-  composes: accordion;
-  transform: rotate(-90deg);
+.closed::before {
+  content: '';
+  height: 1.25rem;
+  width: 1.25rem;
+  background: url('chevron-down.svg') no-repeat center/contain #180026;
+  border: 0.75px solid var(--color-white);
+  border-radius: 0.25rem;
 }

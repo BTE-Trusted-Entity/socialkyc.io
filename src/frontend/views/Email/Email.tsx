@@ -76,17 +76,19 @@ export function Email(): JSX.Element {
   return (
     <Expandable expanded={expanded} processing={processing}>
       <>
-        <p className={styles.itemLabel}>
-          <Switch>
-            <Route path="/email">
-              <Link to="/" type="button" className={styles.accordion} />
-            </Route>
-            <Route>
-              <Link to="/email" type="button" className={styles.closed} />
-            </Route>
-          </Switch>
-          Email
-        </p>
+        <Switch>
+          <Route path="/email">
+            <Link to="/" className={styles.open}>
+              Email
+            </Link>
+          </Route>
+          <Route>
+            <Link to="/email" className={styles.closed}>
+              Email
+            </Link>
+          </Route>
+        </Switch>
+
         <Route path="/email">
           {email ? (
             <div className={styles.success}>

@@ -112,17 +112,18 @@ export function Twitter(): JSX.Element {
           </Explainer>
         )}
 
-        <p className={styles.itemLabel}>
-          <Switch>
-            <Route path="/twitter">
-              <Link to="/" type="button" className={styles.accordion} />
-            </Route>
-            <Route>
-              <Link to="/twitter" type="button" className={styles.closed} />
-            </Route>
-          </Switch>
-          Twitter
-        </p>
+        <Switch>
+          <Route path="/twitter">
+            <Link to="/" className={styles.open}>
+              Twitter
+            </Link>
+          </Route>
+          <Route>
+            <Link to="/twitter" className={styles.closed}>
+              Twitter
+            </Link>
+          </Route>
+        </Switch>
 
         <Route path="/twitter">
           <section>
