@@ -1,4 +1,3 @@
-import { KeyringPair } from '@polkadot/keyring/types';
 import { Keypair } from '@polkadot/util-crypto/types';
 import {
   DefaultResolver,
@@ -6,7 +5,11 @@ import {
   DidChain,
   FullDidDetails,
 } from '@kiltprotocol/did';
-import { KeyRelationship, IDidKeyDetails } from '@kiltprotocol/types';
+import {
+  KeyringPair,
+  KeyRelationship,
+  IDidKeyDetails,
+} from '@kiltprotocol/types';
 import { Crypto } from '@kiltprotocol/utils';
 import { BlockchainUtils } from '@kiltprotocol/chain-helpers';
 

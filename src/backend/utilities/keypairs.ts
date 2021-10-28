@@ -1,5 +1,5 @@
 import { Keyring } from '@polkadot/keyring';
-import { KeyringPair } from '@polkadot/keyring/types';
+import { KeyringPair } from '@kiltprotocol/types';
 import { naclBoxKeypairFromSecret } from '@polkadot/util-crypto';
 
 import { initKilt } from './initKilt';
