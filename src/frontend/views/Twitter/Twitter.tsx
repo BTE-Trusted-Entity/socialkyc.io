@@ -7,6 +7,7 @@ import { StatusCodes } from 'http-status-codes';
 
 import { getSession } from '../../utilities/session';
 import { usePreventNavigation } from '../../utilities/usePreventNavigation';
+import { paths } from '../../../backend/endpoints/paths';
 
 import { Explainer } from '../../components/Explainer/Explainer';
 
@@ -52,7 +53,7 @@ export function Twitter(): JSX.Element {
         const session = await getSession();
 
         await session.listen(async (message) => {
-          const result = await ky.post('/request-attestation-twitter', {
+          const result = await ky.post(paths.requestAttestationTwitter, {
             json: message,
           });
 
@@ -70,7 +71,7 @@ export function Twitter(): JSX.Element {
           setCode(code);
 
           const attestationData = (await ky
-            .post('./attest-twitter', {
+            .post(paths.attestTwitter, {
               json: { key, twitter, did: session.identity },
             })
             .json()) as AttestationData;
@@ -86,7 +87,7 @@ export function Twitter(): JSX.Element {
         };
 
         const message = (await ky
-          .post('/quote-twitter', { json })
+          .post(paths.quoteTwitter, { json })
           .json()) as IEncryptedMessage;
 
         await session.send(message);
@@ -100,61 +101,67 @@ export function Twitter(): JSX.Element {
   );
 
   return (
-    <li
-      className={cx(styles.expandableItem, {
-        [styles.expanded]: expanded,
-        [styles.processing]: processing,
-      })}
-    >
-      {processing && <div className={styles.spinner}></div>}
-      <p className={styles.itemLabel}>
-        <Switch>
-          <Route path="/twitter">
-            <Link to="/" type="button" className={styles.accordion} />
-          </Route>
-          <Route>
-            <Link to="/twitter" type="button" className={styles.closed} />
-          </Route>
-        </Switch>
-        Twitter
-      </p>
-      <Route path="/twitter">
-        <section>
-          {!code && (
-            <form className={styles.form} onSubmit={handleSubmit}>
-              <label className={styles.formLabel}>
-                Your Twitter handle
-                <div className={styles.twitterInputContainer}>
-                  <input
-                    className={styles.twitterInput}
-                    onInput={handleInput}
-                    type="text"
-                    name="twitterHandle"
-                    required
-                  />
-                </div>
-              </label>
-              <p className={styles.subline}>
-                Validity: one year ({expiryDate})
-              </p>
-              <button
-                type="submit"
-                className={styles.chooseIdentity}
-                disabled={!twitterHandle}
-              >
-                Choose Sporran Identity
-              </button>
-            </form>
-          )}
-        </section>
-      </Route>
-      {expanded && (
-        <Explainer>
-          After you type in your Twitter handle, please choose an identity in
-          your wallet to associate with your Twitter credential. In order to
-          verify your credential we will prompt you to Tweet from this account.
-        </Explainer>
-      )}
+    <li className={styles.container}>
+      {expanded && processing && <div className={styles.spinner}></div>}
+
+      <section
+        className={cx(styles.expandableItem, {
+          [styles.expanded]: expanded,
+          [styles.processing]: processing && expanded,
+        })}
+      >
+        {expanded && (
+          <Explainer>
+            After you type in your Twitter handle, please choose an identity in
+            your wallet to associate with your Twitter credential. In order to
+            verify your credential we will prompt you to Tweet from this
+            account.
+          </Explainer>
+        )}
+
+        <p className={styles.itemLabel}>
+          <Switch>
+            <Route path="/twitter">
+              <Link to="/" type="button" className={styles.accordion} />
+            </Route>
+            <Route>
+              <Link to="/twitter" type="button" className={styles.closed} />
+            </Route>
+          </Switch>
+          Twitter
+        </p>
+
+        <Route path="/twitter">
+          <section>
+            {!code && (
+              <form className={styles.form} onSubmit={handleSubmit}>
+                <label className={styles.formLabel}>
+                  Your Twitter handle
+                  <div className={styles.twitterInputContainer}>
+                    <input
+                      className={styles.twitterInput}
+                      onInput={handleInput}
+                      type="text"
+                      name="twitterHandle"
+                      required
+                    />
+                  </div>
+                </label>
+                <p className={styles.subline}>
+                  Validity: one year ({expiryDate})
+                </p>
+                <button
+                  type="submit"
+                  className={styles.chooseIdentity}
+                  disabled={!twitterHandle}
+                >
+                  Choose Sporran Identity
+                </button>
+              </form>
+            )}
+          </section>
+        </Route>
+      </section>
     </li>
   );
 }

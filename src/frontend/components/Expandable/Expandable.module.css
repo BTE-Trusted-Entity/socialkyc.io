@@ -12,5 +12,4 @@
   background-color: rgba(187, 41, 75, 0.1);
   box-shadow: 0 0 10px 0 rgba(var(--color-white-rgb), 0.3);
   border-radius: 0.625rem;
-  position: relative;
 }
