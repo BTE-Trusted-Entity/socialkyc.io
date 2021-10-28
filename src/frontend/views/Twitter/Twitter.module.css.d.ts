@@ -1,6 +1,5 @@
 export const __esModule: true;
-export const itemLabel: string;
-export const accordion: string;
+export const open: string;
 export const closed: string;
 export const form: string;
 export const formLabel: string;
@@ -9,4 +8,3 @@ export const twitterInput: string;
 export const subline: string;
 export const chooseIdentity: string;
 export const explainer: string;
-export const processing: string;

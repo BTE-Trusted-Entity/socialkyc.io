@@ -4,6 +4,3 @@ export const spinner: string;
 export const expandableItem: string;
 export const expanded: string;
 export const processing: string;
-export const itemLabel: string;
-export const accordion: string;
-export const closed: string;
