@@ -1,11 +1,3 @@
-.open {
-  composes: open from '../../components/Accordion/Accordion.module.css';
-}
-
-.closed {
-  composes: closed from '../../components/Accordion/Accordion.module.css';
-}
-
 .form {
   display: flex;
   flex-direction: column;

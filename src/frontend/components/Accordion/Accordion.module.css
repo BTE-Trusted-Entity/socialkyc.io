@@ -9,16 +9,7 @@
   z-index: 2;
 }
 
-.open::before {
-  content: '';
-  height: 1.25rem;
-  width: 1.25rem;
-  background: url('chevron-down.svg') no-repeat center/contain #180026;
-  border: 0.75px solid var(--color-white);
-  border-radius: 0.25rem;
-  transform: rotate(180deg);
-}
-
+.open::before,
 .closed::before {
   content: '';
   height: 1.25rem;
@@ -26,4 +17,8 @@
   background: url('chevron-down.svg') no-repeat center/contain #180026;
   border: 0.75px solid var(--color-white);
   border-radius: 0.25rem;
+}
+
+.open::before {
+  transform: rotate(180deg);
 }

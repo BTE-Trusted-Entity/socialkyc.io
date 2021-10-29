@@ -1,6 +1,4 @@
 export const __esModule: true;
-export const open: string;
-export const closed: string;
 export const form: string;
 export const formLabel: string;
 export const twitterInputContainer: string;

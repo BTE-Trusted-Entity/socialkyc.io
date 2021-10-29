@@ -4,3 +4,5 @@ export const spinner: string;
 export const expandableItem: string;
 export const expanded: string;
 export const processing: string;
+export const open: string;
+export const closed: string;

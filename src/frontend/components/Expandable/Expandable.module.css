@@ -26,3 +26,11 @@
   filter: blur(5px);
   pointer-events: none;
 }
+
+.open {
+  composes: open from '../../components/Accordion/Accordion.module.css';
+}
+
+.closed {
+  composes: closed from '../../components/Accordion/Accordion.module.css';
+}

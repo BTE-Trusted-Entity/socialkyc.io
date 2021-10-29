@@ -14,9 +14,6 @@ import { paths } from '../../../backend/endpoints/paths';
 import * as styles from './Email.module.css';
 
 export function Email(): JSX.Element {
-  const { pathname } = useLocation();
-  const expanded = pathname === '/email';
-
   const [emailInput, setEmailInput] = useState('');
 
   const handleInput = useCallback((event) => {
@@ -74,20 +71,7 @@ export function Email(): JSX.Element {
   );
 
   return (
-    <Expandable expanded={expanded} processing={processing}>
-      <Switch>
-        <Route path="/email">
-          <Link to="/" className={styles.open}>
-            Email
-          </Link>
-        </Route>
-        <Route>
-          <Link to="/email" className={styles.closed}>
-            Email
-          </Link>
-        </Route>
-      </Switch>
-
+    <Expandable path="/email" label="Email" processing={processing}>
       <Route path="/email">
         {email ? (
           <div className={styles.success}>

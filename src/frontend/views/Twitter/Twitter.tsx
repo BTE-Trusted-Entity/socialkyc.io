@@ -1,5 +1,5 @@
 import { useCallback, useState } from 'react';
-import { Link, Switch, useLocation, Route } from 'react-router-dom';
+import { Route } from 'react-router-dom';
 import ky from 'ky';
 import { IEncryptedMessage } from '@kiltprotocol/types';
 import { StatusCodes } from 'http-status-codes';
@@ -30,9 +30,6 @@ const expiryDate = new Date(
 ).toLocaleDateString();
 
 export function Twitter(): JSX.Element {
-  const { pathname } = useLocation();
-  const expanded = pathname === '/twitter';
-
   const [twitterHandle, setTwitterHandle] = useState('');
 
   const handleInput = useCallback((event) => {
@@ -101,29 +98,13 @@ export function Twitter(): JSX.Element {
   );
 
   return (
-    <Expandable expanded={expanded} processing={processing}>
-      {expanded && (
+    <Expandable path="/twitter" label="Twitter" processing={processing}>
+      <Route path="/twitter">
         <Explainer>
           After you type in your Twitter handle, please choose an identity in
           your wallet to associate with your Twitter credential. In order to
           verify your credential we will prompt you to Tweet from this account.
         </Explainer>
-      )}
-
-      <Switch>
-        <Route path="/twitter">
-          <Link to="/" className={styles.open}>
-            Twitter
-          </Link>
-        </Route>
-        <Route>
-          <Link to="/twitter" className={styles.closed}>
-            Twitter
-          </Link>
-        </Route>
-      </Switch>
-
-      <Route path="/twitter">
         <section>
           {!code && (
             <form className={styles.form} onSubmit={handleSubmit}>
