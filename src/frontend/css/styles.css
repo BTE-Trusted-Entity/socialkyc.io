@@ -26,7 +26,8 @@ main {
 }
 
 .left {
-  background: url('../components/Branding/logo.svg') no-repeat top 5% right 3% /
+  background:
+    url('../components/Branding/logo.svg') no-repeat top 5% right 3% /
     auto 9%;
   position: relative;
   display: flex;
@@ -42,7 +43,7 @@ main {
 }
 
 .rightContainer {
-  filter: drop-shadow(-3px -3px 4px rgba(var(--color-white-rgb), 0.3));
+  filter: drop-shadow(-3px -3px 4px rgb(var(--color-white-rgb) / 30%));
   width: 70%;
   aspect-ratio: 545 / 570;
   position: relative;
@@ -51,14 +52,15 @@ main {
 .rightContainer::before {
   content: '';
   background: url('../images/hexagons/phones.jpg') no-repeat center/cover;
-  clip-path: polygon(
-    40.17% 0.37%,
-    89.98% 17.02%,
-    99.82% 66.58%,
-    59.83% 99.51%,
-    10.02% 82.86%,
-    0.18% 33.3%
-  );
+  clip-path:
+    polygon(
+      40.17% 0.37%,
+      89.98% 17.02%,
+      99.82% 66.58%,
+      59.83% 99.51%,
+      10.02% 82.86%,
+      0.18% 33.3%
+    );
   width: 100%;
   height: 100%;
   display: block;
