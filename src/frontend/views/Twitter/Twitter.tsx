@@ -102,60 +102,57 @@ export function Twitter(): JSX.Element {
 
   return (
     <Expandable expanded={expanded} processing={processing}>
-      <>
-        {expanded && (
-          <Explainer>
-            After you type in your Twitter handle, please choose an identity in
-            your wallet to associate with your Twitter credential. In order to
-            verify your credential we will prompt you to Tweet from this
-            account.
-          </Explainer>
-        )}
+      {expanded && (
+        <Explainer>
+          After you type in your Twitter handle, please choose an identity in
+          your wallet to associate with your Twitter credential. In order to
+          verify your credential we will prompt you to Tweet from this account.
+        </Explainer>
+      )}
 
-        <Switch>
-          <Route path="/twitter">
-            <Link to="/" className={styles.open}>
-              Twitter
-            </Link>
-          </Route>
-          <Route>
-            <Link to="/twitter" className={styles.closed}>
-              Twitter
-            </Link>
-          </Route>
-        </Switch>
-
+      <Switch>
         <Route path="/twitter">
-          <section>
-            {!code && (
-              <form className={styles.form} onSubmit={handleSubmit}>
-                <label className={styles.formLabel}>
-                  Your Twitter handle
-                  <div className={styles.twitterInputContainer}>
-                    <input
-                      className={styles.twitterInput}
-                      onInput={handleInput}
-                      type="text"
-                      name="twitterHandle"
-                      required
-                    />
-                  </div>
-                </label>
-                <p className={styles.subline}>
-                  Validity: one year ({expiryDate})
-                </p>
-                <button
-                  type="submit"
-                  className={styles.chooseIdentity}
-                  disabled={!twitterHandle}
-                >
-                  Choose Sporran Identity
-                </button>
-              </form>
-            )}
-          </section>
+          <Link to="/" className={styles.open}>
+            Twitter
+          </Link>
         </Route>
-      </>
+        <Route>
+          <Link to="/twitter" className={styles.closed}>
+            Twitter
+          </Link>
+        </Route>
+      </Switch>
+
+      <Route path="/twitter">
+        <section>
+          {!code && (
+            <form className={styles.form} onSubmit={handleSubmit}>
+              <label className={styles.formLabel}>
+                Your Twitter handle
+                <div className={styles.twitterInputContainer}>
+                  <input
+                    className={styles.twitterInput}
+                    onInput={handleInput}
+                    type="text"
+                    name="twitterHandle"
+                    required
+                  />
+                </div>
+              </label>
+              <p className={styles.subline}>
+                Validity: one year ({expiryDate})
+              </p>
+              <button
+                type="submit"
+                className={styles.chooseIdentity}
+                disabled={!twitterHandle}
+              >
+                Choose Sporran Identity
+              </button>
+            </form>
+          )}
+        </section>
+      </Route>
     </Expandable>
   );
 }

@@ -8,7 +8,7 @@ import { useHandleOutsideClick } from '../../utilities/useHandleOutsideClick';
 interface Props {
   expanded: boolean;
   processing: boolean;
-  children: JSX.Element;
+  children: JSX.Element | JSX.Element[];
 }
 
 export function Expandable({
