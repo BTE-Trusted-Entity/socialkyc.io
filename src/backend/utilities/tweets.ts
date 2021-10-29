@@ -1,78 +1,68 @@
-import Twitter from 'twitter-v2';
-import { keyBy, castArray } from 'lodash';
+import { TwitterApi, TweetV1, ApiResponseError } from 'twitter-api-v2';
 
 import { configuration } from './configuration';
 import { ControlledPromise } from './makeControlledPromise';
 import { logger } from './logger';
 
-const client = new Twitter({
-  bearer_token: configuration.twitterSecretBearerToken,
-});
+const screen_name = 'social_kyc_tech';
+const hashTag = '#socialkyc';
 
-function createStream() {
-  return client.stream('tweets/search/stream', { expansions: 'author_id' });
-}
+const requestsFrequencyMs = 10 * 1000;
 
-interface Tweet {
-  author_id: string;
-  text: string;
-}
+const client = new TwitterApi(configuration.twitterSecretBearerToken);
 
-interface User {
-  id: string;
-  username: string;
-}
-
-interface Chunk {
-  data: Tweet | Tweet[];
-  includes: {
-    users: User[];
-  };
-}
-
-interface MappedTweet {
-  text: string;
-  username: string;
-}
-
-const reconnectTimeoutMs = 3000;
-
-export async function createRules(): Promise<void> {
-  await client.post('tweets/search/stream/rules', {
-    add: [{ value: '#socialkyc', tag: 'tweets with hashtag' }],
+async function getTweets() {
+  const { statuses } = await client.v1.get('search/tweets.json', {
+    q: hashTag,
+    result_type: 'recent',
   });
+  return statuses as TweetV1[];
 }
 
-async function onChunk(handleChunk: (chunk: Chunk) => void) {
+function sleep(milliseconds: number) {
+  return new Promise((resolve) => setTimeout(resolve, milliseconds));
+}
+
+async function rateLimitToBeReset(error: ApiResponseError) {
+  if (!error.rateLimit) {
+    return;
+  }
+
+  const resetTimeoutMs = error.rateLimit.reset * 1000;
+  const timeToWaitMs = resetTimeoutMs - Date.now();
+
+  logger.warn(error, `Hit a rate limit, waiting for ${timeToWaitMs} ms`);
+
+  await sleep(timeToWaitMs);
+}
+
+async function onTweet(handleTweet: (tweet: TweetV1) => void) {
   while (true) {
     try {
-      for await (const chunk of createStream()) {
-        handleChunk(chunk);
+      const tweets = await getTweets();
+      for (const tweet of tweets) {
+        try {
+          handleTweet(tweet);
+        } catch (error) {
+          logger.error(error, 'Error handling tweet', tweet);
+        }
       }
-      // The stream has been closed by Twitter. It is usually safe to reconnect.
-      logger.info('Stream disconnected healthily. Reconnecting.');
     } catch (error) {
-      // An error occurred so we reconnect to the stream.
-      logger.error(error, 'Stream disconnected with error. Retrying.');
+      if (error instanceof ApiResponseError && error.rateLimitError) {
+        try {
+          await rateLimitToBeReset(error);
+        } catch (rateError) {
+          logger.error(rateError, 'Error processing the rate limit');
+        }
+        continue;
+      }
+
+      logger.error(error, 'Unexpected TwitterAPI error');
     }
 
-    // wait before reconnecting
-    await new Promise((resolve) => setTimeout(resolve, reconnectTimeoutMs));
+    // wait before the next request
+    await sleep(requestsFrequencyMs);
   }
-}
-
-async function onTweet(handleTweet: (tweet: MappedTweet) => void) {
-  await onChunk((chunk) => {
-    try {
-      const usersMap = keyBy(chunk.includes.users, 'id');
-      for (const { text, author_id } of castArray(chunk.data)) {
-        const { username } = usersMap[author_id];
-        handleTweet({ text, username });
-      }
-    } catch (error) {
-      logger.error(error, 'Error handling chunk');
-    }
-  });
 }
 
 /** Map of Twitter usernames to the codes and promises waiting for the tweet */
@@ -82,14 +72,15 @@ export const tweetsListeners: Record<
 > = {};
 
 export async function listenForTweets(): Promise<void> {
-  await createRules();
+  // ensure we’re authorized to access Twitter API
+  await client.v1.user({ screen_name });
 
   // do not await, it runs forever
-  onTweet(({ username, text }) => {
-    if (!(username in tweetsListeners)) {
+  onTweet(({ user: { name }, text }) => {
+    if (!(name in tweetsListeners)) {
       return;
     }
-    const [code, { resolve }] = tweetsListeners[username];
+    const [code, { resolve }] = tweetsListeners[name];
     if (text.includes(code)) {
       resolve();
     }
