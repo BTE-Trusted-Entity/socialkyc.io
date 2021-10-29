@@ -20,7 +20,7 @@ import { wellKnownDidConfig } from './endpoints/wellKnownDidConfig';
 import { configureAuthentication } from './utilities/configureAuthentication';
 import { configureDevErrors } from './utilities/configureDevErrors';
 import { fullDidPromise } from './utilities/fullDid';
-import { listenForTweets } from './utilities/tweets';
+// import { listenForTweets } from './utilities/tweets';
 import { notFoundHandler } from './utilities/notFoundHandler';
 
 const server = Hapi.server({
@@ -63,7 +63,7 @@ const logger = {
 
   server.ext('onPreResponse', notFoundHandler);
 
-  await listenForTweets();
+  // await listenForTweets();
 
   await manager.start();
 })();

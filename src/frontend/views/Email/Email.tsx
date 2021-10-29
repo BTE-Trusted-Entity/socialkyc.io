@@ -1,5 +1,5 @@
 import { useCallback, useState } from 'react';
-import { Link, Route, Switch, useLocation } from 'react-router-dom';
+import { Link, Route } from 'react-router-dom';
 import ky from 'ky';
 import { StatusCodes } from 'http-status-codes';
 import { IEncryptedMessage } from '@kiltprotocol/types';
