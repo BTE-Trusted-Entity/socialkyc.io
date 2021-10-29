@@ -1,3 +1,11 @@
+.container {
+  position: relative;
+}
+
+.spinner {
+  composes: spinner from '../../components/Spinner/Spinner.module.css';
+}
+
 .expandableItem {
   width: 100%;
   box-sizing: border-box;
@@ -12,4 +20,17 @@
   background-color: rgba(187, 41, 75, 0.1);
   box-shadow: 0 0 10px 0 rgba(var(--color-white-rgb), 0.3);
   border-radius: 0.625rem;
+}
+
+.processing {
+  filter: blur(5px);
+  pointer-events: none;
+}
+
+.open {
+  composes: open from '../../components/Accordion/Accordion.module.css';
+}
+
+.closed {
+  composes: closed from '../../components/Accordion/Accordion.module.css';
 }

@@ -1,6 +1,5 @@
 import { useCallback, useState } from 'react';
-import { Link, Switch, useLocation, Route } from 'react-router-dom';
-import cx from 'classnames';
+import { Route } from 'react-router-dom';
 import ky from 'ky';
 import { IEncryptedMessage } from '@kiltprotocol/types';
 import { StatusCodes } from 'http-status-codes';
@@ -10,6 +9,7 @@ import { usePreventNavigation } from '../../utilities/usePreventNavigation';
 import { paths } from '../../../backend/endpoints/paths';
 
 import { Explainer } from '../../components/Explainer/Explainer';
+import { Expandable } from '../../components/Expandable/Expandable';
 
 import * as styles from './Twitter.module.css';
 
@@ -30,9 +30,6 @@ const expiryDate = new Date(
 ).toLocaleDateString();
 
 export function Twitter(): JSX.Element {
-  const { pathname } = useLocation();
-  const expanded = pathname === '/twitter';
-
   const [twitterHandle, setTwitterHandle] = useState('');
 
   const handleInput = useCallback((event) => {
@@ -101,67 +98,42 @@ export function Twitter(): JSX.Element {
   );
 
   return (
-    <li className={styles.container}>
-      {expanded && processing && <div className={styles.spinner}></div>}
-
-      <section
-        className={cx(styles.expandableItem, {
-          [styles.expanded]: expanded,
-          [styles.processing]: processing && expanded,
-        })}
-      >
-        {expanded && (
-          <Explainer>
-            After you type in your Twitter handle, please choose an identity in
-            your wallet to associate with your Twitter credential. In order to
-            verify your credential we will prompt you to Tweet from this
-            account.
-          </Explainer>
-        )}
-
-        <p className={styles.itemLabel}>
-          <Switch>
-            <Route path="/twitter">
-              <Link to="/" type="button" className={styles.accordion} />
-            </Route>
-            <Route>
-              <Link to="/twitter" type="button" className={styles.closed} />
-            </Route>
-          </Switch>
-          Twitter
-        </p>
-
-        <Route path="/twitter">
-          <section>
-            {!code && (
-              <form className={styles.form} onSubmit={handleSubmit}>
-                <label className={styles.formLabel}>
-                  Your Twitter handle
-                  <div className={styles.twitterInputContainer}>
-                    <input
-                      className={styles.twitterInput}
-                      onInput={handleInput}
-                      type="text"
-                      name="twitterHandle"
-                      required
-                    />
-                  </div>
-                </label>
-                <p className={styles.subline}>
-                  Validity: one year ({expiryDate})
-                </p>
-                <button
-                  type="submit"
-                  className={styles.chooseIdentity}
-                  disabled={!twitterHandle}
-                >
-                  Choose Sporran Identity
-                </button>
-              </form>
-            )}
-          </section>
-        </Route>
-      </section>
-    </li>
+    <Expandable path="/twitter" label="Twitter" processing={processing}>
+      <Route path="/twitter">
+        <Explainer>
+          After you type in your Twitter handle, please choose an identity in
+          your wallet to associate with your Twitter credential. In order to
+          verify your credential we will prompt you to Tweet from this account.
+        </Explainer>
+        <section>
+          {!code && (
+            <form className={styles.form} onSubmit={handleSubmit}>
+              <label className={styles.formLabel}>
+                Your Twitter handle
+                <div className={styles.twitterInputContainer}>
+                  <input
+                    className={styles.twitterInput}
+                    onInput={handleInput}
+                    type="text"
+                    name="twitterHandle"
+                    required
+                  />
+                </div>
+              </label>
+              <p className={styles.subline}>
+                Validity: one year ({expiryDate})
+              </p>
+              <button
+                type="submit"
+                className={styles.chooseIdentity}
+                disabled={!twitterHandle}
+              >
+                Choose Sporran Identity
+              </button>
+            </form>
+          )}
+        </section>
+      </Route>
+    </Expandable>
   );
 }

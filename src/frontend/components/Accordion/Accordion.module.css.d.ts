@@ -1,3 +1,3 @@
 export const __esModule: true;
-export const accordion: string;
+export const open: string;
 export const closed: string;

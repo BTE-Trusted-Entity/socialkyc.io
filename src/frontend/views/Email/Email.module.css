@@ -1,32 +1,10 @@
-.accordion {
-  composes: accordion from '../../components/Accordion/Accordion.module.css';
-}
-
-.closed {
-  composes: closed from '../../components/Accordion/Accordion.module.css';
-}
-
 .buttonPrimary {
   composes: buttonPrimary from '../../components/Button/Button.module.css';
-}
-
-.expandableItem {
-  composes: expandableItem from '../../components/Expandable/Expandable.module.css';
-}
-
-.expanded {
-  composes: expanded from '../../components/Expandable/Expandable.module.css';
 }
 
 .chooseIdentity {
   composes: buttonPrimary;
   margin: 4rem 0 4rem 0;
-}
-
-.itemLabel {
-  display: inline-flex;
-  align-items: center;
-  margin: 0;
 }
 
 .form {
