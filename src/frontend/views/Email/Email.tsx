@@ -75,55 +75,53 @@ export function Email(): JSX.Element {
 
   return (
     <Expandable expanded={expanded} processing={processing}>
-      <>
-        <Switch>
-          <Route path="/email">
-            <Link to="/" className={styles.open}>
-              Email
-            </Link>
-          </Route>
-          <Route>
-            <Link to="/email" className={styles.closed}>
-              Email
-            </Link>
-          </Route>
-        </Switch>
-
+      <Switch>
         <Route path="/email">
-          {email ? (
-            <div className={styles.success}>
-              <p>
-                We’ve sent an email to <strong>{email}</strong>
-              </p>
-              <p>Please check your inbox!</p>
-              <Link to="/" type="button" className={styles.buttonPrimary}>
-                OK
-              </Link>
-            </div>
-          ) : (
-            <form className={styles.form} onSubmit={handleSubmit}>
-              <label className={styles.formLabel}>
-                Your email address
-                <input
-                  className={styles.formInput}
-                  onInput={handleInput}
-                  type="email"
-                  name="email"
-                  required
-                />
-              </label>
-
-              <button
-                type="submit"
-                className={styles.chooseIdentity}
-                disabled={!emailInput}
-              >
-                Choose Sporran Identity
-              </button>
-            </form>
-          )}
+          <Link to="/" className={styles.open}>
+            Email
+          </Link>
         </Route>
-      </>
+        <Route>
+          <Link to="/email" className={styles.closed}>
+            Email
+          </Link>
+        </Route>
+      </Switch>
+
+      <Route path="/email">
+        {email ? (
+          <div className={styles.success}>
+            <p>
+              We’ve sent an email to <strong>{email}</strong>
+            </p>
+            <p>Please check your inbox!</p>
+            <Link to="/" type="button" className={styles.buttonPrimary}>
+              OK
+            </Link>
+          </div>
+        ) : (
+          <form className={styles.form} onSubmit={handleSubmit}>
+            <label className={styles.formLabel}>
+              Your email address
+              <input
+                className={styles.formInput}
+                onInput={handleInput}
+                type="email"
+                name="email"
+                required
+              />
+            </label>
+
+            <button
+              type="submit"
+              className={styles.chooseIdentity}
+              disabled={!emailInput}
+            >
+              Choose Sporran Identity
+            </button>
+          </form>
+        )}
+      </Route>
     </Expandable>
   );
 }
