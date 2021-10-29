@@ -16,8 +16,9 @@
   text-transform: uppercase;
   color: var(--color-white);
   background-color: var(--color-magenta);
-  box-shadow: 2px 2px 3px 1px rgba(var(--color-black-rgb), 0.15),
-    -2px -2px 3px 1px rgba(var(--color-white-rgb), 0.3);
+  box-shadow:
+    2px 2px 3px 1px rgb(var(--color-black-rgb) / 15%),
+    -2px -2px 3px 1px rgb(var(--color-white-rgb) / 30%);
   text-decoration: none;
 }
 

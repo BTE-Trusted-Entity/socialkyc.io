@@ -4,7 +4,7 @@
 }
 
 :root {
-  font-family: 'Overpass Semibold', 'sans-serif';
+  font-family: 'Overpass Semibold', Arial, sans-serif;
   font-size: 16px;
   color: var(--color-white);
 }

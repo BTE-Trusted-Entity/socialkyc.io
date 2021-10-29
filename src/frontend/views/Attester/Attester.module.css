@@ -5,15 +5,17 @@
   height: 80%;
   width: 93%;
   border-radius: 0.625rem;
-  background: linear-gradient(
+  background:
+    linear-gradient(
       180deg,
-      rgba(var(--color-white-rgb), 0.1) 0%,
-      rgba(var(--color-black-rgb), 0.12) 100%
+      rgb(var(--color-white-rgb) / 10%) 0%,
+      rgb(var(--color-black-rgb) / 12%) 100%
     ),
-    rgba(32, 1, 49, 0.6);
+    rgb(32 1 49 / 60%);
   padding-bottom: 2.5rem;
-  box-shadow: -2px -2px 9px 0 rgba(var(--color-white-rgb), 0.2),
-    2px 2px 9px 0 rgba(var(--color-black-rgb), 0.2);
+  box-shadow:
+    -2px -2px 9px 0 rgb(var(--color-white-rgb) / 20%),
+    2px 2px 9px 0 rgb(var(--color-black-rgb) / 20%);
 }
 
 .heading {
@@ -26,7 +28,7 @@
   padding: 0 4rem 0 3rem;
   overflow-y: scroll;
   scrollbar-width: thin;
-  scrollbar-color: var(--color-magenta) rgba(var(--color-magenta-rgb), 0.5);
+  scrollbar-color: var(--color-magenta) rgb(var(--color-magenta-rgb) / 50%);
   position: relative;
 }
 
@@ -36,7 +38,7 @@
 }
 
 .scrollContainer::-webkit-scrollbar-track {
-  background: rgba(var(--color-magenta-rgb), 0.5);
+  background: rgb(var(--color-magenta-rgb) / 50%);
 }
 
 .scrollContainer::-webkit-scrollbar-thumb {
@@ -60,7 +62,6 @@
 
 .mediaList {
   list-style: none;
-  margin-top: 1.25rem;
   width: 100%;
   padding: 0;
   margin: 0;
