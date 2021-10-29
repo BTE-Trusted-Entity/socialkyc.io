@@ -3,7 +3,7 @@
   display: block;
   width: 85%;
   height: 2.125rem;
-  border: 0.75px solid var(--color-white);
+  border: 1px solid var(--color-light);
   border-radius: 0.625rem;
   background: rgba(187, 41, 75, 0.35);
   color: var(--color-white);
