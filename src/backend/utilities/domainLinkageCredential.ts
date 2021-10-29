@@ -8,7 +8,7 @@ import {
   DEFAULT_VERIFIABLECREDENTIAL_TYPE,
   KILT_SELF_SIGNED_PROOF_TYPE,
   KILT_VERIFIABLECREDENTIAL_TYPE,
-} from '@kiltprotocol/vc-export/lib/constants';
+} from '@kiltprotocol/vc-export/lib/constants.js';
 import { VerifiableCredential, Proof } from '@kiltprotocol/vc-export/lib/types';
 
 // taken from https://github.com/KILTprotocol/sdk-js/blob/develop/packages/vc-export/src/exportToVerifiableCredential.ts
