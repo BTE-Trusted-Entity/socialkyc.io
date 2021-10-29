@@ -16,7 +16,6 @@ import { encryptMessage } from '../utilities/encryptMessage';
 import { paths } from './paths';
 
 const zodPayload = z.object({
-  name: z.string(),
   email: z.string(),
   did: z.string(),
 });
@@ -31,7 +30,6 @@ async function handler(
 
   try {
     const claimContents = {
-      'Full name': payload.name,
       Email: payload.email,
     };
     const claim = Claim.fromCTypeAndClaimContents(
