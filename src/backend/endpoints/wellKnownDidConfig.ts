@@ -18,5 +18,5 @@ export const wellKnownDidConfig: ServerRoute = {
   method: 'GET',
   path: paths.wellKnownDidConfiguration,
   handler,
-  options: { cors: true },
+  options: { cors: true, auth: false },
 };
