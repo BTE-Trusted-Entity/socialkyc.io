@@ -119,6 +119,7 @@
     "@polkadot/x-global": "7.7.1",
     "@polkadot/x-randomvalues": "7.7.1",
     "@polkadot/x-textdecoder": "7.7.1",
-    "@polkadot/x-textencoder": "7.7.1"
+    "@polkadot/x-textencoder": "7.7.1",
+    "cbor": "8.0.2"
   }
 }
