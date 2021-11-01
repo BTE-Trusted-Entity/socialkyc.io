@@ -1,5 +1,4 @@
 import { useCallback, useState } from 'react';
-import { Route } from 'react-router-dom';
 import ky from 'ky';
 import { IEncryptedMessage } from '@kiltprotocol/types';
 import { StatusCodes } from 'http-status-codes';
@@ -99,41 +98,37 @@ export function Twitter(): JSX.Element {
 
   return (
     <Expandable path="/twitter" label="Twitter" processing={processing}>
-      <Route path="/twitter">
-        <Explainer>
-          After you type in your Twitter handle, please choose an identity in
-          your wallet to associate with your Twitter credential. In order to
-          verify your credential we will prompt you to Tweet from this account.
-        </Explainer>
-        <section>
-          {!code && (
-            <form className={styles.form} onSubmit={handleSubmit}>
-              <label className={styles.formLabel}>
-                Your Twitter handle
-                <div className={styles.twitterInputContainer}>
-                  <input
-                    className={styles.twitterInput}
-                    onInput={handleInput}
-                    type="text"
-                    name="twitterHandle"
-                    required
-                  />
-                </div>
-              </label>
-              <p className={styles.subline}>
-                Validity: one year ({expiryDate})
-              </p>
-              <button
-                type="submit"
-                className={styles.chooseIdentity}
-                disabled={!twitterHandle}
-              >
-                Choose Sporran Identity
-              </button>
-            </form>
-          )}
-        </section>
-      </Route>
+      <Explainer>
+        After you type in your Twitter handle, please choose an identity in your
+        wallet to associate with your Twitter credential. In order to verify
+        your credential we will prompt you to Tweet from this account.
+      </Explainer>
+      <section>
+        {!code && (
+          <form className={styles.form} onSubmit={handleSubmit}>
+            <label className={styles.formLabel}>
+              Your Twitter handle
+              <div className={styles.twitterInputContainer}>
+                <input
+                  className={styles.twitterInput}
+                  onInput={handleInput}
+                  type="text"
+                  name="twitterHandle"
+                  required
+                />
+              </div>
+            </label>
+            <p className={styles.subline}>Validity: one year ({expiryDate})</p>
+            <button
+              type="submit"
+              className={styles.chooseIdentity}
+              disabled={!twitterHandle}
+            >
+              Choose Sporran Identity
+            </button>
+          </form>
+        )}
+      </section>
     </Expandable>
   );
 }
