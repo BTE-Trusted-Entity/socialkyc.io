@@ -2890,14 +2890,14 @@
     tweetnacl "^1.0.3"
     xxhashjs "^0.2.2"
 
-"@polkadot/util@7.5.1", "@polkadot/util@7.6.1", "@polkadot/util@^7.5.1", "@polkadot/util@^7.6.1":
-  version "7.6.1"
-  resolved "https://registry.yarnpkg.com/@polkadot/util/-/util-7.6.1.tgz#e6988124728fdf053929022827216241dd50a6fa"
-  integrity sha512-96UgzMOxwwsndGHN4aoyPYVRXpHcVpYb4zngFH2O9ma0YxrG2HhhqqoJ5pS0OUlhvcQkVz6T6t+heGFnTkvQxw==
+"@polkadot/util@7.5.1", "@polkadot/util@7.6.1", "@polkadot/util@7.7.1", "@polkadot/util@^7.5.1", "@polkadot/util@^7.7.1":
+  version "7.7.1"
+  resolved "https://registry.yarnpkg.com/@polkadot/util/-/util-7.7.1.tgz#b9c74f8c242669ff8ce26a3101630231914de7c7"
+  integrity sha512-REw11iHZKUm7GeC7Ktx1HguT9y76mbmiVtZJyNXpUTDKmfm6z+SMqs3pOCL/rvzqm+6M3ag6ffRrlzTTgh0HAg==
   dependencies:
     "@babel/runtime" "^7.15.4"
-    "@polkadot/x-textdecoder" "7.6.1"
-    "@polkadot/x-textencoder" "7.6.1"
+    "@polkadot/x-textdecoder" "7.7.1"
+    "@polkadot/x-textencoder" "7.7.1"
     "@types/bn.js" "^4.11.6"
     bn.js "^4.12.0"
     camelcase "^6.2.0"
@@ -2951,7 +2951,7 @@
     "@babel/runtime" "^7.15.4"
     "@polkadot/x-global" "7.6.1"
 
-"@polkadot/x-textdecoder@7.6.1":
+"@polkadot/x-textdecoder@7.6.1", "@polkadot/x-textdecoder@7.7.1":
   version "7.6.1"
   resolved "https://registry.yarnpkg.com/@polkadot/x-textdecoder/-/x-textdecoder-7.6.1.tgz#7e80b512f1ddfd01f243dbbe8afc9dab7d0c6c85"
   integrity sha512-sJtQMMw+jO3CwpOf0t1hrVl3xMw1BOLs/Xjd0v/yhiTAJ1rr6dqvhcnOHkU3a7udqo7G9dXDrnGi1q3efifXPw==
@@ -2959,7 +2959,7 @@
     "@babel/runtime" "^7.15.4"
     "@polkadot/x-global" "7.6.1"
 
-"@polkadot/x-textencoder@7.6.1":
+"@polkadot/x-textencoder@7.6.1", "@polkadot/x-textencoder@7.7.1":
   version "7.6.1"
   resolved "https://registry.yarnpkg.com/@polkadot/x-textencoder/-/x-textencoder-7.6.1.tgz#2a2fb4baa13889fbc53b86ce9003de748f0df2aa"
   integrity sha512-iqOGwXJIzc8rWYLPTYcO09LwA2q4fqwJhLsLCd+p13Z0yDSUvwgq785/2WEQfhSFbMd8HM6udedqrQTpnpIujg==
