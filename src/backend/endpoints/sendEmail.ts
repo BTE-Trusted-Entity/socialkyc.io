@@ -34,7 +34,6 @@ async function send(
   const { contents } = requestForAttestation.claim;
 
   const email = contents['Email'] as string;
-  const name = contents['Full name'] as string;
 
   const params = {
     Destination: {
@@ -49,7 +48,7 @@ async function send(
       Body: {
         Text: {
           Charset: 'UTF-8',
-          Data: `Hello ${name},\n\nThis is a test. Please click the link to confirm your email: ${url} \n\nKind regards,\nSocialKYC`,
+          Data: `Hello,\n\nThis is a test. Please click the link to confirm your email: ${url} \n\nKind regards,\nSocialKYC`,
         },
       },
     },

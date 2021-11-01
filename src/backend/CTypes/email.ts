@@ -11,9 +11,6 @@ export async function storeEmailCType(): Promise<void> {
     $schema: 'http://kilt-protocol.org/draft-01/ctype#',
     title: 'Email',
     properties: {
-      'Full name': {
-        type: 'string',
-      },
       Email: {
         type: 'string',
       },
@@ -42,16 +39,13 @@ export const email = CType.fromCType({
     $schema: 'http://kilt-protocol.org/draft-01/ctype#',
     title: 'Email',
     properties: {
-      'Full name': {
-        type: 'string',
-      },
       Email: {
         type: 'string',
       },
     },
     type: 'object',
-    $id: 'kilt:ctype:0xbfad60977bc18cf9dfd76da88624ce219361f337b4332d5c42c047499f4b93c7',
+    $id: 'kilt:ctype:0x3291bb126e33b4862d421bfaa1d2f272e6cdfc4f96658988fbcffea8914bd9ac',
   },
   owner: null,
-  hash: '0xbfad60977bc18cf9dfd76da88624ce219361f337b4332d5c42c047499f4b93c7',
+  hash: '0x3291bb126e33b4862d421bfaa1d2f272e6cdfc4f96658988fbcffea8914bd9ac',
 });
