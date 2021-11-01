@@ -1,4 +1,4 @@
-import { useLocation, Link } from 'react-router-dom';
+import { useLocation, Link, Route, Prompt } from 'react-router-dom';
 import cx from 'classnames';
 
 import * as styles from './Expandable.module.css';
@@ -40,7 +40,13 @@ export function Expandable({
             {label}
           </Link>
         )}
-        {children}
+        <Route path={path}>
+          <Prompt
+            when={processing}
+            message={`The ${label} attestation process has already started. Are you sure you want to leave?`}
+          />
+          {children}
+        </Route>
       </section>
     </li>
   );
