@@ -20,20 +20,27 @@ async function handler(
   request: Request,
   h: ResponseToolkit,
 ): Promise<ResponseObject> {
+  const { logger } = request;
+  logger.debug('Verification started');
+
   const encrypted = request.payload as Payload;
   const message = await decryptMessage(encrypted);
 
   const messageBody = message.body;
   errorCheckMessageBody(messageBody);
+  logger.debug('Verification message decrypted and verified');
 
   if (messageBody.type !== MessageBodyType.SUBMIT_CLAIMS_FOR_CTYPES) {
+    logger.debug('Verification unexpected message type');
     return h.response().code(StatusCodes.NOT_ACCEPTABLE);
   }
 
   const credential = AttestedClaim.fromAttestedClaim(messageBody.content[0]);
+  logger.debug('Verification credential constructed');
 
   const isAttested = await credential.verify();
 
+  logger.debug('Verification completed');
   return h.response({ credential, isAttested });
 }
 

@@ -23,10 +23,12 @@ import { fullDidPromise } from './utilities/fullDid';
 import { listenForTweets } from './utilities/tweets';
 import { notFoundHandler } from './utilities/notFoundHandler';
 
+const { isProduction, port } = configuration;
+
 const server = Hapi.server({
-  port: configuration.port,
+  port,
   host: '0.0.0.0',
-  debug: configuration.isProduction ? false : undefined,
+  debug: isProduction ? false : undefined,
   routes: { security: true },
 });
 const manager = exiting.createManager(server);
@@ -34,18 +36,26 @@ const manager = exiting.createManager(server);
 const logger = {
   plugin: pino,
   options: {
-    prettyPrint: !configuration.isProduction,
+    prettyPrint: !isProduction,
     ignoreTags: ['noLogs'],
+    level: isProduction ? 'info' : 'debug',
+    logRequestComplete: isProduction,
+    redact: isProduction ? [] : { paths: ['req', 'res'], remove: true },
   },
 };
 
 (async () => {
-  await fullDidPromise;
-
   await server.register(inert);
   await server.register(logger);
   await configureAuthentication(server);
   await configureDevErrors(server);
+  server.logger.info('Server configured');
+
+  await fullDidPromise;
+  server.logger.info('Blockchain connection initialized');
+
+  await listenForTweets();
+  server.logger.info('Twitter connection initialized');
 
   server.route(liveness);
   server.route(staticFiles);
@@ -62,8 +72,7 @@ const logger = {
   server.route(wellKnownDidConfig);
 
   server.ext('onPreResponse', notFoundHandler);
-
-  await listenForTweets();
+  server.logger.info('Routes configured');
 
   await manager.start();
 })();

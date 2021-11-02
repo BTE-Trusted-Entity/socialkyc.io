@@ -41,9 +41,13 @@ async function handler(
   request: Request,
   h: ResponseToolkit,
 ): Promise<ResponseObject> {
+  const { logger } = request;
+  logger.debug('Request credential started');
+
   const { did, cType } = request.payload as Payload;
 
   const cTypeHash = getCTypeHash(cType);
+  logger.debug('Request credential CType found');
 
   // TODO: Handle challenge when new Message interface is available which corresponds with Credential API spec
 
@@ -55,6 +59,7 @@ async function handler(
   const message = new Message(messageBody, configuration.did, did);
   const encrypted = await encryptMessage(message, did);
 
+  logger.debug('Request credential completed');
   return h.response(encrypted);
 }
 

@@ -88,11 +88,15 @@ async function handler(
   request: Request,
   h: ResponseToolkit,
 ): Promise<ResponseObject> {
+  const { logger } = request;
+  logger.debug('Twitter attestation started');
+
   const { key, twitter, did } = request.payload as Payload;
 
   let requestForAttestation: IRequestForAttestation;
   try {
     requestForAttestation = getRequestForAttestation(key);
+    logger.debug('Twitter attestation found request');
   } catch {
     throw Boom.notFound(`Key not found: ${key}`);
   }
@@ -102,10 +106,14 @@ async function handler(
   }
 
   try {
+    logger.debug('Twitter attestation waiting for tweet');
     const confirmation = tweetsListeners[twitter][1];
     await confirmation.promise;
 
+    logger.debug('Twitter attestation attesting');
     const response = await attestClaim(requestForAttestation, did);
+
+    logger.debug('Twitter attestation completed');
     return h.response(response);
   } catch (error) {
     throw Boom.internal('Attestation failed', error);

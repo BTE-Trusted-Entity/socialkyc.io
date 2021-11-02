@@ -34,6 +34,9 @@ async function handler(
   request: Request,
   h: ResponseToolkit,
 ): Promise<ResponseObject> {
+  const { logger } = request;
+  logger.debug('Challenge confirmation started');
+
   const payload = request.payload as Payload;
   const { identity, encryptedChallenge, nonce, key } = payload;
 
@@ -41,6 +44,7 @@ async function handler(
   if (!didDocument) {
     throw Boom.forbidden(`Could not resolve the DID ${identity}`);
   }
+  logger.debug('Challenge confirmation resolved DID');
 
   const { details: senderDetails } = didDocument;
 
@@ -48,6 +52,7 @@ async function handler(
   if (!publicKey) {
     throw Boom.forbidden(`Could not get the key`);
   }
+  logger.debug('Challenge confirmation got public key');
 
   const { keyAgreement } = await keypairsPromise;
 
@@ -58,6 +63,7 @@ async function handler(
     peerPublicKey: Crypto.coToUInt8(publicKey.publicKeyHex),
     alg: 'x25519-xsalsa20-poly1305',
   });
+  logger.debug('Challenge confirmation decrypted challenge');
 
   const decryptedChallenge = Crypto.u8aToHex(data);
   const originalChallenge = challengesCache.get(key);
@@ -66,6 +72,7 @@ async function handler(
     throw Boom.forbidden('Challenge signature mismatch');
   }
 
+  logger.debug('Challenge confirmation matches');
   return h.response().code(StatusCodes.NO_CONTENT);
 }
 
