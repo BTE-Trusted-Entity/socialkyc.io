@@ -2016,6 +2016,21 @@
     "@types/yargs" "^16.0.0"
     chalk "^4.0.0"
 
+"@kiltprotocol/chain-helpers@0.24.0-8":
+  version "0.24.0-8"
+  resolved "https://registry.yarnpkg.com/@kiltprotocol/chain-helpers/-/chain-helpers-0.24.0-8.tgz#83bab009dd7c445842413d45fa0eda25f35afa53"
+  integrity sha512-Gbxb57PQQT4DVlHdXkNkI6zcN0rRZbL5SYf7LcUSBLyehmJwUlAbgnJiFtVqQe/Lct1s52F9PkgArdDQSe0rhQ==
+  dependencies:
+    "@kiltprotocol/config" "0.24.0-8"
+    "@kiltprotocol/type-definitions" "0.1.23"
+    "@kiltprotocol/types" "0.24.0-8"
+    "@kiltprotocol/utils" "0.24.0-8"
+    "@polkadot/api" "6.4.2"
+    "@polkadot/keyring" "7.5.1"
+    "@polkadot/types" "6.4.2"
+    "@polkadot/util" "7.5.1"
+    typescript-logging "^0.6.4"
+
 "@kiltprotocol/chain-helpers@^0.24.0-beta.1", "@kiltprotocol/chain-helpers@workspace:*":
   version "0.24.0-beta.1"
   resolved "https://registry.yarnpkg.com/@kiltprotocol/chain-helpers/-/chain-helpers-0.24.0-beta.1.tgz#b8160dd914a3815f420af6dab3eacc269d425e36"
@@ -2029,6 +2044,14 @@
     "@polkadot/keyring" "7.5.1"
     "@polkadot/types" "6.4.2"
     "@polkadot/util" "7.5.1"
+    typescript-logging "^0.6.4"
+
+"@kiltprotocol/config@0.24.0-8":
+  version "0.24.0-8"
+  resolved "https://registry.yarnpkg.com/@kiltprotocol/config/-/config-0.24.0-8.tgz#55a5eee06e4b58c52441dc342363975a0f5ee4ab"
+  integrity sha512-c28BSnz1p5ha/YGwZmgWxqIoLAKE4Um1lptP7NCRs2Y7zFxF5z6TM04PdcCIgLvCs98lKZF5qkLpMMl1aqEgEg==
+  dependencies:
+    "@kiltprotocol/utils" "0.24.0-8"
     typescript-logging "^0.6.4"
 
 "@kiltprotocol/config@workspace:*":
@@ -2059,7 +2082,22 @@
     tweetnacl "^1.0.3"
     typescript-logging "^0.6.4"
 
-"@kiltprotocol/did@^0.24.0-beta.1", "@kiltprotocol/did@workspace:*":
+"@kiltprotocol/did@^0.24.0-8":
+  version "0.24.0-8"
+  resolved "https://registry.yarnpkg.com/@kiltprotocol/did/-/did-0.24.0-8.tgz#e9e1daee3836bdab054a74060f0c7b959f1bd070"
+  integrity sha512-JydL7DUuBG4PXePiW0sIx6G5nr2fQoC3qYtJ9yX6QE4gihOTp01wpfmPnKVIF+v3qKI8WRjMO76veWMD+N9d4w==
+  dependencies:
+    "@kiltprotocol/chain-helpers" "0.24.0-8"
+    "@kiltprotocol/types" "0.24.0-8"
+    "@kiltprotocol/utils" "0.24.0-8"
+    "@polkadot/api" "6.4.2"
+    "@polkadot/keyring" "7.5.1"
+    "@polkadot/types" "6.4.2"
+    "@polkadot/util" "7.5.1"
+    "@polkadot/util-crypto" "7.5.1"
+    cbor "^6.0.0"
+
+"@kiltprotocol/did@workspace:*":
   version "0.24.0-beta.1"
   resolved "https://registry.yarnpkg.com/@kiltprotocol/did/-/did-0.24.0-beta.1.tgz#236f08b330265bfe4356c248038d4b87f9c2a572"
   integrity sha512-DcC04ppgEofCkRoMGwZ2hA9fHH58Qpavd43H0KJNDAe/S9ZBOCP3Qo9g55J7uDLJ1+/iOkZS2fST9MCAKNmSHg==
@@ -2090,6 +2128,16 @@
   resolved "https://registry.yarnpkg.com/@kiltprotocol/type-definitions/-/type-definitions-0.1.23.tgz#c54475dad7849dc4654975da33590872fc9acdde"
   integrity sha512-5bGUDo8aVTWttwUrV1gyRUlbBn9zllv6/ofAda9ejMbjY5o99YqsAWlXg1mro6BqE3rcF/i0tGbIdO9Z0tOttA==
 
+"@kiltprotocol/types@0.24.0-8":
+  version "0.24.0-8"
+  resolved "https://registry.yarnpkg.com/@kiltprotocol/types/-/types-0.24.0-8.tgz#0f26d7d8949fceb13537273a3808f8fbff1783b3"
+  integrity sha512-MKNlin1HIeqmMaBuvsY/0pwntTy4QLMYiE9EdxY+MWfDdr4cRdc/V1HVQb1UbWDhZqhN0E3PZlkFdP/8eGOhYg==
+  dependencies:
+    "@polkadot/api" "6.4.2"
+    "@polkadot/keyring" "7.5.1"
+    "@polkadot/types" "6.4.2"
+    tweetnacl "^1.0.3"
+
 "@kiltprotocol/types@^0.24.0-beta.1", "@kiltprotocol/types@workspace:*":
   version "0.24.0-beta.1"
   resolved "https://registry.yarnpkg.com/@kiltprotocol/types/-/types-0.24.0-beta.1.tgz#1222242f638ae00c598e2014b4b5a59ce365487c"
@@ -2099,6 +2147,19 @@
     "@polkadot/keyring" "7.5.1"
     "@polkadot/types" "6.4.2"
     tweetnacl "^1.0.3"
+
+"@kiltprotocol/utils@0.24.0-8":
+  version "0.24.0-8"
+  resolved "https://registry.yarnpkg.com/@kiltprotocol/utils/-/utils-0.24.0-8.tgz#35acbf008eea2fc42a436a5d857cf6f4a5a43b6b"
+  integrity sha512-mhqn3KP/7dZPCCp/d7yYKnPfZUcr6yM0ugOlfIe6MlZFeu9Z4pC1r8sUSTVL2SY+xx47YODvau10+NrgPmmygA==
+  dependencies:
+    "@kiltprotocol/types" "0.24.0-8"
+    "@polkadot/keyring" "7.5.1"
+    "@polkadot/types" "6.4.2"
+    "@polkadot/util" "7.5.1"
+    "@polkadot/util-crypto" "7.5.1"
+    tweetnacl "^1.0.3"
+    uuid "^8.1.0"
 
 "@kiltprotocol/utils@^0.24.0-beta.1", "@kiltprotocol/utils@workspace:*":
   version "0.24.0-beta.1"
