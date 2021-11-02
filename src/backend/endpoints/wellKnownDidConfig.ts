@@ -11,7 +11,12 @@ async function handler(
   request: Request,
   h: ResponseToolkit,
 ): Promise<ResponseObject> {
-  return h.response(await didConfigResourcePromise);
+  const { logger } = request;
+  logger.debug('DID configuration started');
+  const didConfigResource = await didConfigResourcePromise;
+
+  logger.debug('DID configuration started');
+  return h.response(didConfigResource);
 }
 
 export const wellKnownDidConfig: ServerRoute = {

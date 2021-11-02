@@ -86,17 +86,22 @@ async function handler(
   request: Request,
   h: ResponseToolkit,
 ): Promise<ResponseObject> {
+  const { logger } = request;
+  logger.debug('Email attestation started');
+
   const { key, did } = request.payload as Payload;
 
   let requestForAttestation: IRequestForAttestation;
   try {
     requestForAttestation = getRequestForAttestation(key);
+    logger.debug('Email attestation found request');
   } catch {
     throw Boom.notFound(`Key not found: ${key}`);
   }
 
   try {
     const response = await attestClaim(requestForAttestation, did);
+    logger.debug('Email attestation completed');
     return h.response(response);
   } catch (error) {
     throw Boom.internal('Attestation failed', error);

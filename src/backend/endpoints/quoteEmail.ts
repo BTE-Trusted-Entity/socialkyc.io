@@ -26,6 +26,9 @@ async function handler(
   request: Request,
   h: ResponseToolkit,
 ): Promise<ResponseObject> {
+  const { logger } = request;
+  logger.debug('Email quote started');
+
   const payload = request.payload as Payload;
 
   try {
@@ -37,6 +40,7 @@ async function handler(
       claimContents,
       payload.did,
     );
+    logger.debug('Email quote created');
 
     const messageBody: ISubmitTerms = {
       content: {
@@ -50,6 +54,7 @@ async function handler(
     const message = new Message(messageBody, configuration.did, payload.did);
     const encrypted = await encryptMessage(message, payload.did);
 
+    logger.debug('Email quote completed');
     return h.response(encrypted);
   } catch (error) {
     return Boom.boomify(error as Error);

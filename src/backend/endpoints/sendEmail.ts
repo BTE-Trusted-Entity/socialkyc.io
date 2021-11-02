@@ -60,8 +60,12 @@ async function handler(
   request: Request,
   h: ResponseToolkit,
 ): Promise<ResponseObject | string> {
+  const { logger } = request;
+  logger.debug('Email request attestation started');
+
   try {
     await rateLimiter.consume(request.info.remoteAddress);
+    logger.debug('Email request attestation rate limit OK');
   } catch {
     throw Boom.tooManyRequests(
       'Too many requests, please try again in an hour.',
@@ -73,12 +77,15 @@ async function handler(
 
   const messageBody = message.body;
   errorCheckMessageBody(messageBody);
+  logger.debug('Email request attestation message decrypted, verified');
 
   const { type } = messageBody;
   if (type === MessageBodyType.REJECT_TERMS) {
+    logger.debug('Email request attestation received rejection');
     return h.response().code(StatusCodes.ACCEPTED);
   }
   if (type !== MessageBodyType.REQUEST_ATTESTATION_FOR_CLAIM) {
+    logger.debug('Email request attestation unexpected message type');
     return h.response().code(StatusCodes.NOT_ACCEPTABLE);
   }
 
@@ -88,14 +95,17 @@ async function handler(
   }
 
   RequestForAttestation.verifyData(requestForAttestation);
+  logger.debug('Email request attestation verified');
 
   const key = requestForAttestation.rootHash;
   cacheRequestForAttestation(key, requestForAttestation);
+  logger.debug('Email request attestation cached');
 
   const path = paths.confirmationHtml.replace('{key}', key);
   const url = `${configuration.baseUri}${path}`;
 
   await send(url, requestForAttestation);
+  logger.debug('Email request attestation message sent');
 
   return requestForAttestation.claim.contents['Email'] as string;
 }

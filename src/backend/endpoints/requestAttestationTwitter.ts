@@ -24,17 +24,23 @@ async function handler(
   request: Request,
   h: ResponseToolkit,
 ): Promise<ResponseObject> {
+  const { logger } = request;
+  logger.debug('Twitter request attestation started');
+
   const encrypted = request.payload as Payload;
   const message = await decryptMessage(encrypted);
 
   const messageBody = message.body;
   errorCheckMessageBody(messageBody);
+  logger.debug('Twitter request attestation decrypted and verified');
 
   const { type } = messageBody;
   if (type === MessageBodyType.REJECT_TERMS) {
+    logger.debug('Twitter request attestation received rejection');
     return h.response().code(StatusCodes.ACCEPTED);
   }
   if (type !== MessageBodyType.REQUEST_ATTESTATION_FOR_CLAIM) {
+    logger.debug('Twitter request attestation unexpected message type');
     return h.response().code(StatusCodes.NOT_ACCEPTABLE);
   }
 
@@ -44,15 +50,18 @@ async function handler(
   }
 
   RequestForAttestation.verifyData(requestForAttestation);
+  logger.debug('Twitter request attestation verified');
 
   const key = requestForAttestation.rootHash;
   cacheRequestForAttestation(key, requestForAttestation);
+  logger.debug('Twitter request attestation cached');
 
   const code = String(Math.random()).substring(2);
   const username = requestForAttestation.claim.contents['Twitter'] as string;
 
   const confirmation = makeControlledPromise<void>();
   tweetsListeners[username] = [code, confirmation];
+  logger.debug('Twitter request attestation listener added');
 
   return h.response({ key, code, username });
 }
