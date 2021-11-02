@@ -25,16 +25,10 @@ import { configuration } from '../utilities/configuration';
 import { encryptMessage } from '../utilities/encryptMessage';
 import { paths } from './paths';
 
-interface AttestationData {
-  email: string;
-  blockHash: string;
-  message: IEncryptedMessage;
-}
-
 async function attestClaim(
   requestForAttestation: IRequestForAttestation,
   claimerDid: IDidDetails['did'],
-): Promise<AttestationData> {
+): Promise<{ message: IEncryptedMessage }> {
   const attestation = Attestation.fromRequestAndDid(
     requestForAttestation,
     configuration.did,
@@ -50,7 +44,7 @@ async function attestClaim(
     identity.address,
   );
 
-  const result = await BlockchainUtils.signAndSubmitTx(extrinsic, identity, {
+  await BlockchainUtils.signAndSubmitTx(extrinsic, identity, {
     resolveOn: BlockchainUtils.IS_FINALIZED,
     reSign: true,
   });
@@ -68,11 +62,7 @@ async function attestClaim(
   const message = new Message(messageBody, configuration.did, claimerDid);
   const encrypted = await encryptMessage(message, claimerDid);
 
-  return {
-    email: requestForAttestation.claim.contents['Email'] as string,
-    blockHash: result.status.asFinalized.toString(),
-    message: encrypted,
-  };
+  return { message: encrypted };
 }
 
 const zodPayload = z.object({

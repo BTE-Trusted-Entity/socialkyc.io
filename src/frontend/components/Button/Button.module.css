@@ -8,7 +8,7 @@
   height: 2rem;
   padding: 0 1.75rem;
   align-self: center;
-  display: inline-flex;
+  display: flex;
   justify-content: center;
   align-items: center;
   border-radius: 1rem;

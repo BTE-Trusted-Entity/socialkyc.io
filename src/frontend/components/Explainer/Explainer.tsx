@@ -1,11 +1,11 @@
-import { useState, useCallback, useRef } from 'react';
+import { useState, useCallback, useRef, ReactNode } from 'react';
 
 import { useHandleOutsideClick } from '../../utilities/useHandleOutsideClick';
 
 import * as styles from './Explainer.module.css';
 
 interface Props {
-  children: JSX.Element | string;
+  children: ReactNode;
 }
 
 export function Explainer({ children }: Props): JSX.Element {

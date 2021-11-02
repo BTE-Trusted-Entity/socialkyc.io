@@ -1,3 +1,4 @@
+import { ReactNode } from 'react';
 import { useLocation, Link, Route, Prompt } from 'react-router-dom';
 import cx from 'classnames';
 
@@ -7,7 +8,7 @@ interface Props {
   path: string;
   label: string;
   processing: boolean;
-  children: JSX.Element | JSX.Element[];
+  children: ReactNode;
 }
 
 export function Expandable({

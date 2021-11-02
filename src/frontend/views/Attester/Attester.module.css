@@ -158,4 +158,9 @@
 
 .spinner {
   composes: spinner from '../../components/Spinner/Spinner.module.css';
+  width: 3.25rem;
+  height: 3.25rem;
+  left: 50%;
+  top: 50%;
+  transform: translate(-50%, -50%);
 }

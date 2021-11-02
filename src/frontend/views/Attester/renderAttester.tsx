@@ -9,8 +9,19 @@ function getConfirmation(message: string, callback: (ok: boolean) => void) {
 }
 
 function renderAttester() {
+  let initialEntry: string;
+  if (window.location.pathname.includes('confirmation')) {
+    const key = window.location.href.split('/').pop();
+    initialEntry = `/email?key=${key}`;
+  } else {
+    initialEntry = '/';
+  }
+
   render(
-    <MemoryRouter getUserConfirmation={getConfirmation}>
+    <MemoryRouter
+      initialEntries={[initialEntry]}
+      getUserConfirmation={getConfirmation}
+    >
       <Attester />
     </MemoryRouter>,
     document.querySelector('.left'),
