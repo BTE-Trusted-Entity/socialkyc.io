@@ -3,7 +3,6 @@ import cx from 'classnames';
 import { detect } from 'detect-browser';
 
 import { apiWindow, getSession } from '../../utilities/session';
-import { usePreventNavigation } from '../../utilities/usePreventNavigation';
 
 import { Email } from '../Email/Email';
 import { Twitter } from '../Twitter/Twitter';
@@ -62,7 +61,6 @@ export function Attester(): JSX.Element {
   const [authorized, setAuthorized] = useState(false);
 
   const [processing, setProcessing] = useState(false);
-  usePreventNavigation(processing);
 
   const handleConnectClick = useCallback(async (event) => {
     event.preventDefault();

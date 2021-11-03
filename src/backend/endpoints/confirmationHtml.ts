@@ -31,7 +31,7 @@ async function handler(
     throw Boom.notFound(`Key not found: ${key}`);
   }
 
-  return h.file(path.join(configuration.distFolder, 'confirmation.html'));
+  return h.file(path.join(configuration.distFolder, 'index.html'));
 }
 
 export const confirmationHtml: ServerRoute = {

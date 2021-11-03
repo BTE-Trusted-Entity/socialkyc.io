@@ -5,10 +5,12 @@ import { StatusCodes } from 'http-status-codes';
 
 import { getSession } from '../../utilities/session';
 import { usePreventNavigation } from '../../utilities/usePreventNavigation';
-import { paths } from '../../../backend/endpoints/paths';
+import { expiryDate } from '../../utilities/expiryDate';
 
 import { Explainer } from '../../components/Explainer/Explainer';
 import { Expandable } from '../../components/Expandable/Expandable';
+
+import { paths } from '../../../backend/endpoints/paths';
 
 import * as styles from './Twitter.module.css';
 
@@ -23,10 +25,6 @@ interface AttestationData {
   blockHash: string;
   message: IEncryptedMessage;
 }
-
-const expiryDate = new Date(
-  new Date().setFullYear(new Date().getFullYear() + 1),
-).toLocaleDateString();
 
 export function Twitter(): JSX.Element {
   const [twitterHandle, setTwitterHandle] = useState('');

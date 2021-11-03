@@ -6,7 +6,7 @@
   text-decoration: none;
   color: var(--color-white);
   position: relative;
-  z-index: 2;
+  z-index: 3;
 }
 
 .open::before,

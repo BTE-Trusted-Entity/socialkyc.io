@@ -94,7 +94,6 @@
       },
       "source": [
         "src/frontend/index.html",
-        "src/frontend/confirmation.html",
         "src/frontend/verifier.html",
         "src/frontend/sign.html",
         "src/frontend/404.html"

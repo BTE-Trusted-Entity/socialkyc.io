@@ -1,4 +1,5 @@
-import { useLocation, Link, Route, Prompt } from 'react-router-dom';
+import { ReactNode } from 'react';
+import { Link, Route, useRouteMatch } from 'react-router-dom';
 import cx from 'classnames';
 
 import * as styles from './Expandable.module.css';
@@ -7,7 +8,7 @@ interface Props {
   path: string;
   label: string;
   processing: boolean;
-  children: JSX.Element | JSX.Element[];
+  children: ReactNode;
 }
 
 export function Expandable({
@@ -16,8 +17,7 @@ export function Expandable({
   processing,
   children,
 }: Props): JSX.Element {
-  const { pathname } = useLocation();
-  const expanded = pathname === path;
+  const expanded = Boolean(useRouteMatch(path));
 
   return (
     <li className={styles.container}>
@@ -40,13 +40,7 @@ export function Expandable({
             {label}
           </Link>
         )}
-        <Route path={path}>
-          <Prompt
-            when={processing}
-            message={`The ${label} attestation process has already started. Are you sure you want to leave?`}
-          />
-          {children}
-        </Route>
+        <Route path={path}>{children}</Route>
       </section>
     </li>
   );
