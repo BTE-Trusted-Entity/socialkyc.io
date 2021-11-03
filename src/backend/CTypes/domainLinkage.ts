@@ -25,6 +25,10 @@ export async function storeDomainLinkageCType(): Promise<void> {
 
   const { fullDid } = await fullDidPromise;
   const { identity } = await keypairsPromise;
+
+  // TODO: Remove when we get SDK upgrade which includes this call in authorizeExtrinsic
+  await fullDid.refreshTxIndex();
+
   const extrinsic = await fullDid.authorizeExtrinsic(
     tx,
     assertionKeystore,
