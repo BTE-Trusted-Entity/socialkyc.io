@@ -54,6 +54,8 @@
   height: 2rem;
   top: 0.75rem;
   right: 1rem;
+  left: auto;
+  transform: none;
 }
 
 .ready {
