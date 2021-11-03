@@ -82,7 +82,7 @@ export const fullDidPromise = (async () => {
       [assertionMethod]: didDetails.getKeyIds(assertionMethod),
       [keyAgreement]: didDetails.getKeyIds(keyAgreement),
     },
-    lastTxIndex: await DidChain.queryLastTxIndex(didDetails.did),
+    lastTxIndex: await DidChain.queryLastTxCounter(didDetails.did),
   });
 
   await compareAllKeys(fullDid);
