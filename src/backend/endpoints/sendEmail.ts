@@ -17,7 +17,7 @@ import { cacheRequestForAttestation } from '../utilities/requestCache';
 import { sesClient } from '../utilities/sesClient';
 import { decryptMessage } from '../utilities/decryptMessage';
 import {
-  Payload,
+  EncryptedMessageInput,
   validateEncryptedMessage,
 } from '../utilities/validateEncryptedMessage';
 import { paths } from './paths';
@@ -56,6 +56,8 @@ async function send(
   await sesClient.send(new SendEmailCommand(params));
 }
 
+export type Output = string;
+
 async function handler(
   request: Request,
   h: ResponseToolkit,
@@ -72,7 +74,7 @@ async function handler(
     );
   }
 
-  const encrypted = request.payload as Payload;
+  const encrypted = request.payload as EncryptedMessageInput;
   const message = await decryptMessage(encrypted);
 
   const messageBody = message.body;
@@ -107,7 +109,7 @@ async function handler(
   await send(url, requestForAttestation);
   logger.debug('Email request attestation message sent');
 
-  return requestForAttestation.claim.contents['Email'] as string;
+  return requestForAttestation.claim.contents['Email'] as string as Output;
 }
 
 export const request: ServerRoute = {

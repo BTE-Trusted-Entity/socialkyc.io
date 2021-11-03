@@ -1,8 +1,5 @@
-import { useCallback, useState, useEffect, Fragment } from 'react';
+import { Fragment, useCallback, useEffect, useState } from 'react';
 import { Prompt, useRouteMatch } from 'react-router-dom';
-import ky from 'ky';
-import { StatusCodes } from 'http-status-codes';
-import { IEncryptedMessage } from '@kiltprotocol/types';
 
 import { getSession } from '../../utilities/session';
 import { usePreventNavigation } from '../../utilities/usePreventNavigation';
@@ -11,39 +8,11 @@ import { expiryDate } from '../../utilities/expiryDate';
 import { Expandable } from '../../components/Expandable/Expandable';
 import { Explainer } from '../../components/Explainer/Explainer';
 
-import { paths } from '../../../backend/endpoints/paths';
+import { useAttestEmail } from '../../../backend/endpoints/attestationEmailApi';
+import { quoteEmail } from '../../../backend/endpoints/quoteEmailApi';
+import { requestAttestationEmail } from '../../../backend/endpoints/sendEmailApi';
 
 import * as styles from './Email.module.css';
-
-interface AttestationData {
-  message: IEncryptedMessage;
-}
-
-function useAttestEmail(key: string) {
-  const [data, setData] = useState<AttestationData>(null);
-  const [error, setError] = useState(false);
-
-  useEffect(() => {
-    if (!key) {
-      return;
-    }
-    (async () => {
-      try {
-        const session = await getSession();
-        const did = session.identity;
-
-        const result = (await ky
-          .post(paths.attestEmail, { json: { key, did }, timeout: 60 * 1000 })
-          .json()) as AttestationData;
-        setData(result);
-      } catch (error) {
-        console.error(error);
-        setError(true);
-      }
-    })();
-  }, [key]);
-  return { data, error };
-}
 
 type AttestationStatus = 'requested' | 'attesting' | 'ready' | 'error';
 
@@ -63,7 +32,9 @@ export function Email(): JSX.Element {
 
   const initialStatus = key ? 'attesting' : undefined;
 
-  const [status, setStatus] = useState<AttestationStatus>(initialStatus);
+  const [status, setStatus] = useState<AttestationStatus | undefined>(
+    initialStatus,
+  );
   usePreventNavigation(status === 'attesting');
 
   const showSpinner = status === 'requested' || status === 'attesting';
@@ -87,31 +58,14 @@ export function Email(): JSX.Element {
         const session = await getSession();
 
         await session.listen(async (message) => {
-          const result = await ky.post(paths.requestAttestationEmail, {
-            json: message,
-          });
-
-          if (result.status === StatusCodes.ACCEPTED) {
-            console.log('Terms rejected');
-          }
-
-          if (result.status !== StatusCodes.OK) {
-            console.log('Not attested');
-            return;
-          }
-
-          setEmail(await result.text());
+          setEmail(await requestAttestationEmail(message));
           setStatus('requested');
         });
 
-        const json = {
+        const message = await quoteEmail({
           email: emailInput,
           did: session.identity,
-        };
-
-        const message = (await ky
-          .post(paths.quoteEmail, { json })
-          .json()) as IEncryptedMessage;
+        });
 
         await session.send(message);
       } catch (error) {
@@ -125,6 +79,9 @@ export function Email(): JSX.Element {
   );
 
   const handleBackup = useCallback(async () => {
+    if (!data) {
+      return;
+    }
     try {
       const session = await getSession();
       await session.send(data.message);

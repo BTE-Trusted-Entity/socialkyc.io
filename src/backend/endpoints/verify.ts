@@ -11,10 +11,15 @@ import { errorCheckMessageBody } from '@kiltprotocol/messaging';
 
 import { decryptMessage } from '../utilities/decryptMessage';
 import {
-  Payload,
+  EncryptedMessageInput,
   validateEncryptedMessage,
 } from '../utilities/validateEncryptedMessage';
 import { paths } from './paths';
+
+export interface Output {
+  credential: AttestedClaim;
+  isAttested: boolean;
+}
 
 async function handler(
   request: Request,
@@ -23,7 +28,7 @@ async function handler(
   const { logger } = request;
   logger.debug('Verification started');
 
-  const encrypted = request.payload as Payload;
+  const encrypted = request.payload as EncryptedMessageInput;
   const message = await decryptMessage(encrypted);
 
   const messageBody = message.body;
@@ -41,7 +46,7 @@ async function handler(
   const isAttested = await credential.verify();
 
   logger.debug('Verification completed');
-  return h.response({ credential, isAttested });
+  return h.response({ credential, isAttested } as Output);
 }
 
 export const verify: ServerRoute = {

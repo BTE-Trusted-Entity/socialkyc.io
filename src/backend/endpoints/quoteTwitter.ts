@@ -7,7 +7,11 @@ import {
 import Boom from '@hapi/boom';
 import { z } from 'zod';
 import { Claim } from '@kiltprotocol/core';
-import { ISubmitTerms, MessageBodyType } from '@kiltprotocol/types';
+import {
+  IEncryptedMessage,
+  ISubmitTerms,
+  MessageBodyType,
+} from '@kiltprotocol/types';
 import Message from '@kiltprotocol/messaging';
 
 import { twitter } from '../CTypes/twitter';
@@ -20,7 +24,9 @@ const zodPayload = z.object({
   did: z.string(),
 });
 
-type Payload = z.infer<typeof zodPayload>;
+export type Input = z.infer<typeof zodPayload>;
+
+export type Output = IEncryptedMessage;
 
 async function handler(
   request: Request,
@@ -29,7 +35,7 @@ async function handler(
   const { logger } = request;
   logger.debug('Twitter quote started');
 
-  const payload = request.payload as Payload;
+  const payload = request.payload as Input;
 
   try {
     const claimContents = {
@@ -55,7 +61,7 @@ async function handler(
     const encrypted = await encryptMessage(message, payload.did);
 
     logger.debug('Twitter quote completed');
-    return h.response(encrypted);
+    return h.response(encrypted as Output);
   } catch (error) {
     return Boom.boomify(error as Error);
   }

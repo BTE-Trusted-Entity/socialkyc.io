@@ -1,7 +1,4 @@
 import { useCallback, useState } from 'react';
-import ky from 'ky';
-import { IEncryptedMessage } from '@kiltprotocol/types';
-import { StatusCodes } from 'http-status-codes';
 
 import { getSession } from '../../utilities/session';
 import { usePreventNavigation } from '../../utilities/usePreventNavigation';
@@ -10,21 +7,11 @@ import { expiryDate } from '../../utilities/expiryDate';
 import { Explainer } from '../../components/Explainer/Explainer';
 import { Expandable } from '../../components/Expandable/Expandable';
 
-import { paths } from '../../../backend/endpoints/paths';
+import { attestTwitter } from '../../../backend/endpoints/attestationTwitterApi';
+import { quoteTwitter } from '../../../backend/endpoints/quoteTwitterApi';
+import { requestAttestationTwitter } from '../../../backend/endpoints/requestAttestationTwitterApi';
 
 import * as styles from './Twitter.module.css';
-
-interface RequestAttestationData {
-  key: string;
-  code: string;
-  twitter: string;
-}
-
-interface AttestationData {
-  twitter: string;
-  blockHash: string;
-  message: IEncryptedMessage;
-}
 
 export function Twitter(): JSX.Element {
   const [twitterHandle, setTwitterHandle] = useState('');
@@ -47,42 +34,26 @@ export function Twitter(): JSX.Element {
         const session = await getSession();
 
         await session.listen(async (message) => {
-          const result = await ky.post(paths.requestAttestationTwitter, {
-            json: message,
-          });
-
-          if (result.status === StatusCodes.ACCEPTED) {
-            console.log('Terms rejected');
-          }
-
-          if (result.status !== StatusCodes.OK) {
-            console.log('Not attested');
-            return;
-          }
-
-          const { key, code, twitter } =
-            (await result.json()) as RequestAttestationData;
+          const { key, code, twitter } = await requestAttestationTwitter(
+            message,
+          );
           setCode(code);
 
-          const attestationData = (await ky
-            .post(paths.attestTwitter, {
-              json: { key, twitter, did: session.identity },
-            })
-            .json()) as AttestationData;
+          const attestationData = await attestTwitter({
+            key,
+            twitter,
+            did: session.identity,
+          });
 
           console.log('Attestation data: ', attestationData);
 
           // TODO: https://kiltprotocol.atlassian.net/browse/SK-521
         });
 
-        const json = {
+        const message = await quoteTwitter({
           twitter: twitterHandle,
           did: session.identity,
-        };
-
-        const message = (await ky
-          .post(paths.quoteTwitter, { json })
-          .json()) as IEncryptedMessage;
+        });
 
         await session.send(message);
       } catch (error) {
