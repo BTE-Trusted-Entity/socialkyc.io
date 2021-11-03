@@ -1,6 +1,8 @@
 :root {
   --color-magenta: #e43366;
   --color-magenta-rgb: 228 51 102;
+  --color-magenta-secondary: #bb294b;
+  --color-magenta-secondary-rgb: 187 41 75;
   --color-white: #fff;
   --color-white-rgb: 255 255 255;
   --color-light: #ebebeb;
@@ -8,5 +10,5 @@
   --color-black: #000;
   --color-black-rgb: 0 0 0;
   --color-grey: #797979;
-  --color-purple-rgb: 187 41 75;
+  --color-grey-rgb: 121 121 121;
 }

@@ -29,7 +29,7 @@
 .statusContainer {
   box-sizing: border-box;
   width: 100%;
-  background-color: rgb(var(--color-purple-rgb) / 50%);
+  background-color: rgb(var(--color-magenta-secondary-rgb) / 50%);
   color: var(--color-light);
   position: relative;
   border-radius: 0.5rem;

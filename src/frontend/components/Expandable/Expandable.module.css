@@ -4,8 +4,6 @@
 
 .spinner {
   composes: spinner from '../../components/Spinner/Spinner.module.css';
-  width: 3.25rem;
-  height: 3.25rem;
   left: 50%;
   top: 50%;
   transform: translate(-50%, -50%);
@@ -22,9 +20,11 @@
 
 .expanded {
   padding-bottom: 2rem;
-  background-color: rgb(var(--color-purple-rgb) / 10%);
+  background-color: rgb(var(--color-magenta-secondary-rgb) / 10%);
   box-shadow: 0 0 10px 0 rgb(var(--color-white-rgb) / 30%);
   border-radius: 0.625rem;
+  display: flex;
+  flex-direction: column;
 }
 
 .processing {

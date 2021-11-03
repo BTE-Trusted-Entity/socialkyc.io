@@ -1,5 +1,5 @@
-import { useCallback, useState, useEffect } from 'react';
-import { Prompt } from 'react-router-dom';
+import { useCallback, useState, useEffect, Fragment } from 'react';
+import { Prompt, useRouteMatch } from 'react-router-dom';
 import ky from 'ky';
 import { StatusCodes } from 'http-status-codes';
 import { IEncryptedMessage } from '@kiltprotocol/types';
@@ -7,7 +7,6 @@ import { IEncryptedMessage } from '@kiltprotocol/types';
 import { getSession } from '../../utilities/session';
 import { usePreventNavigation } from '../../utilities/usePreventNavigation';
 import { expiryDate } from '../../utilities/expiryDate';
-import { useQuery } from '../../utilities/useQuery';
 
 import { Expandable } from '../../components/Expandable/Expandable';
 import { Explainer } from '../../components/Explainer/Explainer';
@@ -46,7 +45,7 @@ function useAttestEmail(key: string) {
   return { data, error };
 }
 
-type attestationStatus = 'requested' | 'attesting' | 'ready' | 'error';
+type AttestationStatus = 'requested' | 'attesting' | 'ready' | 'error';
 
 export function Email(): JSX.Element {
   const [emailInput, setEmailInput] = useState('');
@@ -60,10 +59,11 @@ export function Email(): JSX.Element {
   const [processing, setProcessing] = useState(false);
   usePreventNavigation(processing);
 
-  const { key } = useQuery();
+  const key = (useRouteMatch('/email/:key')?.params as { key?: string }).key;
+
   const initialStatus = key ? 'attesting' : undefined;
 
-  const [status, setStatus] = useState<attestationStatus>(initialStatus);
+  const [status, setStatus] = useState<AttestationStatus>(initialStatus);
   usePreventNavigation(status === 'attesting');
 
   const showSpinner = status === 'requested' || status === 'attesting';
@@ -71,11 +71,10 @@ export function Email(): JSX.Element {
 
   const { data, error } = useAttestEmail(key);
   useEffect(() => {
-    if (data) {
-      setStatus('ready');
-    }
     if (error) {
       setStatus('error');
+    } else if (data) {
+      setStatus('ready');
     }
   }, [data, error]);
 
@@ -86,6 +85,7 @@ export function Email(): JSX.Element {
 
       try {
         const session = await getSession();
+
         await session.listen(async (message) => {
           const result = await ky.post(paths.requestAttestationEmail, {
             json: message,
@@ -139,8 +139,8 @@ export function Email(): JSX.Element {
   return (
     <Expandable path="/email" label="Email" processing={processing}>
       <Prompt
-        when={status === 'attesting'}
-        message="Email attestation in process. Are you sure you want to leave?"
+        when={status === 'attesting' || processing}
+        message="The email attestation process has already started. Are you sure you want to leave?"
       />
 
       <Explainer>
@@ -182,31 +182,31 @@ export function Email(): JSX.Element {
 
           <h2 className={styles.heading}>Attestation process:</h2>
           {status === 'requested' && (
-            <>
+            <Fragment>
               <p className={styles.status}>Email verification</p>
               <p className={styles.subline}>
                 Email sent to {email}. Please check your inbox and click the
                 link.
               </p>
-            </>
+            </Fragment>
           )}
 
           {status === 'attesting' && (
-            <>
+            <Fragment>
               <p className={styles.status}>In progress</p>
               <p className={styles.subline}>
                 You have confirmed your email address.
               </p>
-            </>
+            </Fragment>
           )}
 
           {status === 'ready' && (
-            <>
+            <Fragment>
               <p className={styles.status}>Credential is ready</p>
               <p className={styles.subline}>
                 We recommend backing up your credential now.
               </p>
-            </>
+            </Fragment>
           )}
 
           {/* TODO: Interface for error */}

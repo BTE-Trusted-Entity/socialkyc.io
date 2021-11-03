@@ -12,7 +12,7 @@ function renderAttester() {
   let initialEntry: string;
   if (window.location.pathname.includes('confirmation')) {
     const key = window.location.href.split('/').pop();
-    initialEntry = `/email?key=${key}`;
+    initialEntry = `/email/${key}`;
   } else {
     initialEntry = '/';
   }
