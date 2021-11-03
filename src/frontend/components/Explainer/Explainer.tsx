@@ -17,7 +17,7 @@ export function Explainer({ children }: Props): JSX.Element {
     setShowExplainer(!showExplainer);
   }, [showExplainer]);
 
-  const explainerRef = useRef();
+  const explainerRef = useRef(null);
   useHandleOutsideClick(explainerRef, hideExplainer);
 
   return (

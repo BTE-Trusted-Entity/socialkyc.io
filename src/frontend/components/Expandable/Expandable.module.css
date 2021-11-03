@@ -20,8 +20,6 @@
   background-color: rgb(var(--color-magenta-secondary-rgb) / 10%);
   box-shadow: 0 0 10px 0 rgb(var(--color-white-rgb) / 30%);
   border-radius: 0.625rem;
-  display: flex;
-  flex-direction: column;
 }
 
 .processing {
