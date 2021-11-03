@@ -26,7 +26,7 @@
     "@kiltprotocol/chain-helpers": "^0.24.0-beta.1",
     "@kiltprotocol/core": "^0.24.0-beta.1",
     "@kiltprotocol/did": "^0.24.0-beta.1",
-    "@kiltprotocol/messaging": "^0.24.0-beta.1",
+    "@kiltprotocol/messaging": "^0.24.0-10",
     "@kiltprotocol/types": "^0.24.0-beta.1",
     "@kiltprotocol/utils": "^0.24.0-beta.1",
     "@kiltprotocol/vc-export": "^0.24.0-beta.1",
