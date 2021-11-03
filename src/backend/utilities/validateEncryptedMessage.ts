@@ -8,7 +8,7 @@ const zodPayload = z.object({
   receivedAt: z.number().optional(),
 });
 
-export type Payload = z.infer<typeof zodPayload>;
+export type EncryptedMessageInput = z.infer<typeof zodPayload>;
 
 export async function validateEncryptedMessage(
   payload: Parameters<typeof zodPayload.parse>[0],

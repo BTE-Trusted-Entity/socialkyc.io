@@ -82,7 +82,9 @@ const zodPayload = z.object({
   did: z.string(),
 });
 
-type Payload = z.infer<typeof zodPayload>;
+export type Input = z.infer<typeof zodPayload>;
+
+export type Output = AttestationData;
 
 async function handler(
   request: Request,
@@ -91,7 +93,7 @@ async function handler(
   const { logger } = request;
   logger.debug('Twitter attestation started');
 
-  const { key, twitter, did } = request.payload as Payload;
+  const { key, twitter, did } = request.payload as Input;
 
   let requestForAttestation: IRequestForAttestation;
   try {
@@ -114,7 +116,7 @@ async function handler(
     const response = await attestClaim(requestForAttestation, did);
 
     logger.debug('Twitter attestation completed');
-    return h.response(response);
+    return h.response(response as Output);
   } catch (error) {
     throw Boom.internal('Attestation failed', error);
   }

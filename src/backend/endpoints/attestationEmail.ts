@@ -70,7 +70,11 @@ const zodPayload = z.object({
   did: z.string(),
 });
 
-type Payload = z.infer<typeof zodPayload>;
+export type Input = z.infer<typeof zodPayload>;
+
+export interface Output {
+  message: IEncryptedMessage;
+}
 
 async function handler(
   request: Request,
@@ -79,7 +83,7 @@ async function handler(
   const { logger } = request;
   logger.debug('Email attestation started');
 
-  const { key, did } = request.payload as Payload;
+  const { key, did } = request.payload as Input;
 
   let requestForAttestation: IRequestForAttestation;
   try {
@@ -92,7 +96,7 @@ async function handler(
   try {
     const response = await attestClaim(requestForAttestation, did);
     logger.debug('Email attestation completed');
-    return h.response(response);
+    return h.response(response as Output);
   } catch (error) {
     throw Boom.internal('Attestation failed', error);
   }

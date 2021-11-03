@@ -11,7 +11,7 @@ import { StatusCodes } from 'http-status-codes';
 
 import { DefaultResolver } from '@kiltprotocol/did';
 import { Crypto } from '@kiltprotocol/utils';
-import { KeyRelationship } from '@kiltprotocol/types';
+import { IDidDetails, KeyRelationship } from '@kiltprotocol/types';
 import { randomAsHex } from '@polkadot/util-crypto';
 
 import { configuration } from '../utilities/configuration';
@@ -26,7 +26,15 @@ const zodPayload = z.object({
   key: z.string(),
 });
 
-export type Payload = z.infer<typeof zodPayload>;
+export interface GetChallengeOutput {
+  did: IDidDetails['did'];
+  key: string;
+  challenge: string;
+}
+
+export type CheckChallengeInput = z.infer<typeof zodPayload>;
+
+export type CheckChallengeOutput = undefined;
 
 const challengesCache = new NodeCache({ stdTTL: 5 * 60 });
 
@@ -37,7 +45,7 @@ async function handler(
   const { logger } = request;
   logger.debug('Challenge confirmation started');
 
-  const payload = request.payload as Payload;
+  const payload = request.payload as CheckChallengeInput;
   const { identity, encryptedChallenge, nonce, key } = payload;
 
   const didDocument = await DefaultResolver.resolveDoc(identity);
@@ -73,7 +81,9 @@ async function handler(
   }
 
   logger.debug('Challenge confirmation matches');
-  return h.response().code(StatusCodes.NO_CONTENT);
+  return h
+    .response(<CheckChallengeOutput>undefined)
+    .code(StatusCodes.NO_CONTENT);
 }
 
 function getChallenge() {
@@ -94,10 +104,11 @@ export const challenge: ServerRoute[] = [
   {
     method: 'GET',
     path,
-    handler: () => ({
-      did: configuration.did,
-      ...getChallenge(),
-    }),
+    handler: () =>
+      ({
+        did: configuration.did,
+        ...getChallenge(),
+      } as GetChallengeOutput),
   },
   {
     method: 'POST',

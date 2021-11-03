@@ -8,7 +8,11 @@ import Boom from '@hapi/boom';
 import { z } from 'zod';
 
 import { CType } from '@kiltprotocol/core';
-import { IRequestClaimsForCTypes, MessageBodyType } from '@kiltprotocol/types';
+import {
+  IEncryptedMessage,
+  IRequestClaimsForCTypes,
+  MessageBodyType,
+} from '@kiltprotocol/types';
 import Message from '@kiltprotocol/messaging';
 
 import { email } from '../CTypes/email';
@@ -21,7 +25,9 @@ const zodPayload = z.object({
   cType: z.string(),
 });
 
-type Payload = z.infer<typeof zodPayload>;
+export type Input = z.infer<typeof zodPayload>;
+
+export type Output = IEncryptedMessage;
 
 const cTypes: Record<string, CType['hash']> = {
   email: email.hash,
@@ -44,7 +50,7 @@ async function handler(
   const { logger } = request;
   logger.debug('Request credential started');
 
-  const { did, cType } = request.payload as Payload;
+  const { did, cType } = request.payload as Input;
 
   const cTypeHash = getCTypeHash(cType);
   logger.debug('Request credential CType found');
@@ -60,7 +66,7 @@ async function handler(
   const encrypted = await encryptMessage(message, did);
 
   logger.debug('Request credential completed');
-  return h.response(encrypted);
+  return h.response(encrypted as Output);
 }
 
 export const requestCredential: ServerRoute = {
