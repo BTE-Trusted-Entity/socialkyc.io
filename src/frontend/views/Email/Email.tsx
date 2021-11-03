@@ -79,9 +79,6 @@ export function Email(): JSX.Element {
   );
 
   const handleBackup = useCallback(async () => {
-    if (!data) {
-      return;
-    }
     try {
       if (!data) {
         throw new Error('No attestation data');
