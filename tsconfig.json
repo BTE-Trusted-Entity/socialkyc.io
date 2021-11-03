@@ -9,7 +9,6 @@
     "strict": true,
     "sourceMap": true,
     "jsx": "react-jsx",
-    "esModuleInterop": true,
-    "skipLibCheck": true
+    "esModuleInterop": true
   }
 }
