@@ -65,4 +65,5 @@
 .backup {
   composes: buttonPrimary from '../../components/Button/Button.module.css';
   margin: 0 auto;
+  display: block;
 }
