@@ -13,7 +13,7 @@ export async function attestEmail(input: Input): Promise<Output> {
 
 export function useAttestEmail(key: string | undefined): {
   data?: Output;
-  error?: unknown;
+  error?: boolean;
 } {
   const [data, setData] = useState<Output | undefined>();
   const [error, setError] = useState(false);
