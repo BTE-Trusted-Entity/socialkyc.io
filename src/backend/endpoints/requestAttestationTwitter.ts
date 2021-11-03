@@ -23,7 +23,6 @@ import { paths } from './paths';
 export interface Output {
   key: string;
   code: string;
-  twitter: string;
 }
 
 async function handler(
@@ -69,7 +68,7 @@ async function handler(
   tweetsListeners[twitter] = [code, confirmation];
   logger.debug('Twitter request attestation listener added');
 
-  return h.response({ key, code, twitter } as Output);
+  return h.response({ key, code } as Output);
 }
 
 export const requestTwitter: ServerRoute = {

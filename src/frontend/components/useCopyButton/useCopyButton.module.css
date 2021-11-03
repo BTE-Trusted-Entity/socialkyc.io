@@ -1,0 +1,16 @@
+.copy {
+  border: 0;
+  padding: 0;
+  display: inline-flex;
+  cursor: pointer;
+  background: url('copy.svg') no-repeat center 40%;
+  background-size: auto 50%;
+  width: 2.25rem;
+  height: 2.25rem;
+  right: 0.25rem;
+}
+
+.copied {
+  composes: copy;
+  background-image: url('checkmark-circle.svg');
+}

@@ -5,6 +5,7 @@ export const paths = {
 
   attestEmail: '/api/attest',
   attestTwitter: '/api/attest-twitter',
+  confirmTwitter: '/api/confirm-twitter',
 
   challenge: '/api/challenge',
 
