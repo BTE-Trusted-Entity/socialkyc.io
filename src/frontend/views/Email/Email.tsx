@@ -125,14 +125,11 @@ export function Email(): JSX.Element {
   );
 
   const handleBackup = useCallback(async () => {
-    setProcessing(true);
     try {
       const session = await getSession();
       await session.send(data.message);
     } catch (error) {
       console.error(error);
-    } finally {
-      setProcessing(false);
     }
   }, [data]);
 
