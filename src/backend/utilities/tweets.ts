@@ -44,7 +44,7 @@ async function onTweet(handleTweet: (tweet: TweetV1) => void) {
         try {
           handleTweet(tweet);
         } catch (error) {
-          logger.error(error, 'Error handling tweet', tweet);
+          logger.error(`Error handling tweet: ${error}`, tweet);
         }
       }
     } catch (error) {
@@ -52,12 +52,12 @@ async function onTweet(handleTweet: (tweet: TweetV1) => void) {
         try {
           await rateLimitToBeReset(error);
         } catch (rateError) {
-          logger.error(rateError, 'Error processing the rate limit');
+          logger.error(`Error processing the rate limit: ${rateError}`);
         }
         continue;
       }
 
-      logger.error(error, 'Unexpected TwitterAPI error');
+      logger.error(`Unexpected TwitterAPI error: ${error}`);
     }
 
     // wait before the next request
