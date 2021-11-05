@@ -199,7 +199,7 @@ export function Twitter(): JSX.Element {
                 </button>
               )}
             </p>
-            <p>
+            <p className={styles.ctaLine}>
               <a
                 className={styles.cta}
                 href="https://twitter.com/"
@@ -212,9 +212,11 @@ export function Twitter(): JSX.Element {
           </div>
         )}
         {status === 'ready' && (
-          <button className={styles.cta} type="button" onClick={handleBackup}>
-            Back up credential
-          </button>
+          <p className={styles.ctaLine}>
+            <button className={styles.cta} type="button" onClick={handleBackup}>
+              Back up credential
+            </button>
+          </p>
         )}
       </section>
     </Expandable>

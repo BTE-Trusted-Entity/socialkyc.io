@@ -98,8 +98,11 @@
   composes: checkmark from '../../components/Checkmark/Checkmark.module.css';
 }
 
+.ctaLine {
+  text-align: center;
+}
+
 .cta {
   composes: buttonPrimary from '../../components/Button/Button.module.css';
   margin: 0 auto;
-  display: block;
 }
