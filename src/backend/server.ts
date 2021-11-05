@@ -1,4 +1,4 @@
-import Hapi, { ServerRegisterPluginObject } from '@hapi/hapi';
+import Hapi from '@hapi/hapi';
 import inert from '@hapi/inert';
 import pino from 'hapi-pino';
 import exiting from 'exiting';
@@ -33,10 +33,11 @@ const server = Hapi.server({
 });
 const manager = exiting.createManager(server);
 
-const logger: ServerRegisterPluginObject<pino.Options> = {
+const logger = {
   plugin: pino,
   options: {
     prettyPrint: !isProduction,
+    ignoreTags: ['noLogs'],
     level: isProduction ? 'info' : 'debug',
     logRequestComplete: isProduction,
     redact: isProduction ? [] : { paths: ['req', 'res'], remove: true },
