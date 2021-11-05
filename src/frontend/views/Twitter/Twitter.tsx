@@ -79,7 +79,7 @@ export function Twitter(): JSX.Element {
         });
 
         const message = await quoteTwitter({
-          twitter: twitterHandle,
+          username: twitterHandle,
           did: session.identity,
         });
 

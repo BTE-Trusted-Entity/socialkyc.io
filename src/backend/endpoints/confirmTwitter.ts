@@ -105,16 +105,16 @@ async function handler(
     throw Boom.notFound(`Key not found: ${key}`);
   }
 
-  const twitter = requestForAttestation.claim.contents['Twitter'] as string;
-  if (!tweetsListeners[twitter]) {
-    throw Boom.notFound(`Twitter handle not found: ${twitter}`);
+  const username = requestForAttestation.claim.contents['Twitter'] as string;
+  if (!tweetsListeners[username]) {
+    throw Boom.notFound(`Twitter handle not found: ${username}`);
   }
 
   try {
     logger.debug('Twitter confirmation waiting for tweet');
-    const confirmation = tweetsListeners[twitter][1];
+    const confirmation = tweetsListeners[username][1];
     await confirmation.promise;
-    delete tweetsListeners[twitter];
+    delete tweetsListeners[username];
 
     logger.debug('Twitter confirmation attesting');
     twitterAttestationPromises[key] = attestClaim(requestForAttestation, did);

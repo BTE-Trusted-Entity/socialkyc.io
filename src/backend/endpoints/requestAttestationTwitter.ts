@@ -62,10 +62,10 @@ async function handler(
   logger.debug('Twitter request attestation cached');
 
   const code = String(Math.random()).substring(2);
-  const twitter = requestForAttestation.claim.contents['Twitter'] as string;
+  const username = requestForAttestation.claim.contents['Twitter'] as string;
 
   const confirmation = makeControlledPromise<void>();
-  tweetsListeners[twitter] = [code, confirmation];
+  tweetsListeners[username] = [code, confirmation];
   logger.debug('Twitter request attestation listener added');
 
   return h.response({ key, code } as Output);

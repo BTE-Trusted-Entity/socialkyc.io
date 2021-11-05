@@ -20,7 +20,7 @@ import { encryptMessage } from '../utilities/encryptMessage';
 import { paths } from './paths';
 
 const zodPayload = z.object({
-  twitter: z.string(),
+  username: z.string(),
   did: z.string(),
 });
 
@@ -39,7 +39,7 @@ async function handler(
 
   try {
     const claimContents = {
-      Twitter: payload.twitter,
+      Twitter: payload.username,
     };
     const claim = Claim.fromCTypeAndClaimContents(
       twitter,
