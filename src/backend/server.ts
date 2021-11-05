@@ -9,6 +9,7 @@ import { requestTwitter } from './endpoints/requestAttestationTwitter';
 import { confirmationHtml } from './endpoints/confirmationHtml';
 import { attestationEmail } from './endpoints/attestationEmail';
 import { attestationTwitter } from './endpoints/attestationTwitter';
+import { confirmTwitter } from './endpoints/confirmTwitter';
 import { staticFiles } from './endpoints/staticFiles';
 import { liveness } from './endpoints/liveness';
 import { quoteEmail } from './endpoints/quoteEmail';
@@ -67,6 +68,7 @@ const logger = {
   server.route(confirmationHtml);
   server.route(attestationEmail);
   server.route(attestationTwitter);
+  server.route(confirmTwitter);
   server.route(requestCredential);
   server.route(verify);
   server.route(wellKnownDidConfig);

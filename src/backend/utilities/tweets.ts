@@ -15,6 +15,7 @@ async function getTweets() {
   const { statuses } = await client.v1.get('search/tweets.json', {
     q: hashTag,
     result_type: 'recent',
+    tweet_mode: 'extended',
   });
   return statuses as TweetV1[];
 }
@@ -76,13 +77,16 @@ export async function listenForTweets(): Promise<void> {
   await client.v1.user({ screen_name });
 
   // do not await, it runs forever
-  onTweet(({ user: { name }, text }) => {
+  onTweet(({ user: { name }, full_text }) => {
     if (!(name in tweetsListeners)) {
       return;
     }
     const [code, { resolve }] = tweetsListeners[name];
-    if (text.includes(code)) {
+    if (full_text?.includes(code)) {
+      logger.debug('Tweet includes the code!');
       resolve();
+    } else {
+      logger.debug(`Tweet does not include the code: ${code}`);
     }
   });
 }

@@ -1,17 +1,28 @@
-import { useCallback, useState } from 'react';
+import { Fragment, useCallback, useRef, useState } from 'react';
+import { IEncryptedMessage } from '@kiltprotocol/types';
 
 import { getSession } from '../../utilities/session';
 import { usePreventNavigation } from '../../utilities/usePreventNavigation';
+import { useCopyButton } from '../../components/useCopyButton/useCopyButton';
 import { expiryDate } from '../../utilities/expiryDate';
 
 import { Explainer } from '../../components/Explainer/Explainer';
 import { Expandable } from '../../components/Expandable/Expandable';
 
+import { confirmTwitter } from '../../../backend/endpoints/confirmTwitterApi';
 import { attestTwitter } from '../../../backend/endpoints/attestationTwitterApi';
 import { quoteTwitter } from '../../../backend/endpoints/quoteTwitterApi';
 import { requestAttestationTwitter } from '../../../backend/endpoints/requestAttestationTwitterApi';
 
 import * as styles from './Twitter.module.css';
+
+type AttestationStatus =
+  | 'none'
+  | 'requested'
+  | 'confirming'
+  | 'attesting'
+  | 'ready'
+  | 'error';
 
 export function Twitter(): JSX.Element {
   const [twitterHandle, setTwitterHandle] = useState('');
@@ -21,9 +32,21 @@ export function Twitter(): JSX.Element {
   }, []);
 
   const [processing, setProcessing] = useState(false);
-  usePreventNavigation(processing);
+  const [status, setStatus] = useState<AttestationStatus>('none');
 
   const [code, setCode] = useState('');
+
+  const showSpinner = ['confirming', 'attesting'].includes(status);
+  const showReady = status === 'ready';
+
+  usePreventNavigation(processing || showSpinner);
+
+  const messageRef = useRef<HTMLTextAreaElement>(null);
+  const copy = useCopyButton(messageRef);
+
+  const [backupMessage, setBackupMessage] = useState<
+    IEncryptedMessage | undefined
+  >();
 
   const handleSubmit = useCallback(
     async (event) => {
@@ -34,36 +57,55 @@ export function Twitter(): JSX.Element {
         const session = await getSession();
 
         await session.listen(async (message) => {
-          const { key, code, twitter } = await requestAttestationTwitter(
-            message,
-          );
-          setCode(code);
+          try {
+            const { key, code } = await requestAttestationTwitter(message);
+            setCode(code);
+            setStatus('confirming');
+            setProcessing(false);
 
-          const attestationData = await attestTwitter({
-            key,
-            twitter,
-            did: session.identity,
-          });
+            await confirmTwitter({
+              key,
+              did: session.identity,
+            });
+            setStatus('attesting');
 
-          console.log('Attestation data: ', attestationData);
+            const attestationData = await attestTwitter({ key });
+            setBackupMessage(attestationData.message);
 
-          // TODO: https://kiltprotocol.atlassian.net/browse/SK-521
+            setStatus('ready');
+          } catch {
+            setStatus('error');
+          }
         });
 
         const message = await quoteTwitter({
-          twitter: twitterHandle,
+          username: twitterHandle,
           did: session.identity,
         });
 
+        setStatus('requested');
         await session.send(message);
       } catch (error) {
         console.error(error);
+        setStatus('error');
       } finally {
         setProcessing(false);
       }
     },
     [twitterHandle],
   );
+
+  const handleBackup = useCallback(async () => {
+    if (!backupMessage) {
+      return;
+    }
+    try {
+      const session = await getSession();
+      await session.send(backupMessage);
+    } catch (error) {
+      console.error(error);
+    }
+  }, [backupMessage]);
 
   return (
     <Expandable path="/twitter" label="Twitter" processing={processing}>
@@ -73,7 +115,7 @@ export function Twitter(): JSX.Element {
         your credential we will prompt you to Tweet from this account.
       </Explainer>
       <section>
-        {!code && (
+        {status === 'none' && (
           <form className={styles.form} onSubmit={handleSubmit}>
             <label className={styles.formLabel}>
               Your Twitter handle
@@ -96,6 +138,85 @@ export function Twitter(): JSX.Element {
               Choose Sporran Identity
             </button>
           </form>
+        )}
+        {status !== 'none' && (
+          <div className={styles.statusContainer}>
+            {showSpinner && <div className={styles.spinner} />}
+            {showReady && <div className={styles.ready} />}
+
+            <h2 className={styles.heading}>Attestation process:</h2>
+            {status === 'confirming' && (
+              <Fragment>
+                <p className={styles.status}>Starting</p>
+                <p className={styles.subline}>
+                  Your credential will be verified as soon as you tweet the text
+                  below.
+                </p>
+              </Fragment>
+            )}
+
+            {status === 'attesting' && (
+              <Fragment>
+                <p className={styles.status}>In progress</p>
+                <p className={styles.subline}>
+                  SocialKYC confirmed your Twitter handle and is issuing the
+                  credential.
+                </p>
+              </Fragment>
+            )}
+
+            {status === 'ready' && (
+              <Fragment>
+                <p className={styles.status}>Credential is ready</p>
+                <p className={styles.subline}>
+                  SocialKYC recommends to back up your credential now.
+                </p>
+              </Fragment>
+            )}
+
+            {/* TODO: Interface for error */}
+            {status === 'error' && <p>Oops, there was an error.</p>}
+          </div>
+        )}
+        {status === 'confirming' && (
+          <div>
+            <label htmlFor="tweet">Please tweet this message:</label>
+            <p className={styles.tweetContainer}>
+              <textarea
+                className={styles.tweetInput}
+                id="tweet"
+                ref={messageRef}
+                value={`I just created my decentralized credentials with #socialKYC. Regain control of your personal data and protect your digital identity with #socialKYC now. ${code}`}
+                readOnly
+              />
+              {copy.supported && (
+                <button
+                  className={copy.className}
+                  onClick={copy.handleCopyClick}
+                  type="button"
+                >
+                  {copy.title}
+                </button>
+              )}
+            </p>
+            <p className={styles.ctaLine}>
+              <a
+                className={styles.cta}
+                href="https://twitter.com/"
+                target="_blank"
+                rel="noreferrer noopener"
+              >
+                Go to Twitter
+              </a>
+            </p>
+          </div>
+        )}
+        {status === 'ready' && (
+          <p className={styles.ctaLine}>
+            <button className={styles.cta} type="button" onClick={handleBackup}>
+              Back up credential
+            </button>
+          </p>
         )}
       </section>
     </Expandable>
