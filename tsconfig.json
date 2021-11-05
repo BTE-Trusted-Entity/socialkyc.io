@@ -10,7 +10,6 @@
     "sourceMap": true,
     "jsx": "react-jsx",
     "esModuleInterop": true,
-    // TODO: Remove after pino types fix PR has been merged
     "skipLibCheck": true
   }
 }
