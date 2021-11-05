@@ -13,4 +13,4 @@ export const spinner: string;
 export const tweetContainer: string;
 export const tweetInput: string;
 export const ready: string;
-export const backup: string;
+export const cta: string;

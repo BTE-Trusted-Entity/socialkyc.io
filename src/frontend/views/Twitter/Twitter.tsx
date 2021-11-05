@@ -201,7 +201,7 @@ export function Twitter(): JSX.Element {
             </p>
             <p>
               <a
-                className={styles.backup}
+                className={styles.cta}
                 href="https://twitter.com/"
                 target="_blank"
                 rel="noreferrer noopener"
@@ -212,11 +212,7 @@ export function Twitter(): JSX.Element {
           </div>
         )}
         {status === 'ready' && (
-          <button
-            className={styles.backup}
-            type="button"
-            onClick={handleBackup}
-          >
+          <button className={styles.cta} type="button" onClick={handleBackup}>
             Back up credential
           </button>
         )}

@@ -98,8 +98,8 @@
   composes: checkmark from '../../components/Checkmark/Checkmark.module.css';
 }
 
-.backup {
+.cta {
   composes: buttonPrimary from '../../components/Button/Button.module.css';
   margin: 0 auto;
-  display: block
+  display: block;
 }
