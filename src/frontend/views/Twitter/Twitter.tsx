@@ -194,9 +194,9 @@ export function Twitter(): JSX.Element {
                   className={copy.className}
                   onClick={copy.handleCopyClick}
                   type="button"
-                  aria-label={copy.title}
-                  title={copy.title}
-                />
+                >
+                  {copy.title}
+                </button>
               )}
             </p>
             <p>
