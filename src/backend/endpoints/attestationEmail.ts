@@ -89,13 +89,8 @@ async function handler(
 
   const { key, did } = request.payload as Input;
 
-  let requestForAttestation: IRequestForAttestation;
-  try {
-    requestForAttestation = getRequestForAttestation(key);
-    logger.debug('Email attestation found request');
-  } catch {
-    throw Boom.notFound(`Key not found: ${key}`);
-  }
+  const requestForAttestation = getRequestForAttestation(key);
+  logger.debug('Email attestation found request');
 
   try {
     const response = await attestClaim(requestForAttestation, did);

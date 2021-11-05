@@ -6,7 +6,6 @@ import {
   ResponseToolkit,
   ServerRoute,
 } from '@hapi/hapi';
-import Boom from '@hapi/boom';
 import { z } from 'zod';
 
 import { configuration } from '../utilities/configuration';
@@ -25,11 +24,7 @@ async function handler(
 ): Promise<ResponseObject> {
   // Page will not render if some random or incorrect key is entered in the URL
   const { key } = request.params as Params;
-  try {
-    getRequestForAttestation(key);
-  } catch (error) {
-    throw Boom.notFound(`Key not found: ${key}`);
-  }
+  getRequestForAttestation(key);
 
   return h.file(path.join(configuration.distFolder, 'index.html'));
 }
