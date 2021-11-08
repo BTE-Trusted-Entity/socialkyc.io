@@ -97,13 +97,8 @@ async function handler(
 
   const { key, did } = request.payload as Input;
 
-  let requestForAttestation: IRequestForAttestation;
-  try {
-    requestForAttestation = getRequestForAttestation(key);
-    logger.debug('Twitter confirmation found request');
-  } catch {
-    throw Boom.notFound(`Key not found: ${key}`);
-  }
+  const requestForAttestation = getRequestForAttestation(key);
+  logger.debug('Twitter confirmation found request');
 
   const username = requestForAttestation.claim.contents['Twitter'] as string;
   if (!tweetsListeners[username]) {

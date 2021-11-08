@@ -1,5 +1,6 @@
 import NodeCache from 'node-cache';
 import { IRequestForAttestation } from '@kiltprotocol/types';
+import Boom from '@hapi/boom';
 
 const requestForAttestationCache = new NodeCache({ stdTTL: 5 * 60 });
 
@@ -16,7 +17,7 @@ export function cacheRequestForAttestation(
 export function getRequestForAttestation(key: string): IRequestForAttestation {
   const data = requestForAttestationCache.get(key) as IRequestForAttestation;
   if (!data) {
-    throw new Error('Data not found');
+    throw Boom.notFound(`Key not found: ${key}`);
   }
   return data;
 }
