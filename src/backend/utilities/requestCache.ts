@@ -17,7 +17,7 @@ export function cacheRequestForAttestation(
 export function getRequestForAttestation(key: string): IRequestForAttestation {
   const data = requestForAttestationCache.get(key) as IRequestForAttestation;
   if (!data) {
-    Boom.notFound(`Key not found: ${key}`);
+    throw Boom.notFound(`Key not found: ${key}`);
   }
   return data;
 }
