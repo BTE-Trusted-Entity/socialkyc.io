@@ -5,17 +5,14 @@ import {
   ResponseToolkit,
   ServerRoute,
 } from '@hapi/hapi';
-import Boom from '@hapi/boom';
-import { MessageBodyType } from '@kiltprotocol/types';
-import { errorCheckMessageBody } from '@kiltprotocol/messaging';
-import { RequestForAttestation } from '@kiltprotocol/core';
+import {
+  IRequestAttestationForClaimContent,
+  MessageBodyType,
+} from '@kiltprotocol/types';
 
 import { cacheRequestForAttestation } from '../utilities/requestCache';
-import { decryptMessage } from '../utilities/decryptMessage';
-import {
-  EncryptedMessageInput,
-  validateEncryptedMessage,
-} from '../utilities/validateEncryptedMessage';
+import { validateEncryptedMessage } from '../utilities/validateEncryptedMessage';
+import { preDecryptMessageContent } from '../utilities/decryptMessage';
 import { tweetsListeners } from './tweets';
 import { makeControlledPromise } from '../utilities/makeControlledPromise';
 import { paths } from '../endpoints/paths';
@@ -32,30 +29,12 @@ async function handler(
   const { logger } = request;
   logger.debug('Twitter request attestation started');
 
-  const encrypted = request.payload as EncryptedMessageInput;
-  const message = await decryptMessage(encrypted);
-
-  const messageBody = message.body;
-  errorCheckMessageBody(messageBody);
-  logger.debug('Twitter request attestation decrypted and verified');
-
-  const { type } = messageBody;
-  if (type === MessageBodyType.REJECT_TERMS) {
-    logger.debug('Twitter request attestation received rejection');
+  if (!request.pre.content) {
     return h.response().code(StatusCodes.ACCEPTED);
   }
-  if (type !== MessageBodyType.REQUEST_ATTESTATION_FOR_CLAIM) {
-    logger.debug('Twitter request attestation unexpected message type');
-    return h.response().code(StatusCodes.NOT_ACCEPTABLE);
-  }
 
-  const { requestForAttestation } = messageBody.content;
-  if (!RequestForAttestation.isIRequestForAttestation(requestForAttestation)) {
-    throw Boom.badRequest('Invalid request for attestation');
-  }
-
-  RequestForAttestation.verifyData(requestForAttestation);
-  logger.debug('Twitter request attestation verified');
+  const content = request.pre.content as IRequestAttestationForClaimContent;
+  const { requestForAttestation } = content;
 
   const key = requestForAttestation.rootHash;
   cacheRequestForAttestation(key, requestForAttestation);
@@ -79,5 +58,14 @@ export const requestTwitter: ServerRoute = {
     validate: {
       payload: validateEncryptedMessage,
     },
+    pre: [
+      {
+        assign: 'content',
+        method: preDecryptMessageContent(
+          MessageBodyType.REQUEST_ATTESTATION_FOR_CLAIM,
+          MessageBodyType.REJECT_TERMS,
+        ),
+      },
+    ],
   },
 };

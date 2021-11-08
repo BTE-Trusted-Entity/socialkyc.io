@@ -5,15 +5,11 @@ import {
   ResponseToolkit,
   ServerRoute,
 } from '@hapi/hapi';
-import { MessageBodyType } from '@kiltprotocol/types';
+import { MessageBodyType, IAttestedClaim } from '@kiltprotocol/types';
 import { AttestedClaim } from '@kiltprotocol/core';
-import { errorCheckMessageBody } from '@kiltprotocol/messaging';
 
-import { decryptMessage } from '../utilities/decryptMessage';
-import {
-  EncryptedMessageInput,
-  validateEncryptedMessage,
-} from '../utilities/validateEncryptedMessage';
+import { preDecryptMessageContent } from '../utilities/decryptMessage';
+import { validateEncryptedMessage } from '../utilities/validateEncryptedMessage';
 import { paths } from '../endpoints/paths';
 
 export interface Output {
@@ -28,19 +24,12 @@ async function handler(
   const { logger } = request;
   logger.debug('Verification started');
 
-  const encrypted = request.payload as EncryptedMessageInput;
-  const message = await decryptMessage(encrypted);
-
-  const messageBody = message.body;
-  errorCheckMessageBody(messageBody);
-  logger.debug('Verification message decrypted and verified');
-
-  if (messageBody.type !== MessageBodyType.SUBMIT_CLAIMS_FOR_CTYPES) {
-    logger.debug('Verification unexpected message type');
-    return h.response().code(StatusCodes.NOT_ACCEPTABLE);
+  if (!request.pre.content) {
+    return h.response().code(StatusCodes.ACCEPTED);
   }
+  const content = request.pre.content as IAttestedClaim[];
 
-  const credential = AttestedClaim.fromAttestedClaim(messageBody.content[0]);
+  const credential = AttestedClaim.fromAttestedClaim(content[0]);
   logger.debug('Verification credential constructed');
 
   const isAttested = await credential.verify();
@@ -57,5 +46,13 @@ export const verify: ServerRoute = {
     validate: {
       payload: validateEncryptedMessage,
     },
+    pre: [
+      {
+        assign: 'content',
+        method: preDecryptMessageContent(
+          MessageBodyType.SUBMIT_CLAIMS_FOR_CTYPES,
+        ),
+      },
+    ],
   },
 };
