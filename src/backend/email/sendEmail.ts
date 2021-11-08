@@ -14,13 +14,13 @@ import { RequestForAttestation } from '@kiltprotocol/core';
 
 import { configuration } from '../utilities/configuration';
 import { cacheRequestForAttestation } from '../utilities/requestCache';
-import { sesClient } from '../utilities/sesClient';
+import { sesClient } from './sesClient';
 import { decryptMessage } from '../utilities/decryptMessage';
 import {
   EncryptedMessageInput,
   validateEncryptedMessage,
 } from '../utilities/validateEncryptedMessage';
-import { paths } from './paths';
+import { paths } from '../endpoints/paths';
 
 const rateLimiter = new RateLimiterMemory({
   duration: 1 * 60,
@@ -114,7 +114,7 @@ async function handler(
 
 export const request: ServerRoute = {
   method: 'POST',
-  path: paths.requestAttestationEmail,
+  path: paths.email.requestAttestation,
   handler,
   options: {
     validate: {

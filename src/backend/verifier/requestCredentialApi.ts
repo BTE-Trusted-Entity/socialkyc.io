@@ -1,8 +1,8 @@
 import ky from 'ky';
 
 import { Input, Output } from './requestCredential';
-import { paths } from './paths';
+import { paths } from '../endpoints/paths';
 
 export async function requestCredential(input: Input): Promise<Output> {
-  return ky.post(paths.requestCredential, { json: input }).json();
+  return ky.post(paths.verifier.requestCredential, { json: input }).json();
 }

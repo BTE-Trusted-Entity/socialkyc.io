@@ -1,8 +1,8 @@
 import { TwitterApi, TweetV1, ApiResponseError } from 'twitter-api-v2';
 
-import { configuration } from './configuration';
-import { ControlledPromise } from './makeControlledPromise';
-import { logger } from './logger';
+import { configuration } from '../utilities/configuration';
+import { ControlledPromise } from '../utilities/makeControlledPromise';
+import { logger } from '../utilities/logger';
 
 const screen_name = 'social_kyc_tech';
 const hashTag = '#socialkyc';

@@ -3,12 +3,12 @@ import { useEffect, useState } from 'react';
 
 import { getSession } from '../../frontend/utilities/session';
 import { Input, Output } from './attestationEmail';
-import { paths } from './paths';
+import { paths } from '../endpoints/paths';
 
 const timeout = 60 * 1000;
 
 export async function attestEmail(input: Input): Promise<Output> {
-  return ky.post(paths.attestEmail, { json: input, timeout }).json();
+  return ky.post(paths.email.attest, { json: input, timeout }).json();
 }
 
 export function useAttestEmail(key: string | undefined): {

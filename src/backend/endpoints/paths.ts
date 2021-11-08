@@ -3,21 +3,25 @@ export const paths = {
   confirmationHtml: '/confirmation/{key}',
   wellKnownDidConfiguration: '/.well-known/did-configuration.json',
 
-  attestEmail: '/api/attest',
-  attestTwitter: '/api/attest-twitter',
-  confirmTwitter: '/api/confirm-twitter',
-
   challenge: '/api/challenge',
 
-  quoteEmail: '/api/quote',
-  quoteTwitter: '/api/quote-twitter',
+  email: {
+    quote: '/api/email/quote',
+    requestAttestation: '/api/email/request-attestation',
+    attest: '/api/email/attest',
+  },
 
-  requestAttestationEmail: '/api/request-attestation',
-  requestAttestationTwitter: '/api/request-attestation-twitter',
+  twitter: {
+    quote: '/api/twitter/quote',
+    confirm: '/api/twitter/confirm',
+    requestAttestation: '/api/twitter/request-attestation',
+    attest: '/api/twitter/attest',
+  },
 
-  requestCredential: '/api/request-credential',
-
-  verify: '/api/verify',
+  verifier: {
+    requestCredential: '/api/request-credential',
+    verify: '/api/verify',
+  },
 
   staticFiles: '/{param*}',
 

@@ -14,13 +14,13 @@ import {
 } from '@kiltprotocol/types';
 import Message from '@kiltprotocol/messaging';
 
-import { email } from '../CTypes/email';
+import { twitterCType } from './twitterCType';
 import { configuration } from '../utilities/configuration';
 import { encryptMessage } from '../utilities/encryptMessage';
-import { paths } from './paths';
+import { paths } from '../endpoints/paths';
 
 const zodPayload = z.object({
-  email: z.string(),
+  username: z.string(),
   did: z.string(),
 });
 
@@ -33,26 +33,26 @@ async function handler(
   h: ResponseToolkit,
 ): Promise<ResponseObject> {
   const { logger } = request;
-  logger.debug('Email quote started');
+  logger.debug('Twitter quote started');
 
   const payload = request.payload as Input;
 
   try {
     const claimContents = {
-      Email: payload.email,
+      Twitter: payload.username,
     };
     const claim = Claim.fromCTypeAndClaimContents(
-      email,
+      twitterCType,
       claimContents,
       payload.did,
     );
-    logger.debug('Email quote created');
+    logger.debug('Twitter quote created');
 
     const messageBody: ISubmitTerms = {
       content: {
         claim,
         legitimations: [],
-        cTypes: [email],
+        cTypes: [twitterCType],
       },
       type: MessageBodyType.SUBMIT_TERMS,
     };
@@ -60,16 +60,16 @@ async function handler(
     const message = new Message(messageBody, configuration.did, payload.did);
     const encrypted = await encryptMessage(message, payload.did);
 
-    logger.debug('Email quote completed');
+    logger.debug('Twitter quote completed');
     return h.response(encrypted as Output);
   } catch (error) {
     return Boom.boomify(error as Error);
   }
 }
 
-export const quoteEmail: ServerRoute = {
+export const quoteTwitter: ServerRoute = {
   method: 'POST',
-  path: paths.quoteEmail,
+  path: paths.twitter.quote,
   handler,
   options: {
     validate: {

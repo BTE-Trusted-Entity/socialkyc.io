@@ -4,8 +4,8 @@ import {
   ResponseToolkit,
   ServerRoute,
 } from '@hapi/hapi';
-import { didConfigResourcePromise } from '../utilities/didConfigResource';
-import { paths } from './paths';
+import { didConfigResourcePromise } from './didConfigResource';
+import { paths } from '../endpoints/paths';
 
 async function handler(
   request: Request,
