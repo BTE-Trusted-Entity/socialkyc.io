@@ -4,10 +4,10 @@ import {
   Attestation,
   AttestedClaim,
 } from '@kiltprotocol/core';
-import { configuration } from './configuration';
-import { domainLinkage } from '../CTypes/domainLinkage';
-import { fullDidPromise } from './fullDid';
-import { assertionKeystore } from './keystores';
+import { configuration } from '../utilities/configuration';
+import { domainLinkageCType } from './domainLinkageCType';
+import { fullDidPromise } from '../utilities/fullDid';
+import { assertionKeystore } from '../utilities/keystores';
 import { fromAttestedClaim } from './domainLinkageCredential';
 import { DidUtils } from '@kiltprotocol/did';
 import { Crypto } from '@kiltprotocol/utils';
@@ -20,7 +20,7 @@ async function attestDomainLinkage() {
   };
 
   const claim = Claim.fromCTypeAndClaimContents(
-    domainLinkage,
+    domainLinkageCType,
     claimContents,
     configuration.did,
   );

@@ -1,7 +1,7 @@
 import path from 'node:path';
 
 import { Request, ResponseObject, ResponseToolkit } from '@hapi/hapi';
-import { configuration } from './configuration';
+import { configuration } from '../utilities/configuration';
 
 export function notFoundHandler(
   request: Request,

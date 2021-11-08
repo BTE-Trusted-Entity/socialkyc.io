@@ -15,10 +15,11 @@ import {
 } from '@kiltprotocol/types';
 import Message from '@kiltprotocol/messaging';
 
-import { email } from '../CTypes/email';
+import { emailCType } from '../email/emailCType';
+import { twitterCType } from '../twitter/twitterCType';
 import { configuration } from '../utilities/configuration';
 import { encryptMessage } from '../utilities/encryptMessage';
-import { paths } from './paths';
+import { paths } from '../endpoints/paths';
 
 const zodPayload = z.object({
   did: z.string(),
@@ -30,8 +31,8 @@ export type Input = z.infer<typeof zodPayload>;
 export type Output = IEncryptedMessage;
 
 const cTypes: Record<string, CType['hash']> = {
-  email: email.hash,
-  // twitter: twitter.hash,
+  email: emailCType.hash,
+  twitter: twitterCType.hash,
 };
 
 function getCTypeHash(cType: string) {
@@ -71,7 +72,7 @@ async function handler(
 
 export const requestCredential: ServerRoute = {
   method: 'POST',
-  path: paths.requestCredential,
+  path: paths.verifier.requestCredential,
   handler,
   options: {
     validate: {

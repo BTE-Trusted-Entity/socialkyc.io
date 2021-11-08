@@ -3,12 +3,12 @@ import { StatusCodes } from 'http-status-codes';
 
 import { EncryptedMessageInput } from '../utilities/validateEncryptedMessage';
 import { Output } from './requestAttestationTwitter';
-import { paths } from './paths';
+import { paths } from '../endpoints/paths';
 
 export async function requestAttestationTwitter(
   input: EncryptedMessageInput,
 ): Promise<Output> {
-  const result = await ky.post(paths.requestAttestationTwitter, {
+  const result = await ky.post(paths.twitter.requestAttestation, {
     json: input,
   });
 

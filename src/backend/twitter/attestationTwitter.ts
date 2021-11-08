@@ -8,7 +8,7 @@ import Boom from '@hapi/boom';
 import { z } from 'zod';
 
 import { AttestationData, twitterAttestationPromises } from './confirmTwitter';
-import { paths } from './paths';
+import { paths } from '../endpoints/paths';
 
 const zodPayload = z.object({
   key: z.string(),
@@ -45,7 +45,7 @@ async function handler(
 
 export const attestationTwitter: ServerRoute = {
   method: 'POST',
-  path: paths.attestTwitter,
+  path: paths.twitter.attest,
   handler,
   options: {
     validate: {

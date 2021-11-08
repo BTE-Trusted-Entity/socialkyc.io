@@ -23,17 +23,12 @@ import { keypairsPromise } from '../utilities/keypairs';
 import { assertionKeystore } from '../utilities/keystores';
 import { configuration } from '../utilities/configuration';
 import { encryptMessage } from '../utilities/encryptMessage';
-import { tweetsListeners } from '../utilities/tweets';
-import { paths } from './paths';
-
-export interface AttestationData {
-  message: IEncryptedMessage;
-}
+import { paths } from '../endpoints/paths';
 
 async function attestClaim(
   requestForAttestation: IRequestForAttestation,
   claimerDid: IDidDetails['did'],
-): Promise<AttestationData> {
+): Promise<{ message: IEncryptedMessage }> {
   const attestation = Attestation.fromRequestAndDid(
     requestForAttestation,
     configuration.did,
@@ -74,11 +69,6 @@ async function attestClaim(
   return { message: encrypted };
 }
 
-export const twitterAttestationPromises: Record<
-  string,
-  Promise<AttestationData>
-> = {};
-
 const zodPayload = z.object({
   key: z.string(),
   did: z.string(),
@@ -86,43 +76,34 @@ const zodPayload = z.object({
 
 export type Input = z.infer<typeof zodPayload>;
 
-export type Output = undefined;
+export interface Output {
+  message: IEncryptedMessage;
+}
 
 async function handler(
   request: Request,
   h: ResponseToolkit,
 ): Promise<ResponseObject> {
   const { logger } = request;
-  logger.debug('Twitter confirmation started');
+  logger.debug('Email attestation started');
 
   const { key, did } = request.payload as Input;
 
   const requestForAttestation = getRequestForAttestation(key);
-  logger.debug('Twitter confirmation found request');
-
-  const username = requestForAttestation.claim.contents['Twitter'] as string;
-  if (!tweetsListeners[username]) {
-    throw Boom.notFound(`Twitter handle not found: ${username}`);
-  }
+  logger.debug('Email attestation found request');
 
   try {
-    logger.debug('Twitter confirmation waiting for tweet');
-    const confirmation = tweetsListeners[username][1];
-    await confirmation.promise;
-    delete tweetsListeners[username];
-
-    logger.debug('Twitter confirmation attesting');
-    twitterAttestationPromises[key] = attestClaim(requestForAttestation, did);
-
-    return h.response(<Output>undefined);
+    const response = await attestClaim(requestForAttestation, did);
+    logger.debug('Email attestation completed');
+    return h.response(response as Output);
   } catch (error) {
-    throw Boom.internal('Confirmation failed', error);
+    throw Boom.internal('Attestation failed', error);
   }
 }
 
-export const confirmTwitter: ServerRoute = {
+export const attestationEmail: ServerRoute = {
   method: 'POST',
-  path: paths.confirmTwitter,
+  path: paths.email.attest,
   handler,
   options: {
     validate: {

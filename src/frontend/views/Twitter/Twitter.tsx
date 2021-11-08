@@ -9,10 +9,10 @@ import { expiryDate } from '../../utilities/expiryDate';
 import { Explainer } from '../../components/Explainer/Explainer';
 import { Expandable } from '../../components/Expandable/Expandable';
 
-import { confirmTwitter } from '../../../backend/endpoints/confirmTwitterApi';
-import { attestTwitter } from '../../../backend/endpoints/attestationTwitterApi';
-import { quoteTwitter } from '../../../backend/endpoints/quoteTwitterApi';
-import { requestAttestationTwitter } from '../../../backend/endpoints/requestAttestationTwitterApi';
+import { confirmTwitter } from '../../../backend/twitter/confirmTwitterApi';
+import { attestTwitter } from '../../../backend/twitter/attestationTwitterApi';
+import { quoteTwitter } from '../../../backend/twitter/quoteTwitterApi';
+import { requestAttestationTwitter } from '../../../backend/twitter/requestAttestationTwitterApi';
 
 import * as styles from './Twitter.module.css';
 

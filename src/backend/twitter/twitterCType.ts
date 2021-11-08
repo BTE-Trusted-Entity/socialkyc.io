@@ -38,7 +38,7 @@ export async function storeTwitterCType(): Promise<void> {
 }
 
 // This object was logged by storeTwitterCType()
-export const twitter = CType.fromCType({
+export const twitterCType = CType.fromCType({
   schema: {
     $schema: 'http://kilt-protocol.org/draft-01/ctype#',
     title: 'Twitter',

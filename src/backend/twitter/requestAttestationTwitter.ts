@@ -16,9 +16,9 @@ import {
   EncryptedMessageInput,
   validateEncryptedMessage,
 } from '../utilities/validateEncryptedMessage';
-import { tweetsListeners } from '../utilities/tweets';
+import { tweetsListeners } from './tweets';
 import { makeControlledPromise } from '../utilities/makeControlledPromise';
-import { paths } from './paths';
+import { paths } from '../endpoints/paths';
 
 export interface Output {
   key: string;
@@ -73,7 +73,7 @@ async function handler(
 
 export const requestTwitter: ServerRoute = {
   method: 'POST',
-  path: paths.requestAttestationTwitter,
+  path: paths.twitter.requestAttestation,
   handler,
   options: {
     validate: {

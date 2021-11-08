@@ -3,12 +3,12 @@ import { StatusCodes } from 'http-status-codes';
 
 import { EncryptedMessageInput } from '../utilities/validateEncryptedMessage';
 import { Output } from './sendEmail';
-import { paths } from './paths';
+import { paths } from '../endpoints/paths';
 
 export async function requestAttestationEmail(
   input: EncryptedMessageInput,
 ): Promise<Output> {
-  const result = await ky.post(paths.requestAttestationEmail, {
+  const result = await ky.post(paths.email.requestAttestation, {
     json: input,
   });
 

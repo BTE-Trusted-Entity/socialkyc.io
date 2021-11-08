@@ -14,7 +14,7 @@ import {
   EncryptedMessageInput,
   validateEncryptedMessage,
 } from '../utilities/validateEncryptedMessage';
-import { paths } from './paths';
+import { paths } from '../endpoints/paths';
 
 export interface Output {
   credential: AttestedClaim;
@@ -51,7 +51,7 @@ async function handler(
 
 export const verify: ServerRoute = {
   method: 'POST',
-  path: paths.verify,
+  path: paths.verifier.verify,
   handler,
   options: {
     validate: {

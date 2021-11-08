@@ -8,9 +8,9 @@ import { expiryDate } from '../../utilities/expiryDate';
 import { Expandable } from '../../components/Expandable/Expandable';
 import { Explainer } from '../../components/Explainer/Explainer';
 
-import { useAttestEmail } from '../../../backend/endpoints/attestationEmailApi';
-import { quoteEmail } from '../../../backend/endpoints/quoteEmailApi';
-import { requestAttestationEmail } from '../../../backend/endpoints/sendEmailApi';
+import { useAttestEmail } from '../../../backend/email/attestationEmailApi';
+import { quoteEmail } from '../../../backend/email/quoteEmailApi';
+import { requestAttestationEmail } from '../../../backend/email/sendEmailApi';
 
 import * as styles from './Email.module.css';
 
