@@ -65,20 +65,26 @@ const logger = {
   await listenForTweets();
   server.logger.info('Twitter connection initialized');
 
-  server.route(liveness);
-  server.route(staticFiles);
-  server.route(challenge);
-  server.route(quoteEmail);
-  server.route(quoteTwitter);
-  server.route(request);
-  server.route(requestTwitter);
   server.route(confirmationHtml);
+  server.route(wellKnownDidConfig);
+
+  server.route(challenge);
+
+  server.route(quoteEmail);
+  server.route(request);
   server.route(attestationEmail);
-  server.route(attestationTwitter);
+
+  server.route(quoteTwitter);
   server.route(confirmTwitter);
+  server.route(requestTwitter);
+  server.route(attestationTwitter);
+
   server.route(requestCredential);
   server.route(verify);
-  server.route(wellKnownDidConfig);
+
+  server.route(staticFiles);
+
+  server.route(liveness);
 
   server.ext('onPreResponse', notFoundHandler);
   server.logger.info('Routes configured');
