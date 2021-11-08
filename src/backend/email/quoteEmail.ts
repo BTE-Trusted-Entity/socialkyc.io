@@ -7,16 +7,10 @@ import {
 import Boom from '@hapi/boom';
 import { z } from 'zod';
 import { Claim } from '@kiltprotocol/core';
-import {
-  IEncryptedMessage,
-  ISubmitTerms,
-  MessageBodyType,
-} from '@kiltprotocol/types';
-import Message from '@kiltprotocol/messaging';
+import { IEncryptedMessage, MessageBodyType } from '@kiltprotocol/types';
 
 import { emailCType } from './emailCType';
-import { configuration } from '../utilities/configuration';
-import { encryptMessage } from '../utilities/encryptMessage';
+import { encryptMessageBody } from '../utilities/encryptMessage';
 import { paths } from '../endpoints/paths';
 
 const zodPayload = z.object({
@@ -48,20 +42,17 @@ async function handler(
     );
     logger.debug('Email quote created');
 
-    const messageBody: ISubmitTerms = {
+    const output = await encryptMessageBody(payload.did, {
       content: {
         claim,
         legitimations: [],
         cTypes: [emailCType],
       },
       type: MessageBodyType.SUBMIT_TERMS,
-    };
-
-    const message = new Message(messageBody, configuration.did, payload.did);
-    const encrypted = await encryptMessage(message, payload.did);
+    });
 
     logger.debug('Email quote completed');
-    return h.response(encrypted as Output);
+    return h.response(output as Output);
   } catch (error) {
     return Boom.boomify(error as Error);
   }

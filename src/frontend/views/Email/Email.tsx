@@ -84,7 +84,7 @@ export function Email(): JSX.Element {
         throw new Error('No attestation data');
       }
       const session = await getSession();
-      await session.send(data.message);
+      await session.send(data);
     } catch (error) {
       console.error(error);
     }

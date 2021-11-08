@@ -6,8 +6,9 @@ import {
 } from '@hapi/hapi';
 import Boom from '@hapi/boom';
 import { z } from 'zod';
+import { IEncryptedMessage } from '@kiltprotocol/types';
 
-import { AttestationData, twitterAttestationPromises } from './confirmTwitter';
+import { twitterAttestationPromises } from './confirmTwitter';
 import { paths } from '../endpoints/paths';
 
 const zodPayload = z.object({
@@ -16,7 +17,7 @@ const zodPayload = z.object({
 
 export type Input = z.infer<typeof zodPayload>;
 
-export type Output = AttestationData;
+export type Output = IEncryptedMessage;
 
 async function handler(
   request: Request,
