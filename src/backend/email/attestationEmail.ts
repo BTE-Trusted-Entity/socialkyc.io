@@ -1,13 +1,4 @@
-import { Attestation, AttestedClaim } from '@kiltprotocol/core';
-import { BlockchainUtils } from '@kiltprotocol/chain-helpers';
-import {
-  IDidDetails,
-  IEncryptedMessage,
-  IRequestForAttestation,
-  ISubmitAttestationForClaim,
-  MessageBodyType,
-} from '@kiltprotocol/types';
-import Message from '@kiltprotocol/messaging';
+import { IEncryptedMessage } from '@kiltprotocol/types';
 import {
   Request,
   ResponseObject,
@@ -18,56 +9,8 @@ import Boom from '@hapi/boom';
 import { z } from 'zod';
 
 import { getRequestForAttestation } from '../utilities/requestCache';
-import { fullDidPromise } from '../utilities/fullDid';
-import { keypairsPromise } from '../utilities/keypairs';
-import { assertionKeystore } from '../utilities/keystores';
-import { configuration } from '../utilities/configuration';
-import { encryptMessage } from '../utilities/encryptMessage';
+import { attestClaim } from '../utilities/attestClaim';
 import { paths } from '../endpoints/paths';
-
-async function attestClaim(
-  requestForAttestation: IRequestForAttestation,
-  claimerDid: IDidDetails['did'],
-): Promise<{ message: IEncryptedMessage }> {
-  const attestation = Attestation.fromRequestAndDid(
-    requestForAttestation,
-    configuration.did,
-  );
-
-  const tx = await attestation.store();
-
-  const { fullDid } = await fullDidPromise;
-  const { identity } = await keypairsPromise;
-
-  // TODO: Remove when we get SDK upgrade which includes this call in authorizeExtrinsic
-  await fullDid.refreshTxIndex();
-
-  const extrinsic = await fullDid.authorizeExtrinsic(
-    tx,
-    assertionKeystore,
-    identity.address,
-  );
-
-  await BlockchainUtils.signAndSubmitTx(extrinsic, identity, {
-    resolveOn: BlockchainUtils.IS_FINALIZED,
-    reSign: true,
-  });
-
-  const attestedClaim = AttestedClaim.fromRequestAndAttestation(
-    requestForAttestation,
-    attestation,
-  );
-
-  const messageBody: ISubmitAttestationForClaim = {
-    content: { attestation: attestedClaim.attestation },
-    type: MessageBodyType.SUBMIT_ATTESTATION_FOR_CLAIM,
-  };
-
-  const message = new Message(messageBody, configuration.did, claimerDid);
-  const encrypted = await encryptMessage(message, claimerDid);
-
-  return { message: encrypted };
-}
 
 const zodPayload = z.object({
   key: z.string(),
@@ -76,9 +19,7 @@ const zodPayload = z.object({
 
 export type Input = z.infer<typeof zodPayload>;
 
-export interface Output {
-  message: IEncryptedMessage;
-}
+export type Output = IEncryptedMessage;
 
 async function handler(
   request: Request,

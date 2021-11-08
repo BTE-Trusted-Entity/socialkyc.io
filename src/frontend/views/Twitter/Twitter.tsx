@@ -69,8 +69,8 @@ export function Twitter(): JSX.Element {
             });
             setStatus('attesting');
 
-            const attestationData = await attestTwitter({ key });
-            setBackupMessage(attestationData.message);
+            const attestationMessage = await attestTwitter({ key });
+            setBackupMessage(attestationMessage);
 
             setStatus('ready');
           } catch {

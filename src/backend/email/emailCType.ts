@@ -1,9 +1,6 @@
 import { CType } from '@kiltprotocol/core';
-import { BlockchainUtils } from '@kiltprotocol/chain-helpers';
 
-import { fullDidPromise } from '../utilities/fullDid';
-import { keypairsPromise } from '../utilities/keypairs';
-import { assertionKeystore } from '../utilities/keystores';
+import { signAndSubmit } from '../utilities/signAndSubmit';
 
 /** Run this function once to store the CType */
 export async function storeEmailCType(): Promise<void> {
@@ -19,20 +16,7 @@ export async function storeEmailCType(): Promise<void> {
   });
 
   const tx = await draft.store();
-
-  const { fullDid } = await fullDidPromise;
-  const { identity } = await keypairsPromise;
-
-  // TODO: Remove when we get SDK upgrade which includes this call in authorizeExtrinsic
-  await fullDid.refreshTxIndex();
-
-  const extrinsic = await fullDid.authorizeExtrinsic(
-    tx,
-    assertionKeystore,
-    identity.address,
-  );
-
-  await BlockchainUtils.signAndSubmitTx(extrinsic, identity);
+  await signAndSubmit(tx);
 
   console.log('Pass this object to CType.fromCType', draft);
 }

@@ -8,17 +8,11 @@ import Boom from '@hapi/boom';
 import { z } from 'zod';
 
 import { CType } from '@kiltprotocol/core';
-import {
-  IEncryptedMessage,
-  IRequestClaimsForCTypes,
-  MessageBodyType,
-} from '@kiltprotocol/types';
-import Message from '@kiltprotocol/messaging';
+import { IEncryptedMessage, MessageBodyType } from '@kiltprotocol/types';
 
 import { emailCType } from '../email/emailCType';
 import { twitterCType } from '../twitter/twitterCType';
-import { configuration } from '../utilities/configuration';
-import { encryptMessage } from '../utilities/encryptMessage';
+import { encryptMessageBody } from '../utilities/encryptMessage';
 import { paths } from '../endpoints/paths';
 
 const zodPayload = z.object({
@@ -58,16 +52,13 @@ async function handler(
 
   // TODO: Handle challenge when new Message interface is available which corresponds with Credential API spec
 
-  const messageBody: IRequestClaimsForCTypes = {
+  const output = await encryptMessageBody(did, {
     content: [{ cTypeHash }],
     type: MessageBodyType.REQUEST_CLAIMS_FOR_CTYPES,
-  };
-
-  const message = new Message(messageBody, configuration.did, did);
-  const encrypted = await encryptMessage(message, did);
+  });
 
   logger.debug('Request credential completed');
-  return h.response(encrypted as Output);
+  return h.response(output as Output);
 }
 
 export const requestCredential: ServerRoute = {

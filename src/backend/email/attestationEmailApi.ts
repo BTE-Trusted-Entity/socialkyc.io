@@ -7,7 +7,7 @@ import { paths } from '../endpoints/paths';
 
 const timeout = 60 * 1000;
 
-export async function attestEmail(input: Input): Promise<Output> {
+async function attestEmail(input: Input): Promise<Output> {
   return ky.post(paths.email.attest, { json: input, timeout }).json();
 }
 
