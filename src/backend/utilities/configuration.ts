@@ -38,6 +38,7 @@ export const configuration = {
     secretAccessKey,
   },
   port: env.PORT || 3000,
+  blockchainEndpoint: env.BLOCKCHAIN_ENDPOINT || 'wss://peregrine.kilt.io',
   isProduction: env.NODE_ENV === 'production',
   baseUri,
   distFolder: path.join(cwd(), 'dist', 'frontend'),
