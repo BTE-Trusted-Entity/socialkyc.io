@@ -40,7 +40,7 @@
     "hapi-dev-errors": "^4.0.0",
     "hapi-pino": "^9.0.0",
     "http-status-codes": "^2.1.4",
-    "ky": "^0.28.6",
+    "ky": "^0.28.7",
     "lodash-es": "^4.17.21",
     "node-cache": "^5.1.2",
     "pino": "^7.1.0",
