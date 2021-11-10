@@ -5,7 +5,7 @@
   <title>Sign DID</title>
   <script>window.kilt = {}</script>
   <script type="module">
-    async function handleSubmit(event) {
+    window.handleSubmit = async function (event) {
       event.preventDefault();
       const input = event.target.elements.input.value;
       const output = await window.kilt.sporran.signWithDid(input);
