@@ -41,7 +41,7 @@ export async function getSession(): Promise<Session> {
     throw new Error('No provider');
   }
   const { did, challenge, sessionId } = await getSessionValues();
-  const dAppName = 'SocialKYC Demo';
+  const dAppName = 'SocialKYC';
 
   const session = await provider.startSession(dAppName, did, challenge);
 

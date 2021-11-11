@@ -86,9 +86,8 @@ export function Attester(): JSX.Element {
             decide who can access it.
           </p>
           <p className={styles.subline}>
-            SocialKYC does not store, share or sell any of your data.
-            <br />
-            The service forgets about you after verifying your identity.
+            SocialKYC does not store, share or sell any of your data. The
+            service forgets about you after attesting your identity.
           </p>
         </section>
 
@@ -119,7 +118,9 @@ export function Attester(): JSX.Element {
 
         {hasSporran && session && (
           <section className={styles.lists}>
-            <h2 className={styles.subline}>Featured Credentials</h2>
+            <h2 className={styles.subline}>
+              Get verifiable credentials for your:
+            </h2>
             <ul className={styles.mediaList}>
               <Twitter session={session} />
               <Email session={session} />
@@ -130,9 +131,9 @@ export function Attester(): JSX.Element {
         {showWebstoreLink && (
           <section className={styles.install}>
             <p className={styles.warning}>
-              Please make sure to have a wallet extension installed for your
-              browser. We recommend the Sporran extension that you can download
-              and install here:
+              To create your Identity for using SocialKYC credentials, you will
+              need to install the Sporran wallet which is a browser extension.
+              Download Sporran here:
             </p>
             {browser.name === 'chrome' && (
               <a
