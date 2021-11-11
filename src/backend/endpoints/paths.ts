@@ -7,6 +7,7 @@ export const paths = {
 
   email: {
     quote: '/api/email/quote',
+    confirm: '/api/email/confirm',
     requestAttestation: '/api/email/request-attestation',
     attest: '/api/email/attest',
   },

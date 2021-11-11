@@ -9,10 +9,11 @@ import { z } from 'zod';
 import { IEncryptedMessage } from '@kiltprotocol/types';
 
 import {
-  getSession,
+  getSessionWithDid,
   PayloadWithSession,
   setSession,
 } from '../utilities/sessionStorage';
+import { attestClaim } from '../utilities/attestClaim';
 import { paths } from '../endpoints/paths';
 
 const zodPayload = z.object({
@@ -30,15 +31,20 @@ async function handler(
   const { logger } = request;
   logger.debug('Twitter attestation started');
 
-  const session = getSession(request.payload as PayloadWithSession);
-  if (!session.attestedMessagePromise) {
-    throw Boom.notFound('Promised attestation not found');
+  const session = getSessionWithDid(request.payload as PayloadWithSession);
+  const { did, requestForAttestation, confirmed } = session;
+  if (!requestForAttestation || !confirmed) {
+    throw Boom.notFound('Confirmed requestForAttestation not found');
   }
+  logger.debug('Twitter attestation found request');
 
   try {
     logger.debug('Twitter attestation attesting');
-    const response = await session.attestedMessagePromise;
-    delete session.attestedMessagePromise;
+    const attestedMessagePromise =
+      session.attestedMessagePromise || attestClaim(requestForAttestation, did);
+    setSession({ ...session, attestedMessagePromise });
+
+    const response = await attestedMessagePromise;
     delete session.requestForAttestation;
     setSession(session);
 

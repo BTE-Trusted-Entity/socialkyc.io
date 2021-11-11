@@ -86,7 +86,7 @@ async function handler(
   const { requestForAttestation } = content;
 
   const session = getSession(request.payload as PayloadWithSession);
-  setSession({ ...session, requestForAttestation });
+  setSession({ ...session, requestForAttestation, confirmed: false });
   logger.debug('Email request attestation cached');
 
   const secret = getSecretForSession(session.sessionId);

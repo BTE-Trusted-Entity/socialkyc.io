@@ -12,6 +12,7 @@ interface Session {
   didChallenge?: string;
   didConfirmed?: boolean;
   requestForAttestation?: IRequestForAttestation;
+  confirmed?: boolean;
   attestedMessagePromise?: Promise<IEncryptedMessage>;
 }
 

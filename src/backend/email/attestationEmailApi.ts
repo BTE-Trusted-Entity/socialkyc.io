@@ -1,13 +1,20 @@
-import ky from 'ky';
+import ky, { Options } from 'ky';
 import { useEffect, useState } from 'react';
 
 import { Input, Output } from './attestationEmail';
+import { confirmEmail } from './confirmEmailApi';
 import { paths } from '../endpoints/paths';
 
-const timeout = 60 * 1000;
+const options: Partial<Options> = {
+  timeout: false,
+  retry: {
+    limit: 10,
+    methods: ['post'],
+  },
+};
 
 async function attestEmail(input: Input): Promise<Output> {
-  return ky.post(paths.email.attest, { json: input, timeout }).json();
+  return ky.post(paths.email.attest, { json: input, ...options }).json();
 }
 
 export function useAttestEmail(
@@ -26,7 +33,9 @@ export function useAttestEmail(
     }
     (async () => {
       try {
-        const result = await attestEmail({ secret, sessionId });
+        await confirmEmail({ secret, sessionId });
+
+        const result = await attestEmail({ sessionId });
 
         setData(result);
       } catch (error) {
