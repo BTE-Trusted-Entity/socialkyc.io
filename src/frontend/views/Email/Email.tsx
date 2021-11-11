@@ -130,7 +130,7 @@ export function Email({ session }: Props): JSX.Element {
             className={styles.chooseIdentity}
             disabled={!emailInput}
           >
-            Choose Sporran Identity
+            Continue in wallet
           </button>
         </form>
       )}
@@ -145,8 +145,8 @@ export function Email({ session }: Props): JSX.Element {
             <Fragment>
               <p className={styles.status}>Email sent</p>
               <p className={styles.subline}>
-                Email sent to {email}. Please check your inbox and click the
-                link.
+                Email sent to {email}. Please check your inbox and spam folder
+                and click the link.
               </p>
             </Fragment>
           )}
