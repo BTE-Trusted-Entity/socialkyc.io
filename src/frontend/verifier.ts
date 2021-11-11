@@ -34,7 +34,6 @@ async function handleSubmit(event: Event) {
   try {
     const session = await getSession();
     const { sessionId } = session;
-    const did = session.identity;
 
     await session.listen(async (message) => {
       try {

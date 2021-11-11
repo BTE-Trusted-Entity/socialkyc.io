@@ -11,7 +11,7 @@ import { IEncryptedMessage, MessageBodyType } from '@kiltprotocol/types';
 
 import { emailCType } from './emailCType';
 import { encryptMessageBody } from '../utilities/encryptMessage';
-import { getSession, getSessionWithDid } from '../utilities/sessionStorage';
+import { getSessionWithDid } from '../utilities/sessionStorage';
 import { paths } from '../endpoints/paths';
 
 const zodPayload = z.object({

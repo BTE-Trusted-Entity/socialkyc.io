@@ -14,7 +14,7 @@ import { emailCType } from '../email/emailCType';
 import { twitterCType } from '../twitter/twitterCType';
 import { encryptMessageBody } from '../utilities/encryptMessage';
 import { paths } from '../endpoints/paths';
-import { getSession, getSessionWithDid } from '../utilities/sessionStorage';
+import { getSessionWithDid } from '../utilities/sessionStorage';
 
 const zodPayload = z.object({
   sessionId: z.string(),
