@@ -26,5 +26,6 @@
         "message": "Expected keyframe name to be camelCase"
       }
     ]
-  }
+  },
+  "ignoreFiles": ["**/*.tsx?", "**/*.html"]
 }
