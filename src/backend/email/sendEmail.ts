@@ -43,7 +43,7 @@ async function send(
     Destination: {
       ToAddresses: [email],
     },
-    Source: '"SocialKYC Attester" <attester@socialkyc.io>',
+    Source: '"SocialKYC" <attester@socialkyc.io>',
     Message: {
       Subject: {
         Charset: 'UTF-8',

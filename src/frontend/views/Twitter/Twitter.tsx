@@ -153,7 +153,7 @@ export function Twitter({ session }: Props): JSX.Element {
               <Fragment>
                 <p className={styles.status}>Starting</p>
                 <p className={styles.subline}>
-                  Your credential will be verified as soon as you Tweet the text
+                  Your credential will be attested as soon as you Tweet the text
                   below.
                 </p>
               </Fragment>
