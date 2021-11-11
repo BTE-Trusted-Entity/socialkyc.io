@@ -8,13 +8,18 @@ import {
 import Boom from '@hapi/boom';
 import { z } from 'zod';
 
-import { getRequestForAttestation } from '../utilities/requestCache';
+import {
+  deleteSecret,
+  getSessionBySecret,
+  getSessionWithDid,
+  setSession,
+} from '../utilities/sessionStorage';
 import { attestClaim } from '../utilities/attestClaim';
 import { paths } from '../endpoints/paths';
 
 const zodPayload = z.object({
-  key: z.string(),
-  did: z.string(),
+  secret: z.string(),
+  sessionId: z.string(),
 });
 
 export type Input = z.infer<typeof zodPayload>;
@@ -28,14 +33,31 @@ async function handler(
   const { logger } = request;
   logger.debug('Email attestation started');
 
-  const { key, did } = request.payload as Input;
+  const { secret, sessionId } = request.payload as Input;
 
-  const requestForAttestation = getRequestForAttestation(key);
+  // This is the initial session in the first tab the user has open
+  const firstSession = getSessionBySecret(secret);
+  const { requestForAttestation } = firstSession;
+  if (!requestForAttestation) {
+    throw Boom.notFound('requestForAttestation not found');
+  }
+
+  // Clicking the confirmation link in the email opens a new tab with a new session
+  const currentSession = getSessionWithDid({ sessionId });
+  const { did } = currentSession;
   logger.debug('Email attestation found request');
+  setSession({ ...currentSession, requestForAttestation });
 
   try {
     const response = await attestClaim(requestForAttestation, did);
     logger.debug('Email attestation completed');
+
+    deleteSecret(secret);
+    delete currentSession.requestForAttestation;
+    setSession(currentSession);
+    delete firstSession.requestForAttestation;
+    setSession(firstSession);
+
     return h.response(response as Output);
   } catch (error) {
     throw Boom.internal('Attestation failed', error);

@@ -81,12 +81,12 @@ export async function listenForTweets(): Promise<void> {
     if (!(name in tweetsListeners)) {
       return;
     }
-    const [code, { resolve }] = tweetsListeners[name];
-    if (full_text?.includes(code)) {
-      logger.debug('Tweet includes the code!');
+    const [secret, { resolve }] = tweetsListeners[name];
+    if (full_text?.includes(secret)) {
+      logger.debug('Tweet includes the secret!');
       resolve();
     } else {
-      logger.debug(`Tweet does not include the code: ${code}`);
+      logger.debug(`Tweet does not include the secret: ${secret}`);
     }
   });
 }

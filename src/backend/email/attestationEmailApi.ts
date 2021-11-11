@@ -1,7 +1,6 @@
 import ky from 'ky';
 import { useEffect, useState } from 'react';
 
-import { getSession } from '../../frontend/utilities/session';
 import { Input, Output } from './attestationEmail';
 import { paths } from '../endpoints/paths';
 
@@ -11,7 +10,10 @@ async function attestEmail(input: Input): Promise<Output> {
   return ky.post(paths.email.attest, { json: input, timeout }).json();
 }
 
-export function useAttestEmail(key: string | undefined): {
+export function useAttestEmail(
+  secret: string | undefined,
+  sessionId: string,
+): {
   data?: Output;
   error?: boolean;
 } {
@@ -19,14 +21,12 @@ export function useAttestEmail(key: string | undefined): {
   const [error, setError] = useState(false);
 
   useEffect(() => {
-    if (!key) {
+    if (!secret) {
       return;
     }
     (async () => {
       try {
-        const session = await getSession();
-        const did = session.identity;
-        const result = await attestEmail({ key, did });
+        const result = await attestEmail({ secret, sessionId });
 
         setData(result);
       } catch (error) {
@@ -34,7 +34,7 @@ export function useAttestEmail(key: string | undefined): {
         setError(true);
       }
     })();
-  }, [key]);
+  }, [secret, sessionId]);
 
   return { data, error };
 }

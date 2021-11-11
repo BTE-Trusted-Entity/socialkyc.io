@@ -10,6 +10,7 @@ import Message from '@kiltprotocol/messaging';
 import { DefaultResolver, DidUtils } from '@kiltprotocol/did';
 
 import { encryptionKeystore } from './keystores';
+import { EncryptedMessageInput } from './validateEncryptedMessage';
 
 export async function decryptMessage(
   encrypted: IEncryptedMessage,
@@ -35,7 +36,8 @@ export function preDecryptMessageContent(
     const { logger } = request;
     logger.debug('Message will be decrypted');
 
-    const message = await decryptMessage(request.payload as IEncryptedMessage);
+    const payload = request.payload as EncryptedMessageInput;
+    const message = await decryptMessage(payload.message);
     logger.debug('Message decrypted');
 
     const messageBody = message.body;

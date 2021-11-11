@@ -24,7 +24,7 @@ import { attestationTwitter } from './twitter/attestationTwitter';
 import { requestCredential } from './verifier/requestCredential';
 import { verify } from './verifier/verify';
 
-import { challenge } from './endpoints/challenge';
+import { session } from './endpoints/session';
 
 import { staticFiles } from './endpoints/staticFiles';
 
@@ -68,7 +68,7 @@ const logger = {
   server.route(confirmationHtml);
   server.route(wellKnownDidConfig);
 
-  server.route(challenge);
+  server.route(session);
 
   server.route(quoteEmail);
   server.route(request);

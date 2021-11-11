@@ -6,7 +6,6 @@ import {
 } from '@hapi/hapi';
 import Boom from '@hapi/boom';
 import { z } from 'zod';
-import NodeCache from 'node-cache';
 import { StatusCodes } from 'http-status-codes';
 
 import { DefaultResolver } from '@kiltprotocol/did';
@@ -17,42 +16,42 @@ import { randomAsHex } from '@polkadot/util-crypto';
 import { configuration } from '../utilities/configuration';
 import { encryptionKeystore } from '../utilities/keystores';
 import { keypairsPromise } from '../utilities/keypairs';
+import { getSession, setSession } from '../utilities/sessionStorage';
 import { paths } from './paths';
 
 const zodPayload = z.object({
   identity: z.string(),
   encryptedChallenge: z.string(),
   nonce: z.string(),
-  key: z.string(),
+  sessionId: z.string(),
 });
 
-export interface GetChallengeOutput {
+export interface GetSessionOutput {
   did: IDidDetails['did'];
-  key: string;
+  sessionId: string;
   challenge: string;
 }
 
-export type CheckChallengeInput = z.infer<typeof zodPayload>;
+export type CheckSessionInput = z.infer<typeof zodPayload>;
 
-export type CheckChallengeOutput = undefined;
-
-const challengesCache = new NodeCache({ stdTTL: 5 * 60 });
+export type CheckSessionOutput = undefined;
 
 async function handler(
   request: Request,
   h: ResponseToolkit,
 ): Promise<ResponseObject> {
   const { logger } = request;
-  logger.debug('Challenge confirmation started');
+  logger.debug('Session confirmation started');
 
-  const payload = request.payload as CheckChallengeInput;
-  const { identity, encryptedChallenge, nonce, key } = payload;
+  const payload = request.payload as CheckSessionInput;
+  const { identity, encryptedChallenge, nonce } = payload;
+  const session = getSession(payload);
 
   const didDocument = await DefaultResolver.resolveDoc(identity);
   if (!didDocument) {
     throw Boom.forbidden(`Could not resolve the DID ${identity}`);
   }
-  logger.debug('Challenge confirmation resolved DID');
+  logger.debug('Session confirmation resolved DID');
 
   const { details: senderDetails } = didDocument;
 
@@ -60,7 +59,7 @@ async function handler(
   if (!publicKey) {
     throw Boom.forbidden(`Could not get the key`);
   }
-  logger.debug('Challenge confirmation got public key');
+  logger.debug('Session confirmation got public key');
 
   const { keyAgreement } = await keypairsPromise;
 
@@ -71,44 +70,48 @@ async function handler(
     peerPublicKey: Crypto.coToUInt8(publicKey.publicKeyHex),
     alg: 'x25519-xsalsa20-poly1305',
   });
-  logger.debug('Challenge confirmation decrypted challenge');
+  logger.debug('Session confirmation decrypted challenge');
 
   const decryptedChallenge = Crypto.u8aToHex(data);
-  const originalChallenge = challengesCache.get(key);
+  const originalChallenge = session.didChallenge;
 
   if (decryptedChallenge !== originalChallenge) {
     throw Boom.forbidden('Challenge signature mismatch');
   }
 
+  setSession({
+    ...session,
+    did: identity,
+    didConfirmed: true,
+  });
+
   logger.debug('Challenge confirmation matches');
-  return h
-    .response(<CheckChallengeOutput>undefined)
-    .code(StatusCodes.NO_CONTENT);
+  return h.response(<CheckSessionOutput>undefined).code(StatusCodes.NO_CONTENT);
 }
 
-function getChallenge() {
-  const key = randomAsHex(24);
+function startSession() {
+  const sessionId = randomAsHex(24);
   const challenge = randomAsHex(24);
 
-  challengesCache.set(key, challenge);
+  setSession({ sessionId, didChallenge: challenge });
 
   return {
     challenge,
-    key,
+    sessionId,
   };
 }
 
-const path = paths.challenge;
+const path = paths.session;
 
-export const challenge: ServerRoute[] = [
+export const session: ServerRoute[] = [
   {
     method: 'GET',
     path,
     handler: () =>
       ({
         did: configuration.did,
-        ...getChallenge(),
-      } as GetChallengeOutput),
+        ...startSession(),
+      } as GetSessionOutput),
   },
   {
     method: 'POST',

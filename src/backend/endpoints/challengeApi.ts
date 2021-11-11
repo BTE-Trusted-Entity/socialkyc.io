@@ -1,19 +1,19 @@
 import ky from 'ky';
 
 import {
-  CheckChallengeInput,
-  CheckChallengeOutput,
-  GetChallengeOutput,
-} from './challenge';
+  CheckSessionInput,
+  CheckSessionOutput,
+  GetSessionOutput,
+} from './session';
 import { paths } from './paths';
 
-export async function getChallengeValues(): Promise<GetChallengeOutput> {
-  return ky.get(paths.challenge).json();
+export async function getSessionValues(): Promise<GetSessionOutput> {
+  return ky.get(paths.session).json();
 }
 
-export async function checkChallenge(
-  input: CheckChallengeInput,
-): Promise<CheckChallengeOutput> {
-  await ky.post(paths.challenge, { json: input });
+export async function checkSession(
+  input: CheckSessionInput,
+): Promise<CheckSessionOutput> {
+  await ky.post(paths.session, { json: input });
   return undefined;
 }

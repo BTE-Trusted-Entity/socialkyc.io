@@ -1,11 +1,14 @@
 import { z } from 'zod';
 
 const zodPayload = z.object({
-  receiverKeyId: z.string(),
-  senderKeyId: z.string(),
-  ciphertext: z.string(),
-  nonce: z.string(),
-  receivedAt: z.number().optional(),
+  sessionId: z.string(),
+  message: z.object({
+    receiverKeyId: z.string(),
+    senderKeyId: z.string(),
+    ciphertext: z.string(),
+    nonce: z.string(),
+    receivedAt: z.number().optional(),
+  }),
 });
 
 export type EncryptedMessageInput = z.infer<typeof zodPayload>;

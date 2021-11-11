@@ -2,7 +2,7 @@ import { useCallback, useEffect, useState } from 'react';
 import cx from 'classnames';
 import { detect } from 'detect-browser';
 
-import { apiWindow, getSession } from '../../utilities/session';
+import { apiWindow, getSession, Session } from '../../utilities/session';
 
 import { Email } from '../Email/Email';
 import { Twitter } from '../Twitter/Twitter';
@@ -58,7 +58,7 @@ export function Attester(): JSX.Element {
   const showWebstoreLink = hasSporran === false && isSupportedBrowser;
   const showWebsiteLink = hasSporran === false && isUnsupportedBrowser;
 
-  const [authorized, setAuthorized] = useState(false);
+  const [session, setSession] = useState<Session | undefined>();
 
   const [processing, setProcessing] = useState(false);
 
@@ -67,8 +67,7 @@ export function Attester(): JSX.Element {
     setProcessing(true);
 
     try {
-      await getSession();
-      setAuthorized(true);
+      setSession(await getSession());
     } catch (error) {
       console.error(error);
     } finally {
@@ -95,7 +94,7 @@ export function Attester(): JSX.Element {
 
         {!data && <div className={styles.spinner}></div>}
 
-        {hasSporran && !authorized && (
+        {hasSporran && !session && (
           <section className={styles.connectContainer}>
             <div
               className={cx(styles.connect, {
@@ -118,12 +117,12 @@ export function Attester(): JSX.Element {
           </section>
         )}
 
-        {hasSporran && authorized && (
+        {hasSporran && session && (
           <section className={styles.lists}>
             <h2 className={styles.subline}>Featured Credentials</h2>
             <ul className={styles.mediaList}>
-              <Twitter />
-              <Email />
+              <Twitter session={session} />
+              <Email session={session} />
             </ul>
           </section>
         )}

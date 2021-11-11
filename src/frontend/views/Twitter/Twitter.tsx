@@ -1,7 +1,7 @@
 import { Fragment, useCallback, useRef, useState } from 'react';
 import { IEncryptedMessage } from '@kiltprotocol/types';
 
-import { getSession } from '../../utilities/session';
+import { Session } from '../../utilities/session';
 import { usePreventNavigation } from '../../utilities/usePreventNavigation';
 import { useCopyButton } from '../../components/useCopyButton/useCopyButton';
 import { expiryDate } from '../../utilities/expiryDate';
@@ -24,7 +24,11 @@ type AttestationStatus =
   | 'ready'
   | 'error';
 
-export function Twitter(): JSX.Element {
+interface Props {
+  session: Session;
+}
+
+export function Twitter({ session }: Props): JSX.Element {
   const [twitterHandle, setTwitterHandle] = useState('');
 
   const handleInput = useCallback((event) => {
@@ -34,7 +38,7 @@ export function Twitter(): JSX.Element {
   const [processing, setProcessing] = useState(false);
   const [status, setStatus] = useState<AttestationStatus>('none');
 
-  const [code, setCode] = useState('');
+  const [secret, setSecret] = useState('');
 
   const showSpinner = ['confirming', 'attesting'].includes(status);
   const showReady = status === 'ready';
@@ -54,22 +58,22 @@ export function Twitter(): JSX.Element {
       setProcessing(true);
 
       try {
-        const session = await getSession();
+        const { sessionId } = session;
 
         await session.listen(async (message) => {
           try {
-            const { key, code } = await requestAttestationTwitter(message);
-            setCode(code);
+            const { secret } = await requestAttestationTwitter({
+              sessionId,
+              message,
+            });
+            setSecret(secret);
             setStatus('confirming');
             setProcessing(false);
 
-            await confirmTwitter({
-              key,
-              did: session.identity,
-            });
+            await confirmTwitter({ sessionId });
             setStatus('attesting');
 
-            const attestationMessage = await attestTwitter({ key });
+            const attestationMessage = await attestTwitter({ sessionId });
             setBackupMessage(attestationMessage);
 
             setStatus('ready');
@@ -80,7 +84,7 @@ export function Twitter(): JSX.Element {
 
         const message = await quoteTwitter({
           username: twitterHandle,
-          did: session.identity,
+          sessionId,
         });
 
         setStatus('requested');
@@ -92,7 +96,7 @@ export function Twitter(): JSX.Element {
         setProcessing(false);
       }
     },
-    [twitterHandle],
+    [session, twitterHandle],
   );
 
   const handleBackup = useCallback(async () => {
@@ -100,12 +104,11 @@ export function Twitter(): JSX.Element {
       return;
     }
     try {
-      const session = await getSession();
       await session.send(backupMessage);
     } catch (error) {
       console.error(error);
     }
-  }, [backupMessage]);
+  }, [backupMessage, session]);
 
   return (
     <Expandable path="/twitter" label="Twitter" processing={processing}>
@@ -186,7 +189,7 @@ export function Twitter(): JSX.Element {
                 className={styles.tweetInput}
                 id="tweet"
                 ref={messageRef}
-                value={`I just created my decentralized credentials with #socialKYC. Regain control of your personal data and protect your digital identity with #socialKYC now. ${code}`}
+                value={`I just created my decentralized credentials with #socialKYC. Regain control of your personal data and protect your digital identity with #socialKYC now. ${secret}`}
                 readOnly
               />
               {copy.supported && (

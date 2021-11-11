@@ -11,11 +11,12 @@ import { IEncryptedMessage, MessageBodyType } from '@kiltprotocol/types';
 
 import { emailCType } from './emailCType';
 import { encryptMessageBody } from '../utilities/encryptMessage';
+import { getSessionWithDid } from '../utilities/sessionStorage';
 import { paths } from '../endpoints/paths';
 
 const zodPayload = z.object({
   email: z.string(),
-  did: z.string(),
+  sessionId: z.string(),
 });
 
 export type Input = z.infer<typeof zodPayload>;
@@ -29,20 +30,21 @@ async function handler(
   const { logger } = request;
   logger.debug('Email quote started');
 
-  const payload = request.payload as Input;
+  const { email, sessionId } = request.payload as Input;
+  const { did } = getSessionWithDid({ sessionId });
 
   try {
     const claimContents = {
-      Email: payload.email,
+      Email: email,
     };
     const claim = Claim.fromCTypeAndClaimContents(
       emailCType,
       claimContents,
-      payload.did,
+      did,
     );
     logger.debug('Email quote created');
 
-    const output = await encryptMessageBody(payload.did, {
+    const output = await encryptMessageBody(did, {
       content: {
         claim,
         legitimations: [],

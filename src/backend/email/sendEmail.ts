@@ -15,7 +15,12 @@ import {
 } from '@kiltprotocol/types';
 
 import { configuration } from '../utilities/configuration';
-import { cacheRequestForAttestation } from '../utilities/requestCache';
+import {
+  getSecretForSession,
+  getSession,
+  PayloadWithSession,
+  setSession,
+} from '../utilities/sessionStorage';
 import { sesClient } from './sesClient';
 import { preDecryptMessageContent } from '../utilities/decryptMessage';
 import { validateEncryptedMessage } from '../utilities/validateEncryptedMessage';
@@ -80,11 +85,12 @@ async function handler(
   const content = request.pre.content as IRequestAttestationForClaimContent;
   const { requestForAttestation } = content;
 
-  const key = requestForAttestation.rootHash;
-  cacheRequestForAttestation(key, requestForAttestation);
+  const session = getSession(request.payload as PayloadWithSession);
+  setSession({ ...session, requestForAttestation });
   logger.debug('Email request attestation cached');
 
-  const path = paths.confirmationHtml.replace('{key}', key);
+  const secret = getSecretForSession(session.sessionId);
+  const path = paths.confirmationHtml.replace('{secret}', secret);
   const url = `${configuration.baseUri}${path}`;
 
   await send(url, requestForAttestation);
