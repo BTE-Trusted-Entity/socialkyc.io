@@ -33,11 +33,15 @@ async function handleSubmit(event: Event) {
 
   try {
     const session = await getSession();
+    const { sessionId } = session;
     const did = session.identity;
 
     await session.listen(async (message) => {
       try {
-        const { credential, isAttested } = await verifyCredential(message);
+        const { credential, isAttested } = await verifyCredential({
+          message,
+          sessionId,
+        });
 
         claimerDid.textContent = credential.request.claim.owner;
         attesterDid.textContent = credential.attestation.owner;
@@ -58,7 +62,7 @@ async function handleSubmit(event: Event) {
         window.removeEventListener('beforeunload', handleBeforeUnload);
       }
     });
-    const message = await requestCredential({ did, cType });
+    const message = await requestCredential({ sessionId, cType });
 
     await session.send(message);
   } catch {

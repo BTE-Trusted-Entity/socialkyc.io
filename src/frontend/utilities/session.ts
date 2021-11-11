@@ -1,8 +1,8 @@
 import { IDidDetails, IEncryptedMessage } from '@kiltprotocol/types';
 
 import {
-  checkChallenge,
-  getChallengeValues,
+  checkSession,
+  getSessionValues,
 } from '../../backend/endpoints/challengeApi';
 
 interface PubSubSession {
@@ -31,18 +31,22 @@ export const apiWindow = window as unknown as {
   kilt: { sporran?: InjectedWindowProvider };
 };
 
-export async function getSession(): Promise<PubSubSession> {
+export type Session = PubSubSession & {
+  sessionId: string;
+};
+
+export async function getSession(): Promise<Session> {
   const provider = apiWindow.kilt.sporran;
   if (!provider) {
     throw new Error('No provider');
   }
-  const { did, challenge, key } = await getChallengeValues();
+  const { did, challenge, sessionId } = await getSessionValues();
   const dAppName = 'SocialKYC Demo';
 
   const session = await provider.startSession(dAppName, did, challenge);
 
   const { identity, encryptedChallenge, nonce } = session;
-  await checkChallenge({ identity, encryptedChallenge, nonce, key });
+  await checkSession({ identity, encryptedChallenge, nonce, sessionId });
 
-  return session;
+  return { ...session, sessionId };
 }

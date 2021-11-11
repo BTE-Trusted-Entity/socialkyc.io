@@ -14,9 +14,10 @@ import { emailCType } from '../email/emailCType';
 import { twitterCType } from '../twitter/twitterCType';
 import { encryptMessageBody } from '../utilities/encryptMessage';
 import { paths } from '../endpoints/paths';
+import { getSession, getSessionWithDid } from '../utilities/sessionStorage';
 
 const zodPayload = z.object({
-  did: z.string(),
+  sessionId: z.string(),
   cType: z.string(),
 });
 
@@ -45,7 +46,8 @@ async function handler(
   const { logger } = request;
   logger.debug('Request credential started');
 
-  const { did, cType } = request.payload as Input;
+  const { sessionId, cType } = request.payload as Input;
+  const { did } = getSessionWithDid({ sessionId });
 
   const cTypeHash = getCTypeHash(cType);
   logger.debug('Request credential CType found');

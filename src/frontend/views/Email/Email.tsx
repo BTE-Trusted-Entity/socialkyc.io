@@ -1,7 +1,7 @@
 import { Fragment, useCallback, useEffect, useState } from 'react';
 import { Prompt, useRouteMatch } from 'react-router-dom';
 
-import { getSession } from '../../utilities/session';
+import { Session } from '../../utilities/session';
 import { usePreventNavigation } from '../../utilities/usePreventNavigation';
 import { expiryDate } from '../../utilities/expiryDate';
 
@@ -16,7 +16,11 @@ import * as styles from './Email.module.css';
 
 type AttestationStatus = 'requested' | 'attesting' | 'ready' | 'error';
 
-export function Email(): JSX.Element {
+interface Props {
+  session: Session;
+}
+
+export function Email({ session }: Props): JSX.Element {
   const [emailInput, setEmailInput] = useState('');
 
   const handleInput = useCallback((event) => {
@@ -28,9 +32,12 @@ export function Email(): JSX.Element {
   const [processing, setProcessing] = useState(false);
   usePreventNavigation(processing);
 
-  const key = (useRouteMatch('/email/:key')?.params as { key?: string }).key;
+  const secret = (
+    useRouteMatch('/email/:secret')?.params as { secret?: string }
+  )?.secret;
 
-  const initialStatus = key ? 'attesting' : undefined;
+  // TODO: only set to attesting after confirming with backend that this is a valid secret
+  const initialStatus = secret ? 'attesting' : undefined;
 
   const [status, setStatus] = useState<AttestationStatus | undefined>(
     initialStatus,
@@ -40,7 +47,7 @@ export function Email(): JSX.Element {
   const showSpinner = status === 'requested' || status === 'attesting';
   const showReady = status === 'ready';
 
-  const { data, error } = useAttestEmail(key);
+  const { data, error } = useAttestEmail(secret, session.sessionId);
   useEffect(() => {
     if (error) {
       setStatus('error');
@@ -55,16 +62,16 @@ export function Email(): JSX.Element {
       setProcessing(true);
 
       try {
-        const session = await getSession();
+        const { sessionId } = session;
 
         await session.listen(async (message) => {
-          setEmail(await requestAttestationEmail(message));
+          setEmail(await requestAttestationEmail({ sessionId, message }));
           setStatus('requested');
         });
 
         const message = await quoteEmail({
           email: emailInput,
-          did: session.identity,
+          sessionId,
         });
 
         await session.send(message);
@@ -75,7 +82,7 @@ export function Email(): JSX.Element {
         setProcessing(false);
       }
     },
-    [emailInput],
+    [emailInput, session],
   );
 
   const handleBackup = useCallback(async () => {
@@ -83,12 +90,11 @@ export function Email(): JSX.Element {
       if (!data) {
         throw new Error('No attestation data');
       }
-      const session = await getSession();
       await session.send(data);
     } catch (error) {
       console.error(error);
     }
-  }, [data]);
+  }, [data, session]);
 
   return (
     <Expandable path="/email" label="Email" processing={processing}>

@@ -1,9 +1,9 @@
 export const paths = {
   home: '/',
-  confirmationHtml: '/confirmation/{key}',
+  confirmationHtml: '/confirmation/{secret}',
   wellKnownDidConfiguration: '/.well-known/did-configuration.json',
 
-  challenge: '/api/challenge',
+  session: '/api/session',
 
   email: {
     quote: '/api/email/quote',

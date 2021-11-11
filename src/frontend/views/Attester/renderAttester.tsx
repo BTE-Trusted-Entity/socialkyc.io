@@ -11,8 +11,8 @@ function getConfirmation(message: string, callback: (ok: boolean) => void) {
 function renderAttester() {
   let initialEntry: string;
   if (window.location.pathname.includes('confirmation')) {
-    const key = window.location.href.split('/').pop();
-    initialEntry = `/email/${key}`;
+    const secret = window.location.href.split('/').pop();
+    initialEntry = `/email/${secret}`;
   } else {
     initialEntry = '/';
   }

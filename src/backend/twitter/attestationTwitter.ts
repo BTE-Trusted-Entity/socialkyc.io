@@ -8,11 +8,15 @@ import Boom from '@hapi/boom';
 import { z } from 'zod';
 import { IEncryptedMessage } from '@kiltprotocol/types';
 
-import { twitterAttestationPromises } from './confirmTwitter';
+import {
+  getSession,
+  PayloadWithSession,
+  setSession,
+} from '../utilities/sessionStorage';
 import { paths } from '../endpoints/paths';
 
 const zodPayload = z.object({
-  key: z.string(),
+  sessionId: z.string(),
 });
 
 export type Input = z.infer<typeof zodPayload>;
@@ -26,16 +30,17 @@ async function handler(
   const { logger } = request;
   logger.debug('Twitter attestation started');
 
-  const { key } = request.payload as Input;
-
-  if (!twitterAttestationPromises[key]) {
-    throw Boom.notFound(`Key not found: ${key}`);
+  const session = getSession(request.payload as PayloadWithSession);
+  if (!session.attestedMessagePromise) {
+    throw Boom.notFound('Promised attestation not found');
   }
 
   try {
     logger.debug('Twitter attestation attesting');
-    const response = await twitterAttestationPromises[key];
-    delete twitterAttestationPromises[key];
+    const response = await session.attestedMessagePromise;
+    delete session.attestedMessagePromise;
+    delete session.requestForAttestation;
+    setSession(session);
 
     logger.debug('Twitter attestation completed');
     return h.response(response as Output);

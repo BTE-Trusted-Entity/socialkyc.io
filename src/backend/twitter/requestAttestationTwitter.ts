@@ -10,7 +10,12 @@ import {
   MessageBodyType,
 } from '@kiltprotocol/types';
 
-import { cacheRequestForAttestation } from '../utilities/requestCache';
+import {
+  getSecretForSession,
+  getSession,
+  PayloadWithSession,
+  setSession,
+} from '../utilities/sessionStorage';
 import { validateEncryptedMessage } from '../utilities/validateEncryptedMessage';
 import { preDecryptMessageContent } from '../utilities/decryptMessage';
 import { tweetsListeners } from './tweets';
@@ -18,8 +23,7 @@ import { makeControlledPromise } from '../utilities/makeControlledPromise';
 import { paths } from '../endpoints/paths';
 
 export interface Output {
-  key: string;
-  code: string;
+  secret: string;
 }
 
 async function handler(
@@ -36,18 +40,18 @@ async function handler(
   const content = request.pre.content as IRequestAttestationForClaimContent;
   const { requestForAttestation } = content;
 
-  const key = requestForAttestation.rootHash;
-  cacheRequestForAttestation(key, requestForAttestation);
+  const session = getSession(request.payload as PayloadWithSession);
+  setSession({ ...session, requestForAttestation });
   logger.debug('Twitter request attestation cached');
 
-  const code = String(Math.random()).substring(2);
+  const secret = getSecretForSession(session.sessionId);
   const username = requestForAttestation.claim.contents['Twitter'] as string;
 
   const confirmation = makeControlledPromise<void>();
-  tweetsListeners[username] = [code, confirmation];
+  tweetsListeners[username] = [secret, confirmation];
   logger.debug('Twitter request attestation listener added');
 
-  return h.response({ key, code } as Output);
+  return h.response({ secret } as Output);
 }
 
 export const requestTwitter: ServerRoute = {

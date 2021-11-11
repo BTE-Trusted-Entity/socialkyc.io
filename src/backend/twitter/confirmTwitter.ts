@@ -1,4 +1,3 @@
-import { IEncryptedMessage } from '@kiltprotocol/types';
 import {
   Request,
   ResponseObject,
@@ -8,19 +7,17 @@ import {
 import Boom from '@hapi/boom';
 import { z } from 'zod';
 
-import { getRequestForAttestation } from '../utilities/requestCache';
+import {
+  getSessionWithDid,
+  PayloadWithSession,
+  setSession,
+} from '../utilities/sessionStorage';
 import { attestClaim } from '../utilities/attestClaim';
 import { tweetsListeners } from './tweets';
 import { paths } from '../endpoints/paths';
 
-export const twitterAttestationPromises: Record<
-  string,
-  Promise<IEncryptedMessage>
-> = {};
-
 const zodPayload = z.object({
-  key: z.string(),
-  did: z.string(),
+  sessionId: z.string(),
 });
 
 export type Input = z.infer<typeof zodPayload>;
@@ -34,9 +31,12 @@ async function handler(
   const { logger } = request;
   logger.debug('Twitter confirmation started');
 
-  const { key, did } = request.payload as Input;
+  const session = getSessionWithDid(request.payload as PayloadWithSession);
 
-  const requestForAttestation = getRequestForAttestation(key);
+  const { did, requestForAttestation } = session;
+  if (!requestForAttestation) {
+    throw Boom.notFound('requestForAttestation not found');
+  }
   logger.debug('Twitter confirmation found request');
 
   const username = requestForAttestation.claim.contents['Twitter'] as string;
@@ -51,7 +51,8 @@ async function handler(
     delete tweetsListeners[username];
 
     logger.debug('Twitter confirmation attesting');
-    twitterAttestationPromises[key] = attestClaim(requestForAttestation, did);
+    const attestedMessagePromise = attestClaim(requestForAttestation, did);
+    setSession({ ...session, attestedMessagePromise });
 
     return h.response(<Output>undefined);
   } catch (error) {
