@@ -97,17 +97,17 @@ export function Email({ session }: Props): JSX.Element {
   }, [data, session]);
 
   return (
-    <Expandable path="/email" label="Email" processing={processing}>
+    // TODO: label changes depending on attestatio status
+    <Expandable path="/email" label="Email Address" processing={processing}>
       <Prompt
         when={status === 'attesting' || processing}
         message="The email attestation process has already started. Are you sure you want to leave?"
       />
 
       <Explainer>
-        After you type in your email address, please choose an Identity in your
-        wallet to associate with your email credential.
-        <br /> In order to verify your credential we will send you an email with
-        a verification link.
+        After entering your email address, please choose an Identity in your
+        wallet to associate with your email credential. We will email you a link
+        so that we can attest your credential.
       </Explainer>
 
       {!status && (
@@ -143,7 +143,7 @@ export function Email({ session }: Props): JSX.Element {
           <h2 className={styles.heading}>Attestation process:</h2>
           {status === 'requested' && (
             <Fragment>
-              <p className={styles.status}>Email verification</p>
+              <p className={styles.status}>Email sent</p>
               <p className={styles.subline}>
                 Email sent to {email}. Please check your inbox and click the
                 link.
@@ -164,7 +164,7 @@ export function Email({ session }: Props): JSX.Element {
             <Fragment>
               <p className={styles.status}>Credential is ready</p>
               <p className={styles.subline}>
-                We recommend backing up your credential now.
+                We recommend that you back up your credential now.
               </p>
             </Fragment>
           )}

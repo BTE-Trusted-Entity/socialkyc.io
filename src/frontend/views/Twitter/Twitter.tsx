@@ -111,11 +111,12 @@ export function Twitter({ session }: Props): JSX.Element {
   }, [backupMessage, session]);
 
   return (
-    <Expandable path="/twitter" label="Twitter" processing={processing}>
+    // TODO: labels change depending on attestation status
+    <Expandable path="/twitter" label="Twitter Account" processing={processing}>
       <Explainer>
-        After you type in your Twitter handle, please choose an identity in your
-        wallet to associate with your Twitter credential. In order to verify
-        your credential we will prompt you to Tweet from this account.
+        After entering your Twitter handle, please choose an identity in your
+        wallet to associate with your Twitter credential. We will prompt you to
+        Tweet so that we can attest your credential.
       </Explainer>
       <section>
         {status === 'none' && (
@@ -138,7 +139,7 @@ export function Twitter({ session }: Props): JSX.Element {
               className={styles.chooseIdentity}
               disabled={!twitterHandle}
             >
-              Choose Sporran Identity
+              Continue in wallet
             </button>
           </form>
         )}
@@ -152,7 +153,7 @@ export function Twitter({ session }: Props): JSX.Element {
               <Fragment>
                 <p className={styles.status}>Starting</p>
                 <p className={styles.subline}>
-                  Your credential will be verified as soon as you tweet the text
+                  Your credential will be verified as soon as you Tweet the text
                   below.
                 </p>
               </Fragment>
@@ -160,10 +161,11 @@ export function Twitter({ session }: Props): JSX.Element {
 
             {status === 'attesting' && (
               <Fragment>
-                <p className={styles.status}>In progress</p>
+                <p className={styles.status}>
+                  Anchoring credential on KILT blockchain
+                </p>
                 <p className={styles.subline}>
-                  SocialKYC confirmed your Twitter handle and is issuing the
-                  credential.
+                  Please leave this tab open until your credential is attested.
                 </p>
               </Fragment>
             )}
@@ -172,7 +174,7 @@ export function Twitter({ session }: Props): JSX.Element {
               <Fragment>
                 <p className={styles.status}>Credential is ready</p>
                 <p className={styles.subline}>
-                  SocialKYC recommends to back up your credential now.
+                  We recommend that you back up your credential now.
                 </p>
               </Fragment>
             )}
@@ -189,7 +191,7 @@ export function Twitter({ session }: Props): JSX.Element {
                 className={styles.tweetInput}
                 id="tweet"
                 ref={messageRef}
-                value={`I just created my decentralized credentials with #socialKYC. Regain control of your personal data and protect your digital identity with #socialKYC now. ${secret}`}
+                value={`I just created my decentralized credentials with SocialKYC. Regain control of your personal data and protect your digital identity with #socialKYC now. ${secret}`}
                 readOnly
               />
               {copy.supported && (
