@@ -7,6 +7,7 @@ import { expiryDate } from '../../utilities/expiryDate';
 
 import { Explainer } from '../../components/Explainer/Explainer';
 import { Expandable } from '../../components/Expandable/Expandable';
+import { AttestationProcess } from '../../components/AttestationProcess/AttestationProcess';
 
 import { quoteDotsama } from '../../../backend/dotsama/quoteDotsamaApi';
 import { requestAttestationDotsama } from '../../../backend/dotsama/requestAttestationDotsamaApi';
@@ -122,44 +123,38 @@ export function Dotsama({ session }: Props): JSX.Element {
         </form>
       )}
 
-      {status !== 'none' && (
-        <div className={styles.statusContainer}>
-          {showSpinner && <div className={styles.spinner} />}
-          {showReady && <div className={styles.ready} />}
-
-          <h2 className={styles.heading}>Attestation process:</h2>
-
-          {status === 'attesting' && (
-            <Fragment>
-              <p className={styles.status}>
-                Anchoring credential on KILT blockchain
-              </p>
-              <p className={styles.subline}>
-                Please leave this tab open until your credential is attested.
-              </p>
-            </Fragment>
-          )}
-
-          {status === 'ready' && (
-            <Fragment>
-              <p className={styles.status}>Credential is ready</p>
-              <p className={styles.subline}>
-                We recommend that you back up your credential now.
-              </p>
-            </Fragment>
-          )}
-
-          {/* TODO: Interface for error */}
-          {status === 'error' && <p>Oops, there was an error.</p>}
-        </div>
+      {status === 'attesting' && (
+        <AttestationProcess
+          spinner={showSpinner}
+          ready={showReady}
+          status="Anchoring credential on KILT blockchain"
+          subline="Please leave this tab open until your credential is attested."
+        />
       )}
 
       {status === 'ready' && (
-        <p className={styles.ctaLine}>
-          <button className={styles.cta} type="button" onClick={handleBackup}>
-            Back up credential
-          </button>
-        </p>
+        <Fragment>
+          <AttestationProcess
+            spinner={showSpinner}
+            ready={showReady}
+            status="Credential is ready"
+            subline="We recommend that you back up your credential now."
+          />
+
+          <p className={styles.ctaLine}>
+            <button className={styles.cta} type="button" onClick={handleBackup}>
+              Back up credential
+            </button>
+          </p>
+        </Fragment>
+      )}
+
+      {status === 'error' && (
+        <AttestationProcess
+          spinner={showSpinner}
+          ready={showReady}
+          error="Oops, there was an error."
+        />
       )}
     </Expandable>
   );

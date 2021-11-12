@@ -26,42 +26,6 @@
   composes: explainer from '../../components/Explainer/Explainer.module.css';
 }
 
-.statusContainer {
-  box-sizing: border-box;
-  width: 100%;
-  background-color: rgb(var(--color-magenta-secondary-rgb) / 50%);
-  color: var(--color-light);
-  position: relative;
-  border-radius: 0.5rem;
-  padding: 0.5rem 0.75rem;
-  margin-top: 1.5rem;
-  margin-bottom: 1.5rem;
-}
-
-.heading {
-  margin: 0;
-  font-size: 1rem;
-}
-
-.status {
-  composes: heading;
-  font-style: italic;
-}
-
-.spinner {
-  composes: spinner from '../../components/Spinner/Spinner.module.css';
-  width: 2rem;
-  height: 2rem;
-  top: 0.75rem;
-  right: 1rem;
-  left: auto;
-  transform: none;
-}
-
-.ready {
-  composes: checkmark from '../../components/Checkmark/Checkmark.module.css';
-}
-
 .ctaLine {
   text-align: center;
 }
