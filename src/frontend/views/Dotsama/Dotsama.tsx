@@ -95,7 +95,7 @@ export function Dotsama({ session }: Props): JSX.Element {
         your wallet to associate with your Dotsama credential.
         <br />
         Please note: Your Dotsama name can potentially be chosen by any other
-        user too. It can not be verified exclusively for you.
+        user. It can not be reserved exclusively for you.
       </Explainer>
 
       {status === 'none' && (
