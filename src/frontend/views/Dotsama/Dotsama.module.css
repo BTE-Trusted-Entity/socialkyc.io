@@ -8,11 +8,11 @@
   font-size: 0.875rem;
 }
 
-.formInput {
+.nameInput {
   composes: input from '../../components/Input/Input.module.css';
 }
 
-.expiry {
+.subline {
   font-size: 0.875rem;
   margin-bottom: 1.25rem;
 }
@@ -22,8 +22,15 @@
   margin-top: 7rem;
 }
 
-.backup {
+.explainer {
+  composes: explainer from '../../components/Explainer/Explainer.module.css';
+}
+
+.ctaLine {
+  text-align: center;
+}
+
+.cta {
   composes: buttonPrimary from '../../components/Button/Button.module.css';
   margin: 0 auto;
-  display: block;
 }

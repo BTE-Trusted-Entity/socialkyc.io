@@ -7,6 +7,7 @@ import { expiryDate } from '../../utilities/expiryDate';
 
 import { Expandable } from '../../components/Expandable/Expandable';
 import { Explainer } from '../../components/Explainer/Explainer';
+import { AttestationProcess } from '../../components/AttestationProcess/AttestationProcess';
 
 import { useAttestEmail } from '../../../backend/email/attestationEmailApi';
 import { quoteEmail } from '../../../backend/email/quoteEmailApi';
@@ -135,50 +136,49 @@ export function Email({ session }: Props): JSX.Element {
         </form>
       )}
 
-      {status && (
-        <div className={styles.statusContainer}>
-          {showSpinner && <div className={styles.spinner} />}
-          {showReady && <div className={styles.ready} />}
-
-          <h2 className={styles.heading}>Attestation process:</h2>
-          {status === 'requested' && (
-            <Fragment>
-              <p className={styles.status}>Email sent</p>
-              <p className={styles.subline}>
-                Email sent to {email}. Please check your inbox and spam folder
-                and click the link.
-              </p>
-            </Fragment>
-          )}
-
-          {status === 'attesting' && (
-            <Fragment>
-              <p className={styles.status}>
-                Anchoring credential on KILT blockchain
-              </p>
-              <p className={styles.subline}>
-                Please leave this tab open until your credential is attested.
-              </p>
-            </Fragment>
-          )}
-
-          {status === 'ready' && (
-            <Fragment>
-              <p className={styles.status}>Credential is ready</p>
-              <p className={styles.subline}>
-                We recommend that you back up your credential now.
-              </p>
-            </Fragment>
-          )}
-
-          {/* TODO: Interface for error */}
-          {status === 'error' && <p>Oops, there was an error.</p>}
-        </div>
+      {status === 'requested' && (
+        <AttestationProcess
+          spinner={showSpinner}
+          ready={showReady}
+          status="Email sent"
+          subline={`Email sent to ${email}. Please check your inbox and spam folder and click the link.`}
+        />
       )}
+
+      {status === 'attesting' && (
+        <AttestationProcess
+          spinner={showSpinner}
+          ready={showReady}
+          status="Anchoring credential on KILT blockchain"
+          subline="Please leave this tab open until your credential is attested."
+        />
+      )}
+
       {status === 'ready' && (
-        <button className={styles.backup} type="button" onClick={handleBackup}>
-          Back up credential
-        </button>
+        <Fragment>
+          <AttestationProcess
+            spinner={showSpinner}
+            ready={showReady}
+            status="Credential is ready"
+            subline="We recommend that you back up your credential now."
+          />
+
+          <button
+            className={styles.backup}
+            type="button"
+            onClick={handleBackup}
+          >
+            Back up credential
+          </button>
+        </Fragment>
+      )}
+
+      {status === 'error' && (
+        <AttestationProcess
+          spinner={showSpinner}
+          ready={showReady}
+          error="Oops, there was an error."
+        />
       )}
     </Expandable>
   );

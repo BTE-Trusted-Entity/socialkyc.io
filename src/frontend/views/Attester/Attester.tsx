@@ -6,6 +6,7 @@ import { apiWindow, getSession, Session } from '../../utilities/session';
 
 import { Email } from '../Email/Email';
 import { Twitter } from '../Twitter/Twitter';
+import { Dotsama } from '../Dotsama/Dotsama';
 
 import * as styles from './Attester.module.css';
 
@@ -124,6 +125,7 @@ export function Attester(): JSX.Element {
             <ul className={styles.mediaList}>
               <Twitter session={session} />
               <Email session={session} />
+              <Dotsama session={session} />
             </ul>
           </section>
         )}
