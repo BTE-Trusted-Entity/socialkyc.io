@@ -8,11 +8,10 @@ import Boom from '@hapi/boom';
 import { z } from 'zod';
 
 import {
-  getSessionWithDid,
+  getSession,
   PayloadWithSession,
   setSession,
 } from '../utilities/sessionStorage';
-import { attestClaim } from '../utilities/attestClaim';
 import { tweetsListeners } from './tweets';
 import { paths } from '../endpoints/paths';
 
@@ -31,9 +30,9 @@ async function handler(
   const { logger } = request;
   logger.debug('Twitter confirmation started');
 
-  const session = getSessionWithDid(request.payload as PayloadWithSession);
+  const session = getSession(request.payload as PayloadWithSession);
 
-  const { did, requestForAttestation } = session;
+  const { requestForAttestation } = session;
   if (!requestForAttestation) {
     throw Boom.notFound('requestForAttestation not found');
   }
@@ -49,10 +48,7 @@ async function handler(
     const confirmation = tweetsListeners[username][1];
     await confirmation.promise;
     delete tweetsListeners[username];
-
-    logger.debug('Twitter confirmation attesting');
-    const attestedMessagePromise = attestClaim(requestForAttestation, did);
-    setSession({ ...session, attestedMessagePromise });
+    setSession({ ...session, confirmed: true });
 
     return h.response(<Output>undefined);
   } catch (error) {

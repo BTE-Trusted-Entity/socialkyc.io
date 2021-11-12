@@ -1,18 +1,18 @@
 import NodeCache from 'node-cache';
 import Boom from '@hapi/boom';
-import { randomAsHex } from '@polkadot/util-crypto';
 import {
   IDidDetails,
   IEncryptedMessage,
   IRequestForAttestation,
 } from '@kiltprotocol/types';
 
-interface Session {
+export interface Session {
   sessionId: string;
   did?: IDidDetails['did'];
   didChallenge?: string;
   didConfirmed?: boolean;
   requestForAttestation?: IRequestForAttestation;
+  confirmed?: boolean;
   attestedMessagePromise?: Promise<IEncryptedMessage>;
 }
 
@@ -62,7 +62,7 @@ export function getSessionBySecret(secret: string): Session {
 }
 
 export function getSecretForSession(sessionId: string): string {
-  const secret = randomAsHex(24).substring(2);
+  const secret = String(Math.random()).substring(2); // only numbers to avoid 0xDEADDAD etc
   secrets.set(secret, sessionId);
   return secret;
 }

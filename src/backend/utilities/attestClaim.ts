@@ -1,3 +1,4 @@
+import Boom from '@hapi/boom';
 import {
   IDidDetails,
   IEncryptedMessage,
@@ -9,6 +10,7 @@ import { Attestation, AttestedClaim } from '@kiltprotocol/core';
 import { configuration } from './configuration';
 import { signAndSubmit } from './signAndSubmit';
 import { encryptMessageBody } from './encryptMessage';
+import { getSessionWithDid, Session, setSession } from './sessionStorage';
 
 export async function attestClaim(
   requestForAttestation: IRequestForAttestation,
@@ -31,4 +33,22 @@ export async function attestClaim(
     content: { attestation: attestedClaim.attestation },
     type: MessageBodyType.SUBMIT_ATTESTATION_FOR_CLAIM,
   });
+}
+
+export async function getAttestationMessage(
+  session: Session,
+): Promise<IEncryptedMessage> {
+  if (session.attestedMessagePromise) {
+    return session.attestedMessagePromise;
+  }
+
+  const { did, requestForAttestation, confirmed } = getSessionWithDid(session);
+  if (!requestForAttestation || !confirmed) {
+    throw Boom.notFound('Confirmed requestForAttestation not found');
+  }
+
+  const attestedMessagePromise = attestClaim(requestForAttestation, did);
+  setSession({ ...session, attestedMessagePromise });
+
+  return attestedMessagePromise;
 }

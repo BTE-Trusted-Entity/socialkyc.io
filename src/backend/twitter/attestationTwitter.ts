@@ -13,6 +13,7 @@ import {
   PayloadWithSession,
   setSession,
 } from '../utilities/sessionStorage';
+import { getAttestationMessage } from '../utilities/attestClaim';
 import { paths } from '../endpoints/paths';
 
 const zodPayload = z.object({
@@ -31,21 +32,19 @@ async function handler(
   logger.debug('Twitter attestation started');
 
   const session = getSession(request.payload as PayloadWithSession);
-  if (!session.attestedMessagePromise) {
-    throw Boom.notFound('Promised attestation not found');
-  }
 
   try {
-    logger.debug('Twitter attestation attesting');
-    const response = await session.attestedMessagePromise;
-    delete session.attestedMessagePromise;
+    const response = await getAttestationMessage(session);
     delete session.requestForAttestation;
     setSession(session);
 
     logger.debug('Twitter attestation completed');
     return h.response(response as Output);
   } catch (error) {
-    throw Boom.internal('Attestation failed', error);
+    throw Boom.boomify(error as Error, {
+      message: 'Attestation failed',
+      override: false,
+    });
   }
 }
 

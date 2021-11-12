@@ -13,6 +13,11 @@ export function notFoundHandler(
     response.isBoom &&
     response.output.statusCode === 404
   ) {
+    const { message } = response;
+    if (message !== 'Not Found') {
+      request.logger.info(message);
+    }
+
     return h.file(path.join(configuration.distFolder, '404.html')).code(404);
   }
   return h.continue;

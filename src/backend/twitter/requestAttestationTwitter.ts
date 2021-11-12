@@ -41,7 +41,8 @@ async function handler(
   const { requestForAttestation } = content;
 
   const session = getSession(request.payload as PayloadWithSession);
-  setSession({ ...session, requestForAttestation });
+  delete session.attestedMessagePromise;
+  setSession({ ...session, requestForAttestation, confirmed: false });
   logger.debug('Twitter request attestation cached');
 
   const secret = getSecretForSession(session.sessionId);
