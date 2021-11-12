@@ -56,16 +56,16 @@
     "@aws-sdk/types" "3.40.0"
     tslib "^2.3.0"
 
-"@aws-sdk/client-ses@^3.40.0":
-  version "3.40.0"
-  resolved "https://registry.yarnpkg.com/@aws-sdk/client-ses/-/client-ses-3.40.0.tgz#7e0b1ae48059cc4975064f0188e92916ecfea413"
-  integrity sha512-SZIwpvX0zGgJ87OtnbBdLYG3FkUOW6I55fPVQA+eX/lnTywtKBO+Y8nNES306S53BzxgUuWAza8K4chPzIr0UA==
+"@aws-sdk/client-ses@^3.41.0":
+  version "3.41.0"
+  resolved "https://registry.yarnpkg.com/@aws-sdk/client-ses/-/client-ses-3.41.0.tgz#5578ceae6df301e1047093d064c942ea444d99c4"
+  integrity sha512-juU6WDGzSCBVze8AR42sS8tnBlosbGTlW0Dc7GxSQYgJcVKhAXMalFDJ+vMBqLO2Fe4TTf5AeZNluqoXfXAOEA==
   dependencies:
     "@aws-crypto/sha256-browser" "2.0.0"
     "@aws-crypto/sha256-js" "2.0.0"
-    "@aws-sdk/client-sts" "3.40.0"
+    "@aws-sdk/client-sts" "3.41.0"
     "@aws-sdk/config-resolver" "3.40.0"
-    "@aws-sdk/credential-provider-node" "3.40.0"
+    "@aws-sdk/credential-provider-node" "3.41.0"
     "@aws-sdk/fetch-http-handler" "3.40.0"
     "@aws-sdk/hash-node" "3.40.0"
     "@aws-sdk/invalid-dependency" "3.40.0"
@@ -80,7 +80,7 @@
     "@aws-sdk/node-config-provider" "3.40.0"
     "@aws-sdk/node-http-handler" "3.40.0"
     "@aws-sdk/protocol-http" "3.40.0"
-    "@aws-sdk/smithy-client" "3.40.0"
+    "@aws-sdk/smithy-client" "3.41.0"
     "@aws-sdk/types" "3.40.0"
     "@aws-sdk/url-parser" "3.40.0"
     "@aws-sdk/util-base64-browser" "3.37.0"
@@ -96,10 +96,10 @@
     fast-xml-parser "3.19.0"
     tslib "^2.3.0"
 
-"@aws-sdk/client-sso@3.40.0":
-  version "3.40.0"
-  resolved "https://registry.yarnpkg.com/@aws-sdk/client-sso/-/client-sso-3.40.0.tgz#aaa68fc6b0c509ced0c4291d3b85c075f0b16222"
-  integrity sha512-eFQ4yFg8RlPaldv/ja2K3pUUyXauGbo4GJPlbPKYoquwW785au8qECKSl3iqBmUklj6WmdW1rmtlQk2OUcyYSw==
+"@aws-sdk/client-sso@3.41.0":
+  version "3.41.0"
+  resolved "https://registry.yarnpkg.com/@aws-sdk/client-sso/-/client-sso-3.41.0.tgz#33d49e926ef6fff08278b256454241f1f982d8de"
+  integrity sha512-xDvcy7wv3KdHhOpl5fZN+Ydw+dHBmsCZwMFI1ZdJVCSGO+ZKgl5KVWi1LCif6vjZP1pUuGl44oDOZz1ACqOzTg==
   dependencies:
     "@aws-crypto/sha256-browser" "2.0.0"
     "@aws-crypto/sha256-js" "2.0.0"
@@ -117,7 +117,7 @@
     "@aws-sdk/node-config-provider" "3.40.0"
     "@aws-sdk/node-http-handler" "3.40.0"
     "@aws-sdk/protocol-http" "3.40.0"
-    "@aws-sdk/smithy-client" "3.40.0"
+    "@aws-sdk/smithy-client" "3.41.0"
     "@aws-sdk/types" "3.40.0"
     "@aws-sdk/url-parser" "3.40.0"
     "@aws-sdk/util-base64-browser" "3.37.0"
@@ -130,15 +130,15 @@
     "@aws-sdk/util-utf8-node" "3.37.0"
     tslib "^2.3.0"
 
-"@aws-sdk/client-sts@3.40.0":
-  version "3.40.0"
-  resolved "https://registry.yarnpkg.com/@aws-sdk/client-sts/-/client-sts-3.40.0.tgz#bcc5c7fb59afc88d2123e18166747ac25f71ccba"
-  integrity sha512-7jBlb1uyq2c0bFqi4ZVnEMNzLTodvIZKoxjh1LYA8OZISbMsDjTxFOYOmuyOhuPy0fLfLL3KRLtengJ23zs3QQ==
+"@aws-sdk/client-sts@3.41.0":
+  version "3.41.0"
+  resolved "https://registry.yarnpkg.com/@aws-sdk/client-sts/-/client-sts-3.41.0.tgz#38bde53d0cd1254894d0b27b4cc3f056f5d2692e"
+  integrity sha512-XTjmr53kMbXuVhH3B+g2jEYuhNralptsMSd4RcSHCB7BX1NmAMnMFKKTmVlmc5NizWi4x1CzExu86Q0YSqp0og==
   dependencies:
     "@aws-crypto/sha256-browser" "2.0.0"
     "@aws-crypto/sha256-js" "2.0.0"
     "@aws-sdk/config-resolver" "3.40.0"
-    "@aws-sdk/credential-provider-node" "3.40.0"
+    "@aws-sdk/credential-provider-node" "3.41.0"
     "@aws-sdk/fetch-http-handler" "3.40.0"
     "@aws-sdk/hash-node" "3.40.0"
     "@aws-sdk/invalid-dependency" "3.40.0"
@@ -154,7 +154,7 @@
     "@aws-sdk/node-config-provider" "3.40.0"
     "@aws-sdk/node-http-handler" "3.40.0"
     "@aws-sdk/protocol-http" "3.40.0"
-    "@aws-sdk/smithy-client" "3.40.0"
+    "@aws-sdk/smithy-client" "3.41.0"
     "@aws-sdk/types" "3.40.0"
     "@aws-sdk/url-parser" "3.40.0"
     "@aws-sdk/util-base64-browser" "3.37.0"
@@ -199,32 +199,32 @@
     "@aws-sdk/url-parser" "3.40.0"
     tslib "^2.3.0"
 
-"@aws-sdk/credential-provider-ini@3.40.0":
-  version "3.40.0"
-  resolved "https://registry.yarnpkg.com/@aws-sdk/credential-provider-ini/-/credential-provider-ini-3.40.0.tgz#dc4c5a523d8b7ede67dd11833fbaf977dda1f120"
-  integrity sha512-lyTlgItJ+wPWIkcnkpmZTG+ApCwZBDjLzCPzhFOG1vT1wb0pF3KyJGmjWaW9C6s84rvWwGv1bY3/KBo92KtcjA==
+"@aws-sdk/credential-provider-ini@3.41.0":
+  version "3.41.0"
+  resolved "https://registry.yarnpkg.com/@aws-sdk/credential-provider-ini/-/credential-provider-ini-3.41.0.tgz#a212444f6e4d03c0683ed1b6479bca72eab782dd"
+  integrity sha512-98CGEHg7Tb6HxK5ZIdbAcijvD3IpLe0ddse1xMe/Ilhjz770FS/L2UNprOP6PZTqrSfBffiMrvfThUSuUaTlIQ==
   dependencies:
     "@aws-sdk/credential-provider-env" "3.40.0"
     "@aws-sdk/credential-provider-imds" "3.40.0"
-    "@aws-sdk/credential-provider-sso" "3.40.0"
-    "@aws-sdk/credential-provider-web-identity" "3.40.0"
+    "@aws-sdk/credential-provider-sso" "3.41.0"
+    "@aws-sdk/credential-provider-web-identity" "3.41.0"
     "@aws-sdk/property-provider" "3.40.0"
     "@aws-sdk/shared-ini-file-loader" "3.37.0"
     "@aws-sdk/types" "3.40.0"
     "@aws-sdk/util-credentials" "3.37.0"
     tslib "^2.3.0"
 
-"@aws-sdk/credential-provider-node@3.40.0":
-  version "3.40.0"
-  resolved "https://registry.yarnpkg.com/@aws-sdk/credential-provider-node/-/credential-provider-node-3.40.0.tgz#850a17965d6b475883923c162a9d77a501566415"
-  integrity sha512-TANFmUqZwXd2ytA4Ji8IJDC8g42EnogjeIX+ypea/sImY5L7sQpd/sxQlcpIOJlr/6cGL3VhLGh2EGHXEJQEYA==
+"@aws-sdk/credential-provider-node@3.41.0":
+  version "3.41.0"
+  resolved "https://registry.yarnpkg.com/@aws-sdk/credential-provider-node/-/credential-provider-node-3.41.0.tgz#ab4fc10ea6c7a2b42c903f4bdb68fea8ada5f5dd"
+  integrity sha512-5FW6+wNJgyDCsbAd+mLm/1DBTDkyIYOMVzcxbr6Vi3pM4UrMFdeLdAP62edYW8usg78Xg+c6vaAoEv/M3zkS0Q==
   dependencies:
     "@aws-sdk/credential-provider-env" "3.40.0"
     "@aws-sdk/credential-provider-imds" "3.40.0"
-    "@aws-sdk/credential-provider-ini" "3.40.0"
+    "@aws-sdk/credential-provider-ini" "3.41.0"
     "@aws-sdk/credential-provider-process" "3.40.0"
-    "@aws-sdk/credential-provider-sso" "3.40.0"
-    "@aws-sdk/credential-provider-web-identity" "3.40.0"
+    "@aws-sdk/credential-provider-sso" "3.41.0"
+    "@aws-sdk/credential-provider-web-identity" "3.41.0"
     "@aws-sdk/property-provider" "3.40.0"
     "@aws-sdk/shared-ini-file-loader" "3.37.0"
     "@aws-sdk/types" "3.40.0"
@@ -242,22 +242,22 @@
     "@aws-sdk/util-credentials" "3.37.0"
     tslib "^2.3.0"
 
-"@aws-sdk/credential-provider-sso@3.40.0":
-  version "3.40.0"
-  resolved "https://registry.yarnpkg.com/@aws-sdk/credential-provider-sso/-/credential-provider-sso-3.40.0.tgz#bf838696257d93a85e8370f4df0e3e928e33d25d"
-  integrity sha512-8XOz1cDsRvmb6UyLKersi+kLx2Bo4nXpsLZDbTuobEqMwtzIIZKW3C8n8icKpiqq1xhJ6hyT80on+HJ8ykrFKA==
+"@aws-sdk/credential-provider-sso@3.41.0":
+  version "3.41.0"
+  resolved "https://registry.yarnpkg.com/@aws-sdk/credential-provider-sso/-/credential-provider-sso-3.41.0.tgz#66c83a776ec42f08b4ea6d619351f0240d57f76a"
+  integrity sha512-9s7SWu3RVIQ/MTcBCt35EMzxNQm3avivrbpSOKfJwxR5L+oNKPsV+gSqMlkNZGwOVJyUicIsZGcq/4ON6CjrOg==
   dependencies:
-    "@aws-sdk/client-sso" "3.40.0"
+    "@aws-sdk/client-sso" "3.41.0"
     "@aws-sdk/property-provider" "3.40.0"
     "@aws-sdk/shared-ini-file-loader" "3.37.0"
     "@aws-sdk/types" "3.40.0"
     "@aws-sdk/util-credentials" "3.37.0"
     tslib "^2.3.0"
 
-"@aws-sdk/credential-provider-web-identity@3.40.0":
-  version "3.40.0"
-  resolved "https://registry.yarnpkg.com/@aws-sdk/credential-provider-web-identity/-/credential-provider-web-identity-3.40.0.tgz#fb237b38c4c33ef9cbe7bf3c5f5d45e38969cbb7"
-  integrity sha512-A1KT6Ft3k5B6bU2I2jXS4fSoWbWftEysrxT3zyuzhMbsstsHBJ/J9mEsQ4lgZyr6DXEqn7HD3MbdEoaBN2b3sg==
+"@aws-sdk/credential-provider-web-identity@3.41.0":
+  version "3.41.0"
+  resolved "https://registry.yarnpkg.com/@aws-sdk/credential-provider-web-identity/-/credential-provider-web-identity-3.41.0.tgz#7f0e9cc5650eaf6ac32ef359fb0e0dea2ca0ce78"
+  integrity sha512-VqvVoEh9C8xTXl4stKyJC5IKQhS8g1Gi5k6B9HPHLIxFRRfKxkE73DT4pMN6npnus7o0yi0MTFGQFQGYSrFO2g==
   dependencies:
     "@aws-sdk/property-provider" "3.40.0"
     "@aws-sdk/types" "3.40.0"
@@ -459,10 +459,10 @@
     "@aws-sdk/util-uri-escape" "3.37.0"
     tslib "^2.3.0"
 
-"@aws-sdk/smithy-client@3.40.0":
-  version "3.40.0"
-  resolved "https://registry.yarnpkg.com/@aws-sdk/smithy-client/-/smithy-client-3.40.0.tgz#3f6e3d5d8f7f1e44d68d2bf85dc2d7e35e6ef73d"
-  integrity sha512-6x6uvmfhFpkCiT1O/SsFWRyyqs3ZHMB1hVypn9XfT1/XSrfVLhcbBtnX1/UGPkQvA1GJGo5Pkxv3odQfUw7rUg==
+"@aws-sdk/smithy-client@3.41.0":
+  version "3.41.0"
+  resolved "https://registry.yarnpkg.com/@aws-sdk/smithy-client/-/smithy-client-3.41.0.tgz#61154b4813a01dc079e7083805a20e1bc05d3199"
+  integrity sha512-ldhS0Pf3v6yHCd//kk5DvKcdyeUkKEwxNDRanAp+ekTW68J3XcYgKaPC9sNDhVTDH1zrywTvtEz5zWHEvXjQow==
   dependencies:
     "@aws-sdk/middleware-stack" "3.40.0"
     "@aws-sdk/types" "3.40.0"
@@ -2024,7 +2024,7 @@
     "@types/yargs" "^16.0.0"
     chalk "^4.0.0"
 
-"@kiltprotocol/chain-helpers@0.24.0-10", "@kiltprotocol/chain-helpers@^0.24.0-10":
+"@kiltprotocol/chain-helpers@0.24.0-10":
   version "0.24.0-10"
   resolved "https://registry.yarnpkg.com/@kiltprotocol/chain-helpers/-/chain-helpers-0.24.0-10.tgz#7ed2a2c139b55da7d4471c5ca888ee4f6e389b5b"
   integrity sha512-suS6zdrGB08Pctiu7fIWkmwJv2X8jfr1tdyUv3LU/+agiM2R4g1sKEj7Vwu2XO0TmefaCrRbSuuEe88XHxy80w==
@@ -2039,6 +2039,21 @@
     "@polkadot/util" "7.5.1"
     typescript-logging "^0.6.4"
 
+"@kiltprotocol/chain-helpers@0.24.0-17", "@kiltprotocol/chain-helpers@^0.24.0-10":
+  version "0.24.0-17"
+  resolved "https://registry.yarnpkg.com/@kiltprotocol/chain-helpers/-/chain-helpers-0.24.0-17.tgz#7a5afb570f28e169c42a5c0885707cb96cfd430d"
+  integrity sha512-eVsFpYRdQGgUm7TiYPVXHsxk6T7F6d0U8KzWr1W9Pot1Meif82A+8dgQiWG03xtrVA8SGXDBr3OHbL+4/RUfQQ==
+  dependencies:
+    "@kiltprotocol/config" "0.24.0-17"
+    "@kiltprotocol/type-definitions" "0.1.23"
+    "@kiltprotocol/types" "0.24.0-17"
+    "@kiltprotocol/utils" "0.24.0-17"
+    "@polkadot/api" "6.4.2"
+    "@polkadot/keyring" "7.5.1"
+    "@polkadot/types" "6.4.2"
+    "@polkadot/util" "7.5.1"
+    typescript-logging "^0.6.4"
+
 "@kiltprotocol/config@0.24.0-10":
   version "0.24.0-10"
   resolved "https://registry.yarnpkg.com/@kiltprotocol/config/-/config-0.24.0-10.tgz#798929c33ba6825c2685b13f5d83c7e2ba37ca0a"
@@ -2047,7 +2062,15 @@
     "@kiltprotocol/utils" "0.24.0-10"
     typescript-logging "^0.6.4"
 
-"@kiltprotocol/core@0.24.0-10", "@kiltprotocol/core@^0.24.0-10":
+"@kiltprotocol/config@0.24.0-17":
+  version "0.24.0-17"
+  resolved "https://registry.yarnpkg.com/@kiltprotocol/config/-/config-0.24.0-17.tgz#9069e5fad5f0605eceaaae118e5e47417dc070fb"
+  integrity sha512-2E0ef/+CRHa3aIO6Ex7JhfVPIL+rjv3KQF83mW18vgqdXgXe7agTHpz4MFS+6A6bKR8uMFvAAMDbLX97mWFzEg==
+  dependencies:
+    "@kiltprotocol/utils" "0.24.0-17"
+    typescript-logging "^0.6.4"
+
+"@kiltprotocol/core@0.24.0-10":
   version "0.24.0-10"
   resolved "https://registry.yarnpkg.com/@kiltprotocol/core/-/core-0.24.0-10.tgz#24213b459de9e6ccdcea588692f1f015202375cf"
   integrity sha512-qhKLHfLNFrQQk0a2GLAaCJYVbg8TWQQUBOOpNsXXSNa05bvBfFoAA63J7HTOoXiBn6OmZ3s/+g8ixKwRm24KEQ==
@@ -2067,7 +2090,27 @@
     tweetnacl "^1.0.3"
     typescript-logging "^0.6.4"
 
-"@kiltprotocol/did@0.24.0-10", "@kiltprotocol/did@^0.24.0-10":
+"@kiltprotocol/core@0.24.0-17", "@kiltprotocol/core@^0.24.0-10":
+  version "0.24.0-17"
+  resolved "https://registry.yarnpkg.com/@kiltprotocol/core/-/core-0.24.0-17.tgz#ea01f7822e38fd7811225ab2136a2848593db78d"
+  integrity sha512-uXNVKYoT8qWISaZKfFyRvTCMLwishD76wFrOShFSlr/hNjFjB4qWt2apuMb1Dy0iBeUFf2Hyq6EToFsscfJtOQ==
+  dependencies:
+    "@kiltprotocol/chain-helpers" "0.24.0-17"
+    "@kiltprotocol/config" "0.24.0-17"
+    "@kiltprotocol/did" "0.24.0-17"
+    "@kiltprotocol/types" "0.24.0-17"
+    "@kiltprotocol/utils" "0.24.0-17"
+    "@polkadot/api" "6.4.2"
+    "@polkadot/keyring" "7.5.1"
+    "@polkadot/types" "6.4.2"
+    "@polkadot/types-known" "6.4.2"
+    "@polkadot/util" "7.5.1"
+    "@polkadot/util-crypto" "7.5.1"
+    ajv "^6.12.5"
+    tweetnacl "^1.0.3"
+    typescript-logging "^0.6.4"
+
+"@kiltprotocol/did@0.24.0-10":
   version "0.24.0-10"
   resolved "https://registry.yarnpkg.com/@kiltprotocol/did/-/did-0.24.0-10.tgz#b540d6f99b1525ddd2a1d2e9ec00f3e86904464b"
   integrity sha512-CB7SnWij128Z2WeAosBt+PeZeY8qM8loj0tDuNcvt4RIr+N94/p3PE5kx+kCgNy7MhxxoxEYOC4f5rTjVAPIkw==
@@ -2081,6 +2124,21 @@
     "@polkadot/util" "7.5.1"
     "@polkadot/util-crypto" "7.5.1"
     cbor "^6.0.0"
+
+"@kiltprotocol/did@0.24.0-17", "@kiltprotocol/did@^0.24.0-10":
+  version "0.24.0-17"
+  resolved "https://registry.yarnpkg.com/@kiltprotocol/did/-/did-0.24.0-17.tgz#b7f27a9020530b01ce56c86de8166a6911e0cd2e"
+  integrity sha512-HktN3Fk9RSnh1Qzab99/SHtqGOc/yml0PIA9Tu30OPtYW+MQcUvxgNQSeE0eKzpu+lavejRrkQ3sMVX5v4N6yg==
+  dependencies:
+    "@kiltprotocol/chain-helpers" "0.24.0-17"
+    "@kiltprotocol/types" "0.24.0-17"
+    "@kiltprotocol/utils" "0.24.0-17"
+    "@polkadot/api" "6.4.2"
+    "@polkadot/keyring" "7.5.1"
+    "@polkadot/types" "6.4.2"
+    "@polkadot/util" "7.5.1"
+    "@polkadot/util-crypto" "7.5.1"
+    cbor "^8.0.2"
 
 "@kiltprotocol/messaging@^0.24.0-10":
   version "0.24.0-10"
@@ -2098,7 +2156,7 @@
   resolved "https://registry.yarnpkg.com/@kiltprotocol/type-definitions/-/type-definitions-0.1.23.tgz#c54475dad7849dc4654975da33590872fc9acdde"
   integrity sha512-5bGUDo8aVTWttwUrV1gyRUlbBn9zllv6/ofAda9ejMbjY5o99YqsAWlXg1mro6BqE3rcF/i0tGbIdO9Z0tOttA==
 
-"@kiltprotocol/types@0.24.0-10", "@kiltprotocol/types@^0.24.0-10":
+"@kiltprotocol/types@0.24.0-10":
   version "0.24.0-10"
   resolved "https://registry.yarnpkg.com/@kiltprotocol/types/-/types-0.24.0-10.tgz#f19b72178e0e439d7ebbb77a087afe3790e7bae8"
   integrity sha512-3Mo/kuthz9uYRC22/5qE8gTdMbiY6swVPFIFNEoSprIy2h+raNmKO4H1URugmbCe0IhhSd1IgGFiw+fWvzGAEg==
@@ -2108,7 +2166,17 @@
     "@polkadot/types" "6.4.2"
     tweetnacl "^1.0.3"
 
-"@kiltprotocol/utils@0.24.0-10", "@kiltprotocol/utils@^0.24.0-10":
+"@kiltprotocol/types@0.24.0-17", "@kiltprotocol/types@^0.24.0-10":
+  version "0.24.0-17"
+  resolved "https://registry.yarnpkg.com/@kiltprotocol/types/-/types-0.24.0-17.tgz#9dbf76fa382b0d7b9feccbdf274a8da439be8cdb"
+  integrity sha512-vNmpBsrXgTIOcJhc5WlxPp02jrGw1FNw+vXgTB2h+st1cVVhw9mM8qOq//Nb5VHfr7L+z0DtB/LzjFehElv0oA==
+  dependencies:
+    "@polkadot/api" "6.4.2"
+    "@polkadot/keyring" "7.5.1"
+    "@polkadot/types" "6.4.2"
+    tweetnacl "^1.0.3"
+
+"@kiltprotocol/utils@0.24.0-10":
   version "0.24.0-10"
   resolved "https://registry.yarnpkg.com/@kiltprotocol/utils/-/utils-0.24.0-10.tgz#ea6007da822d2d7cbb4e3a20f0e2ed3ff5d4573a"
   integrity sha512-yAbe1dQJoCWiGTofqkXAPHzeA7q1RDrGA+gV4s9WhJhKqYWpM3uXpEF2282TngtxiXCny5z1Zp8A5Da+4ek2YQ==
@@ -2121,17 +2189,30 @@
     tweetnacl "^1.0.3"
     uuid "^8.1.0"
 
-"@kiltprotocol/vc-export@^0.24.0-10":
-  version "0.24.0-10"
-  resolved "https://registry.yarnpkg.com/@kiltprotocol/vc-export/-/vc-export-0.24.0-10.tgz#b10d05534e1db8111d3e8b2432ccab3335e99a13"
-  integrity sha512-Z3UXH52F83S8KkXjbJLGbU0nSFs7s7rN1Y3Q5apZuqmhjI1Lxv5WlcFiUXLd2A72Lxg54UYGkN6/Qgi9q/Apig==
+"@kiltprotocol/utils@0.24.0-17", "@kiltprotocol/utils@^0.24.0-10":
+  version "0.24.0-17"
+  resolved "https://registry.yarnpkg.com/@kiltprotocol/utils/-/utils-0.24.0-17.tgz#1f39d5e1aef4f597413737dbad01976829dc2046"
+  integrity sha512-12xzfrofNbKdz5Zdn/xRBcj4kBZ2X7xaTIqZjxljRxRhbHJOI4SRxgQ0oBRIOOZy+OMFNvuQ6ZkDJTUMCXqSDQ==
   dependencies:
-    "@kiltprotocol/chain-helpers" "0.24.0-10"
-    "@kiltprotocol/config" "0.24.0-10"
-    "@kiltprotocol/core" "0.24.0-10"
-    "@kiltprotocol/did" "0.24.0-10"
-    "@kiltprotocol/types" "0.24.0-10"
-    "@kiltprotocol/utils" "0.24.0-10"
+    "@kiltprotocol/types" "0.24.0-17"
+    "@polkadot/keyring" "7.5.1"
+    "@polkadot/types" "6.4.2"
+    "@polkadot/util" "7.5.1"
+    "@polkadot/util-crypto" "7.5.1"
+    tweetnacl "^1.0.3"
+    uuid "^8.1.0"
+
+"@kiltprotocol/vc-export@^0.24.0-17":
+  version "0.24.0-17"
+  resolved "https://registry.yarnpkg.com/@kiltprotocol/vc-export/-/vc-export-0.24.0-17.tgz#fd78732e416ac343fac36c5e5d6e69b12264949f"
+  integrity sha512-23Em7URfwbfzfsACy+/aTmTAL3MOBCIiVASprYdR0Yb5foiDgMc0+T8bkv61xEzC+GYVmHyVwXCJtl71vqi31Q==
+  dependencies:
+    "@kiltprotocol/chain-helpers" "0.24.0-17"
+    "@kiltprotocol/config" "0.24.0-17"
+    "@kiltprotocol/core" "0.24.0-17"
+    "@kiltprotocol/did" "0.24.0-17"
+    "@kiltprotocol/types" "0.24.0-17"
+    "@kiltprotocol/utils" "0.24.0-17"
     "@polkadot/keyring" "7.5.1"
     "@polkadot/types" "6.4.2"
     "@polkadot/util" "7.5.1"
@@ -4188,7 +4269,7 @@ caseless@~0.12.0:
   resolved "https://registry.yarnpkg.com/caseless/-/caseless-0.12.0.tgz#1b681c21ff84033c826543090689420d187151dc"
   integrity sha1-G2gcIf+EAzyCZUMJBolCDRhxUdw=
 
-cbor@8.0.2, cbor@^6.0.0:
+cbor@8.0.2, cbor@^6.0.0, cbor@^8.0.2:
   version "8.0.2"
   resolved "https://registry.yarnpkg.com/cbor/-/cbor-8.0.2.tgz#d0f5088423437efcc160e9304bd0576f45d06abb"
   integrity sha512-H5WTjQYgyHQI0VrCmbyQBOPy1353MjmUi/r3DbPib4U13vuyqm7es9Mfpe8G58bN/mCdRlJWkiCrPl1uM1wAlg==
