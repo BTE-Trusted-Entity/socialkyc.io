@@ -7,10 +7,15 @@ import {
 } from '@hapi/hapi';
 import { MessageBodyType, ICredential } from '@kiltprotocol/types';
 import { Credential } from '@kiltprotocol/core';
+import Boom from '@hapi/boom';
 
 import { preDecryptMessageContent } from '../utilities/decryptMessage';
-import { validateEncryptedMessage } from '../utilities/validateEncryptedMessage';
+import {
+  EncryptedMessageInput,
+  validateEncryptedMessage,
+} from '../utilities/validateEncryptedMessage';
 import { paths } from '../endpoints/paths';
+import { getSession } from '../utilities/sessionStorage';
 
 export interface Output {
   credential: Credential;
@@ -27,12 +32,19 @@ async function handler(
   if (!request.pre.content) {
     return h.response().code(StatusCodes.ACCEPTED);
   }
+
+  const session = getSession(request.payload as EncryptedMessageInput);
+  if (!session.requestChallenge) {
+    throw Boom.forbidden('No request challenge');
+  }
+  const challenge = session.requestChallenge;
+
   const content = request.pre.content as ICredential[];
 
   const credential = Credential.fromCredential(content[0]);
   logger.debug('Verification credential constructed');
 
-  const isAttested = await credential.verify();
+  const isAttested = await credential.verify({ challenge });
 
   logger.debug('Verification completed');
   return h.response({ credential, isAttested } as Output);
