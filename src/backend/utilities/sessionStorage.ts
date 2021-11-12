@@ -6,7 +6,7 @@ import {
   IRequestForAttestation,
 } from '@kiltprotocol/types';
 
-interface Session {
+export interface Session {
   sessionId: string;
   did?: IDidDetails['did'];
   didChallenge?: string;

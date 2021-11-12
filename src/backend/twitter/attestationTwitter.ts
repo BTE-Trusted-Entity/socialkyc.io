@@ -9,11 +9,11 @@ import { z } from 'zod';
 import { IEncryptedMessage } from '@kiltprotocol/types';
 
 import {
-  getSessionWithDid,
+  getSession,
   PayloadWithSession,
   setSession,
 } from '../utilities/sessionStorage';
-import { attestClaim } from '../utilities/attestClaim';
+import { getAttestationMessage } from '../utilities/attestClaim';
 import { paths } from '../endpoints/paths';
 
 const zodPayload = z.object({
@@ -31,27 +31,20 @@ async function handler(
   const { logger } = request;
   logger.debug('Twitter attestation started');
 
-  const session = getSessionWithDid(request.payload as PayloadWithSession);
-  const { did, requestForAttestation, confirmed } = session;
-  if (!requestForAttestation || !confirmed) {
-    throw Boom.notFound('Confirmed requestForAttestation not found');
-  }
-  logger.debug('Twitter attestation found request');
+  const session = getSession(request.payload as PayloadWithSession);
 
   try {
-    logger.debug('Twitter attestation attesting');
-    const attestedMessagePromise =
-      session.attestedMessagePromise || attestClaim(requestForAttestation, did);
-    setSession({ ...session, attestedMessagePromise });
-
-    const response = await attestedMessagePromise;
+    const response = await getAttestationMessage(session);
     delete session.requestForAttestation;
     setSession(session);
 
     logger.debug('Twitter attestation completed');
     return h.response(response as Output);
   } catch (error) {
-    throw Boom.internal('Attestation failed', error);
+    throw Boom.boomify(error as Error, {
+      message: 'Attestation failed',
+      override: false,
+    });
   }
 }
 
