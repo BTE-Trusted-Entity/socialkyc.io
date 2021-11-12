@@ -12,6 +12,7 @@ import { confirmationHtml } from './endpoints/confirmationHtml';
 import { wellKnownDidConfig } from './didConfiguration/wellKnownDidConfig';
 
 import { quoteEmail } from './email/quoteEmail';
+import { confirmEmail } from './email/confirmEmail';
 import { request } from './email/sendEmail';
 import { attestationEmail } from './email/attestationEmail';
 
@@ -71,6 +72,7 @@ const logger = {
   server.route(session);
 
   server.route(quoteEmail);
+  server.route(confirmEmail);
   server.route(request);
   server.route(attestationEmail);
 

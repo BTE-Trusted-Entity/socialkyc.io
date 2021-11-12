@@ -54,7 +54,7 @@ async function handler(
   return h.response(<Output>undefined);
 }
 
-export const attestationEmail: ServerRoute = {
+export const confirmEmail: ServerRoute = {
   method: 'POST',
   path: paths.email.confirm,
   handler,
