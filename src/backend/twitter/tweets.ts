@@ -5,7 +5,7 @@ import { ControlledPromise } from '../utilities/makeControlledPromise';
 import { logger } from '../utilities/logger';
 
 const screen_name = 'social_kyc_tech';
-const hashTag = '#socialkyc';
+const searchQuery = '@social_kyc_tech';
 
 const requestsFrequencyMs = 10 * 1000;
 
@@ -13,7 +13,7 @@ const client = new TwitterApi(configuration.twitterSecretBearerToken);
 
 async function getTweets() {
   const { statuses } = await client.v1.get('search/tweets.json', {
-    q: hashTag,
+    q: searchQuery,
     result_type: 'recent',
     tweet_mode: 'extended',
   });
