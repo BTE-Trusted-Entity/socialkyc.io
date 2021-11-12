@@ -153,9 +153,11 @@ export function Email({ session }: Props): JSX.Element {
 
           {status === 'attesting' && (
             <Fragment>
-              <p className={styles.status}>In progress</p>
+              <p className={styles.status}>
+                Anchoring credential on KILT blockchain
+              </p>
               <p className={styles.subline}>
-                You have confirmed your email address.
+                Please leave this tab open until your credential is attested.
               </p>
             </Fragment>
           )}
