@@ -6,7 +6,7 @@ import {
   MessageBody,
   MessageBodyType,
 } from '@kiltprotocol/types';
-import Message from '@kiltprotocol/messaging';
+import { Message } from '@kiltprotocol/messaging';
 import { DefaultResolver, DidUtils } from '@kiltprotocol/did';
 
 import { encryptionKeystore } from './keystores';

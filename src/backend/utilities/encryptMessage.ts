@@ -4,7 +4,7 @@ import {
   KeyRelationship,
   MessageBody,
 } from '@kiltprotocol/types';
-import Message from '@kiltprotocol/messaging';
+import { Message } from '@kiltprotocol/messaging';
 import { DefaultResolver } from '@kiltprotocol/did';
 
 import { fullDidPromise } from './fullDid';

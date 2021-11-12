@@ -5,15 +5,15 @@ import {
   ResponseToolkit,
   ServerRoute,
 } from '@hapi/hapi';
-import { MessageBodyType, IAttestedClaim } from '@kiltprotocol/types';
-import { AttestedClaim } from '@kiltprotocol/core';
+import { MessageBodyType, ICredential } from '@kiltprotocol/types';
+import { Credential } from '@kiltprotocol/core';
 
 import { preDecryptMessageContent } from '../utilities/decryptMessage';
 import { validateEncryptedMessage } from '../utilities/validateEncryptedMessage';
 import { paths } from '../endpoints/paths';
 
 export interface Output {
-  credential: AttestedClaim;
+  credential: Credential;
   isAttested: boolean;
 }
 
@@ -27,9 +27,9 @@ async function handler(
   if (!request.pre.content) {
     return h.response().code(StatusCodes.ACCEPTED);
   }
-  const content = request.pre.content as IAttestedClaim[];
+  const content = request.pre.content as ICredential[];
 
-  const credential = AttestedClaim.fromAttestedClaim(content[0]);
+  const credential = Credential.fromCredential(content[0]);
   logger.debug('Verification credential constructed');
 
   const isAttested = await credential.verify();
@@ -49,9 +49,7 @@ export const verify: ServerRoute = {
     pre: [
       {
         assign: 'content',
-        method: preDecryptMessageContent(
-          MessageBodyType.SUBMIT_CLAIMS_FOR_CTYPES,
-        ),
+        method: preDecryptMessageContent(MessageBodyType.SUBMIT_CREDENTIAL),
       },
     ],
   },

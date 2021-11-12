@@ -55,8 +55,11 @@ async function handler(
   // TODO: Handle challenge when new Message interface is available which corresponds with Credential API spec
 
   const output = await encryptMessageBody(did, {
-    content: [{ cTypeHash }],
-    type: MessageBodyType.REQUEST_CLAIMS_FOR_CTYPES,
+    content: {
+      cTypes: [{ cTypeHash }],
+      challenge: 'TODO',
+    },
+    type: MessageBodyType.REQUEST_CREDENTIAL,
   });
 
   logger.debug('Request credential completed');

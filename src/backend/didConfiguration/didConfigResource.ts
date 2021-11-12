@@ -2,13 +2,13 @@ import {
   Claim,
   RequestForAttestation,
   Attestation,
-  AttestedClaim,
+  Credential,
 } from '@kiltprotocol/core';
 import { configuration } from '../utilities/configuration';
 import { domainLinkageCType } from './domainLinkageCType';
 import { fullDidPromise } from '../utilities/fullDid';
 import { assertionKeystore } from '../utilities/keystores';
-import { fromAttestedClaim } from './domainLinkageCredential';
+import { fromCredential } from './domainLinkageCredential';
 import { DidUtils } from '@kiltprotocol/did';
 import { Crypto } from '@kiltprotocol/utils';
 import { KeyRelationship } from '@kiltprotocol/types';
@@ -46,16 +46,13 @@ async function attestDomainLinkage() {
     configuration.did,
   );
 
-  return AttestedClaim.fromRequestAndAttestation(
-    selfSignedRequest,
-    attestation,
-  );
+  return Credential.fromRequestAndAttestation(selfSignedRequest, attestation);
 }
 
 export const didConfigResourcePromise = (async () => {
-  const attestedClaim = await attestDomainLinkage();
+  const credential = await attestDomainLinkage();
 
-  const domainLinkageCredential = fromAttestedClaim(attestedClaim);
+  const domainLinkageCredential = fromCredential(credential);
 
   return {
     '@context': 'https://identity.foundation/.well-known/did-configuration/v1',
