@@ -160,7 +160,7 @@ export function Twitter({ session }: Props): JSX.Element {
                   className={styles.tweetInput}
                   id="tweet"
                   ref={messageRef}
-                  value={`I just created my decentralized credentials with SocialKYC. Regain control of your personal data and protect your digital identity with #socialKYC now. ${secret}`}
+                  value={`I just created my decentralized credentials with SocialKYC. Regain control of your personal data and protect your digital identity with @social_kyc_tech now. ${secret}`}
                   readOnly
                 />
                 {copy.supported && (
