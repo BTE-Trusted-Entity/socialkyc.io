@@ -7,6 +7,7 @@ import {
 import Boom from '@hapi/boom';
 import { z } from 'zod';
 
+import { randomAsHex } from '@polkadot/util-crypto';
 import { CType } from '@kiltprotocol/core';
 import { IEncryptedMessage, MessageBodyType } from '@kiltprotocol/types';
 
@@ -14,7 +15,7 @@ import { emailCType } from '../email/emailCType';
 import { twitterCType } from '../twitter/twitterCType';
 import { encryptMessageBody } from '../utilities/encryptMessage';
 import { paths } from '../endpoints/paths';
-import { getSessionWithDid } from '../utilities/sessionStorage';
+import { getSessionWithDid, setSession } from '../utilities/sessionStorage';
 
 const zodPayload = z.object({
   sessionId: z.string(),
@@ -47,16 +48,20 @@ async function handler(
   logger.debug('Request credential started');
 
   const { sessionId, cType } = request.payload as Input;
-  const { did } = getSessionWithDid({ sessionId });
+  const session = getSessionWithDid({ sessionId });
+  const { did } = session;
 
   const cTypeHash = getCTypeHash(cType);
   logger.debug('Request credential CType found');
 
-  // TODO: Handle challenge when new Message interface is available which corresponds with Credential API spec
-
+  const challenge = randomAsHex(24);
+  setSession({ ...session, requestChallenge: challenge });
   const output = await encryptMessageBody(did, {
-    content: [{ cTypeHash }],
-    type: MessageBodyType.REQUEST_CLAIMS_FOR_CTYPES,
+    content: {
+      cTypes: [{ cTypeHash }],
+      challenge,
+    },
+    type: MessageBodyType.REQUEST_CREDENTIAL,
   });
 
   logger.debug('Request credential completed');

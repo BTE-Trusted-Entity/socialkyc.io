@@ -14,6 +14,7 @@ export interface Session {
   requestForAttestation?: IRequestForAttestation;
   confirmed?: boolean;
   attestedMessagePromise?: Promise<IEncryptedMessage>;
+  requestChallenge?: string;
 }
 
 type SessionWithDid = Session & {

@@ -1,8 +1,4 @@
-import {
-  IAttestedClaim,
-  DidSignature,
-  IClaimContents,
-} from '@kiltprotocol/types';
+import { ICredential, DidSignature, IClaimContents } from '@kiltprotocol/types';
 import {
   DEFAULT_VERIFIABLECREDENTIAL_CONTEXT,
   DEFAULT_VERIFIABLECREDENTIAL_TYPE,
@@ -28,9 +24,7 @@ interface DomainLinkageCredential
   proof: Proof;
 }
 
-export function fromAttestedClaim(
-  input: IAttestedClaim,
-): DomainLinkageCredential {
+export function fromCredential(input: ICredential): DomainLinkageCredential {
   const credentialSubject = {
     ...input.request.claim.contents,
     rootHash: input.request.rootHash,

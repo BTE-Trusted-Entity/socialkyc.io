@@ -6,7 +6,7 @@ import {
   ServerRoute,
 } from '@hapi/hapi';
 import {
-  IRequestAttestationForClaimContent,
+  IRequestAttestationContent,
   MessageBodyType,
 } from '@kiltprotocol/types';
 
@@ -32,7 +32,7 @@ async function handler(
     return h.response().code(StatusCodes.ACCEPTED);
   }
 
-  const content = request.pre.content as IRequestAttestationForClaimContent;
+  const content = request.pre.content as IRequestAttestationContent;
   const { requestForAttestation } = content;
 
   const session = getSession(request.payload as PayloadWithSession);
@@ -56,7 +56,7 @@ export const requestAttestationDotsama: ServerRoute = {
       {
         assign: 'content',
         method: preDecryptMessageContent(
-          MessageBodyType.REQUEST_ATTESTATION_FOR_CLAIM,
+          MessageBodyType.REQUEST_ATTESTATION,
           MessageBodyType.REJECT_TERMS,
         ),
       },

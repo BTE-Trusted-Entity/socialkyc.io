@@ -5,7 +5,7 @@ import {
   IRequestForAttestation,
   MessageBodyType,
 } from '@kiltprotocol/types';
-import { Attestation, AttestedClaim } from '@kiltprotocol/core';
+import { Attestation, Credential } from '@kiltprotocol/core';
 
 import { configuration } from './configuration';
 import { signAndSubmit } from './signAndSubmit';
@@ -24,14 +24,14 @@ export async function attestClaim(
   const tx = await attestation.store();
   await signAndSubmit(tx);
 
-  const attestedClaim = AttestedClaim.fromRequestAndAttestation(
+  const credential = Credential.fromRequestAndAttestation(
     requestForAttestation,
     attestation,
   );
 
   return encryptMessageBody(claimerDid, {
-    content: { attestation: attestedClaim.attestation },
-    type: MessageBodyType.SUBMIT_ATTESTATION_FOR_CLAIM,
+    content: { attestation: credential.attestation },
+    type: MessageBodyType.SUBMIT_ATTESTATION,
   });
 }
 
