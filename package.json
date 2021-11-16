@@ -23,7 +23,7 @@
     "@hapi/boom": "^9.1.4",
     "@hapi/hapi": "^20.2.1",
     "@hapi/inert": "^6.0.4",
-    "@kiltprotocol/chain-helpers": "^0.24.0-17",
+    "@kiltprotocol/chain-helpers": "^0.24.0-18",
     "@kiltprotocol/core": "^0.24.0-17",
     "@kiltprotocol/did": "^0.24.0-17",
     "@kiltprotocol/messaging": "^0.24.0-17",
