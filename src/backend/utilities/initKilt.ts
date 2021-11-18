@@ -1,5 +1,7 @@
 import { init } from '@kiltprotocol/core';
+import { configuration } from './configuration';
 
-export async function initKilt(): Promise<void> {
-  await init({ address: 'wss://kilt-peregrine-stg.kilt.io' });
+export async function initKilt(): Promise<true> {
+  await init({ address: configuration.blockchainEndpoint });
+  return true;
 }

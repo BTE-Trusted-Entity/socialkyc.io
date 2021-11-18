@@ -14,6 +14,11 @@ if (!region || !accessKeyId || !secretAccessKey) {
   throw new Error('No AWS access values provided');
 }
 
+const twitterSecretBearerToken = env.TWITTER_SECRET_BEARER_TOKEN;
+if (!twitterSecretBearerToken) {
+  throw new Error('No Twitter token provided');
+}
+
 const baseUri = env.URL;
 if (!baseUri) {
   throw new Error('No base URI provided');
@@ -33,9 +38,11 @@ export const configuration = {
     secretAccessKey,
   },
   port: env.PORT || 3000,
+  blockchainEndpoint: env.BLOCKCHAIN_ENDPOINT || 'wss://peregrine.kilt.io',
   isProduction: env.NODE_ENV === 'production',
   baseUri,
   distFolder: path.join(cwd(), 'dist', 'frontend'),
   did,
   backupPhrase,
+  twitterSecretBearerToken,
 };

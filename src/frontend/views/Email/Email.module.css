@@ -1,0 +1,29 @@
+.form {
+  display: flex;
+  flex-direction: column;
+  margin-top: 2.25rem;
+}
+
+.formLabel {
+  font-size: 0.875rem;
+}
+
+.formInput {
+  composes: input from '../../components/Input/Input.module.css';
+}
+
+.expiry {
+  font-size: 0.875rem;
+  margin-bottom: 1.25rem;
+}
+
+.chooseIdentity {
+  composes: buttonPrimary from '../../components/Button/Button.module.css';
+  margin-top: 7rem;
+}
+
+.backup {
+  composes: buttonPrimary from '../../components/Button/Button.module.css';
+  margin: 0 auto;
+  display: block;
+}

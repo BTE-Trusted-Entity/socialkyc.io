@@ -1,8 +1,6 @@
-import { StatusCodes } from 'http-status-codes';
-import ky from 'ky';
-import { IAttestedClaim, IEncryptedMessage } from '@kiltprotocol/types';
-
 import { getSession } from './utilities/session';
+import { requestCredential } from '../backend/verifier/requestCredentialApi';
+import { verifyCredential } from '../backend/verifier/verifyApi';
 
 const credentialForm = document.getElementById(
   'credentialForm',
@@ -35,43 +33,35 @@ async function handleSubmit(event: Event) {
 
   try {
     const session = await getSession();
-    const did = session.identity;
+    const { sessionId } = session;
 
     await session.listen(async (message) => {
-      const result = await ky.post('/verify', { json: message });
+      try {
+        const { credential, isAttested } = await verifyCredential({
+          message,
+          sessionId,
+        });
 
-      window.removeEventListener('beforeunload', handleBeforeUnload);
+        claimerDid.textContent = credential.request.claim.owner;
+        attesterDid.textContent = credential.attestation.owner;
+        ctypeHash.textContent = credential.attestation.cTypeHash;
 
-      if (result.status !== StatusCodes.OK) {
-        console.log('Credential verification failed');
-        return;
+        if (credential.attestation.revoked) {
+          status.textContent = 'Revoked';
+        } else if (isAttested) {
+          status.textContent = 'Attested';
+        } else {
+          status.textContent = 'Not Attested';
+        }
+
+        json.textContent = JSON.stringify(credential, null, 4);
+
+        shared.hidden = false;
+      } finally {
+        window.removeEventListener('beforeunload', handleBeforeUnload);
       }
-
-      const { credential, isAttested } = (await result.json()) as {
-        credential: IAttestedClaim;
-        isAttested: boolean;
-      };
-
-      claimerDid.textContent = credential.request.claim.owner;
-      attesterDid.textContent = credential.attestation.owner;
-      ctypeHash.textContent = credential.attestation.cTypeHash;
-
-      if (credential.attestation.revoked) {
-        status.textContent = 'Revoked';
-      } else if (isAttested) {
-        status.textContent = 'Attested';
-      } else {
-        status.textContent = 'Not Attested';
-      }
-
-      json.textContent = JSON.stringify(credential, null, 4);
-
-      shared.hidden = false;
     });
-
-    const message = (await ky
-      .post('/request-credential', { json: { did, cType } })
-      .json()) as IEncryptedMessage;
+    const message = await requestCredential({ sessionId, cType });
 
     await session.send(message);
   } catch {

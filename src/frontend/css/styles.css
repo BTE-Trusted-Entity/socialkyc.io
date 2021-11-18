@@ -1,0 +1,157 @@
+@import url('../components/Theme/Theme.module.css');
+@import url('../components/Typography/Typography.module.css');
+
+html,
+body {
+  margin: 0;
+  padding: 0;
+  height: 100%;
+  width: 100%;
+}
+
+body {
+  background: url('../images/background-dark.svg') no-repeat center/cover;
+}
+
+main {
+  display: flex;
+  justify-content: center;
+  height: 100%;
+}
+
+.right,
+.left {
+  width: 50%;
+  max-width: 1000px;
+}
+
+.left {
+  background:
+    url('../components/Branding/logo.svg') no-repeat top 5% right 3% /
+    auto 9%;
+  position: relative;
+  display: flex;
+  align-items: flex-end;
+  justify-content: flex-end;
+}
+
+.right {
+  position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.rightContainer {
+  filter: drop-shadow(-3px -3px 4px rgb(var(--color-white-rgb) / 30%));
+  width: 70%;
+  aspect-ratio: 545 / 570;
+  position: relative;
+}
+
+.rightContainer::before {
+  content: '';
+  background: url('../images/hexagons/phones.jpg') no-repeat center/cover;
+  clip-path:
+    polygon(
+      40.17% 0.37%,
+      89.98% 17.02%,
+      99.82% 66.58%,
+      59.83% 99.51%,
+      10.02% 82.86%,
+      0.18% 33.3%
+    );
+  width: 100%;
+  height: 100%;
+  display: block;
+}
+
+.rightHeadline {
+  position: absolute;
+  top: 10%;
+  left: 0;
+  display: flex;
+  flex-direction: column;
+  font-size: 1rem;
+  line-height: 1.25;
+}
+
+.rightHeadlineTop {
+  font-size: 1.5em;
+}
+
+.rightHeadlineCenter {
+  font-size: 4em;
+}
+
+.rightHeadlineBottom {
+  font-size: 1.5em;
+  padding-left: 7em;
+}
+
+footer {
+  position: absolute;
+  bottom: 0;
+  height: 2.5rem;
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  background-color: #030006;
+  font-size: 0.875rem;
+}
+
+.navList {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+}
+
+.navItem {
+  display: inline-block;
+  cursor: pointer;
+}
+
+.navItem:first-child::after {
+  content: ' | ';
+  color: var(--color-magenta);
+}
+
+@media screen and (max-width: 1500px) {
+  .rightHeadline {
+    font-size: 0.9rem;
+  }
+}
+
+@media screen and (max-width: 1400px) {
+  .rightHeadline {
+    font-size: 0.8rem;
+  }
+}
+
+@media screen and (max-width: 1300px) {
+  .rightHeadline {
+    font-size: 0.7rem;
+  }
+}
+
+@media screen and (max-width: 1200px) {
+  .rightHeadline {
+    font-size: 0.6rem;
+  }
+}
+
+@media screen and (max-width: 950px) {
+  .leftHeadline,
+  .rightHeadline {
+    font-size: 0.5rem;
+  }
+}
+
+@media screen and (max-width: 800px) {
+  .leftHeadline,
+  .rightHeadline {
+    font-size: 0.4rem;
+  }
+}

@@ -2,12 +2,14 @@ import {
   IDidDetails,
   IEncryptedMessage,
   KeyRelationship,
+  MessageBody,
 } from '@kiltprotocol/types';
-import Message from '@kiltprotocol/messaging';
+import { Message } from '@kiltprotocol/messaging';
 import { DefaultResolver } from '@kiltprotocol/did';
 
 import { fullDidPromise } from './fullDid';
 import { encryptionKeystore } from './keystores';
+import { configuration } from './configuration';
 
 export async function encryptMessage(
   message: Message,
@@ -33,4 +35,12 @@ export async function encryptMessage(
     receiverEncryptionKey,
     encryptionKeystore,
   );
+}
+
+export async function encryptMessageBody(
+  receiverDid: string,
+  messageBody: MessageBody,
+): Promise<IEncryptedMessage> {
+  const message = new Message(messageBody, configuration.did, receiverDid);
+  return encryptMessage(message, receiverDid);
 }

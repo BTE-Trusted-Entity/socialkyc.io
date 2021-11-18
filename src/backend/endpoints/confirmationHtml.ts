@@ -6,14 +6,14 @@ import {
   ResponseToolkit,
   ServerRoute,
 } from '@hapi/hapi';
-import Boom from '@hapi/boom';
 import { z } from 'zod';
 
 import { configuration } from '../utilities/configuration';
-import { getRequestForAttestation } from '../utilities/requestCache';
+import { getSessionBySecret } from '../utilities/sessionStorage';
+import { paths } from './paths';
 
 const zodParams = z.object({
-  key: z.string(),
+  secret: z.string(),
 });
 
 type Params = z.infer<typeof zodParams>;
@@ -23,19 +23,15 @@ async function handler(
   h: ResponseToolkit,
 ): Promise<ResponseObject> {
   // Page will not render if some random or incorrect key is entered in the URL
-  const { key } = request.params as Params;
-  try {
-    getRequestForAttestation(key);
-  } catch (error) {
-    throw Boom.notFound(`Key not found: ${key}`);
-  }
+  const { secret } = request.params as Params;
+  getSessionBySecret(secret);
 
-  return h.file(path.join(configuration.distFolder, 'confirmation.html'));
+  return h.file(path.join(configuration.distFolder, 'index.html'));
 }
 
 export const confirmationHtml: ServerRoute = {
   method: 'GET',
-  path: '/confirmation/{key}',
+  path: paths.confirmationHtml,
   handler,
   options: {
     validate: {

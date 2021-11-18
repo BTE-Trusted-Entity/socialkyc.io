@@ -1,0 +1,8 @@
+.checkmark {
+  position: absolute;
+  width: 2rem;
+  height: 2rem;
+  top: 0.75rem;
+  right: 0.875rem;
+  background: url('./checkmark.svg') no-repeat center/100%;
+}

@@ -1,8 +1,16 @@
-import { IEncryptedMessage, IMessage } from '@kiltprotocol/types';
-import Message from '@kiltprotocol/messaging';
+import { Request } from '@hapi/hapi';
+import Boom from '@hapi/boom';
+import {
+  IEncryptedMessage,
+  IMessage,
+  MessageBody,
+  MessageBodyType,
+} from '@kiltprotocol/types';
+import { Message } from '@kiltprotocol/messaging';
 import { DefaultResolver, DidUtils } from '@kiltprotocol/did';
 
 import { encryptionKeystore } from './keystores';
+import { EncryptedMessageInput } from './validateEncryptedMessage';
 
 export async function decryptMessage(
   encrypted: IEncryptedMessage,
@@ -18,4 +26,33 @@ export async function decryptMessage(
   const { details: senderDetails } = didDocument;
 
   return Message.decrypt(encrypted, encryptionKeystore, { senderDetails });
+}
+
+export function preDecryptMessageContent(
+  expectedType: MessageBodyType,
+  rejectionType?: MessageBodyType,
+): (request: Request) => Promise<MessageBody['content'] | null> {
+  return async function (request) {
+    const { logger } = request;
+    logger.debug('Message will be decrypted');
+
+    const payload = request.payload as EncryptedMessageInput;
+    const message = await decryptMessage(payload.message);
+    logger.debug('Message decrypted');
+
+    const messageBody = message.body;
+    const { type } = messageBody;
+
+    if (type === rejectionType) {
+      logger.debug('Message contains rejection');
+      return null;
+    }
+
+    if (type !== expectedType) {
+      logger.debug('Message type is unexpected');
+      throw Boom.badRequest('Unexpected message type');
+    }
+
+    return messageBody.content;
+  };
 }

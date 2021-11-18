@@ -1,0 +1,103 @@
+@import url('styles.css');
+
+.leftContainer {
+  width: 100%;
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+}
+
+.leftHeadline {
+  width: 70%;
+  font-size: 4.25rem;
+  padding-top: 30%;
+  margin: 0;
+  background: url('../images/404.svg') no-repeat center top/contain;
+}
+
+.buttonPrimary {
+  height: 2rem;
+  padding: 0 1.75rem;
+  align-self: center;
+  display: inline-flex;
+  justify-content: center;
+  align-items: center;
+  border-radius: 1rem;
+  font-size: 0.875rem;
+  text-transform: uppercase;
+  color: var(--color-white);
+  background-color: var(--color-magenta);
+  box-shadow:
+    2px 2px 3px 1px rgb(var(--color-black-rgb) / 15%),
+    -2px -2px 3px 1px rgb(var(--color-white-rgb) / 30%);
+  text-decoration: none;
+  margin-top: 2.5rem;
+}
+
+.rightContainer404::before {
+  background: url('../images/hexagons/robot.jpg') no-repeat center/120%;
+}
+
+.rightHeadline404 {
+  top: 0;
+  left: 0;
+}
+
+.rightHeadline404Top {
+  padding-left: 3em;
+  font-size: 1.5em;
+}
+
+.rightHeadline404Center {
+  font-size: 4em;
+}
+
+.rightHeadline404Bottom {
+  padding-left: 6.5em;
+  font-size: 1.5em;
+}
+
+@media screen and (max-width: 1500px) {
+  .leftHeadline {
+    font-size: 4rem;
+  }
+}
+
+@media screen and (max-width: 1400px) {
+  .leftHeadline {
+    font-size: 3.75rem;
+  }
+}
+
+@media screen and (max-width: 1300px) {
+  .leftHeadline {
+    font-size: 3.5rem;
+  }
+}
+
+@media screen and (max-width: 1200px) {
+  .leftHeadline {
+    font-size: 3rem;
+  }
+}
+
+@media screen and (max-width: 950px) {
+  .leftHeadline {
+    font-size: 2.5rem;
+  }
+}
+
+@media screen and (max-width: 800px) {
+  .leftHeadline {
+    font-size: 2rem;
+  }
+}
+
+@media screen and (max-width: 800px) {
+  .leftHeadline {
+    font-size: 1.5rem;
+  }
+}

@@ -1,0 +1,36 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Sign DID</title>
+  <script>window.kilt = {}</script>
+  <script type="module">
+    window.handleSubmit = async function (event) {
+      event.preventDefault();
+      const input = event.target.elements.input.value;
+      const output = await window.kilt.sporran.signWithDid(input);
+      document.querySelector('#did').textContent = output.did;
+      document.querySelector('#signature').textContent = output.signature;
+    }
+  </script>
+</head>
+<body>
+<h1>Sign some text using DID</h1>
+
+<form onsubmit="handleSubmit(event)">
+  <textarea name="input" rows="5" cols="60">I like DID signing!</textarea>
+  <p>
+    <button type="submit">Sign</button>
+  </p>
+  <p>
+    DID:
+    <output id="did"></output>
+  </p>
+  <p>
+    Signature:
+    <output id="signature"></output>
+  </p>
+</form>
+
+</body>
+</html>
