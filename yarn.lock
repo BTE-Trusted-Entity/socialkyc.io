@@ -8702,10 +8702,10 @@ range-parser@1.2.0:
   resolved "https://registry.yarnpkg.com/range-parser/-/range-parser-1.2.0.tgz#f49be6b487894ddc40dcc94a322f611092e00d5e"
   integrity sha1-9JvmtIeJTdxA3MlKMi9hEJLgDV4=
 
-rate-limiter-flexible@^2.3.4:
-  version "2.3.4"
-  resolved "https://registry.yarnpkg.com/rate-limiter-flexible/-/rate-limiter-flexible-2.3.4.tgz#8bc0ad378769f942300d863d7cb93eaba9771e22"
-  integrity sha512-rFAYXD0XplpWzFRgN3nx/OY07xyyPmnZPqYnoKXNp/8ZgptoJ6I7QUGY1txmwlz8X1NULbQ80ifUKfv1ttGBOQ==
+rate-limiter-flexible@^2.3.5:
+  version "2.3.5"
+  resolved "https://registry.yarnpkg.com/rate-limiter-flexible/-/rate-limiter-flexible-2.3.5.tgz#3fd414dbea6df16669a0b319378cdc7373cf5e93"
+  integrity sha512-66QCGB8h74PklfrwDEFa8oIMHBL31x79WajtGnmS7LwJqdh8u/rnu4a8UNaxguB/YauTWdOI9lAM/WODVZw1FQ==
 
 rdf-canonize@^1.0.2:
   version "1.2.0"
