@@ -24,7 +24,7 @@
     "@hapi/hapi": "^20.2.1",
     "@hapi/inert": "^6.0.4",
     "@kiltprotocol/chain-helpers": "^0.24.0-18",
-    "@kiltprotocol/core": "^0.24.0-18",
+    "@kiltprotocol/core": "^0.24.0",
     "@kiltprotocol/did": "^0.24.0-18",
     "@kiltprotocol/messaging": "^0.24.0-18",
     "@kiltprotocol/types": "^0.24.0-18",
