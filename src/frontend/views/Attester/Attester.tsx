@@ -17,7 +17,7 @@ interface HasSporran {
 }
 
 function useHasSporran(): HasSporran {
-  const [hasSporran, setHasSporran] = useState<boolean | null>(null);
+  const [hasSporran, setHasSporran] = useState<boolean>();
 
   useEffect(() => {
     const intervalId = setInterval(() => {
@@ -27,7 +27,7 @@ function useHasSporran(): HasSporran {
     }, 100);
 
     const timeoutId = setTimeout(() => {
-      if (hasSporran === null) {
+      if (hasSporran === undefined) {
         setHasSporran(false);
       }
     }, 500);
@@ -59,7 +59,7 @@ export function Attester(): JSX.Element {
   const showWebstoreLink = hasSporran === false && isSupportedBrowser;
   const showWebsiteLink = hasSporran === false && isUnsupportedBrowser;
 
-  const [session, setSession] = useState<Session | undefined>();
+  const [session, setSession] = useState<Session>();
 
   const [processing, setProcessing] = useState(false);
 

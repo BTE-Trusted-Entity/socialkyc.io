@@ -49,9 +49,7 @@ export function Twitter({ session }: Props): JSX.Element {
   const messageRef = useRef<HTMLTextAreaElement>(null);
   const copy = useCopyButton(messageRef);
 
-  const [backupMessage, setBackupMessage] = useState<
-    IEncryptedMessage | undefined
-  >();
+  const [backupMessage, setBackupMessage] = useState<IEncryptedMessage>();
 
   const handleSubmit = useCallback(
     async (event) => {
