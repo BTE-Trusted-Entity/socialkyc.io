@@ -4,11 +4,11 @@ WORKDIR /app
 
 FROM base AS builder
 
-# get the sources
-COPY . ./
-
 # one of dependencies uses node-gyp which requires build tools
 RUN apk add --update --no-cache python3 g++ make && ln -sf python3 /usr/bin/python
+
+# get the sources
+COPY . ./
 
 # install build dependencies, build the app
 RUN yarn install --frozen-lockfile --ignore-optional && yarn cache clean --all && yarn build
