@@ -1,18 +1,21 @@
 import { Fragment, useCallback, useState } from 'react';
 import { IEncryptedMessage } from '@kiltprotocol/types';
+import cx from 'classnames';
 
 import { Session } from '../../utilities/session';
 import { usePreventNavigation } from '../../utilities/usePreventNavigation';
 import { expiryDate } from '../../utilities/expiryDate';
 
 import { Explainer } from '../../components/Explainer/Explainer';
-import { Expandable } from '../../components/Expandable/Expandable';
+import { LinkBack } from '../../components/LinkBack/LinkBack';
+import { Spinner } from '../../components/Spinner/Spinner';
 import { AttestationProcess } from '../../components/AttestationProcess/AttestationProcess';
 
 import { quoteDotsama } from '../../../backend/dotsama/quoteDotsamaApi';
 import { requestAttestationDotsama } from '../../../backend/dotsama/requestAttestationDotsamaApi';
 import { attestDotsama } from '../../../backend/dotsama/attestationDotsamaApi';
 
+import * as flowStyles from '../../components/CredentialFlow/CredentialFlow.module.css';
 import * as styles from './Dotsama.module.css';
 
 type AttestationStatus = 'none' | 'requested' | 'attesting' | 'ready' | 'error';
@@ -87,7 +90,15 @@ export function Dotsama({ session }: Props): JSX.Element {
   }, [backupMessage, session]);
 
   return (
-    <Expandable path="/dotsama" label="Dotsama Name" processing={processing}>
+    <section
+      className={cx(flowStyles.container, {
+        [flowStyles.processing]: processing,
+      })}
+    >
+      {processing && <Spinner />}
+
+      <h1 className={flowStyles.heading}>Dotsama Name Verification</h1>
+
       <Explainer>
         After entering your desired Dotsama name, please choose an identity in
         your wallet to associate with your Dotsama credential.
@@ -97,8 +108,8 @@ export function Dotsama({ session }: Props): JSX.Element {
       </Explainer>
 
       {status === 'none' && (
-        <form className={styles.form} onSubmit={handleSubmit}>
-          <label className={styles.formLabel}>
+        <form onSubmit={handleSubmit}>
+          <label>
             Your desired Dotsama name
             <input
               className={styles.nameInput}
@@ -109,11 +120,11 @@ export function Dotsama({ session }: Props): JSX.Element {
             />
           </label>
 
-          <p className={styles.subline}>Validity: one year ({expiryDate})</p>
+          <p>Validity: one year ({expiryDate})</p>
 
           <button
             type="submit"
-            className={styles.chooseIdentity}
+            className={flowStyles.ctaButton}
             disabled={!name}
           >
             Continue in wallet
@@ -139,11 +150,13 @@ export function Dotsama({ session }: Props): JSX.Element {
             subline="We recommend that you back up your credential now."
           />
 
-          <p className={styles.ctaLine}>
-            <button className={styles.cta} type="button" onClick={handleBackup}>
-              Back up credential
-            </button>
-          </p>
+          <button
+            className={flowStyles.ctaButton}
+            type="button"
+            onClick={handleBackup}
+          >
+            Back up credential
+          </button>
         </Fragment>
       )}
 
@@ -154,6 +167,8 @@ export function Dotsama({ session }: Props): JSX.Element {
           error="Oops, there was an error."
         />
       )}
-    </Expandable>
+
+      <LinkBack />
+    </section>
   );
 }

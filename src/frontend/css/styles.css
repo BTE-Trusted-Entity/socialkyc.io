@@ -5,18 +5,21 @@ html,
 body {
   margin: 0;
   padding: 0;
-  height: 100%;
   width: 100%;
 }
 
 body {
-  background: url('../images/background-dark.svg') no-repeat center/cover;
+  background:
+    url('../components/Branding/logo.svg') no-repeat calc(50% - 207px / 2 - 1.5rem) 2rem,
+    url('../images/background-dark.svg') no-repeat fixed center/cover;
+  padding-top: 8rem;
+  scrollbar-width: thin;
+  scrollbar-color: var(--color-magenta) rgb(var(--color-magenta-rgb) / 50%);
+  font-size: 0.875rem;
 }
 
-main {
-  display: flex;
-  justify-content: center;
-  height: 100%;
+p {
+  margin-block: 1.25rem;
 }
 
 .right,
@@ -26,20 +29,37 @@ main {
 }
 
 .left {
-  background:
-    url('../components/Branding/logo.svg') no-repeat top 5% right 3% /
-    auto 9%;
   position: relative;
-  display: flex;
-  align-items: flex-end;
-  justify-content: flex-end;
+  margin-right: 50%;
+  margin-left: auto;
+  box-sizing: border-box;
+  padding-left: 3rem;
 }
 
 .right {
-  position: relative;
+  position: fixed;
+  left: 50%;
+  top: 4rem;
   display: flex;
   align-items: center;
   justify-content: center;
+}
+
+.leftContainer {
+  box-sizing: border-box;
+  height: calc(100vh - 8rem);
+  border-radius: 0.625rem;
+  background:
+    linear-gradient(
+      180deg,
+      rgb(var(--color-white-rgb) / 10%) 0%,
+      rgb(var(--color-black-rgb) / 12%) 100%
+    ),
+    rgb(32 1 49 / 60%);
+  padding: 3rem;
+  box-shadow:
+    -2px -2px 9px 0 rgb(var(--color-white-rgb) / 20%),
+    2px 2px 9px 0 rgb(var(--color-black-rgb) / 20%);
 }
 
 .rightContainer {
@@ -90,7 +110,7 @@ main {
 }
 
 footer {
-  position: absolute;
+  position: fixed;
   bottom: 0;
   height: 2.5rem;
   width: 100%;
@@ -99,7 +119,6 @@ footer {
   justify-content: center;
   align-items: center;
   background-color: #030006;
-  font-size: 0.875rem;
 }
 
 .navList {
@@ -116,6 +135,20 @@ footer {
 .navItem:first-child::after {
   content: ' | ';
   color: var(--color-magenta);
+}
+
+::-webkit-scrollbar {
+  display: block;
+  width: 0.625rem;
+}
+
+::-webkit-scrollbar-track {
+  background: rgb(var(--color-magenta-rgb) / 50%);
+}
+
+::-webkit-scrollbar-thumb {
+  background: var(--color-magenta);
+  border-radius: 0.375rem;
 }
 
 @media screen and (max-width: 1500px) {

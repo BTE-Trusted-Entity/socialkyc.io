@@ -1,12 +1,15 @@
-import { useCallback, useEffect, useState } from 'react';
+import { Fragment, useCallback, useEffect, useState } from 'react';
+import { Link, Route, Switch } from 'react-router-dom';
 import cx from 'classnames';
 import { detect } from 'detect-browser';
 
 import { apiWindow, getSession, Session } from '../../utilities/session';
 
+import { Spinner } from '../../components/Spinner/Spinner';
 import { Email } from '../Email/Email';
 import { Twitter } from '../Twitter/Twitter';
 import { Dotsama } from '../Dotsama/Dotsama';
+import { paths } from '../../paths';
 
 import * as styles from './Attester.module.css';
 
@@ -41,132 +44,193 @@ function useHasSporran(): HasSporran {
   return typeof hasSporran === 'boolean' ? { data: { hasSporran } } : {};
 }
 
-export function Attester(): JSX.Element {
+function Welcome() {
+  return (
+    <Fragment>
+      <h1 className={styles.heading}>Your IDENTITY, back in your hands!</h1>
+
+      <p>
+        Create your decentralized social credentials here. Your personal data
+        will be anchored on the KILT blockchain and only you will decide who can
+        access it.
+      </p>
+      <p>
+        SocialKYC does not store, share or sell any of your data. The service
+        forgets about you after attesting your identity.
+      </p>
+    </Fragment>
+  );
+}
+
+function Install() {
   const browser = detect();
+  if (!browser) {
+    return null; // TODO: show error
+  }
 
-  const isDesktop =
-    browser && browser.os !== 'iOS' && browser.os !== 'Android OS';
+  const { name, os } = browser;
 
-  const isSupportedBrowser =
-    isDesktop && (browser.name === 'chrome' || browser.name === 'firefox');
+  const isDesktop = os !== 'iOS' && os !== 'Android OS';
+  const isChromeOrFirefox = name === 'chrome' || name === 'firefox';
 
-  const isUnsupportedBrowser =
-    isDesktop && browser.name !== 'chrome' && browser.name !== 'firefox';
+  const showWebstoreLink = isDesktop && isChromeOrFirefox;
+  const showWebsiteLink = isDesktop && !isChromeOrFirefox;
 
+  // TODO: Handle case of mobile device
+
+  if (showWebstoreLink) {
+    return (
+      <section className={styles.install}>
+        <p>
+          To create your Identity for using SocialKYC credentials, you will need
+          to install the Sporran wallet which is a browser extension. Download
+          Sporran here:
+        </p>
+        {name === 'chrome' && (
+          <a
+            className={styles.chrome}
+            href="https://chrome.google.com/webstore/detail/djdnajgjcbjhhbdblkegbcgodlkkfhcl"
+          />
+        )}
+        {name === 'firefox' && (
+          <a
+            className={styles.firefox}
+            href="https://addons.mozilla.org/firefox/addon/sporran/"
+          />
+        )}
+      </section>
+    );
+  }
+
+  if (showWebsiteLink) {
+    return (
+      <section className={styles.install}>
+        <p>
+          Please make sure to have a wallet extension installed for your
+          browser. We recommend the
+          <br />
+          <a className={styles.textLink} href="https://www.sporran.org/">
+            Sporran extension.
+          </a>
+        </p>
+      </section>
+    );
+  }
+
+  return null;
+}
+
+function GetCredentials() {
+  return (
+    <Fragment>
+      <p>Get verifiable credentials for your:</p>
+
+      <ul className={styles.credentials}>
+        <li>
+          <Link to={paths.twitter} className={styles.twitter}>
+            Twitter Account
+          </Link>
+        </li>
+        <li>
+          <Link to={paths.email} className={styles.email}>
+            Email Address
+          </Link>
+        </li>
+        <li>
+          <Link to={paths.dotsama} className={styles.dotsama}>
+            Dotsama Name
+          </Link>
+        </li>
+      </ul>
+    </Fragment>
+  );
+}
+
+function Connect({ setSession }: { setSession: (s: Session) => void }) {
+  const [processing, setProcessing] = useState(false);
+
+  const handleConnectClick = useCallback(
+    async (event) => {
+      event.preventDefault();
+      setProcessing(true);
+
+      try {
+        setSession(await getSession());
+      } catch (error) {
+        console.error(error);
+      } finally {
+        setProcessing(false);
+      }
+    },
+    [setSession],
+  );
+
+  return (
+    <section className={styles.connectContainer}>
+      <div
+        className={cx(styles.connect, {
+          [styles.processing]: processing,
+        })}
+      >
+        <p>Please authorize access to your wallet</p>
+        <button
+          type="button"
+          className={styles.buttonPrimary}
+          onClick={handleConnectClick}
+          disabled={processing}
+        >
+          Connect to wallet
+        </button>
+      </div>
+
+      {processing && <Spinner />}
+    </section>
+  );
+}
+
+export function Attester(): JSX.Element {
   const { data } = useHasSporran();
-  const hasSporran = data?.hasSporran;
-
-  const showWebstoreLink = hasSporran === false && isSupportedBrowser;
-  const showWebsiteLink = hasSporran === false && isUnsupportedBrowser;
 
   const [session, setSession] = useState<Session>();
 
-  const [processing, setProcessing] = useState(false);
+  if (!data) {
+    return <Spinner />;
+  }
 
-  const handleConnectClick = useCallback(async (event) => {
-    event.preventDefault();
-    setProcessing(true);
+  const { hasSporran } = data;
+  if (!hasSporran) {
+    return (
+      <Fragment>
+        <Welcome />
+        <Install />
+      </Fragment>
+    );
+  }
 
-    try {
-      setSession(await getSession());
-    } catch (error) {
-      console.error(error);
-    } finally {
-      setProcessing(false);
-    }
-  }, []);
+  if (!session) {
+    return (
+      <Fragment>
+        <Welcome />
+        <Connect setSession={setSession} />
+      </Fragment>
+    );
+  }
 
   return (
-    <div className={styles.leftContainer}>
-      <h1 className={styles.heading}>Your IDENTITY, back in your hands!</h1>
-      <div className={styles.scrollContainer}>
-        <section className={styles.info}>
-          <p className={styles.subline}>
-            Create your decentralized social credentials here. Your personal
-            data will be anchored on the KILT blockchain and only you will
-            decide who can access it.
-          </p>
-          <p className={styles.subline}>
-            SocialKYC does not store, share or sell any of your data. The
-            service forgets about you after attesting your identity.
-          </p>
-        </section>
-
-        {!data && <div className={styles.spinner}></div>}
-
-        {hasSporran && !session && (
-          <section className={styles.connectContainer}>
-            <div
-              className={cx(styles.connect, {
-                [styles.processing]: processing,
-              })}
-            >
-              <p className={styles.subline}>
-                Please authorize access to your wallet
-              </p>
-              <button
-                type="button"
-                className={styles.buttonPrimary}
-                onClick={handleConnectClick}
-                disabled={processing}
-              >
-                Connect to wallet
-              </button>
-            </div>
-            {processing && <div className={styles.spinner}></div>}
-          </section>
-        )}
-
-        {hasSporran && session && (
-          <section className={styles.lists}>
-            <h2 className={styles.subline}>
-              Get verifiable credentials for your:
-            </h2>
-            <ul className={styles.mediaList}>
-              <Twitter session={session} />
-              <Email session={session} />
-              <Dotsama session={session} />
-            </ul>
-          </section>
-        )}
-
-        {showWebstoreLink && (
-          <section className={styles.install}>
-            <p className={styles.warning}>
-              To create your Identity for using SocialKYC credentials, you will
-              need to install the Sporran wallet which is a browser extension.
-              Download Sporran here:
-            </p>
-            {browser.name === 'chrome' && (
-              <a
-                className={styles.chrome}
-                href="https://chrome.google.com/webstore/detail/djdnajgjcbjhhbdblkegbcgodlkkfhcl"
-              />
-            )}
-            {browser.name === 'firefox' && (
-              <a
-                className={styles.firefox}
-                href="https://addons.mozilla.org/firefox/addon/sporran/"
-              />
-            )}
-          </section>
-        )}
-
-        {showWebsiteLink && (
-          <section className={styles.install}>
-            <p className={styles.warning}>
-              Please make sure to have a wallet extension installed for your
-              browser. We recommend the
-              <br />
-              <a className={styles.textLink} href="https://www.sporran.org/">
-                Sporran extension.
-              </a>
-            </p>
-          </section>
-        )}
-
-        {/* TODO: Handle case of mobile device */}
-      </div>
-    </div>
+    <Switch>
+      <Route path={paths.twitter}>
+        <Twitter session={session} />
+      </Route>
+      <Route path={paths.email}>
+        <Email session={session} />
+      </Route>
+      <Route path={paths.dotsama}>
+        <Dotsama session={session} />
+      </Route>
+      <Route>
+        <Welcome />
+        <GetCredentials />
+      </Route>
+    </Switch>
   );
 }

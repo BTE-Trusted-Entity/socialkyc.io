@@ -25,7 +25,7 @@ export function AttestationProcess({
       <h2 className={styles.heading}>Attestation process:</h2>
 
       {status && <p className={styles.status}>{status}</p>}
-      {subline && <p className={styles.subline}>{subline}</p>}
+      {subline && <p>{subline}</p>}
 
       {/* TODO: Interface for error */}
       {error && <p>{error}</p>}

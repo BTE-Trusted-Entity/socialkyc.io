@@ -1,5 +1,6 @@
 import { Fragment, useCallback, useRef, useState } from 'react';
 import { IEncryptedMessage } from '@kiltprotocol/types';
+import cx from 'classnames';
 
 import { Session } from '../../utilities/session';
 import { usePreventNavigation } from '../../utilities/usePreventNavigation';
@@ -7,7 +8,8 @@ import { useCopyButton } from '../../components/useCopyButton/useCopyButton';
 import { expiryDate } from '../../utilities/expiryDate';
 
 import { Explainer } from '../../components/Explainer/Explainer';
-import { Expandable } from '../../components/Expandable/Expandable';
+import { LinkBack } from '../../components/LinkBack/LinkBack';
+import { Spinner } from '../../components/Spinner/Spinner';
 import { AttestationProcess } from '../../components/AttestationProcess/AttestationProcess';
 
 import { confirmTwitter } from '../../../backend/twitter/confirmTwitterApi';
@@ -15,6 +17,7 @@ import { attestTwitter } from '../../../backend/twitter/attestationTwitterApi';
 import { quoteTwitter } from '../../../backend/twitter/quoteTwitterApi';
 import { requestAttestationTwitter } from '../../../backend/twitter/requestAttestationTwitterApi';
 
+import * as flowStyles from '../../components/CredentialFlow/CredentialFlow.module.css';
 import * as styles from './Twitter.module.css';
 
 type AttestationStatus =
@@ -110,8 +113,15 @@ export function Twitter({ session }: Props): JSX.Element {
   }, [backupMessage, session]);
 
   return (
-    // TODO: labels change depending on attestation status
-    <Expandable path="/twitter" label="Twitter Account" processing={processing}>
+    <section
+      className={cx(flowStyles.container, {
+        [flowStyles.processing]: processing,
+      })}
+    >
+      {processing && <Spinner />}
+
+      <h1 className={flowStyles.heading}>Twitter Account Verification</h1>
+
       <Explainer>
         After entering your Twitter handle, please choose an identity in your
         wallet to associate with your Twitter credential. We will prompt you to
@@ -119,10 +129,10 @@ export function Twitter({ session }: Props): JSX.Element {
       </Explainer>
       <section>
         {status === 'none' && (
-          <form className={styles.form} onSubmit={handleSubmit}>
-            <label className={styles.formLabel}>
+          <form onSubmit={handleSubmit}>
+            <label>
               Your Twitter handle
-              <div className={styles.twitterInputContainer}>
+              <span className={styles.twitterInputContainer}>
                 <input
                   className={styles.twitterInput}
                   onInput={handleInput}
@@ -130,12 +140,12 @@ export function Twitter({ session }: Props): JSX.Element {
                   name="twitterHandle"
                   required
                 />
-              </div>
+              </span>
             </label>
-            <p className={styles.subline}>Validity: one year ({expiryDate})</p>
+            <p>Validity: one year ({expiryDate})</p>
             <button
               type="submit"
-              className={styles.chooseIdentity}
+              className={flowStyles.ctaButton}
               disabled={!twitterHandle}
             >
               Continue in wallet
@@ -171,9 +181,9 @@ export function Twitter({ session }: Props): JSX.Element {
                   </button>
                 )}
               </p>
-              <p className={styles.ctaLine}>
+              <p className={flowStyles.ctaLine}>
                 <a
-                  className={styles.cta}
+                  className={flowStyles.ctaLink}
                   href="https://twitter.com/"
                   target="_blank"
                   rel="noreferrer noopener"
@@ -202,15 +212,13 @@ export function Twitter({ session }: Props): JSX.Element {
               status="Credential is ready"
               subline="We recommend that you back up your credential now."
             />
-            <p className={styles.ctaLine}>
-              <button
-                className={styles.cta}
-                type="button"
-                onClick={handleBackup}
-              >
-                Back up credential
-              </button>
-            </p>
+            <button
+              className={flowStyles.ctaButton}
+              type="button"
+              onClick={handleBackup}
+            >
+              Back up credential
+            </button>
           </Fragment>
         )}
 
@@ -222,6 +230,8 @@ export function Twitter({ session }: Props): JSX.Element {
           />
         )}
       </section>
-    </Expandable>
+
+      <LinkBack />
+    </section>
   );
 }
