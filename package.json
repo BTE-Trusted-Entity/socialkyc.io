@@ -18,7 +18,7 @@
     "dev-start": "echo '{\"type\":\"commonjs\"}' > dist/package.json && supervisor --watch dist/backend/ dist/backend/server.js"
   },
   "dependencies": {
-    "@aws-sdk/client-ses": "^3.42.0",
+    "@aws-sdk/client-ses": "^3.43.0",
     "@hapi/basic": "^6.0.0",
     "@hapi/boom": "^9.1.4",
     "@hapi/hapi": "^20.2.1",
