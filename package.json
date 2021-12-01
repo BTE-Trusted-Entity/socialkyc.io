@@ -54,7 +54,7 @@
   "devDependencies": {
     "@babel/core": "^7.16.0",
     "@babel/preset-env": "^7.16.4",
-    "@jest/globals": "^27.4.1",
+    "@jest/globals": "^27.4.2",
     "@types/hapi-pino": "^8.0.4",
     "@types/hapi__basic": "^5.1.2",
     "@types/hapi__boom": "^9.0.1",
