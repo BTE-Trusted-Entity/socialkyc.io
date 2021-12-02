@@ -1,5 +1,5 @@
 import { ReactNode } from 'react';
-import { Link, Route, useRouteMatch } from 'react-router-dom';
+import { Link, Route, useMatch } from 'react-router-dom';
 import cx from 'classnames';
 
 import * as styles from './Expandable.module.css';
@@ -17,7 +17,7 @@ export function Expandable({
   processing,
   children,
 }: Props): JSX.Element {
-  const expanded = Boolean(useRouteMatch(path));
+  const expanded = Boolean(useMatch(path));
 
   return (
     <li className={styles.container}>

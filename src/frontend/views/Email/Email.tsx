@@ -1,5 +1,5 @@
 import { Fragment, useCallback, useEffect, useState } from 'react';
-import { Prompt, useRouteMatch } from 'react-router-dom';
+import { Prompt, useMatch } from 'react-router-dom';
 
 import { Session } from '../../utilities/session';
 import { usePreventNavigation } from '../../utilities/usePreventNavigation';
@@ -33,9 +33,8 @@ export function Email({ session }: Props): JSX.Element {
   const [processing, setProcessing] = useState(false);
   usePreventNavigation(processing);
 
-  const secret = (
-    useRouteMatch('/email/:secret')?.params as { secret?: string }
-  )?.secret;
+  const secret = (useMatch('/email/:secret')?.params as { secret?: string })
+    ?.secret;
 
   // TODO: only set to attesting after confirming with backend that this is a valid secret
   const initialStatus = secret ? 'attesting' : undefined;
