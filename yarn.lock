@@ -3101,14 +3101,14 @@
   dependencies:
     "@types/node" "*"
 
-"@types/hapi-pino@^8.0.4":
-  version "8.0.4"
-  resolved "https://registry.yarnpkg.com/@types/hapi-pino/-/hapi-pino-8.0.4.tgz#ca06c14d52bc4a1c3f0ed365c273d92e8074d62e"
-  integrity sha512-wgPpfYI2OdZQIrKDALl9ko5jeSWwRkNc6Yh+EjGkmi2CZTFMRgbu2SOoNDqsqKr62Qzkt6O9XVKZ008gFOKqGg==
+"@types/hapi-pino@^8.0.5":
+  version "8.0.5"
+  resolved "https://registry.yarnpkg.com/@types/hapi-pino/-/hapi-pino-8.0.5.tgz#f44e3b751731d0422bab10d1546917ce05a2a221"
+  integrity sha512-dzsOkVmzb2O547YOG496SoZEPLKyr9AP6LFSixGMYUHFg1ZvkIQLGWiOOEFnL3XBy3GA0MFr3GFqJB3Uf5mouw==
   dependencies:
     "@types/hapi__hapi" "*"
     "@types/node" "*"
-    "@types/pino" "*"
+    "@types/pino" "6.3"
 
 "@types/hapi__basic@^5.1.2":
   version "5.1.2"
@@ -3259,7 +3259,32 @@
   resolved "https://registry.yarnpkg.com/@types/parse-json/-/parse-json-4.0.0.tgz#2f8bb441434d163b35fb8ffdccd7138927ffb8c0"
   integrity sha512-//oorEZjL6sbPcKUaCdIGlIUeH26mgzimjBB77G6XRgnDl/L5wOnpyBGRe/Mmf5CVW3PwEBE1NjiMZ/ssFh4wA==
 
-"@types/pino@*", "@types/pino@^7.0.5":
+"@types/pino-pretty@*":
+  version "4.7.3"
+  resolved "https://registry.yarnpkg.com/@types/pino-pretty/-/pino-pretty-4.7.3.tgz#4e59ceb28c08634d962ea2f46af0c083fbc20a64"
+  integrity sha512-Up2guG601DADD1xr4o3WSibPLpVgNVXGrdFg3Kl+RaS8Ym3XvlT8UV9/IH+8Mk4ykNAAOemQ4QkfDZKCjgYszA==
+  dependencies:
+    "@types/node" "*"
+    "@types/pino" "6.3"
+
+"@types/pino-std-serializers@*":
+  version "2.4.1"
+  resolved "https://registry.yarnpkg.com/@types/pino-std-serializers/-/pino-std-serializers-2.4.1.tgz#f8bd52a209c8b3c97d1533b1ba27f57c816382bf"
+  integrity sha512-17XcksO47M24IVTVKPeAByWUd3Oez7EbIjXpSbzMPhXVzgjGtrOa49gKBwxH9hb8dKv58OelsWQ+A1G1l9S3wQ==
+  dependencies:
+    "@types/node" "*"
+
+"@types/pino@6.3":
+  version "6.3.12"
+  resolved "https://registry.yarnpkg.com/@types/pino/-/pino-6.3.12.tgz#4425db6ced806109c3df957100cba9dfcd73c228"
+  integrity sha512-dsLRTq8/4UtVSpJgl9aeqHvbh6pzdmjYD3C092SYgLD2TyoCqHpTJk6vp8DvCTGGc7iowZ2MoiYiVUUCcu7muw==
+  dependencies:
+    "@types/node" "*"
+    "@types/pino-pretty" "*"
+    "@types/pino-std-serializers" "*"
+    sonic-boom "^2.1.0"
+
+"@types/pino@^7.0.5":
   version "7.0.5"
   resolved "https://registry.yarnpkg.com/@types/pino/-/pino-7.0.5.tgz#1c84a81b924a6a9e263dbb581dffdbad7a3c60c4"
   integrity sha512-wKoab31pknvILkxAF8ss+v9iNyhw5Iu/0jLtRkUD74cNfOOLJNnqfFKAv0r7wVaTQxRZtWrMpGfShwwBjOcgcg==
@@ -9210,6 +9235,13 @@ sodium-native@^3.2.0:
   dependencies:
     ini "^1.3.5"
     node-gyp-build "^4.2.0"
+
+sonic-boom@^2.1.0:
+  version "2.4.1"
+  resolved "https://registry.yarnpkg.com/sonic-boom/-/sonic-boom-2.4.1.tgz#6e1c3762c677425c6ffbd7bd106c4f8258b45b39"
+  integrity sha512-WgtVLfGl347/zS1oTuLaOAvVD5zijgjphAJHgbbnBJGgexnr+C1ULSj0j7ftoGxpuxR4PaV635NkwFemG8m/5w==
+  dependencies:
+    atomic-sleep "^1.0.0"
 
 sonic-boom@^2.2.0, sonic-boom@^2.2.1:
   version "2.3.1"
