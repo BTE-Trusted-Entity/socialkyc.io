@@ -11,7 +11,7 @@ body {
 body {
   background:
     url('../components/Branding/logo.svg') no-repeat calc(50% - 207px / 2 - 1.5rem) 2rem,
-    url('../images/background-dark.svg') no-repeat fixed center/cover;
+    #190027 url('../images/background-dark.svg') no-repeat fixed center/cover;
   padding-top: 8rem;
   scrollbar-width: thin;
   scrollbar-color: var(--color-magenta) rgb(var(--color-magenta-rgb) / 50%);
@@ -109,22 +109,19 @@ p {
   padding-left: 7em;
 }
 
-footer {
+.navList {
   position: fixed;
   bottom: 0;
   height: 2.5rem;
   width: 100%;
   display: flex;
-  flex-direction: column;
   justify-content: center;
   align-items: center;
   background-color: #030006;
-}
-
-.navList {
   list-style: none;
   padding: 0;
   margin: 0;
+  gap: 0.25rem;
 }
 
 .navItem {
@@ -132,9 +129,28 @@ footer {
   cursor: pointer;
 }
 
-.navItem:first-child::after {
+.navItem:first-child,
+.navItem:last-child {
+  margin-left: auto;
+}
+
+.navItem:last-child {
+  margin-right: 1rem;
+}
+
+.navItem:not(:nth-child(n+4))::after {
   content: ' | ';
   color: var(--color-magenta);
+}
+
+.navItem a,
+.navItem a:active,
+.navItem a:visited {
+  color: inherit;
+}
+
+.navItem a:not(:hover) {
+  text-decoration: none;
 }
 
 ::-webkit-scrollbar {
