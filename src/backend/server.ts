@@ -51,7 +51,7 @@ const noWww = {
   plugin: gate,
   options: {
     https: isProduction,
-    www: false,
+    nonwww: true,
   },
 };
 
