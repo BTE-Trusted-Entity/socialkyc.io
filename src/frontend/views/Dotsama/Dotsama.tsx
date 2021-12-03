@@ -117,6 +117,7 @@ export function Dotsama({ session }: Props): JSX.Element {
               type="text"
               name="name"
               required
+              maxLength={100}
             />
           </label>
 

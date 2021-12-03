@@ -139,6 +139,7 @@ export function Twitter({ session }: Props): JSX.Element {
                   type="text"
                   name="twitterHandle"
                   required
+                  maxLength={100}
                 />
               </span>
             </label>
