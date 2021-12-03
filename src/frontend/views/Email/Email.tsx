@@ -132,6 +132,7 @@ export function Email({ session }: Props): JSX.Element {
               type="email"
               name="email"
               required
+              maxLength={100}
             />
           </label>
 
