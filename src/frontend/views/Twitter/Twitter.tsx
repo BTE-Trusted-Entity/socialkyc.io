@@ -120,7 +120,7 @@ export function Twitter({ session }: Props): JSX.Element {
     >
       {processing && <Spinner />}
 
-      <h1 className={flowStyles.heading}>Twitter Account Verification</h1>
+      <h1 className={flowStyles.heading}>Twitter Account Attestation</h1>
 
       <Explainer>
         After entering your Twitter handle, please choose an identity in your

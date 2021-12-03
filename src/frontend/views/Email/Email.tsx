@@ -109,7 +109,7 @@ export function Email({ session }: Props): JSX.Element {
     >
       {processing && <Spinner />}
 
-      <h1 className={flowStyles.heading}>Email Address Verification</h1>
+      <h1 className={flowStyles.heading}>Email Address Attestation</h1>
 
       <Prompt
         when={status === 'attesting' || processing}

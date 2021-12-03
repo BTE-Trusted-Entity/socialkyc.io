@@ -97,7 +97,7 @@ export function Dotsama({ session }: Props): JSX.Element {
     >
       {processing && <Spinner />}
 
-      <h1 className={flowStyles.heading}>Dotsama Name Verification</h1>
+      <h1 className={flowStyles.heading}>Dotsama Name Attestation</h1>
 
       <Explainer>
         After entering your desired Dotsama name, please choose an identity in
