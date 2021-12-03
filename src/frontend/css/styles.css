@@ -47,7 +47,7 @@ p {
 
 .leftContainer {
   box-sizing: border-box;
-  height: calc(100vh - 8rem);
+  min-height: calc(100vh - 8rem);
   border-radius: 0.625rem;
   background:
     linear-gradient(
