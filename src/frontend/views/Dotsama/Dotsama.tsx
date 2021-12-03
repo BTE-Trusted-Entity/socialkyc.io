@@ -36,9 +36,7 @@ export function Dotsama({ session }: Props): JSX.Element {
 
   usePreventNavigation(processing || showSpinner);
 
-  const [backupMessage, setBackupMessage] = useState<
-    IEncryptedMessage | undefined
-  >();
+  const [backupMessage, setBackupMessage] = useState<IEncryptedMessage>();
 
   const handleSubmit = useCallback(
     async (event) => {
