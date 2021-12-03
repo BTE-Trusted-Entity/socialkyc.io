@@ -35,7 +35,7 @@ async function handler(
 
   try {
     const claimContents = {
-      Email: email,
+      Email: email.trim(),
     };
     const claim = Claim.fromCTypeAndClaimContents(
       emailCType,
