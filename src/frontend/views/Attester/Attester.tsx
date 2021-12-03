@@ -47,7 +47,7 @@ function useHasSporran(): HasSporran {
 function Welcome() {
   return (
     <Fragment>
-      <h1 className={styles.heading}>Your IDENTITY, back in your hands!</h1>
+      <h1 className={styles.heading}>Your Identity, back in your hands!</h1>
 
       <p>
         Create your decentralized social credentials here. Your personal data
