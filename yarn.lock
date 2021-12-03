@@ -5795,6 +5795,11 @@ hapi-dev-errors@^4.0.0:
     youch "~2.0.10"
     youch-terminal "~1.0.0"
 
+hapi-gate@^2.1.0:
+  version "2.1.0"
+  resolved "https://registry.yarnpkg.com/hapi-gate/-/hapi-gate-2.1.0.tgz#503211813c9e4491bace3f09e96d43e3bdea8d52"
+  integrity sha512-GFQixKhAkaduwLHSya3DaZw2MhPYhywqVB5qXZ10AEPtctEtI1qQk1sywTFjnM+rNS1mFZ1DZhbi+krItQIzQw==
+
 hapi-pino@^9.0.0:
   version "9.0.0"
   resolved "https://registry.yarnpkg.com/hapi-pino/-/hapi-pino-9.0.0.tgz#b6fd305c2d23d123427698283667eb110c7f7ea9"

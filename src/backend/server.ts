@@ -1,6 +1,7 @@
 import Hapi from '@hapi/hapi';
 import inert from '@hapi/inert';
 import pino from 'hapi-pino';
+import gate from 'hapi-gate';
 import exiting from 'exiting';
 
 import { configuration } from './utilities/configuration';
@@ -46,6 +47,14 @@ const server = Hapi.server({
 });
 const manager = exiting.createManager(server);
 
+const noWww = {
+  plugin: gate,
+  options: {
+    https: isProduction,
+    www: false,
+  },
+};
+
 const logger = {
   plugin: pino,
   options: {
@@ -58,6 +67,7 @@ const logger = {
 };
 
 (async () => {
+  await server.register(noWww);
   await server.register(inert);
   await server.register(logger);
   await configureAuthentication(server);
