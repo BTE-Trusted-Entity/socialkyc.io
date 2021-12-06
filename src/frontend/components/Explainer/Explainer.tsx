@@ -25,9 +25,9 @@ export function Explainer({ children }: Props): JSX.Element {
       <button
         type="button"
         aria-label="Toggle explanation"
-        className={styles.toggleExplainer}
+        className={showExplainer ? styles.hideExplainer : styles.showExplainer}
         onClick={handleToggleExplainer}
-      ></button>
+      />
       {showExplainer && <p className={styles.explainer}>{children}</p>}
     </div>
   );

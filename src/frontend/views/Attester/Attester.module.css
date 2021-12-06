@@ -1,92 +1,46 @@
-.leftContainer {
-  box-sizing: border-box;
-  display: flex;
-  flex-direction: column;
-  height: 80%;
-  width: 93%;
-  border-radius: 0.625rem;
-  background:
-    linear-gradient(
-      180deg,
-      rgb(var(--color-white-rgb) / 10%) 0%,
-      rgb(var(--color-black-rgb) / 12%) 100%
-    ),
-    rgb(32 1 49 / 60%);
-  padding-bottom: 2.5rem;
-  box-shadow:
-    -2px -2px 9px 0 rgb(var(--color-white-rgb) / 20%),
-    2px 2px 9px 0 rgb(var(--color-black-rgb) / 20%);
-}
-
 .heading {
+  font-weight: normal;
   font-size: 1rem;
-  margin: 3.5rem 0 1rem 3rem;
+  margin: 0;
 }
 
-.scrollContainer {
-  height: 86%;
-  padding: 0 4rem 0 3rem;
-  overflow-y: scroll;
-  scrollbar-width: thin;
-  scrollbar-color: var(--color-magenta) rgb(var(--color-magenta-rgb) / 50%);
-  position: relative;
-}
-
-.scrollContainer::-webkit-scrollbar {
-  display: block;
-  width: 0.625rem;
-}
-
-.scrollContainer::-webkit-scrollbar-track {
-  background: rgb(var(--color-magenta-rgb) / 50%);
-}
-
-.scrollContainer::-webkit-scrollbar-thumb {
-  background: var(--color-magenta);
-  border-radius: 0.375rem;
-}
-
-.info {
-  margin-bottom: 3rem;
-}
-
-.lists {
-  padding-left: 0.75rem;
-  padding-bottom: 2rem;
-}
-
-.subline {
-  font-size: 0.875rem;
-  margin-bottom: 1.25rem;
-}
-
-.mediaList {
+.credentials {
   list-style: none;
-  width: 100%;
   padding: 0;
-  margin: 0;
 }
 
-.expandableItem {
-  composes: expandableItem from '../../components/Expandable/Expandable.module.css';
+.credential {
+  --credential-logo: '';
+
+  display: block;
+  margin-block: 0.5rem;
+  height: 2.5rem;
+  line-height: 2.5rem;
+  padding-left: 2.75rem;
+  background:
+    var(--credential-logo) no-repeat left top 40%/2rem,
+    url('chevron-right.svg') no-repeat left 2rem top 45%/0.875rem;
+  text-decoration: none;
+  color: inherit;
+  font-size: 1rem;
 }
 
-.expanded {
-  composes: expanded from '../../components/Expandable/Expandable.module.css';
+.twitter {
+  composes: credential;
+
+  --credential-logo: url('twitter.svg');
 }
 
-.itemLabel {
-  display: inline-flex;
-  align-items: center;
-  margin: 0;
+.email {
+  composes: credential;
+
+  --credential-logo: url('email.svg');
 }
 
-.accordion {
-  composes: accordion from '../../components/Accordion/Accordion.module.css';
-}
+.dotsama {
+  composes: credential;
 
-.closed {
-  composes: closed from '../../components/Accordion/Accordion.module.css';
+  --credential-logo: url('dotsama.svg');
 }
 
 .buttonPrimary {
@@ -94,20 +48,13 @@
 }
 
 .install {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  padding-bottom: 9rem;
-  margin-bottom: 1rem;
-  background: url('../../components/Branding/sporran-logo.svg') no-repeat bottom;
-}
-
-.warning {
-  font-size: 0.875rem;
+  margin-top: 2rem;
+  padding-top: 4rem;
+  background:
+    url('../../images/exclamation.svg') no-repeat top,
+    url('../../components/Branding/sporran-logo.svg') no-repeat bottom;
+  padding-bottom: 7rem;
   text-align: center;
-  padding-top: 5.5rem;
-  margin: 0;
-  background: url('../../images/exclamation.svg') no-repeat top;
 }
 
 .textLink {
@@ -120,11 +67,9 @@
 }
 
 .webstore {
-  composes: button from '../../components/Button/Button.module.css';
-  display: inline-block;
+  display: block;
   height: 3rem;
-  width: 11rem;
-  margin-top: 2rem;
+  margin-bottom: 1rem;
 }
 
 .chrome {
@@ -138,24 +83,15 @@
 }
 
 .connectContainer {
-  height: 40%;
-  width: 100%;
+  margin-top: 3rem;
   position: relative;
 }
 
 .connect {
   height: 100%;
-  width: 100%;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
+  text-align: center;
 }
 
 .processing {
-  filter: blur(5px);
-}
-
-.spinner {
-  composes: spinner from '../../components/Spinner/Spinner.module.css';
+  composes: processing from '../../components/processing/processing.module.css';
 }

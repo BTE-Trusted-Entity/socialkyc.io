@@ -1,18 +1,22 @@
 import { Fragment, useCallback, useEffect, useState } from 'react';
 import { Prompt, useRouteMatch } from 'react-router-dom';
+import cx from 'classnames';
 
 import { Session } from '../../utilities/session';
 import { usePreventNavigation } from '../../utilities/usePreventNavigation';
 import { expiryDate } from '../../utilities/expiryDate';
 
-import { Expandable } from '../../components/Expandable/Expandable';
+import { LinkBack } from '../../components/LinkBack/LinkBack';
+import { Spinner } from '../../components/Spinner/Spinner';
 import { Explainer } from '../../components/Explainer/Explainer';
 import { AttestationProcess } from '../../components/AttestationProcess/AttestationProcess';
 
 import { useAttestEmail } from '../../../backend/email/attestationEmailApi';
 import { quoteEmail } from '../../../backend/email/quoteEmailApi';
 import { requestAttestationEmail } from '../../../backend/email/sendEmailApi';
+import { paths } from '../../paths';
 
+import * as flowStyles from '../../components/CredentialFlow/CredentialFlow.module.css';
 import * as styles from './Email.module.css';
 
 type AttestationStatus = 'requested' | 'attesting' | 'ready' | 'error';
@@ -34,7 +38,7 @@ export function Email({ session }: Props): JSX.Element {
   usePreventNavigation(processing);
 
   const secret = (
-    useRouteMatch('/email/:secret')?.params as { secret?: string }
+    useRouteMatch(paths.emailConfirmation)?.params as { secret?: string }
   )?.secret;
 
   // TODO: only set to attesting after confirming with backend that this is a valid secret
@@ -98,8 +102,15 @@ export function Email({ session }: Props): JSX.Element {
   }, [data, session]);
 
   return (
-    // TODO: label changes depending on attestatio status
-    <Expandable path="/email" label="Email Address" processing={processing}>
+    <section
+      className={cx(flowStyles.container, {
+        [flowStyles.processing]: processing,
+      })}
+    >
+      {processing && <Spinner />}
+
+      <h1 className={flowStyles.heading}>Email Address Attestation</h1>
+
       <Prompt
         when={status === 'attesting' || processing}
         message="The email attestation process has already started. Are you sure you want to leave?"
@@ -112,8 +123,8 @@ export function Email({ session }: Props): JSX.Element {
       </Explainer>
 
       {!status && (
-        <form className={styles.form} onSubmit={handleSubmit}>
-          <label className={styles.formLabel}>
+        <form onSubmit={handleSubmit}>
+          <label>
             Your email address
             <input
               className={styles.formInput}
@@ -121,14 +132,15 @@ export function Email({ session }: Props): JSX.Element {
               type="email"
               name="email"
               required
+              maxLength={100}
             />
           </label>
 
-          <p className={styles.expiry}>Validity: one year ({expiryDate})</p>
+          <p>Validity: one year ({expiryDate})</p>
 
           <button
             type="submit"
-            className={styles.chooseIdentity}
+            className={flowStyles.ctaButton}
             disabled={!emailInput}
           >
             Continue in wallet
@@ -164,7 +176,7 @@ export function Email({ session }: Props): JSX.Element {
           />
 
           <button
-            className={styles.backup}
+            className={flowStyles.ctaButton}
             type="button"
             onClick={handleBackup}
           >
@@ -180,6 +192,8 @@ export function Email({ session }: Props): JSX.Element {
           error="Oops, there was an error."
         />
       )}
-    </Expandable>
+
+      <LinkBack />
+    </section>
   );
 }

@@ -35,7 +35,7 @@ async function handler(
 
   try {
     const claimContents = {
-      Name: name,
+      Name: name.trim(),
     };
     const claim = Claim.fromCTypeAndClaimContents(
       dotsamaCType,

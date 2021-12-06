@@ -1,10 +1,11 @@
 @font-face {
-  font-family: 'Overpass Semibold';
-  src: url('Overpass-SemiBold.ttf');
+  font-family: 'Overpass Regular';
+  src: url('Overpass-Regular.ttf');
 }
 
 :root {
-  font-family: 'Overpass Semibold', Arial, sans-serif;
+  font-family: 'Overpass Regular', Arial, sans-serif;
   font-size: 16px;
+  letter-spacing: 0.1px;
   color: var(--color-white);
 }

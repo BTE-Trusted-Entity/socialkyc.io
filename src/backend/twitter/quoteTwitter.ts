@@ -35,7 +35,7 @@ async function handler(
 
   try {
     const claimContents = {
-      Twitter: payload.username,
+      Twitter: payload.username.trim(),
     };
     const claim = Claim.fromCTypeAndClaimContents(
       twitterCType,

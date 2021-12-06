@@ -24,7 +24,7 @@ export function useAttestEmail(
   data?: Output;
   error?: boolean;
 } {
-  const [data, setData] = useState<Output | undefined>();
+  const [data, setData] = useState<Output>();
   const [error, setError] = useState(false);
 
   useEffect(() => {
