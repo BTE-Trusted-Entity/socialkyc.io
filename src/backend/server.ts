@@ -50,7 +50,7 @@ const manager = exiting.createManager(server);
 const noWww = {
   plugin: gate,
   options: {
-    https: isProduction,
+    https: false,
     nonwww: true,
   },
 };
