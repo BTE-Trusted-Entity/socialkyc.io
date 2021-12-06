@@ -41,8 +41,7 @@ const { isProduction, port } = configuration;
 
 const server = Hapi.server({
   port,
-  host: 'localhost',
-  address: '127.0.0.1',
+  host: '0.0.0.0',
   debug: isProduction ? false : undefined,
   routes: { security: true },
 });
