@@ -9865,10 +9865,10 @@ tweetnacl@^0.14.3, tweetnacl@~0.14.0:
   resolved "https://registry.yarnpkg.com/tweetnacl/-/tweetnacl-0.14.5.tgz#5ae68177f192d4456269d108afa93ff8743f4f64"
   integrity sha1-WuaBd/GS1EViadEIr6k/+HQ/T2Q=
 
-twitter-api-v2@^1.7.0:
-  version "1.7.0"
-  resolved "https://registry.yarnpkg.com/twitter-api-v2/-/twitter-api-v2-1.7.0.tgz#3d069a6223124d6e478f90f5c6f30b8e7e3945c5"
-  integrity sha512-FxP2Yr9/U4G9Qj0WEay23Bf+RGQ1lnJCCm+nhmVJOkMJSi4Gr0OQzwezhD10sdBR8YDPxssFE25oqydQDh+nig==
+twitter-api-v2@^1.7.1:
+  version "1.7.1"
+  resolved "https://registry.yarnpkg.com/twitter-api-v2/-/twitter-api-v2-1.7.1.tgz#49ea0844e1775e13803fd835c6137fd54e47f1e3"
+  integrity sha512-/3W6gBpF0Qt4n3CLyTJCBm9TttTBpVYbqi23T2LvMZBt06tb/3kP2mAWogbRD5xiEczL14l0+qcY1zxpXm1DJg==
 
 type-check@^0.4.0, type-check@~0.4.0:
   version "0.4.0"
