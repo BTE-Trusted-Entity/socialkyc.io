@@ -1,8 +1,14 @@
+.heading {
+  composes: heading from '../../components/CredentialFlow/CredentialFlow.module.css';
+  background-image: url('../Attester/twitter.svg');
+}
+
 .twitterInputContainer {
   composes: input from '../../components/Input/Input.module.css';
   display: flex;
   align-items: center;
   width: auto;
+  margin-top: 0.5rem;
 }
 
 .twitterInputContainer::before {

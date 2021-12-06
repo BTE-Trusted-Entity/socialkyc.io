@@ -16,6 +16,7 @@ body {
   scrollbar-width: thin;
   scrollbar-color: var(--color-magenta) rgb(var(--color-magenta-rgb) / 50%);
   font-size: 0.875rem;
+  line-height: 1.125rem;
 }
 
 p {
@@ -56,7 +57,7 @@ p {
       rgb(var(--color-black-rgb) / 12%) 100%
     ),
     rgb(32 1 49 / 60%);
-  padding: 3rem;
+  padding: 2rem;
   box-shadow:
     -2px -2px 9px 0 rgb(var(--color-white-rgb) / 20%),
     2px 2px 9px 0 rgb(var(--color-black-rgb) / 20%);
