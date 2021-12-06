@@ -77,11 +77,11 @@ export async function listenForTweets(): Promise<void> {
   await client.v1.user({ screen_name });
 
   // do not await, it runs forever
-  onTweet(({ user: { name }, full_text }) => {
-    if (!(name in tweetsListeners)) {
+  onTweet(({ user: { screen_name }, full_text }) => {
+    if (!(screen_name in tweetsListeners)) {
       return;
     }
-    const [secret, { resolve }] = tweetsListeners[name];
+    const [secret, { resolve }] = tweetsListeners[screen_name];
     if (full_text?.includes(secret)) {
       logger.debug('Tweet includes the secret!');
       resolve();
