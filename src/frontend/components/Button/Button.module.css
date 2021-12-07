@@ -1,12 +1,13 @@
 .button {
   border: none;
   cursor: pointer;
+  font-family: inherit;
 }
 
 .buttonPrimary {
   composes: button;
   height: 2rem;
-  padding: 0 1.75rem;
+  padding: 0 3rem;
   align-self: center;
   display: inline-flex;
   justify-content: center;
@@ -28,4 +29,5 @@
 
 .buttonPrimary:disabled {
   background-color: var(--color-grey);
+  color: rgb(var(--color-white-rgb) / 50%);
 }

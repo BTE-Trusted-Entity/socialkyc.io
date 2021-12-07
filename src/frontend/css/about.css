@@ -9,6 +9,7 @@ html {
   flex-direction: row;
   justify-content: flex-end;
   align-items: center;
+  margin-bottom: 0.25rem;
 }
 
 .leftContainer section {
@@ -18,7 +19,7 @@ html {
 
 .leftContainer h1,
 .leftContainer h2 {
-  margin: 0 auto 0.25rem 0;
+  margin: 0 auto 0 0;
   font-size: 1rem;
   font-weight: normal;
 }
@@ -29,9 +30,9 @@ html {
   color: inherit;
   text-decoration: none;
   font-size: 0.625rem;
-  margin-left: 0.25rem;
-  padding-left: 0.75rem;
-  background: url('../images/chevron-down.svg') no-repeat left top/0.75rem;
+  margin-left: 0.5rem;
+  padding-left: 0.5rem;
+  background: url('../images/chevron-down.svg') no-repeat left 45%/0.375rem 0.25rem;
 }
 
 figure {

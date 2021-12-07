@@ -1,3 +1,8 @@
+.heading {
+  composes: heading from '../../components/CredentialFlow/CredentialFlow.module.css';
+  background-image: url('../Attester/dotsama.svg');
+}
+
 .nameInput {
   composes: input from '../../components/Input/Input.module.css';
 }
