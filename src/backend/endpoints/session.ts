@@ -20,6 +20,9 @@ import { getSession, setSession } from '../utilities/sessionStorage';
 import { paths } from './paths';
 
 const zodPayload = z.object({
+  // I think that the payload should have a key ID instead of an identity, so that a user can specify which encryption key they want to use for the communication.
+  // Having only the identity means then calling senderDetails.getKeys(KeyRelationship.keyAgreement).pop(), which means always using the same encryption key.
+  // The resolver resolveKey(keyId) can be used for this purpose. Utils functions also allow to get the DID from a keyID.
   identity: z.string(),
   encryptedChallenge: z.string(),
   nonce: z.string(),

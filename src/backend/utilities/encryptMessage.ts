@@ -22,6 +22,7 @@ export async function encryptMessage(
 
   const { details: receiver } = didDocument;
 
+  // Same here, do we want to always take the first key?
   const receiverEncryptionKey = receiver
     .getKeys(KeyRelationship.keyAgreement)
     .pop();

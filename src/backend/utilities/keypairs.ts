@@ -27,6 +27,7 @@ export const keypairsPromise = (async () => {
   const keyAgreement = naclBoxKeypairFromSecret(
     identity
       .derive('//did//keyAgreement//0')
+      // I forgot, what was the though behind this operation?
       .encryptMessage(
         new Uint8Array(24).fill(0),
         new Uint8Array(24).fill(0),

@@ -13,6 +13,7 @@ async function handler(
 ): Promise<ResponseObject> {
   const { logger } = request;
   logger.debug('DID configuration started');
+  // The self-signed credential seems to always be the same for every request, can it be generated only once and then cached?
   const didConfigResource = await didConfigResourcePromise;
 
   logger.debug('DID configuration started');

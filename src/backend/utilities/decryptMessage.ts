@@ -18,6 +18,7 @@ export async function decryptMessage(
   const { senderKeyId } = encrypted;
   const { did } = DidUtils.parseDidUrl(senderKeyId);
 
+  // I think also here we could resolve the key directly with the resolver, without parsing all the DID details.
   const didDocument = await DefaultResolver.resolveDoc(did);
   if (!didDocument) {
     throw new Error(`Cannot resolve the sender DID of key ${senderKeyId}`);
