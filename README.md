@@ -1,2 +1,4 @@
-# Web3-socialKYC-Demo
-Web3 socialKYC demo
+# SocialKYC
+
+The source code of https://socialkyc.io
+
