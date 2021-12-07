@@ -139,7 +139,7 @@ p {
   margin-right: 1rem;
 }
 
-.navItem:not(:nth-child(n+4))::after {
+.navItem:not(:nth-child(n+3))::after {
   content: ' | ';
   color: var(--color-magenta);
 }
