@@ -32,7 +32,7 @@ if (did === 'pending' && !storeDidAndCTypes) {
 
 const backupPhrase = env.SECRET_BACKUP_PHRASE;
 if (!backupPhrase) {
-  throw new Error('No DID or no backup phrase provided');
+  throw new Error('No backup phrase provided');
 }
 
 const blockchainEndpoint = env.BLOCKCHAIN_ENDPOINT;
