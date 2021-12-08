@@ -8,7 +8,6 @@ import { apiWindow, getSession, Session } from '../../utilities/session';
 import { Spinner } from '../../components/Spinner/Spinner';
 import { Email } from '../Email/Email';
 import { Twitter } from '../Twitter/Twitter';
-import { Dotsama } from '../Dotsama/Dotsama';
 import { paths } from '../../paths';
 
 import * as styles from './Attester.module.css';
@@ -136,11 +135,6 @@ function GetCredentials() {
             Email Address
           </Link>
         </li>
-        <li>
-          <Link to={paths.dotsama} className={styles.dotsama}>
-            Dotsama Name
-          </Link>
-        </li>
       </ul>
     </Fragment>
   );
@@ -223,9 +217,6 @@ export function Attester(): JSX.Element {
       </Route>
       <Route path={paths.email}>
         <Email session={session} />
-      </Route>
-      <Route path={paths.dotsama}>
-        <Dotsama session={session} />
       </Route>
       <Route>
         <Welcome />

@@ -19,12 +19,6 @@ export const paths = {
     attest: '/api/twitter/attest',
   },
 
-  dotsama: {
-    quote: '/api/dotsama/quote',
-    requestAttestation: '/api/dotsama/request-attestation',
-    attest: '/api/dotsama/attest',
-  },
-
   verifier: {
     requestCredential: '/api/request-credential',
     verify: '/api/verify',
