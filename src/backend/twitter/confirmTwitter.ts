@@ -39,15 +39,16 @@ async function handler(
   logger.debug('Twitter confirmation found request');
 
   const username = requestForAttestation.claim.contents['Twitter'] as string;
-  if (!tweetsListeners[username]) {
+  const userListeners = tweetsListeners.get(username);
+  if (!userListeners) {
     throw Boom.notFound(`Twitter handle not found: ${username}`);
   }
 
   try {
     logger.debug('Twitter confirmation waiting for tweet');
-    const confirmation = tweetsListeners[username][1];
+    const confirmation = userListeners[1];
     await confirmation.promise;
-    delete tweetsListeners[username];
+    tweetsListeners.delete(username);
     setSession({ ...session, confirmed: true });
 
     return h.response(<Output>undefined);

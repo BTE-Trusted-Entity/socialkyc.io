@@ -67,10 +67,8 @@ async function onTweet(handleTweet: (tweet: TweetV1) => void) {
 }
 
 /** Map of Twitter usernames to the codes and promises waiting for the tweet */
-export const tweetsListeners: Record<
-  string,
-  [string, ControlledPromise<void>]
-> = {};
+export const tweetsListeners: Map<string, [string, ControlledPromise<void>]> =
+  new Map();
 
 export async function listenForTweets(): Promise<void> {
   // ensure we’re authorized to access Twitter API
@@ -78,10 +76,11 @@ export async function listenForTweets(): Promise<void> {
 
   // do not await, it runs forever
   onTweet(({ user: { screen_name }, full_text }) => {
-    if (!(screen_name in tweetsListeners)) {
+    const userListeners = tweetsListeners.get(screen_name);
+    if (!userListeners) {
       return;
     }
-    const [secret, { resolve }] = tweetsListeners[screen_name];
+    const [secret, { resolve }] = userListeners;
     if (full_text?.includes(secret)) {
       logger.debug('Tweet includes the secret!');
       resolve();
