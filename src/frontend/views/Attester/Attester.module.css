@@ -38,12 +38,6 @@
   --credential-logo: url('email.svg');
 }
 
-.dotsama {
-  composes: credential;
-
-  --credential-logo: url('dotsama.svg');
-}
-
 .buttonPrimary {
   composes: buttonPrimary from '../../components/Button/Button.module.css';
 }

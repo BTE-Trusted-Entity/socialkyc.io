@@ -4,7 +4,6 @@ export const credentials: string;
 export const credential: string;
 export const twitter: string;
 export const email: string;
-export const dotsama: string;
 export const buttonPrimary: string;
 export const install: string;
 export const textLink: string;

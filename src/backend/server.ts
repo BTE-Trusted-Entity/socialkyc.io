@@ -23,10 +23,6 @@ import { confirmTwitter } from './twitter/confirmTwitter';
 import { requestTwitter } from './twitter/requestAttestationTwitter';
 import { attestationTwitter } from './twitter/attestationTwitter';
 
-import { quoteDotsama } from './dotsama/quoteDotsama';
-import { requestAttestationDotsama } from './dotsama/requestAttestationDotsama';
-import { attestationDotsama } from './dotsama/attestationDotsama';
-
 import { requestCredential } from './verifier/requestCredential';
 import { verify } from './verifier/verify';
 
@@ -94,10 +90,6 @@ const logger = {
   server.route(confirmTwitter);
   server.route(requestTwitter);
   server.route(attestationTwitter);
-
-  server.route(quoteDotsama);
-  server.route(requestAttestationDotsama);
-  server.route(attestationDotsama);
 
   server.route(requestCredential);
   server.route(verify);

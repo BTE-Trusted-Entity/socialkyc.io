@@ -3,5 +3,4 @@ export const paths = {
   email: '/email',
   emailConfirmation: '/email/:secret',
   twitter: '/twitter',
-  dotsama: '/dotsama',
 };
