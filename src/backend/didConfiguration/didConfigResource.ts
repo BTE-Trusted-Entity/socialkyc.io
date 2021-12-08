@@ -50,6 +50,8 @@ async function attestDomainLinkage() {
 }
 
 export const didConfigResourcePromise = (async () => {
+  await fullDidPromise;
+
   const credential = await attestDomainLinkage();
 
   const domainLinkageCredential = fromCredential(credential);

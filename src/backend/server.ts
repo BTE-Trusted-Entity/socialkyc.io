@@ -4,10 +4,14 @@ import pino from 'hapi-pino';
 import gate from 'hapi-gate';
 import exiting from 'exiting';
 
+import { fullDidPromise } from './utilities/fullDid';
+import { storeTwitterCType } from './twitter/twitterCType';
+import { storeEmailCType } from './email/emailCType';
+import { storeDomainLinkageCType } from './didConfiguration/domainLinkageCType';
+
 import { configuration } from './utilities/configuration';
 import { configureAuthentication } from './utilities/configureAuthentication';
 import { configureDevErrors } from './utilities/configureDevErrors';
-import { fullDidPromise } from './utilities/fullDid';
 
 import { confirmationHtml } from './endpoints/confirmationHtml';
 import { wellKnownDidConfig } from './didConfiguration/wellKnownDidConfig';
@@ -69,6 +73,14 @@ const logger = {
   await configureAuthentication(server);
   await configureDevErrors(server);
   server.logger.info('Server configured');
+
+  if (configuration.storeDidAndCTypes) {
+    await fullDidPromise;
+    await storeDomainLinkageCType();
+    await storeEmailCType();
+    await storeTwitterCType();
+    server.logger.warn('Blockchain objects stored');
+  }
 
   await fullDidPromise;
   server.logger.info('Blockchain connection initialized');
