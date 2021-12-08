@@ -1,4 +1,4 @@
-import { CType } from '@kiltprotocol/core';
+import { CType, CTypeUtils } from '@kiltprotocol/core';
 
 import { signAndSubmit } from '../utilities/signAndSubmit';
 
@@ -17,6 +17,12 @@ export async function storeDomainLinkageCType(): Promise<void> {
     },
     type: 'object',
   });
+
+  if (await CTypeUtils.verifyStored(draft)) {
+    console.log('Domain Linkage CType is already on the blockchain');
+    return;
+  }
+  console.log('Storing Domain Linkage CType on the blockchain');
 
   const tx = await draft.store();
   await signAndSubmit(tx);

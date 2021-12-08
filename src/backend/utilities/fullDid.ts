@@ -9,6 +9,7 @@ import {
   KeyringPair,
   KeyRelationship,
   IDidKeyDetails,
+  IDidDetails,
 } from '@kiltprotocol/types';
 import { Crypto } from '@kiltprotocol/utils';
 import { BlockchainUtils } from '@kiltprotocol/chain-helpers';
@@ -20,7 +21,7 @@ import { authenticationKeystore } from './keystores';
 
 const { authentication, assertionMethod, keyAgreement } = KeyRelationship;
 
-export async function createFullDid(): Promise<void> {
+export async function createFullDid(): Promise<IDidDetails['did']> {
   const keypairs = await keypairsPromise;
   const relationships = {
     [authentication]: keypairs.authentication,
@@ -30,7 +31,7 @@ export async function createFullDid(): Promise<void> {
 
   const { extrinsic, did } = await DidUtils.writeDidFromPublicKeys(
     authenticationKeystore,
-    keypairs.authentication.address,
+    keypairs.identity.address,
     relationships,
   );
 
@@ -39,6 +40,8 @@ export async function createFullDid(): Promise<void> {
   await BlockchainUtils.signAndSubmitTx(extrinsic, keypairs.identity, {
     resolveOn: BlockchainUtils.IS_FINALIZED,
   });
+
+  return did;
 }
 
 async function compareKeys(
@@ -66,6 +69,18 @@ async function compareAllKeys(fullDid: FullDidDetails): Promise<void> {
 
 export const fullDidPromise = (async () => {
   await initKilt();
+
+  if (configuration.storeDidAndCTypes) {
+    if (
+      configuration.did !== 'pending' &&
+      (await DefaultResolver.resolveDoc(configuration.did))
+    ) {
+      console.log('DID is already on the blockchain');
+    } else {
+      console.log('Storing DID on the blockchain');
+      configuration.did = await createFullDid();
+    }
+  }
 
   const didDocument = await DefaultResolver.resolveDoc(configuration.did);
   if (!didDocument) {

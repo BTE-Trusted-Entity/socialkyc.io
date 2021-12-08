@@ -24,11 +24,20 @@ if (!baseUri) {
   throw new Error('No base URI provided');
 }
 
-const did = env.DID;
-const backupPhrase = env.SECRET_BACKUP_PHRASE;
+const did = env.DID || 'pending';
+const storeDidAndCTypes = env.STORE_DID_AND_CTYPES === 'true';
+if (did === 'pending' && !storeDidAndCTypes) {
+  throw new Error('Neither DID nor STORE_DID_AND_CTYPES provided');
+}
 
-if (!did || !backupPhrase) {
-  throw new Error('No DID or no backup phrase provided');
+const backupPhrase = env.SECRET_BACKUP_PHRASE;
+if (!backupPhrase) {
+  throw new Error('No backup phrase provided');
+}
+
+const blockchainEndpoint = env.BLOCKCHAIN_ENDPOINT;
+if (!blockchainEndpoint) {
+  throw new Error('No blockchain endpoint provided');
 }
 
 export const configuration = {
@@ -38,11 +47,12 @@ export const configuration = {
     secretAccessKey,
   },
   port: env.PORT || 3000,
-  blockchainEndpoint: env.BLOCKCHAIN_ENDPOINT || 'wss://peregrine.kilt.io',
+  blockchainEndpoint,
   isProduction: env.NODE_ENV === 'production',
   baseUri,
   distFolder: path.join(cwd(), 'dist', 'frontend'),
   did,
   backupPhrase,
   twitterSecretBearerToken,
+  storeDidAndCTypes,
 };

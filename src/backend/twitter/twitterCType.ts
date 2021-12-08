@@ -1,4 +1,4 @@
-import { CType } from '@kiltprotocol/core';
+import { CType, CTypeUtils } from '@kiltprotocol/core';
 
 import { signAndSubmit } from '../utilities/signAndSubmit';
 
@@ -14,6 +14,12 @@ export async function storeTwitterCType(): Promise<void> {
     },
     type: 'object',
   });
+
+  if (await CTypeUtils.verifyStored(draft)) {
+    console.log('Twitter CType is already on the blockchain');
+    return;
+  }
+  console.log('Storing Twitter CType on the blockchain');
 
   const tx = await draft.store();
   await signAndSubmit(tx);
