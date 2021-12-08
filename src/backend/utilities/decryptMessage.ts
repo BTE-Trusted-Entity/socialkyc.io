@@ -1,32 +1,10 @@
 import { Request } from '@hapi/hapi';
 import Boom from '@hapi/boom';
-import {
-  IEncryptedMessage,
-  IMessage,
-  MessageBody,
-  MessageBodyType,
-} from '@kiltprotocol/types';
+import { MessageBody, MessageBodyType } from '@kiltprotocol/types';
 import { Message } from '@kiltprotocol/messaging';
-import { DefaultResolver, DidUtils } from '@kiltprotocol/did';
 
 import { encryptionKeystore } from './keystores';
 import { EncryptedMessageInput } from './validateEncryptedMessage';
-
-export async function decryptMessage(
-  encrypted: IEncryptedMessage,
-): Promise<IMessage> {
-  const { senderKeyId } = encrypted;
-  const { did } = DidUtils.parseDidUrl(senderKeyId);
-
-  const didDocument = await DefaultResolver.resolveDoc(did);
-  if (!didDocument) {
-    throw new Error(`Cannot resolve the sender DID of key ${senderKeyId}`);
-  }
-
-  const { details: senderDetails } = didDocument;
-
-  return Message.decrypt(encrypted, encryptionKeystore, { senderDetails });
-}
 
 export function preDecryptMessageContent(
   expectedType: MessageBodyType,
@@ -37,7 +15,7 @@ export function preDecryptMessageContent(
     logger.debug('Message will be decrypted');
 
     const payload = request.payload as EncryptedMessageInput;
-    const message = await decryptMessage(payload.message);
+    const message = await Message.decrypt(payload.message, encryptionKeystore);
     logger.debug('Message decrypted');
 
     const messageBody = message.body;
