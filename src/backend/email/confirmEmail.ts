@@ -14,6 +14,7 @@ import {
   setSession,
 } from '../utilities/sessionStorage';
 import { paths } from '../endpoints/paths';
+import { emailCType } from './emailCType';
 
 const zodPayload = z.object({
   secret: z.string(),
@@ -38,6 +39,9 @@ async function handler(
   const { requestForAttestation } = firstSession;
   if (!requestForAttestation) {
     throw Boom.notFound('requestForAttestation not found');
+  }
+  if (requestForAttestation.claim.cTypeHash !== emailCType.hash) {
+    throw Boom.notFound('requestForAttestation cType mismatch');
   }
 
   // Clicking the confirmation link in the email opens a new tab with a new session
