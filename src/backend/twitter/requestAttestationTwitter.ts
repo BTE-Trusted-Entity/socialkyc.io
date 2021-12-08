@@ -49,7 +49,7 @@ async function handler(
   const username = requestForAttestation.claim.contents['Twitter'] as string;
 
   const confirmation = makeControlledPromise<void>();
-  tweetsListeners[username] = [secret, confirmation];
+  tweetsListeners.set(username, [secret, confirmation]);
   logger.debug('Twitter request attestation listener added');
 
   return h.response({ secret } as Output);
