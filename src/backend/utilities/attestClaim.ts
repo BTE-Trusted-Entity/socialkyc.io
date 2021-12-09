@@ -1,6 +1,6 @@
 import Boom from '@hapi/boom';
 import {
-  IDidDetails,
+  IDidKeyDetails,
   IEncryptedMessage,
   IRequestForAttestation,
   MessageBodyType,
@@ -14,7 +14,7 @@ import { getSessionWithDid, Session, setSession } from './sessionStorage';
 
 export async function attestClaim(
   requestForAttestation: IRequestForAttestation,
-  claimerDid: IDidDetails['did'],
+  encryptionKeyId: IDidKeyDetails['id'],
 ): Promise<IEncryptedMessage> {
   const attestation = Attestation.fromRequestAndDid(
     requestForAttestation,
@@ -24,7 +24,7 @@ export async function attestClaim(
   const tx = await attestation.store();
   await signAndSubmit(tx);
 
-  return encryptMessageBody(claimerDid, {
+  return encryptMessageBody(encryptionKeyId, {
     content: { attestation },
     type: MessageBodyType.SUBMIT_ATTESTATION,
   });
@@ -37,12 +37,16 @@ export async function getAttestationMessage(
     return session.attestedMessagePromise;
   }
 
-  const { did, requestForAttestation, confirmed } = getSessionWithDid(session);
+  const { encryptionKeyId, requestForAttestation, confirmed } =
+    getSessionWithDid(session);
   if (!requestForAttestation || !confirmed) {
     throw Boom.notFound('Confirmed requestForAttestation not found');
   }
 
-  const attestedMessagePromise = attestClaim(requestForAttestation, did);
+  const attestedMessagePromise = attestClaim(
+    requestForAttestation,
+    encryptionKeyId,
+  );
   setSession({ ...session, attestedMessagePromise });
 
   return attestedMessagePromise;

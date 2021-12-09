@@ -31,7 +31,7 @@ async function handler(
   logger.debug('Email quote started');
 
   const { email, sessionId } = request.payload as Input;
-  const { did } = getSessionWithDid({ sessionId });
+  const { did, encryptionKeyId } = getSessionWithDid({ sessionId });
 
   try {
     const claimContents = {
@@ -44,7 +44,7 @@ async function handler(
     );
     logger.debug('Email quote created');
 
-    const output = await encryptMessageBody(did, {
+    const output = await encryptMessageBody(encryptionKeyId, {
       content: {
         claim,
         legitimations: [],
