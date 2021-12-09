@@ -10,24 +10,24 @@ import { StatusCodes } from 'http-status-codes';
 
 import { DefaultResolver } from '@kiltprotocol/did';
 import { Crypto } from '@kiltprotocol/utils';
-import { IDidDetails, KeyRelationship } from '@kiltprotocol/types';
+import { IDidKeyDetails } from '@kiltprotocol/types';
 import { randomAsHex } from '@polkadot/util-crypto';
 
-import { configuration } from '../utilities/configuration';
+import { fullDidPromise } from '../utilities/fullDid';
 import { encryptionKeystore } from '../utilities/keystores';
 import { keypairsPromise } from '../utilities/keypairs';
 import { getSession, setSession } from '../utilities/sessionStorage';
 import { paths } from './paths';
 
 const zodPayload = z.object({
-  identity: z.string(),
+  encryptionKeyId: z.string(),
   encryptedChallenge: z.string(),
   nonce: z.string(),
   sessionId: z.string(),
 });
 
 export interface GetSessionOutput {
-  did: IDidDetails['did'];
+  dAppEncryptionKeyId: IDidKeyDetails['id'];
   sessionId: string;
   challenge: string;
 }
@@ -44,22 +44,14 @@ async function handler(
   logger.debug('Session confirmation started');
 
   const payload = request.payload as CheckSessionInput;
-  const { identity, encryptedChallenge, nonce } = payload;
+  const { encryptionKeyId, encryptedChallenge, nonce } = payload;
   const session = getSession(payload);
 
-  const didDocument = await DefaultResolver.resolveDoc(identity);
-  if (!didDocument) {
-    throw Boom.forbidden(`Could not resolve the DID ${identity}`);
+  const encryptionKey = await DefaultResolver.resolveKey(encryptionKeyId);
+  if (!encryptionKey) {
+    throw Boom.forbidden(`Could not resolve the DID key ${encryptionKeyId}`);
   }
-  logger.debug('Session confirmation resolved DID');
-
-  const { details: senderDetails } = didDocument;
-
-  const publicKey = senderDetails.getKeys(KeyRelationship.keyAgreement).pop();
-  if (!publicKey) {
-    throw Boom.forbidden(`Could not get the key`);
-  }
-  logger.debug('Session confirmation got public key');
+  logger.debug('Session confirmation resolved DID encryption key');
 
   const { keyAgreement } = await keypairsPromise;
 
@@ -67,7 +59,7 @@ async function handler(
     data: Crypto.coToUInt8(encryptedChallenge),
     nonce: Crypto.coToUInt8(nonce),
     publicKey: keyAgreement.publicKey,
-    peerPublicKey: Crypto.coToUInt8(publicKey.publicKeyHex),
+    peerPublicKey: Crypto.coToUInt8(encryptionKey.publicKeyHex),
     alg: 'x25519-xsalsa20-poly1305',
   });
   logger.debug('Session confirmation decrypted challenge');
@@ -81,7 +73,8 @@ async function handler(
 
   setSession({
     ...session,
-    did: identity,
+    did: encryptionKey.controller,
+    encryptionKeyId,
     didConfirmed: true,
   });
 
@@ -107,9 +100,9 @@ export const session: ServerRoute[] = [
   {
     method: 'GET',
     path,
-    handler: () =>
+    handler: async () =>
       ({
-        did: configuration.did,
+        dAppEncryptionKeyId: (await fullDidPromise).encryptionKey.id,
         ...startSession(),
       } as GetSessionOutput),
   },

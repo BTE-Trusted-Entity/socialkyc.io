@@ -2,6 +2,7 @@ import NodeCache from 'node-cache';
 import Boom from '@hapi/boom';
 import {
   IDidDetails,
+  IDidKeyDetails,
   IEncryptedMessage,
   IRequestForAttestation,
 } from '@kiltprotocol/types';
@@ -9,6 +10,7 @@ import {
 export interface Session {
   sessionId: string;
   did?: IDidDetails['did'];
+  encryptionKeyId?: IDidKeyDetails['id'];
   didChallenge?: string;
   didConfirmed?: boolean;
   requestForAttestation?: IRequestForAttestation;
@@ -19,6 +21,7 @@ export interface Session {
 
 type SessionWithDid = Session & {
   did: IDidDetails['did'];
+  encryptionKeyId: IDidKeyDetails['id'];
 };
 
 export interface PayloadWithSession {
@@ -40,12 +43,12 @@ export function getSessionWithDid(input: {
 }): SessionWithDid {
   const session = getSession(input);
 
-  const { did, didConfirmed } = session;
-  if (!did || !didConfirmed) {
+  const { did, didConfirmed, encryptionKeyId } = session;
+  if (!did || !didConfirmed || !encryptionKeyId) {
     throw Boom.forbidden('Unconfirmed DID');
   }
 
-  return { ...session, did };
+  return { ...session, did, encryptionKeyId };
 }
 
 export function setSession(session: Session): void {

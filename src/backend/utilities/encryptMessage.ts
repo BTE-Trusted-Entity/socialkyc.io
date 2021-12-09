@@ -1,7 +1,6 @@
 import {
-  IDidDetails,
+  IDidKeyDetails,
   IEncryptedMessage,
-  KeyRelationship,
   MessageBody,
 } from '@kiltprotocol/types';
 import { Message } from '@kiltprotocol/messaging';
@@ -13,20 +12,13 @@ import { configuration } from './configuration';
 
 export async function encryptMessage(
   message: Message,
-  receiverDid: IDidDetails['did'],
+  encryptionKeyId: IDidKeyDetails['id'],
 ): Promise<IEncryptedMessage> {
-  const didDocument = await DefaultResolver.resolveDoc(receiverDid);
-  if (!didDocument) {
-    throw new Error(`Cannot resolve the receiver DID ${receiverDid}`);
-  }
-
-  const { details: receiver } = didDocument;
-
-  const receiverEncryptionKey = receiver
-    .getKeys(KeyRelationship.keyAgreement)
-    .pop();
+  const receiverEncryptionKey = await DefaultResolver.resolveKey(
+    encryptionKeyId,
+  );
   if (!receiverEncryptionKey) {
-    throw new Error('Receiver key agreement key not found');
+    throw new Error(`Cannot resolve the receiver DID key ${encryptionKeyId}`);
   }
 
   const { encryptionKey } = await fullDidPromise;
@@ -38,9 +30,12 @@ export async function encryptMessage(
 }
 
 export async function encryptMessageBody(
-  receiverDid: string,
+  encryptionKeyId: IDidKeyDetails['id'],
   messageBody: MessageBody,
 ): Promise<IEncryptedMessage> {
-  const message = new Message(messageBody, configuration.did, receiverDid);
-  return encryptMessage(message, receiverDid);
+  // TODO: restore that after the SDK fixes parsing of light DIDs
+  // const { did } = DidUtils.parseDidUrl(encryptionKeyId);
+  const did = encryptionKeyId.replace(/#.*$/, '');
+  const message = new Message(messageBody, configuration.did, did);
+  return encryptMessage(message, encryptionKeyId);
 }

@@ -49,14 +49,14 @@ async function handler(
 
   const { sessionId, cType } = request.payload as Input;
   const session = getSessionWithDid({ sessionId });
-  const { did } = session;
+  const { encryptionKeyId } = session;
 
   const cTypeHash = getCTypeHash(cType);
   logger.debug('Request credential CType found');
 
   const challenge = randomAsHex(24);
   setSession({ ...session, requestChallenge: challenge });
-  const output = await encryptMessageBody(did, {
+  const output = await encryptMessageBody(encryptionKeyId, {
     content: {
       cTypes: [{ cTypeHash }],
       challenge,

@@ -1,4 +1,4 @@
-import { IDidDetails, IEncryptedMessage } from '@kiltprotocol/types';
+import { IDidKeyDetails, IEncryptedMessage } from '@kiltprotocol/types';
 
 import {
   checkSession,
@@ -11,7 +11,7 @@ interface PubSubSession {
   ) => Promise<void>;
   close: () => Promise<void>;
   send: (message: IEncryptedMessage) => Promise<void>;
-  identity: IDidDetails['did'];
+  encryptionKeyId: IDidKeyDetails['id'];
   encryptedChallenge: string;
   nonce: string;
 }
@@ -19,7 +19,7 @@ interface PubSubSession {
 interface InjectedWindowProvider {
   startSession: (
     dAppName: string,
-    dAppDid: IDidDetails['did'],
+    dAppEncryptionKeyId: IDidKeyDetails['id'],
     challenge: string,
   ) => Promise<PubSubSession>;
   name: string;
@@ -40,13 +40,23 @@ export async function getSession(): Promise<Session> {
   if (!provider) {
     throw new Error('No provider');
   }
-  const { did, challenge, sessionId } = await getSessionValues();
+  const { dAppEncryptionKeyId, challenge, sessionId } =
+    await getSessionValues();
   const dAppName = 'SocialKYC';
 
-  const session = await provider.startSession(dAppName, did, challenge);
+  const session = await provider.startSession(
+    dAppName,
+    dAppEncryptionKeyId,
+    challenge,
+  );
 
-  const { identity, encryptedChallenge, nonce } = session;
-  await checkSession({ identity, encryptedChallenge, nonce, sessionId });
+  const { encryptionKeyId, encryptedChallenge, nonce } = session;
+  await checkSession({
+    encryptionKeyId,
+    encryptedChallenge,
+    nonce,
+    sessionId,
+  });
 
   return { ...session, sessionId };
 }

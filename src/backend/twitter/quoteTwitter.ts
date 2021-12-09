@@ -31,7 +31,7 @@ async function handler(
   logger.debug('Twitter quote started');
 
   const payload = request.payload as Input;
-  const { did } = getSessionWithDid(payload);
+  const { did, encryptionKeyId } = getSessionWithDid(payload);
 
   try {
     const claimContents = {
@@ -44,7 +44,7 @@ async function handler(
     );
     logger.debug('Twitter quote created');
 
-    const output = await encryptMessageBody(did, {
+    const output = await encryptMessageBody(encryptionKeyId, {
       content: {
         claim,
         legitimations: [],
