@@ -6,6 +6,7 @@ import {
   IEncryptedMessage,
   IRequestForAttestation,
 } from '@kiltprotocol/types';
+import { randomAsNumber } from '@polkadot/util-crypto';
 
 export interface Session {
   sessionId: string;
@@ -66,7 +67,7 @@ export function getSessionBySecret(secret: string): Session {
 }
 
 export function getSecretForSession(sessionId: string): string {
-  const secret = String(Math.random()).substring(2); // only numbers to avoid 0xDEADDAD etc
+  const secret = String(randomAsNumber()); // only numbers to avoid 0xDEADDAD etc
   secrets.set(secret, sessionId);
   return secret;
 }
