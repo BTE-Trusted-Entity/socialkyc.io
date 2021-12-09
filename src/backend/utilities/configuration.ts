@@ -40,6 +40,8 @@ if (!blockchainEndpoint) {
   throw new Error('No blockchain endpoint provided');
 }
 
+const httpAuthPassword = env.SECRET_HTTP_AUTH_PASSWORD;
+
 export const configuration = {
   aws: {
     region,
@@ -54,5 +56,6 @@ export const configuration = {
   did,
   backupPhrase,
   twitterSecretBearerToken,
+  httpAuthPassword,
   storeDidAndCTypes,
 };

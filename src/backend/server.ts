@@ -41,7 +41,8 @@ const { isProduction, port } = configuration;
 
 const server = Hapi.server({
   port,
-  host: '0.0.0.0',
+  host: isProduction ? '0.0.0.0' : '127.0.0.1',
+  uri: configuration.baseUri,
   debug: isProduction ? false : undefined,
   routes: { security: true },
 });
@@ -58,11 +59,13 @@ const noWww = {
 const logger = {
   plugin: pino,
   options: {
-    prettyPrint: !isProduction,
+    ...(!isProduction && { transport: { target: 'pino-pretty' } }),
     ignoreTags: ['noLogs'],
     level: isProduction ? 'info' : 'debug',
     logRequestComplete: isProduction,
-    redact: isProduction ? [] : { paths: ['req', 'res'], remove: true },
+    redact: isProduction
+      ? ['req.headers.authorization']
+      : { paths: ['req', 'res'], remove: true },
   },
 };
 

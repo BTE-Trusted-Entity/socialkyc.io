@@ -8,7 +8,8 @@ async function validate(
   username: string,
   password: string,
 ): Promise<ValidateResponse> {
-  const isValid = username === 'test' && password === 'ZINK0skig@spos_geaw';
+  const isValid =
+    username === 'test' && password === configuration.httpAuthPassword;
 
   return {
     isValid,
@@ -17,7 +18,7 @@ async function validate(
 }
 
 export async function configureAuthentication(server: Server): Promise<void> {
-  if (!configuration.isProduction) {
+  if (!configuration.httpAuthPassword) {
     return;
   }
 
