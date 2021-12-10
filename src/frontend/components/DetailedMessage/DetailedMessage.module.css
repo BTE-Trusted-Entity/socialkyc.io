@@ -5,9 +5,10 @@
   color: var(--color-light);
   position: relative;
   border-radius: 0.5rem;
-  padding: 0.5rem 0.75rem;
+  padding: 0.5rem 3rem 0.5rem 0.75rem;
   margin-top: 1.5rem;
   margin-bottom: 1.5rem;
+  text-align: left;
 }
 
 .heading {
@@ -15,21 +16,34 @@
   font-size: 1rem;
 }
 
-.status {
+.message {
   composes: heading;
   font-style: italic;
 }
 
-.spinner {
-  composes: spinner from '../../components/Spinner/Spinner.module.css';
+.icon {
+  position: absolute;
   width: 2rem;
   height: 2rem;
   top: 0.75rem;
+  right: 0.875rem;
+  background: no-repeat center/100%;
+}
+
+.spinner {
+  composes: spinner from '../Spinner/Spinner.module.css';
+  composes: icon;
   right: 1rem;
   left: auto;
   transform: none;
 }
 
-.ready {
-  composes: checkmark from '../../components/Checkmark/Checkmark.module.css';
+.checkmark {
+  composes: icon;
+  background-image: url('./checkmark.svg');
+}
+
+.exclamation {
+  composes: icon;
+  background-image: url('./exclamation.svg');
 }

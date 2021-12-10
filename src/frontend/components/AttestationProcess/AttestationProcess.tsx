@@ -1,6 +1,6 @@
 import { ReactNode } from 'react';
 
-import * as styles from './AttestationProcess.module.css';
+import { DetailedMessage } from '../DetailedMessage/DetailedMessage';
 
 interface Props {
   spinner: boolean;
@@ -17,18 +17,14 @@ export function AttestationProcess({
   subline,
   error,
 }: Props): JSX.Element {
+  const icon = ready ? 'checkmark' : spinner ? 'spinner' : undefined;
+
   return (
-    <div className={styles.container}>
-      {spinner && <div className={styles.spinner} />}
-      {ready && <div className={styles.ready} />}
-
-      <h2 className={styles.heading}>Attestation process:</h2>
-
-      {status && <p className={styles.status}>{status}</p>}
-      {subline && <p>{subline}</p>}
-
-      {/* TODO: Interface for error */}
-      {error && <p>{error}</p>}
-    </div>
+    <DetailedMessage
+      icon={icon}
+      heading="Attestation process:"
+      message={status}
+      details={subline || error}
+    />
   );
 }

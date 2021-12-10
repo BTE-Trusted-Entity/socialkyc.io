@@ -5,6 +5,8 @@ import { detect } from 'detect-browser';
 
 import { apiWindow, getSession, Session } from '../../utilities/session';
 
+import { exceptionToError } from '../../utilities/exceptionToError';
+import { DetailedMessage } from '../../components/DetailedMessage/DetailedMessage';
 import { Spinner } from '../../components/Spinner/Spinner';
 import { Email } from '../Email/Email';
 import { Twitter } from '../Twitter/Twitter';
@@ -142,16 +144,26 @@ function GetCredentials() {
 
 function Connect({ setSession }: { setSession: (s: Session) => void }) {
   const [processing, setProcessing] = useState(false);
+  const [error, setError] = useState<'closed' | 'rejected'>();
 
   const handleConnectClick = useCallback(
     async (event) => {
-      event.preventDefault();
-      setProcessing(true);
-
       try {
+        event.preventDefault();
+        setProcessing(true);
+        setError(undefined);
+
         setSession(await getSession());
-      } catch (error) {
-        console.error(error);
+      } catch (exception) {
+        const { message } = exceptionToError(exception);
+        // TODO: need to conform to the spec
+        if (message.includes('closed')) {
+          setError('closed');
+        } else if (message.includes('Rejected')) {
+          setError('rejected');
+        } else {
+          console.error(exception);
+        }
       } finally {
         setProcessing(false);
       }
@@ -166,7 +178,17 @@ function Connect({ setSession }: { setSession: (s: Session) => void }) {
           [styles.processing]: processing,
         })}
       >
-        <p>Please authorize access to your wallet</p>
+        {!error && <p>Please authorize access to your wallet</p>}
+
+        {error === 'closed' && (
+          <DetailedMessage
+            icon="exclamation"
+            heading="Authorization error:"
+            message="Your wallet was closed before access was authorized."
+            details="Please try again to authorize access to it."
+          />
+        )}
+
         <button
           type="button"
           className={styles.buttonPrimary}
