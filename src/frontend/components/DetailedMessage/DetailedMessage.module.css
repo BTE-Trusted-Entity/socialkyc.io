@@ -37,5 +37,5 @@
 
 .exclamation {
   composes: checkmark from '../Checkmark/Checkmark.module.css';
-  background-image: url('../../images/exclamation.svg');
+  background-image: url('./exclamation.svg');
 }
