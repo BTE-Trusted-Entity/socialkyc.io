@@ -5,9 +5,10 @@
   color: var(--color-light);
   position: relative;
   border-radius: 0.5rem;
-  padding: 0.5rem 0.75rem;
+  padding: 0.5rem 3rem 0.5rem 0.75rem;
   margin-top: 1.5rem;
   margin-bottom: 1.5rem;
+  text-align: left;
 }
 
 .heading {
