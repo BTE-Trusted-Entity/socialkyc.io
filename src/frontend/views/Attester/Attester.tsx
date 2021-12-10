@@ -144,7 +144,7 @@ function GetCredentials() {
 
 function Connect({ setSession }: { setSession: (s: Session) => void }) {
   const [processing, setProcessing] = useState(false);
-  const [error, setError] = useState<'closed' | 'rejected'>();
+  const [error, setError] = useState<'closed' | 'rejected' | 'unknown'>();
 
   const handleConnectClick = useCallback(
     async (event) => {
@@ -162,6 +162,7 @@ function Connect({ setSession }: { setSession: (s: Session) => void }) {
         } else if (message.includes('Rejected')) {
           setError('rejected');
         } else {
+          setError('unknown');
           console.error(exception);
         }
       } finally {
@@ -186,6 +187,15 @@ function Connect({ setSession }: { setSession: (s: Session) => void }) {
             heading="Authorization error:"
             message="Your wallet was closed before access was authorized."
             details="Please try again to authorize access to it."
+          />
+        )}
+
+        {error === 'unknown' && (
+          <DetailedMessage
+            icon="exclamation"
+            heading="Authorization error:"
+            message="Something went wrong!"
+            details="Click „Connect to Wallet“ button or reload the page or restart your browser."
           />
         )}
 
