@@ -21,21 +21,29 @@
   font-style: italic;
 }
 
-.spinner {
-  composes: spinner from '../Spinner/Spinner.module.css';
+.icon {
+  position: absolute;
   width: 2rem;
   height: 2rem;
   top: 0.75rem;
+  right: 0.875rem;
+  background: no-repeat center/100%;
+}
+
+.spinner {
+  composes: spinner from '../Spinner/Spinner.module.css';
+  composes: icon;
   right: 1rem;
   left: auto;
   transform: none;
 }
 
 .checkmark {
-  composes: checkmark from '../Checkmark/Checkmark.module.css';
+  composes: icon;
+  background-image: url('./checkmark.svg');
 }
 
 .exclamation {
-  composes: checkmark from '../Checkmark/Checkmark.module.css';
+  composes: icon;
   background-image: url('./exclamation.svg');
 }
