@@ -15,13 +15,13 @@
   font-size: 1rem;
 }
 
-.status {
+.message {
   composes: heading;
   font-style: italic;
 }
 
 .spinner {
-  composes: spinner from '../../components/Spinner/Spinner.module.css';
+  composes: spinner from '../Spinner/Spinner.module.css';
   width: 2rem;
   height: 2rem;
   top: 0.75rem;
@@ -30,6 +30,11 @@
   transform: none;
 }
 
-.ready {
-  composes: checkmark from '../../components/Checkmark/Checkmark.module.css';
+.checkmark {
+  composes: checkmark from '../Checkmark/Checkmark.module.css';
+}
+
+.exclamation {
+  composes: checkmark from '../Checkmark/Checkmark.module.css';
+  background-image: url('../../images/exclamation.svg');
 }
