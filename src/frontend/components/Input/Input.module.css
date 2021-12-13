@@ -14,3 +14,20 @@
   margin-top: 0.25rem;
   padding: 0 0.5rem;
 }
+
+.input:invalid,
+.input[aria-invalid],
+.input[data-invalid] {
+  background: #752143;
+}
+
+.error:not([hidden]) {
+  display: inline-block;
+  width: calc(85% - 4rem);
+  margin-inline: 1.5rem;
+  padding: 0.375rem 0.5rem 0.25rem 2rem;
+  color: var(--color-magenta);
+  background: var(--color-white) url('./exclamation.svg') no-repeat left 0.375rem center/1.25rem;
+  border-bottom-left-radius: 0.5rem;
+  border-bottom-right-radius: 0.5rem;
+}

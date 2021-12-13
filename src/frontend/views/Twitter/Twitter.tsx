@@ -34,10 +34,19 @@ interface Props {
 
 export function Twitter({ session }: Props): JSX.Element {
   const [twitterHandle, setTwitterHandle] = useState('');
+  const [inputError, setInputError] = useState<string>();
 
   const handleInput = useCallback((event) => {
     setTwitterHandle(event.target.value);
+    setInputError(undefined);
   }, []);
+
+  const handleBlur = useCallback(() => {
+    const trimmed = twitterHandle.trim();
+    if (trimmed !== twitterHandle) {
+      setTwitterHandle(trimmed);
+    }
+  }, [twitterHandle]);
 
   const [processing, setProcessing] = useState(false);
   const [status, setStatus] = useState<AttestationStatus>('none');
@@ -56,10 +65,19 @@ export function Twitter({ session }: Props): JSX.Element {
 
   const handleSubmit = useCallback(
     async (event) => {
-      event.preventDefault();
-      setProcessing(true);
-
       try {
+        event.preventDefault();
+        setProcessing(true);
+        setInputError(undefined);
+
+        const unexpectedCharacter = twitterHandle.trim().match(/[^a-z0-9_]/i);
+        if (unexpectedCharacter) {
+          setInputError(
+            `There is a unexpected character „${unexpectedCharacter[0]}“, please correct.`,
+          );
+          return;
+        }
+
         const { sessionId } = session;
 
         await session.listen(async (message) => {
@@ -132,10 +150,15 @@ export function Twitter({ session }: Props): JSX.Element {
           <form onSubmit={handleSubmit}>
             <label>
               Your Twitter handle
-              <span className={styles.twitterInputContainer}>
+              <span
+                className={styles.twitterInputContainer}
+                data-invalid={inputError}
+              >
                 <input
                   className={styles.twitterInput}
                   onInput={handleInput}
+                  onBlur={handleBlur}
+                  value={twitterHandle}
                   type="text"
                   name="twitterHandle"
                   required
@@ -143,6 +166,11 @@ export function Twitter({ session }: Props): JSX.Element {
                 />
               </span>
             </label>
+
+            <output className={styles.inputError} hidden={!inputError}>
+              {inputError}
+            </output>
+
             <p>Validity: one year ({expiryDate})</p>
             <button
               type="submit"

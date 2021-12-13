@@ -136,6 +136,8 @@ export function Email({ session }: Props): JSX.Element {
             />
           </label>
 
+          <output className={styles.inputError} hidden />
+
           <p>Validity: one year ({expiryDate})</p>
 
           <button
