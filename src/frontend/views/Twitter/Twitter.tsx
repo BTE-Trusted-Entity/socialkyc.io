@@ -73,7 +73,7 @@ export function Twitter({ session }: Props): JSX.Element {
         const unexpectedCharacter = twitterHandle.trim().match(/[^a-z0-9_]/i);
         if (unexpectedCharacter) {
           setInputError(
-            `There is a unexpected character „${unexpectedCharacter[0]}“, please correct.`,
+            `There is an unexpected character „${unexpectedCharacter[0]}“, please correct.`,
           );
           return;
         }
