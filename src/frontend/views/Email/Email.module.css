@@ -5,4 +5,9 @@
 
 .formInput {
   composes: input from '../../components/Input/Input.module.css';
+  margin-bottom: 0;
+}
+
+.inputError {
+  composes: error from '../../components/Input/Input.module.css';
 }
