@@ -210,7 +210,7 @@ function Connect({ setSession }: { setSession: (s: Session) => void }) {
 
         {error === 'rejected' ? (
           <a
-            href="https://support.kilt.io/"
+            href="https://support.kilt.io/support/solutions/articles/80000968082-how-to-grant-access-to-website"
             target="_blank"
             rel="noreferrer noopener"
             className={styles.buttonLink}
