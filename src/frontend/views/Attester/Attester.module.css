@@ -44,6 +44,11 @@
   display: block;
 }
 
+.buttonLink {
+  composes: buttonPrimary from '../../components/Button/Button.module.css';
+  margin: 2.5rem auto;
+}
+
 .install {
   margin-top: 2rem;
   padding-top: 4rem;
