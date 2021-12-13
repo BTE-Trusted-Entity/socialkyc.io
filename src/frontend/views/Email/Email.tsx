@@ -5,11 +5,13 @@ import cx from 'classnames';
 import { Session } from '../../utilities/session';
 import { usePreventNavigation } from '../../utilities/usePreventNavigation';
 import { expiryDate } from '../../utilities/expiryDate';
+import { exceptionToError } from '../../utilities/exceptionToError';
 
 import { LinkBack } from '../../components/LinkBack/LinkBack';
 import { Spinner } from '../../components/Spinner/Spinner';
 import { Explainer } from '../../components/Explainer/Explainer';
 import { AttestationProcess } from '../../components/AttestationProcess/AttestationProcess';
+import { DetailedMessage } from '../../components/DetailedMessage/DetailedMessage';
 
 import { useAttestEmail } from '../../../backend/email/attestationEmailApi';
 import { quoteEmail } from '../../../backend/email/quoteEmailApi';
@@ -44,6 +46,7 @@ export function Email({ session }: Props): JSX.Element {
   // TODO: only set to attesting after confirming with backend that this is a valid secret
   const initialStatus = secret ? 'attesting' : undefined;
 
+  const [flowError, setFlowError] = useState<'closed' | 'unknown'>();
   const [status, setStatus] = useState<AttestationStatus | undefined>(
     initialStatus,
   );
@@ -65,13 +68,25 @@ export function Email({ session }: Props): JSX.Element {
     async (event) => {
       event.preventDefault();
       setProcessing(true);
+      setFlowError(undefined);
 
       try {
         const { sessionId } = session;
 
         await session.listen(async (message) => {
-          setEmail(await requestAttestationEmail({ sessionId, message }));
-          setStatus('requested');
+          try {
+            setEmail(await requestAttestationEmail({ sessionId, message }));
+            setStatus('requested');
+          } catch (exception) {
+            const { message } = exceptionToError(exception);
+            if (message.includes('closed') || message.includes('rejected')) {
+              setFlowError('closed');
+            } else {
+              console.error(exception);
+              setFlowError('unknown');
+              setStatus('error');
+            }
+          }
         });
 
         const message = await quoteEmail({
@@ -97,6 +112,7 @@ export function Email({ session }: Props): JSX.Element {
       }
       await session.send(data);
     } catch (error) {
+      setFlowError('unknown');
       console.error(error);
     }
   }, [data, session]);
@@ -139,6 +155,15 @@ export function Email({ session }: Props): JSX.Element {
           <output className={styles.inputError} hidden />
 
           <p>Validity: one year ({expiryDate})</p>
+
+          {flowError === 'closed' && (
+            <DetailedMessage
+              icon="exclamation"
+              heading="Signing error:"
+              message="Your wallet was closed before the request was signed."
+              details="Click „Continue in Wallet“ to try again."
+            />
+          )}
 
           <button
             type="submit"

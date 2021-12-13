@@ -6,11 +6,13 @@ import { Session } from '../../utilities/session';
 import { usePreventNavigation } from '../../utilities/usePreventNavigation';
 import { useCopyButton } from '../../components/useCopyButton/useCopyButton';
 import { expiryDate } from '../../utilities/expiryDate';
+import { exceptionToError } from '../../utilities/exceptionToError';
 
 import { Explainer } from '../../components/Explainer/Explainer';
 import { LinkBack } from '../../components/LinkBack/LinkBack';
 import { Spinner } from '../../components/Spinner/Spinner';
 import { AttestationProcess } from '../../components/AttestationProcess/AttestationProcess';
+import { DetailedMessage } from '../../components/DetailedMessage/DetailedMessage';
 
 import { confirmTwitter } from '../../../backend/twitter/confirmTwitterApi';
 import { attestTwitter } from '../../../backend/twitter/attestationTwitterApi';
@@ -50,6 +52,7 @@ export function Twitter({ session }: Props): JSX.Element {
 
   const [processing, setProcessing] = useState(false);
   const [status, setStatus] = useState<AttestationStatus>('none');
+  const [flowError, setFlowError] = useState<'closed' | 'unknown'>();
 
   const [secret, setSecret] = useState('');
 
@@ -69,6 +72,7 @@ export function Twitter({ session }: Props): JSX.Element {
         event.preventDefault();
         setProcessing(true);
         setInputError(undefined);
+        setFlowError(undefined);
 
         const unexpectedCharacter = twitterHandle.trim().match(/[^a-z0-9_]/i);
         if (unexpectedCharacter) {
@@ -97,8 +101,15 @@ export function Twitter({ session }: Props): JSX.Element {
             setBackupMessage(attestationMessage);
 
             setStatus('ready');
-          } catch {
-            setStatus('error');
+          } catch (exception) {
+            const { message } = exceptionToError(exception);
+            if (message.includes('closed') || message.includes('rejected')) {
+              setFlowError('closed');
+            } else {
+              console.error(exception);
+              setFlowError('unknown');
+              setStatus('error');
+            }
           }
         });
 
@@ -111,6 +122,7 @@ export function Twitter({ session }: Props): JSX.Element {
         await session.send(message);
       } catch (error) {
         console.error(error);
+        setFlowError('unknown');
         setStatus('error');
       } finally {
         setProcessing(false);
@@ -146,7 +158,7 @@ export function Twitter({ session }: Props): JSX.Element {
         Tweet so that we can attest your credential.
       </Explainer>
       <section>
-        {status === 'none' && (
+        {(status === 'none' || status === 'requested') && (
           <form onSubmit={handleSubmit}>
             <label>
               Your Twitter handle
@@ -172,6 +184,16 @@ export function Twitter({ session }: Props): JSX.Element {
             </output>
 
             <p>Validity: one year ({expiryDate})</p>
+
+            {flowError === 'closed' && (
+              <DetailedMessage
+                icon="exclamation"
+                heading="Signing error:"
+                message="Your wallet was closed before the request was signed."
+                details="Click „Continue in Wallet“ to try again."
+              />
+            )}
+
             <button
               type="submit"
               className={flowStyles.ctaButton}
