@@ -161,7 +161,7 @@ export function Email({ session }: Props): JSX.Element {
               icon="exclamation"
               heading="Signing error:"
               message="Your wallet was closed before the request was signed."
-              details="Please try again to sign the request."
+              details="Click „Continue in Wallet“ to try again."
             />
           )}
 
