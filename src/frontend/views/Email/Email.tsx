@@ -156,7 +156,7 @@ export function Email({ session }: Props): JSX.Element {
               className={styles.formInput}
               onInput={handleInput}
               value={emailInput}
-              type="text"
+              type="email"
               name="email"
               required
               maxLength={100}
