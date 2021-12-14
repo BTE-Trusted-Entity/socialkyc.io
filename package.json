@@ -27,7 +27,7 @@
     "@kiltprotocol/core": "^0.24.0",
     "@kiltprotocol/did": "^0.24.0",
     "@kiltprotocol/messaging": "^0.24.0",
-    "@kiltprotocol/types": "^0.24.0",
+    "@kiltprotocol/types": "^0.24.1",
     "@kiltprotocol/utils": "^0.24.0",
     "@kiltprotocol/vc-export": "^0.24.0",
     "@polkadot/keyring": "^7.9.2",
