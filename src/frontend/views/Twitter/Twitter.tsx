@@ -142,6 +142,12 @@ export function Twitter({ session }: Props): JSX.Element {
     }
   }, [backupMessage, session]);
 
+  const handleTryAgainClick = useCallback(() => {
+    setStatus('none');
+    setFlowError(undefined);
+    setSecret('');
+  }, []);
+
   return (
     <section
       className={cx(flowStyles.container, {
@@ -273,12 +279,22 @@ export function Twitter({ session }: Props): JSX.Element {
           </Fragment>
         )}
 
-        {status === 'error' && (
-          <AttestationProcess
-            spinner={showSpinner}
-            ready={showReady}
-            error="Oops, there was an error."
-          />
+        {flowError === 'unknown' && (
+          <Fragment>
+            <DetailedMessage
+              icon="exclamation"
+              heading="Attestation error:"
+              message="Something went wrong!"
+              details="Click „Try Again“ button or reload the page or restart your browser."
+            />
+            <button
+              type="button"
+              className={flowStyles.ctaButton}
+              onClick={handleTryAgainClick}
+            >
+              Try again
+            </button>
+          </Fragment>
         )}
       </section>
 
