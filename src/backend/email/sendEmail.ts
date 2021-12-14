@@ -94,10 +94,19 @@ async function handler(
   const path = paths.confirmationHtml.replace('{secret}', secret);
   const url = `${configuration.baseUri}${path}`;
 
-  await send(url, requestForAttestation);
-  logger.debug('Email request attestation message sent');
+  try {
+    await send(url, requestForAttestation);
+    logger.debug('Email request attestation message sent');
 
-  return requestForAttestation.claim.contents['Email'] as string as Output;
+    return requestForAttestation.claim.contents['Email'] as string as Output;
+  } catch (error) {
+    logger.error(`Error sending email: ${error}`);
+
+    return Boom.boomify(error as Error, {
+      statusCode: 400,
+      message: 'Invalid email syntax',
+    });
+  }
 }
 
 export const request: ServerRoute = {
