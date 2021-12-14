@@ -12,6 +12,7 @@ import { IEncryptedMessage, MessageBodyType } from '@kiltprotocol/types';
 import { emailCType } from './emailCType';
 import { encryptMessageBody } from '../utilities/encryptMessage';
 import { getSessionWithDid } from '../utilities/sessionStorage';
+import { exceptionToError } from '../../frontend/utilities/exceptionToError';
 import { paths } from '../endpoints/paths';
 
 const zodPayload = z.object({
@@ -55,8 +56,10 @@ async function handler(
 
     logger.debug('Email quote completed');
     return h.response(output as Output);
-  } catch (error) {
-    return Boom.boomify(error as Error);
+  } catch (exception) {
+    const error = exceptionToError(exception);
+
+    return Boom.boomify(error);
   }
 }
 

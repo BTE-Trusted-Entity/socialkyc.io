@@ -13,6 +13,7 @@ import { twitterCType } from './twitterCType';
 import { encryptMessageBody } from '../utilities/encryptMessage';
 import { paths } from '../endpoints/paths';
 import { getSessionWithDid } from '../utilities/sessionStorage';
+import { exceptionToError } from '../../frontend/utilities/exceptionToError';
 
 const zodPayload = z.object({
   username: z.string(),
@@ -55,8 +56,10 @@ async function handler(
 
     logger.debug('Twitter quote completed');
     return h.response(output as Output);
-  } catch (error) {
-    return Boom.boomify(error as Error);
+  } catch (exception) {
+    const error = exceptionToError(exception);
+
+    return Boom.boomify(error);
   }
 }
 

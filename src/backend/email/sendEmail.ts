@@ -24,6 +24,7 @@ import {
 import { sesClient } from './sesClient';
 import { preDecryptMessageContent } from '../utilities/decryptMessage';
 import { validateEncryptedMessage } from '../utilities/validateEncryptedMessage';
+import { exceptionToError } from '../../frontend/utilities/exceptionToError';
 import { paths } from '../endpoints/paths';
 
 const rateLimiter = new RateLimiterMemory({
@@ -99,10 +100,11 @@ async function handler(
     logger.debug('Email request attestation message sent');
 
     return requestForAttestation.claim.contents['Email'] as string as Output;
-  } catch (error) {
+  } catch (exception) {
+    const error = exceptionToError(exception);
     logger.error(`Error sending email: ${error}`);
 
-    return Boom.boomify(error as Error, {
+    return Boom.boomify(error, {
       statusCode: 400,
       message: 'Invalid email syntax',
     });
