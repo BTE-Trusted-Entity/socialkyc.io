@@ -212,7 +212,7 @@ function Connect({ setSession }: { setSession: (s: Session) => void }) {
           <a
             href="https://support.kilt.io/support/solutions/articles/80000968082-how-to-grant-access-to-website"
             target="_blank"
-            rel="noreferrer noopener"
+            rel="noreferrer"
             className={styles.buttonLink}
           >
             Tech Support
