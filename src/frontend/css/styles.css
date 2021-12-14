@@ -127,7 +127,6 @@ p {
 
 .navItem {
   display: inline-block;
-  cursor: pointer;
 }
 
 .navItem:first-child {
@@ -150,6 +149,7 @@ p {
 .navItem a:active,
 .navItem a:visited {
   color: inherit;
+  cursor: pointer;
 }
 
 .navItem a:not(:hover) {
