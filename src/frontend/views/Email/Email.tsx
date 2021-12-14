@@ -214,7 +214,7 @@ export function Email({ session }: Props): JSX.Element {
             type="button"
             onClick={handleBackup}
           >
-            Back up credential
+            Show credential in wallet
           </button>
         </Fragment>
       )}
