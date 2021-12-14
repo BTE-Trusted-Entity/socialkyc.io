@@ -5,6 +5,7 @@ export const credential: string;
 export const twitter: string;
 export const email: string;
 export const buttonPrimary: string;
+export const buttonLink: string;
 export const install: string;
 export const textLink: string;
 export const webstore: string;

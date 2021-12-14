@@ -237,7 +237,7 @@ export function Twitter({ session }: Props): JSX.Element {
                   className={flowStyles.ctaLink}
                   href="https://twitter.com/"
                   target="_blank"
-                  rel="noreferrer noopener"
+                  rel="noreferrer"
                 >
                   Go to Twitter
                 </a>

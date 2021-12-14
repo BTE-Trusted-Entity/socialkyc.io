@@ -159,7 +159,7 @@ function Connect({ setSession }: { setSession: (s: Session) => void }) {
         // TODO: need to conform to the spec
         if (message.includes('closed')) {
           setError('closed');
-        } else if (message.includes('Rejected')) {
+        } else if (message.includes('Not authorized')) {
           setError('rejected');
         } else {
           setError('unknown');
@@ -190,6 +190,15 @@ function Connect({ setSession }: { setSession: (s: Session) => void }) {
           />
         )}
 
+        {error === 'rejected' && (
+          <DetailedMessage
+            icon="exclamation"
+            heading="Authorization error:"
+            message="The authorization was rejected."
+            details="Follow the instructions on our Tech Support site to establish the connection between SocialKYC and your wallet."
+          />
+        )}
+
         {error === 'unknown' && (
           <DetailedMessage
             icon="exclamation"
@@ -199,14 +208,25 @@ function Connect({ setSession }: { setSession: (s: Session) => void }) {
           />
         )}
 
-        <button
-          type="button"
-          className={styles.buttonPrimary}
-          onClick={handleConnectClick}
-          disabled={processing}
-        >
-          Connect to wallet
-        </button>
+        {error === 'rejected' ? (
+          <a
+            href="https://support.kilt.io/support/solutions/articles/80000968082-how-to-grant-access-to-website"
+            target="_blank"
+            rel="noreferrer"
+            className={styles.buttonLink}
+          >
+            Tech Support
+          </a>
+        ) : (
+          <button
+            type="button"
+            className={styles.buttonPrimary}
+            onClick={handleConnectClick}
+            disabled={processing}
+          >
+            Connect to wallet
+          </button>
+        )}
       </div>
 
       {processing && <Spinner />}
