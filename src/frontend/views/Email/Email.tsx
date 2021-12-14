@@ -29,6 +29,7 @@ interface Props {
 
 export function Email({ session }: Props): JSX.Element {
   const [emailInput, setEmailInput] = useState('');
+  const [inputError, setInputError] = useState<string>();
 
   const handleInput = useCallback((event) => {
     setEmailInput(event.target.value);
@@ -68,6 +69,7 @@ export function Email({ session }: Props): JSX.Element {
     async (event) => {
       event.preventDefault();
       setProcessing(true);
+      setInputError(undefined);
       setFlowError(undefined);
 
       try {
@@ -81,6 +83,8 @@ export function Email({ session }: Props): JSX.Element {
             const { message } = exceptionToError(exception);
             if (message.includes('closed') || message.includes('rejected')) {
               setFlowError('closed');
+            } else if (message.includes('400')) {
+              setInputError('Incorrect email format, please review.');
             } else {
               console.error(exception);
               setFlowError('unknown');
@@ -159,7 +163,9 @@ export function Email({ session }: Props): JSX.Element {
             />
           </label>
 
-          <output className={styles.inputError} hidden />
+          <output className={styles.inputError} hidden={!inputError}>
+            {inputError}
+          </output>
 
           <p>Validity: one year ({expiryDate})</p>
 

@@ -14,6 +14,7 @@ import {
   setSession,
 } from '../utilities/sessionStorage';
 import { getAttestationMessage } from '../utilities/attestClaim';
+import { exceptionToError } from '../../frontend/utilities/exceptionToError';
 import { paths } from '../endpoints/paths';
 
 const zodPayload = z.object({
@@ -40,8 +41,10 @@ async function handler(
 
     logger.debug('Twitter attestation completed');
     return h.response(response as Output);
-  } catch (error) {
-    throw Boom.boomify(error as Error, {
+  } catch (exception) {
+    const error = exceptionToError(exception);
+
+    throw Boom.boomify(error, {
       message: 'Attestation failed',
       override: false,
     });
