@@ -98,6 +98,7 @@ export function Email({ session }: Props): JSX.Element {
       } catch (error) {
         console.error(error);
         setStatus('error');
+        setFlowError('unknown');
       } finally {
         setProcessing(false);
       }
@@ -116,6 +117,11 @@ export function Email({ session }: Props): JSX.Element {
       console.error(error);
     }
   }, [data, session]);
+
+  const handleTryAgainClick = useCallback(() => {
+    setStatus(undefined);
+    setFlowError(undefined);
+  }, []);
 
   return (
     <section
@@ -145,6 +151,7 @@ export function Email({ session }: Props): JSX.Element {
             <input
               className={styles.formInput}
               onInput={handleInput}
+              value={emailInput}
               type="email"
               name="email"
               required
@@ -212,12 +219,22 @@ export function Email({ session }: Props): JSX.Element {
         </Fragment>
       )}
 
-      {status === 'error' && (
-        <AttestationProcess
-          spinner={showSpinner}
-          ready={showReady}
-          error="Oops, there was an error."
-        />
+      {flowError === 'unknown' && (
+        <Fragment>
+          <DetailedMessage
+            icon="exclamation"
+            heading="Attestation error:"
+            message="Something went wrong!"
+            details="Click „Try Again“ button or reload the page or restart your browser."
+          />
+          <button
+            type="button"
+            className={flowStyles.ctaButton}
+            onClick={handleTryAgainClick}
+          >
+            Try again
+          </button>
+        </Fragment>
       )}
 
       <LinkBack />

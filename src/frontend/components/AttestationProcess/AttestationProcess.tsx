@@ -5,9 +5,8 @@ import { DetailedMessage } from '../DetailedMessage/DetailedMessage';
 interface Props {
   spinner: boolean;
   ready: boolean;
-  status?: ReactNode;
-  subline?: ReactNode;
-  error?: ReactNode;
+  status: ReactNode;
+  subline: ReactNode;
 }
 
 export function AttestationProcess({
@@ -15,7 +14,6 @@ export function AttestationProcess({
   ready,
   status,
   subline,
-  error,
 }: Props): JSX.Element {
   const icon = ready ? 'checkmark' : spinner ? 'spinner' : undefined;
 
@@ -24,7 +22,7 @@ export function AttestationProcess({
       icon={icon}
       heading="Attestation process:"
       message={status}
-      details={subline || error}
+      details={subline}
     />
   );
 }
