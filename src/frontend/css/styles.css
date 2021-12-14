@@ -130,16 +130,18 @@ p {
   cursor: pointer;
 }
 
-.navItem:first-child,
-.navItem:last-child {
-  margin-left: auto;
+.navItem:first-child {
+  margin-left: 1rem;
+  margin-right: auto;
 }
 
 .navItem:last-child {
+  margin-left: auto;
   margin-right: 1rem;
 }
 
-.navItem:not(:nth-child(n+3))::after {
+.navItem:nth-child(2)::after,
+.navItem:nth-child(3)::after {
   content: ' | ';
   color: var(--color-magenta);
 }
@@ -152,6 +154,10 @@ p {
 
 .navItem a:not(:hover) {
   text-decoration: none;
+}
+
+.navItem img {
+  vertical-align: top;
 }
 
 ::-webkit-scrollbar {
