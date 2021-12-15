@@ -116,9 +116,13 @@ export function Email({ session }: Props): JSX.Element {
         throw new Error('No attestation data');
       }
       await session.send(data);
-    } catch (error) {
+    } catch (exception) {
+      const { message } = exceptionToError(exception);
+      if (message.includes('closed')) {
+        return; // don’t care that the user has closed the dialog
+      }
       setFlowError('unknown');
-      console.error(error);
+      console.error(exception);
     }
   }, [data, session]);
 
