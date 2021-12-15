@@ -14,6 +14,7 @@ function renderAttester() {
   if (window.location.pathname.includes('confirmation')) {
     const secret = window.location.href.split('/').pop() as string;
     initialEntry = paths.emailConfirmation.replace(':secret', secret);
+    window.history.replaceState(null, '', '/');
   } else {
     initialEntry = '/';
   }

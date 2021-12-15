@@ -40,6 +40,19 @@ async function send(
 
   const email = contents['Email'] as string;
 
+  const Data = `Please confirm your email address by clicking on this link:
+
+${url}
+
+Congrats! You’ve just completed the first step to regaining control over your digital identity.
+
+--\u0020
+Thanks,
+The SocialKYC Team
+
+
+The SocialKYC identity verification service is brought to you by B.T.E. BOTLabs Trusted Entity GmbH, a subsidiary of BOTLabs GmbH, the entity that initially developed KILT Protocol.`;
+
   const params = {
     Destination: {
       ToAddresses: [email],
@@ -48,12 +61,12 @@ async function send(
     Message: {
       Subject: {
         Charset: 'UTF-8',
-        Data: 'SocialKYC - Confirm your email address',
+        Data: 'SocialKYC - Please confirm your email address',
       },
       Body: {
         Text: {
           Charset: 'UTF-8',
-          Data: `Hello,\n\nPlease click the link to confirm your email: ${url} \n\nKind regards,\nSocialKYC`,
+          Data,
         },
       },
     },
