@@ -234,6 +234,10 @@ function Connect({ setSession }: { setSession: (s: Session) => void }) {
   );
 }
 
+function AlmostThere(): JSX.Element {
+  return <p>Almost there! Please connect to your wallet again.</p>;
+}
+
 export function Attester(): JSX.Element {
   const { data } = useHasSporran();
 
@@ -256,7 +260,14 @@ export function Attester(): JSX.Element {
   if (!session) {
     return (
       <Fragment>
-        <Welcome />
+        <Switch>
+          <Route path={paths.emailConfirmation}>
+            <AlmostThere />
+          </Route>
+          <Route>
+            <Welcome />
+          </Route>
+        </Switch>
         <Connect setSession={setSession} />
       </Fragment>
     );
