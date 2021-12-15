@@ -1,6 +1,7 @@
 import { Fragment, useCallback, useEffect, useState } from 'react';
 import { Prompt, useRouteMatch } from 'react-router-dom';
 import cx from 'classnames';
+import { IEncryptedMessage } from '@kiltprotocol/types';
 
 import { Session } from '../../utilities/session';
 import { usePreventNavigation } from '../../utilities/usePreventNavigation';
@@ -13,7 +14,8 @@ import { Explainer } from '../../components/Explainer/Explainer';
 import { AttestationProcess } from '../../components/AttestationProcess/AttestationProcess';
 import { DetailedMessage } from '../../components/DetailedMessage/DetailedMessage';
 
-import { useAttestEmail } from '../../../backend/email/attestationEmailApi';
+import { attestEmail } from '../../../backend/email/attestationEmailApi';
+import { confirmEmail } from '../../../backend/email/confirmEmailApi';
 import { quoteEmail } from '../../../backend/email/quoteEmailApi';
 import { requestAttestationEmail } from '../../../backend/email/sendEmailApi';
 import { paths } from '../../paths';
@@ -21,7 +23,13 @@ import { paths } from '../../paths';
 import * as flowStyles from '../../components/CredentialFlow/CredentialFlow.module.css';
 import * as styles from './Email.module.css';
 
-type AttestationStatus = 'requested' | 'attesting' | 'ready' | 'error';
+type AttestationStatus =
+  | 'none'
+  | 'requested'
+  | 'confirming'
+  | 'attesting'
+  | 'ready'
+  | 'error';
 
 interface Props {
   session: Session;
@@ -37,33 +45,49 @@ export function Email({ session }: Props): JSX.Element {
 
   const [email, setEmail] = useState('');
 
-  const [processing, setProcessing] = useState(false);
-  usePreventNavigation(processing);
-
   const secret = (
     useRouteMatch(paths.emailConfirmation)?.params as { secret?: string }
   )?.secret;
 
-  // TODO: only set to attesting after confirming with backend that this is a valid secret
-  const initialStatus = secret ? 'attesting' : undefined;
+  const initialStatus = secret ? 'confirming' : 'none';
 
-  const [flowError, setFlowError] = useState<'closed' | 'unknown'>();
-  const [status, setStatus] = useState<AttestationStatus | undefined>(
-    initialStatus,
-  );
-  usePreventNavigation(status === 'attesting');
+  const [flowError, setFlowError] = useState<
+    'closed' | 'expired' | 'unknown'
+  >();
+  const [status, setStatus] = useState<AttestationStatus>(initialStatus);
+  const [processing, setProcessing] = useState(false);
 
-  const showSpinner = status === 'requested' || status === 'attesting';
+  const preventNavigation =
+    processing || ['confirming', 'attesting'].includes(status);
+  usePreventNavigation(preventNavigation);
+
+  const showSpinner = ['requested', 'confirming', 'attesting'].includes(status);
   const showReady = status === 'ready';
 
-  const { data, error } = useAttestEmail(secret, session.sessionId);
+  const { sessionId } = session;
+  const [backupMessage, setBackupMessage] = useState<IEncryptedMessage>();
   useEffect(() => {
-    if (error) {
-      setStatus('error');
-    } else if (data) {
-      setStatus('ready');
+    if (!secret) {
+      return;
     }
-  }, [data, error]);
+    (async () => {
+      try {
+        await confirmEmail({ secret, sessionId });
+        setStatus('attesting');
+      } catch {
+        setStatus('error');
+        setFlowError('expired');
+        return;
+      }
+      try {
+        setBackupMessage(await attestEmail({ sessionId }));
+        setStatus('ready');
+      } catch {
+        setStatus('error');
+        setFlowError('unknown');
+      }
+    })();
+  }, [secret, sessionId]);
 
   const handleSubmit = useCallback(
     async (event) => {
@@ -112,10 +136,10 @@ export function Email({ session }: Props): JSX.Element {
 
   const handleBackup = useCallback(async () => {
     try {
-      if (!data) {
-        throw new Error('No attestation data');
+      if (!backupMessage) {
+        throw new Error('No backup message');
       }
-      await session.send(data);
+      await session.send(backupMessage);
     } catch (exception) {
       const { message } = exceptionToError(exception);
       if (message.includes('closed')) {
@@ -124,10 +148,10 @@ export function Email({ session }: Props): JSX.Element {
       setFlowError('unknown');
       console.error(exception);
     }
-  }, [data, session]);
+  }, [backupMessage, session]);
 
   const handleTryAgainClick = useCallback(() => {
-    setStatus(undefined);
+    setStatus('none');
     setFlowError(undefined);
   }, []);
 
@@ -142,7 +166,7 @@ export function Email({ session }: Props): JSX.Element {
       <h1 className={styles.heading}>Email Address Attestation</h1>
 
       <Prompt
-        when={status === 'attesting' || processing}
+        when={preventNavigation}
         message="The email attestation process has already started. Are you sure you want to leave?"
       />
 
@@ -152,7 +176,7 @@ export function Email({ session }: Props): JSX.Element {
         so that we can attest your credential.
       </Explainer>
 
-      {!status && (
+      {status === 'none' && (
         <form onSubmit={handleSubmit}>
           <label>
             Your email address
@@ -230,21 +254,30 @@ export function Email({ session }: Props): JSX.Element {
       )}
 
       {flowError === 'unknown' && (
-        <Fragment>
-          <DetailedMessage
-            icon="exclamation"
-            heading="Attestation error:"
-            message="Something went wrong!"
-            details="Click „Try Again“ button or reload the page or restart your browser."
-          />
-          <button
-            type="button"
-            className={flowStyles.ctaButton}
-            onClick={handleTryAgainClick}
-          >
-            Try again
-          </button>
-        </Fragment>
+        <DetailedMessage
+          icon="exclamation"
+          heading="Attestation error:"
+          message="Something went wrong!"
+          details="Click „Try Again“ button or reload the page or restart your browser."
+        />
+      )}
+
+      {flowError === 'expired' && (
+        <DetailedMessage
+          icon="exclamation"
+          heading="Attestation error:"
+          message="This link has expired."
+        />
+      )}
+
+      {(flowError === 'unknown' || flowError === 'expired') && (
+        <button
+          type="button"
+          className={flowStyles.ctaButton}
+          onClick={handleTryAgainClick}
+        >
+          Try again
+        </button>
       )}
 
       <LinkBack />
