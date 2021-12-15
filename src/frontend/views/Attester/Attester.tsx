@@ -235,7 +235,11 @@ function Connect({ setSession }: { setSession: (s: Session) => void }) {
 }
 
 function AlmostThere(): JSX.Element {
-  return <p>Almost there! Please connect to your wallet again.</p>;
+  return (
+    <h1 className={styles.heading}>
+      Almost there! Please connect to your wallet again.
+    </h1>
+  );
 }
 
 export function Attester(): JSX.Element {
