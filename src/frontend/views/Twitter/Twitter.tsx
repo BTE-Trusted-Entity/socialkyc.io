@@ -225,7 +225,7 @@ export function Twitter({ session }: Props): JSX.Element {
                   className={styles.tweetInput}
                   id="tweet"
                   ref={messageRef}
-                  value={`I use SocialKYC to represent my internet identity. @social_kyc_tech ${secret} socialkyc.io`}
+                  value={`I use SocialKYC to represent my internet identity. @social_kyc_tech ${secret}`}
                   readOnly
                 />
                 {copy.supported && (
