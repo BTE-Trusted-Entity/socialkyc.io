@@ -155,10 +155,10 @@ export function Twitter({ session }: Props): JSX.Element {
   }, []);
 
   useEffect(() => {
-    let timeout: NodeJS.Timeout;
-    if (status === 'confirming') {
-      timeout = setTimeout(() => setStatus('unconfirmed'), confirmingTimeout);
+    if (status !== 'confirming') {
+      return;
     }
+    const timeout = setTimeout(() => setStatus('unconfirmed'), confirmingTimeout);
     return () => clearTimeout(timeout);
   }, [status]);
 
