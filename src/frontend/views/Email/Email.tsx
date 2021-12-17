@@ -13,6 +13,7 @@ import { Spinner } from '../../components/Spinner/Spinner';
 import { Explainer } from '../../components/Explainer/Explainer';
 import { AttestationProcess } from '../../components/AttestationProcess/AttestationProcess';
 import { DetailedMessage } from '../../components/DetailedMessage/DetailedMessage';
+import { SlowAttestation } from '../../components/SlowAttestation/SlowAttestation';
 
 import { attestEmail } from '../../../backend/email/attestationEmailApi';
 import { confirmEmail } from '../../../backend/email/confirmEmailApi';
@@ -226,12 +227,15 @@ export function Email({ session }: Props): JSX.Element {
       )}
 
       {status === 'attesting' && (
-        <AttestationProcess
-          spinner={showSpinner}
-          ready={showReady}
-          status="Anchoring credential on KILT blockchain"
-          subline="Please leave this tab open until your credential is attested."
-        />
+        <Fragment>
+          <AttestationProcess
+            spinner={showSpinner}
+            ready={showReady}
+            status="Anchoring credential on KILT blockchain"
+            subline="Please leave this tab open until your credential is attested."
+          />
+          <SlowAttestation />
+        </Fragment>
       )}
 
       {status === 'ready' && (
