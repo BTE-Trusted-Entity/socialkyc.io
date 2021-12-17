@@ -13,6 +13,8 @@ import {
   IRequestForAttestation,
   MessageBodyType,
 } from '@kiltprotocol/types';
+import { readFile } from 'node:fs/promises';
+import { join } from 'node:path';
 
 import { configuration } from '../utilities/configuration';
 import {
@@ -31,6 +33,11 @@ const rateLimiter = new RateLimiterMemory({
   duration: 1 * 60,
   points: 5,
 });
+
+const htmlTemplatePromise = readFile(
+  join(configuration.distFolder, 'email.html'),
+  { encoding: 'utf-8' },
+);
 
 async function send(
   url: string,
@@ -53,7 +60,9 @@ The SocialKYC Team
 
 The SocialKYC identity verification service is brought to you by B.T.E. BOTLabs Trusted Entity GmbH, a subsidiary of BOTLabs GmbH, the entity that initially developed KILT Protocol.`;
 
-  const params = {
+  const html = (await htmlTemplatePromise).replace('${URL}', url);
+
+  const command = new SendEmailCommand({
     Destination: {
       ToAddresses: [email],
     },
@@ -68,10 +77,15 @@ The SocialKYC identity verification service is brought to you by B.T.E. BOTLabs 
           Charset: 'UTF-8',
           Data,
         },
+        Html: {
+          Charset: 'UTF-8',
+          Data: html,
+        },
       },
     },
-  };
-  await sesClient.send(new SendEmailCommand(params));
+  });
+
+  await sesClient.send(command);
 }
 
 export type Output = string;
