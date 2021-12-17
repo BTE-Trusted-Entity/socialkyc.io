@@ -275,14 +275,12 @@ export function Twitter({ session }: Props): JSX.Element {
         )}
 
         {status === 'unconfirmed' && (
-          <Fragment>
-            <DetailedMessage
-              icon="exclamation"
-              heading="Attestation error:"
-              message="Tweet not found"
-              details="SocialKYC could not find your tweet. Please make sure you tweet the text exactly as provided. You can use the copy button to avoid any typos."
-            />
-          </Fragment>
+          <DetailedMessage
+            icon="exclamation"
+            heading="Attestation error:"
+            message="Tweet not found"
+            details="SocialKYC could not find your tweet. Please make sure you tweet the text exactly as provided. You can use the copy button to avoid any typos."
+          />
         )}
 
         {status === 'attesting' && (
@@ -316,14 +314,12 @@ export function Twitter({ session }: Props): JSX.Element {
         )}
 
         {flowError === 'unknown' && (
-          <Fragment>
-            <DetailedMessage
-              icon="exclamation"
-              heading="Attestation error:"
-              message="Something went wrong!"
-              details="Click „Try Again“ button or reload the page or restart your browser."
-            />
-          </Fragment>
+          <DetailedMessage
+            icon="exclamation"
+            heading="Attestation error:"
+            message="Something went wrong!"
+            details="Click „Try Again“ button or reload the page or restart your browser."
+          />
         )}
 
         {(status === 'unconfirmed' || flowError === 'unknown') && (
