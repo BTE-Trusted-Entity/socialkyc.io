@@ -24,7 +24,7 @@ import { requestAttestationTwitter } from '../../../backend/twitter/requestAttes
 import * as flowStyles from '../../components/CredentialFlow/CredentialFlow.module.css';
 import * as styles from './Twitter.module.css';
 
-const confirmingTimeout = 2000;
+const confirmingTimeout = 5 * 60 * 1000;
 
 type AttestationStatus =
   | 'none'
