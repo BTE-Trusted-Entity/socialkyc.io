@@ -13,6 +13,7 @@ import { LinkBack } from '../../components/LinkBack/LinkBack';
 import { Spinner } from '../../components/Spinner/Spinner';
 import { AttestationProcess } from '../../components/AttestationProcess/AttestationProcess';
 import { DetailedMessage } from '../../components/DetailedMessage/DetailedMessage';
+import { SlowAttestation } from '../../components/SlowAttestation/SlowAttestation';
 
 import { confirmTwitter } from '../../../backend/twitter/confirmTwitterApi';
 import { attestTwitter } from '../../../backend/twitter/attestationTwitterApi';
@@ -253,12 +254,15 @@ export function Twitter({ session }: Props): JSX.Element {
         )}
 
         {status === 'attesting' && (
-          <AttestationProcess
-            spinner={showSpinner}
-            ready={showReady}
-            status="Anchoring credential on KILT blockchain"
-            subline="Please leave this tab open until your credential is attested."
-          />
+          <Fragment>
+            <AttestationProcess
+              spinner={showSpinner}
+              ready={showReady}
+              status="Anchoring credential on KILT blockchain"
+              subline="Please leave this tab open until your credential is attested."
+            />
+            <SlowAttestation />
+          </Fragment>
         )}
 
         {status === 'ready' && (
