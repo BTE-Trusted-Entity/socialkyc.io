@@ -13,7 +13,7 @@ function removeUnloadListener(): void {
   window.removeEventListener('beforeunload', handleBeforeUnload);
 }
 
-export function usePreventNavigation(active: boolean): void {
+export function usePreventNavigation(active: boolean): boolean {
   useEffect(() => {
     if (active) {
       addUnloadListener();
@@ -21,4 +21,6 @@ export function usePreventNavigation(active: boolean): void {
       removeUnloadListener();
     }
   }, [active]);
+
+  return active;
 }
