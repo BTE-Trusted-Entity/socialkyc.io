@@ -1,4 +1,4 @@
-import { Fragment, useCallback, useRef, useState } from 'react';
+import { Fragment, useCallback, useRef, useState, useEffect } from 'react';
 import { Prompt } from 'react-router-dom';
 import { IEncryptedMessage } from '@kiltprotocol/types';
 import cx from 'classnames';
@@ -24,10 +24,13 @@ import { requestAttestationTwitter } from '../../../backend/twitter/requestAttes
 import * as flowStyles from '../../components/CredentialFlow/CredentialFlow.module.css';
 import * as styles from './Twitter.module.css';
 
+const confirmingTimeout = 2000;
+
 type AttestationStatus =
   | 'none'
   | 'requested'
   | 'confirming'
+  | 'unconfirmed'
   | 'attesting'
   | 'ready'
   | 'error';
@@ -151,6 +154,14 @@ export function Twitter({ session }: Props): JSX.Element {
     setSecret('');
   }, []);
 
+  useEffect(() => {
+    let timeout: NodeJS.Timeout;
+    if (status === 'confirming') {
+      timeout = setTimeout(() => setStatus('unconfirmed'), confirmingTimeout);
+    }
+    return () => clearTimeout(timeout);
+  }, [status]);
+
   return (
     <section
       className={cx(flowStyles.container, {
@@ -257,6 +268,24 @@ export function Twitter({ session }: Props): JSX.Element {
                 </a>
               </p>
             </div>
+          </Fragment>
+        )}
+
+        {status === 'unconfirmed' && (
+          <Fragment>
+            <DetailedMessage
+              icon="exclamation"
+              heading="Attestation error:"
+              message="Tweet not found"
+              details="SocialKYC could not find your tweet. Please make sure you tweet the text exactly as provided. You can use the copy button to avoid any typos."
+            />
+            <button
+              type="button"
+              className={flowStyles.ctaButton}
+              onClick={handleTryAgainClick}
+            >
+              Try again
+            </button>
           </Fragment>
         )}
 
