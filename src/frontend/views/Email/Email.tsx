@@ -203,7 +203,7 @@ export function Email({ session }: Props): JSX.Element {
               icon="exclamation"
               heading="Signing error:"
               message="Your wallet was closed before the request was signed."
-              details="Click „Continue in Wallet“ to try again."
+              details="Click “Continue in Wallet” to try again."
             />
           )}
 
@@ -262,7 +262,7 @@ export function Email({ session }: Props): JSX.Element {
           icon="exclamation"
           heading="Attestation error:"
           message="Something went wrong!"
-          details="Click „Try Again“ button or reload the page or restart your browser."
+          details="Click “Try Again” or reload the page or restart your browser."
         />
       )}
 

@@ -204,7 +204,7 @@ function Connect({ setSession }: { setSession: (s: Session) => void }) {
             icon="exclamation"
             heading="Authorization error:"
             message="Something went wrong!"
-            details="Click „Connect to Wallet“ button or reload the page or restart your browser."
+            details="Click “Connect to Wallet” or reload the page or restart your browser."
           />
         )}
 
