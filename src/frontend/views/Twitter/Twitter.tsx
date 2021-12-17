@@ -1,4 +1,5 @@
 import { Fragment, useCallback, useRef, useState } from 'react';
+import { Prompt } from 'react-router-dom';
 import { IEncryptedMessage } from '@kiltprotocol/types';
 import cx from 'classnames';
 
@@ -60,7 +61,8 @@ export function Twitter({ session }: Props): JSX.Element {
   const showSpinner = ['confirming', 'attesting'].includes(status);
   const showReady = status === 'ready';
 
-  usePreventNavigation(processing || showSpinner);
+  const preventNavigation = processing || showSpinner;
+  usePreventNavigation(preventNavigation);
 
   const messageRef = useRef<HTMLTextAreaElement>(null);
   const copy = useCopyButton(messageRef);
@@ -158,6 +160,11 @@ export function Twitter({ session }: Props): JSX.Element {
       {processing && <Spinner />}
 
       <h1 className={styles.heading}>Twitter Account Attestation</h1>
+
+      <Prompt
+        when={preventNavigation}
+        message="The Twitter attestation process has already started. Are you sure you want to leave?"
+      />
 
       <Explainer>
         After entering your Twitter handle, please choose an identity in your
