@@ -15,6 +15,7 @@ import { Spinner } from '../../components/Spinner/Spinner';
 import { AttestationProcess } from '../../components/AttestationProcess/AttestationProcess';
 import { DetailedMessage } from '../../components/DetailedMessage/DetailedMessage';
 import { SlowAttestation } from '../../components/SlowAttestation/SlowAttestation';
+import { TryAgain } from '../../components/TryAgain/TryAgain';
 
 import { confirmTwitter } from '../../../backend/twitter/confirmTwitterApi';
 import { attestTwitter } from '../../../backend/twitter/attestationTwitterApi';
@@ -158,7 +159,10 @@ export function Twitter({ session }: Props): JSX.Element {
     if (status !== 'confirming') {
       return;
     }
-    const timeout = setTimeout(() => setStatus('unconfirmed'), confirmingTimeout);
+    const timeout = setTimeout(
+      () => setStatus('unconfirmed'),
+      confirmingTimeout,
+    );
     return () => clearTimeout(timeout);
   }, [status]);
 
@@ -279,13 +283,7 @@ export function Twitter({ session }: Props): JSX.Element {
               message="Tweet not found"
               details="SocialKYC could not find your tweet. Please make sure you tweet the text exactly as provided. You can use the copy button to avoid any typos."
             />
-            <button
-              type="button"
-              className={flowStyles.ctaButton}
-              onClick={handleTryAgainClick}
-            >
-              Try again
-            </button>
+            <TryAgain onClick={handleTryAgainClick} />
           </Fragment>
         )}
 

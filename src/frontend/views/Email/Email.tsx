@@ -14,6 +14,7 @@ import { Explainer } from '../../components/Explainer/Explainer';
 import { AttestationProcess } from '../../components/AttestationProcess/AttestationProcess';
 import { DetailedMessage } from '../../components/DetailedMessage/DetailedMessage';
 import { SlowAttestation } from '../../components/SlowAttestation/SlowAttestation';
+import { TryAgain } from '../../components/TryAgain/TryAgain';
 
 import { attestEmail } from '../../../backend/email/attestationEmailApi';
 import { confirmEmail } from '../../../backend/email/confirmEmailApi';
@@ -275,13 +276,7 @@ export function Email({ session }: Props): JSX.Element {
       )}
 
       {(flowError === 'unknown' || flowError === 'expired') && (
-        <button
-          type="button"
-          className={flowStyles.ctaButton}
-          onClick={handleTryAgainClick}
-        >
-          Try again
-        </button>
+        <TryAgain onClick={handleTryAgainClick} />
       )}
 
       <LinkBack />
