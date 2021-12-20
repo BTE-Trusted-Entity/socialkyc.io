@@ -10,7 +10,6 @@ import Boom from '@hapi/boom';
 import { RateLimiterMemory } from 'rate-limiter-flexible';
 import {
   IRequestAttestationContent,
-  IRequestForAttestation,
   MessageBodyType,
 } from '@kiltprotocol/types';
 import { readFile } from 'node:fs/promises';
@@ -39,14 +38,7 @@ const htmlTemplatePromise = readFile(
   { encoding: 'utf-8' },
 );
 
-async function send(
-  url: string,
-  requestForAttestation: IRequestForAttestation,
-): Promise<void> {
-  const { contents } = requestForAttestation.claim;
-
-  const email = contents['Email'] as string;
-
+async function send(url: string, email: string): Promise<void> {
   const Data = `Please confirm your email address by clicking on this link:
 
 ${url}
@@ -60,7 +52,11 @@ The SocialKYC Team
 
 The SocialKYC identity verification service is brought to you by B.T.E. BOTLabs Trusted Entity GmbH, a subsidiary of BOTLabs GmbH, the entity that initially developed KILT Protocol.`;
 
-  const html = (await htmlTemplatePromise).replace('${URL}', url);
+  // Cannot inline the images, webmails ignore them or even drop styles
+  const html = (await htmlTemplatePromise)
+    .replace('${URL}', url)
+    .replace('src="', `src="${configuration.baseUri}`)
+    .replace(`url(`, `url(${configuration.baseUri}`);
 
   const command = new SendEmailCommand({
     Destination: {
@@ -70,7 +66,7 @@ The SocialKYC identity verification service is brought to you by B.T.E. BOTLabs 
     Message: {
       Subject: {
         Charset: 'UTF-8',
-        Data: 'SocialKYC - Please confirm your email address',
+        Data: 'SocialKYC – Please confirm your email address',
       },
       Body: {
         Text: {
@@ -123,7 +119,7 @@ async function handler(
   const url = `${configuration.baseUri}${path}`;
 
   try {
-    await send(url, requestForAttestation);
+    await send(url, requestForAttestation.claim.contents.Email as string);
     logger.debug('Email request attestation message sent');
 
     return requestForAttestation.claim.contents['Email'] as string as Output;

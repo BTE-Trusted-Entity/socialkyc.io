@@ -3,93 +3,28 @@
 <head>
   <meta charset="UTF-8">
   <title>Please confirm your email address</title>
-  <style>
-    html,
-    body {
-      margin: 0;
-      padding: 0;
-      background: #26003B;
-      color: white;
-      font-family: 'Tahoma', sans-serif;
-      font-size: 16px;
-    }
-
-    a,
-    a:visited,
-    a:active {
-      color: white;
-    }
-
-    body {
-      max-width: 42rem;
-      margin: 0 auto;
-    }
-
-    img {
-      display: block;
-      margin: 3rem 1.5rem 2rem auto;
-    }
-
-    main {
-      border-radius: 15px;
-      background-color: #3A1A4C;
-      padding: 2rem 6rem;
-      font-size: 0.875rem;
-    }
-
-    h1 {
-      margin: 0 0 0 -2.75rem;
-      padding-left: 2.75rem;
-      background: url('data-url:./views/Attester/email.svg') no-repeat left top 40%/2.375rem;
-      height: 2.5rem;
-      line-height: 2.5rem;
-      font-size: 1rem;
-      font-weight: normal;
-    }
-
-    h1 + p {
-      margin-top: 1.5rem;
-    }
-
-    p {
-      margin: 2rem 0;
-    }
-
-    nav {
-      text-align: center;
-    }
-
-    nav > a {
-      display: inline-block;
-      margin: auto;
-      padding: 0.375rem 3rem;
-      border-radius: 1rem;
-      text-transform: uppercase;
-      text-decoration: none;
-      background-color: #e43366;
-    }
-
-    small {
-      display: block;
-      margin-top: 5rem;
-      font-size: 0.625rem;
-    }
-  </style>
+  <style>@import url('./css/email.css');</style>
 </head>
-<body>
-<img alt="SocialKYC logo" src="data-url:./components/Branding/logo.svg" />
-<main>
-  <h1>Email Address Attestation</h1>
-  <p>Please confirm your email address by clicking on this link:</p>
-  <nav><a href="${URL}" rel="noreferrer" target="_blank">Confirm email</a></nav>
-  <p>Congrats! You’ve just completed the first step to regaining control over your digital identity.</p>
-  <p>Thanks,<br />
-    The SocialKYC Team</p>
-  <small>
-    The SocialKYC identity verification service is brought to you by B.T.E. BOTLabs Trusted Entity GmbH, a subsidiary of
-    BOTLabs GmbH, the entity that initially developed
-    <a href="https://www.kilt.io" rel="noreferrer" target="_blank">KILT Protocol</a>.
-  </small>
-</main>
+<body class="body">
+<div class="container">
+  <div class="header" role="banner">
+    <a href="https://socialkyc.io" rel="noreferrer" target="_blank">
+      <img alt="SocialKYC logo" class="img" height="64" src="./components/Branding/logo.svg" width="210" />
+    </a>
+  </div>
+  <div class="main" role="main">
+    <h1 class="h1">Email Address Attestation</h1>
+    <p class="para first">Please confirm your email address by clicking on this link:</p>
+    <p class="confirm"><a class="confirmLink" href="${URL}" rel="noreferrer" target="_blank">Confirm email</a></p>
+    <p class="para">Congrats! You’ve just completed the first step to regaining control over your digital identity.</p>
+    <p class="para">Thanks,<br />
+      The SocialKYC Team</p>
+    <small class="small" role="contentinfo">
+      The SocialKYC identity verification service is brought to you by B.T.E. BOTLabs Trusted Entity GmbH, a subsidiary
+      of BOTLabs GmbH, the entity that initially developed
+      <a class="anchor" href="https://www.kilt.io" rel="noreferrer" target="_blank">KILT Protocol</a>.
+    </small>
+  </div>
+</div>
 </body>
 </html>
