@@ -1,11 +1,6 @@
-on:
-  workflow_dispatch:
-    types: [ created ]
-  push:
-    branches:
-      - main
+name: Production release
 
-name: Deploy to AWS AKS
+on: workflow_dispatch
 
 jobs:
   deploy:
@@ -27,20 +22,6 @@ jobs:
     - name: Login to Amazon ECR
       id: login-ecr
       uses: aws-actions/amazon-ecr-login@v1
-    - name: Build image
-      run: |
-        docker build -t socialkyc:latest .
-
-    - name: Tag, and push image to Amazon ECR
-      env:
-        ECR_REGISTRY: ${{ steps.login-ecr.outputs.registry }}
-        ECR_REPOSITORY: socialkyc
-        IMAGE_TAG: ${{ github.sha }}
-      run: |
-        docker tag socialkyc $ECR_REGISTRY/$ECR_REPOSITORY:latest
-        docker tag socialkyc $ECR_REGISTRY/$ECR_REPOSITORY:$IMAGE_TAG
-        docker push $ECR_REGISTRY/$ECR_REPOSITORY:$IMAGE_TAG
-        docker push $ECR_REGISTRY/$ECR_REPOSITORY:latest
     - name: Deploy to kilt cluster
       uses: kodermax/kubectl-aws-eks@master
       env:
@@ -49,4 +30,5 @@ jobs:
         ECR_REPOSITORY: socialkyc
         IMAGE_TAG: ${{ github.sha }}
       with:
-        args: rollout restart deployment social-kyc-demo -n social-kyc
+        args: rollout restart deployment socialkyc -n social-kyc
+
