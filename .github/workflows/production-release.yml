@@ -1,11 +1,6 @@
-on:
-  workflow_dispatch:
-    types: [ created ]
-  push:
-    branches:
-      - main
+name: Production release
 
-name: Deploy to AWS AKS
+on: workflow_dispatch
 
 jobs:
   deploy:
@@ -49,4 +44,5 @@ jobs:
         ECR_REPOSITORY: socialkyc
         IMAGE_TAG: ${{ github.sha }}
       with:
-        args: rollout restart deployment social-kyc-demo -n social-kyc
+        args: rollout restart deployment socialkyc -n social-kyc
+
