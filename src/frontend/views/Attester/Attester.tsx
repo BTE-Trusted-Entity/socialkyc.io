@@ -1,5 +1,5 @@
 import { Fragment, useCallback, useEffect, useState } from 'react';
-import { Link, Route, Switch } from 'react-router-dom';
+import { Link, Route, Switch, useHistory } from 'react-router-dom';
 import cx from 'classnames';
 import { detect } from 'detect-browser';
 
@@ -245,7 +245,19 @@ function AlmostThere(): JSX.Element {
   );
 }
 
+function useLogoNavigation() {
+  const history = useHistory();
+  useEffect(() => {
+    document.querySelector('.logo')?.addEventListener('click', (event) => {
+      event.preventDefault();
+      history.push('/');
+    });
+  }, [history]);
+}
+
 export function Attester(): JSX.Element {
+  useLogoNavigation();
+
   const { data } = useHasSporran();
 
   const [session, setSession] = useState<Session>();

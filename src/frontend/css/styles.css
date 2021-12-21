@@ -9,14 +9,16 @@ body {
 }
 
 body {
-  background:
-    url('../components/Branding/logo.svg') no-repeat calc(50% - 207px / 2 - 1.5rem) 2rem,
-    #190027 url('../images/background-dark.svg') no-repeat fixed center/cover;
-  padding-top: 8rem;
+  background: #190027 url('../images/background-dark.svg') no-repeat fixed center/cover;
   scrollbar-width: thin;
   scrollbar-color: var(--color-magenta) rgb(var(--color-magenta-rgb) / 50%);
   font-size: 0.875rem;
   line-height: 1.125rem;
+}
+
+.logo {
+  display: inline-block;
+  margin: 3rem 1.5rem 2rem calc(50% - 207px - 1.5rem);
 }
 
 p {
@@ -48,7 +50,7 @@ p {
 
 .leftContainer {
   box-sizing: border-box;
-  min-height: calc(100vh - 8rem);
+  min-height: calc(100vh - 10rem);
   border-radius: 0.625rem;
   background:
     linear-gradient(
