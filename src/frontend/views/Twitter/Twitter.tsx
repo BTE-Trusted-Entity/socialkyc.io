@@ -12,9 +12,11 @@ import { exceptionToError } from '../../utilities/exceptionToError';
 import { Explainer } from '../../components/Explainer/Explainer';
 import { LinkBack } from '../../components/LinkBack/LinkBack';
 import { Spinner } from '../../components/Spinner/Spinner';
-import { AttestationProcess } from '../../components/AttestationProcess/AttestationProcess';
+import { AttestationProcessAnchoring } from '../../components/AttestationProcessAnchoring/AttestationProcessAnchoring';
+import { AttestationProcessReady } from '../../components/AttestationProcessReady/AttestationProcessReady';
+import { AttestationErrorUnknown } from '../../components/AttestationErrorUnknown/AttestationErrorUnknown';
+import { SigningErrorClosed } from '../../components/SigningErrorClosed/SigningErrorClosed';
 import { DetailedMessage } from '../../components/DetailedMessage/DetailedMessage';
-import { SlowAttestation } from '../../components/SlowAttestation/SlowAttestation';
 
 import { confirmTwitter } from '../../../backend/twitter/confirmTwitterApi';
 import { attestTwitter } from '../../../backend/twitter/attestationTwitterApi';
@@ -61,11 +63,9 @@ export function Twitter({ session }: Props): JSX.Element {
 
   const [secret, setSecret] = useState('');
 
-  const showSpinner = ['confirming', 'attesting'].includes(status);
-  const showReady = status === 'ready';
-
-  const preventNavigation = processing || showSpinner;
-  usePreventNavigation(preventNavigation);
+  const preventNavigation = usePreventNavigation(
+    processing || ['confirming', 'attesting'].includes(status),
+  );
 
   const messageRef = useRef<HTMLTextAreaElement>(null);
   const copy = useCopyButton(messageRef);
@@ -213,14 +213,7 @@ export function Twitter({ session }: Props): JSX.Element {
 
             <p>Validity: one year ({expiryDate})</p>
 
-            {flowError === 'closed' && (
-              <DetailedMessage
-                icon="exclamation"
-                heading="Signing error:"
-                message="Your wallet was closed before the request was signed."
-                details="Click “Continue in Wallet” to try again."
-              />
-            )}
+            {flowError === 'closed' && <SigningErrorClosed />}
 
             <button
               type="submit"
@@ -234,11 +227,11 @@ export function Twitter({ session }: Props): JSX.Element {
 
         {status === 'confirming' && (
           <Fragment>
-            <AttestationProcess
-              spinner={showSpinner}
-              ready={showReady}
-              status="Starting"
-              subline="Your credential will be attested as soon as you Tweet the text below."
+            <DetailedMessage
+              icon="spinner"
+              heading="Attestation process:"
+              message="Starting"
+              details="Your credential will be attested as soon as you Tweet the text below."
             />
             <div>
               <label htmlFor="tweet">Please tweet this message:</label>
@@ -283,26 +276,11 @@ export function Twitter({ session }: Props): JSX.Element {
           />
         )}
 
-        {status === 'attesting' && (
-          <Fragment>
-            <AttestationProcess
-              spinner={showSpinner}
-              ready={showReady}
-              status="Anchoring credential on KILT blockchain"
-              subline="Please leave this tab open until your credential is attested."
-            />
-            <SlowAttestation />
-          </Fragment>
-        )}
+        {status === 'attesting' && <AttestationProcessAnchoring />}
 
         {status === 'ready' && (
           <Fragment>
-            <AttestationProcess
-              spinner={showSpinner}
-              ready={showReady}
-              status="Credential is ready"
-              subline="We recommend that you back up your credential now."
-            />
+            <AttestationProcessReady />
             <button
               className={flowStyles.ctaButton}
               type="button"
@@ -313,14 +291,7 @@ export function Twitter({ session }: Props): JSX.Element {
           </Fragment>
         )}
 
-        {flowError === 'unknown' && (
-          <DetailedMessage
-            icon="exclamation"
-            heading="Attestation error:"
-            message="Something went wrong!"
-            details="Click “Try Again” or reload the page or restart your browser."
-          />
-        )}
+        {flowError === 'unknown' && <AttestationErrorUnknown />}
 
         {(status === 'unconfirmed' || flowError === 'unknown') && (
           <button

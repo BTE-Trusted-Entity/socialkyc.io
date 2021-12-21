@@ -11,9 +11,11 @@ import { exceptionToError } from '../../utilities/exceptionToError';
 import { LinkBack } from '../../components/LinkBack/LinkBack';
 import { Spinner } from '../../components/Spinner/Spinner';
 import { Explainer } from '../../components/Explainer/Explainer';
-import { AttestationProcess } from '../../components/AttestationProcess/AttestationProcess';
+import { AttestationProcessAnchoring } from '../../components/AttestationProcessAnchoring/AttestationProcessAnchoring';
+import { AttestationProcessReady } from '../../components/AttestationProcessReady/AttestationProcessReady';
+import { AttestationErrorUnknown } from '../../components/AttestationErrorUnknown/AttestationErrorUnknown';
+import { SigningErrorClosed } from '../../components/SigningErrorClosed/SigningErrorClosed';
 import { DetailedMessage } from '../../components/DetailedMessage/DetailedMessage';
-import { SlowAttestation } from '../../components/SlowAttestation/SlowAttestation';
 
 import { attestEmail } from '../../../backend/email/attestationEmailApi';
 import { confirmEmail } from '../../../backend/email/confirmEmailApi';
@@ -58,12 +60,9 @@ export function Email({ session }: Props): JSX.Element {
   const [status, setStatus] = useState<AttestationStatus>(initialStatus);
   const [processing, setProcessing] = useState(false);
 
-  const preventNavigation =
-    processing || ['confirming', 'attesting'].includes(status);
-  usePreventNavigation(preventNavigation);
-
-  const showSpinner = ['requested', 'confirming', 'attesting'].includes(status);
-  const showReady = status === 'ready';
+  const preventNavigation = usePreventNavigation(
+    processing || ['confirming', 'attesting'].includes(status),
+  );
 
   const { sessionId } = session;
   const [backupMessage, setBackupMessage] = useState<IEncryptedMessage>();
@@ -198,14 +197,7 @@ export function Email({ session }: Props): JSX.Element {
 
           <p>Validity: one year ({expiryDate})</p>
 
-          {flowError === 'closed' && (
-            <DetailedMessage
-              icon="exclamation"
-              heading="Signing error:"
-              message="Your wallet was closed before the request was signed."
-              details="Click “Continue in Wallet” to try again."
-            />
-          )}
+          {flowError === 'closed' && <SigningErrorClosed />}
 
           <button
             type="submit"
@@ -218,34 +210,19 @@ export function Email({ session }: Props): JSX.Element {
       )}
 
       {status === 'requested' && (
-        <AttestationProcess
-          spinner={showSpinner}
-          ready={showReady}
-          status="Email sent"
-          subline={`Email sent to ${email}. Please check your inbox and spam folder and click the link.`}
+        <DetailedMessage
+          icon="spinner"
+          heading="Attestation process:"
+          message="Email sent"
+          details={`Email sent to ${email}. Please check your inbox and spam folder and click the link.`}
         />
       )}
 
-      {status === 'attesting' && (
-        <Fragment>
-          <AttestationProcess
-            spinner={showSpinner}
-            ready={showReady}
-            status="Anchoring credential on KILT blockchain"
-            subline="Please leave this tab open until your credential is attested."
-          />
-          <SlowAttestation />
-        </Fragment>
-      )}
+      {status === 'attesting' && <AttestationProcessAnchoring />}
 
       {status === 'ready' && (
         <Fragment>
-          <AttestationProcess
-            spinner={showSpinner}
-            ready={showReady}
-            status="Credential is ready"
-            subline="We recommend that you back up your credential now."
-          />
+          <AttestationProcessReady />
 
           <button
             className={flowStyles.ctaButton}
@@ -257,14 +234,7 @@ export function Email({ session }: Props): JSX.Element {
         </Fragment>
       )}
 
-      {flowError === 'unknown' && (
-        <DetailedMessage
-          icon="exclamation"
-          heading="Attestation error:"
-          message="Something went wrong!"
-          details="Click “Try Again” or reload the page or restart your browser."
-        />
-      )}
+      {flowError === 'unknown' && <AttestationErrorUnknown />}
 
       {flowError === 'expired' && (
         <DetailedMessage
