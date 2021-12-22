@@ -55,7 +55,7 @@
   "devDependencies": {
     "@babel/core": "^7.16.5",
     "@babel/preset-env": "^7.16.4",
-    "@jest/globals": "^27.4.2",
+    "@jest/globals": "^27.4.4",
     "@parcel/optimizer-data-url": "^2.0.1",
     "@parcel/transformer-inline-string": "^2.0.1",
     "@types/hapi__basic": "^5.1.2",
