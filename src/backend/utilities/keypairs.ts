@@ -1,6 +1,6 @@
 import { Keyring } from '@polkadot/keyring';
 import { KeyringPair } from '@kiltprotocol/types';
-import { naclBoxKeypairFromSecret } from '@polkadot/util-crypto';
+import { naclBoxPairFromSecret } from '@polkadot/util-crypto';
 
 import { initKilt } from './initKilt';
 import { configuration } from './configuration';
@@ -24,7 +24,7 @@ export const keypairsPromise = (async () => {
   const identity = getKeypairByBackupPhrase(configuration.backupPhrase);
   const authentication = identity.derive('//did//0');
   const assertion = identity.derive('//did//assertion//0');
-  const keyAgreement = naclBoxKeypairFromSecret(
+  const keyAgreement = naclBoxPairFromSecret(
     identity
       .derive('//did//keyAgreement//0')
       .encryptMessage(
