@@ -60,7 +60,7 @@
     "@parcel/transformer-inline-string": "^2.0.1",
     "@types/hapi__basic": "^5.1.2",
     "@types/hapi__boom": "^9.0.1",
-    "@types/hapi__hapi": "^20.0.9",
+    "@types/hapi__hapi": "^20.0.10",
     "@types/hapi__inert": "^5.2.3",
     "@types/jest": "^27.0.3",
     "@types/lodash-es": "^4.17.5",
