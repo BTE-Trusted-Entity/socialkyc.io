@@ -53,7 +53,7 @@
     "zod": "^3.11.6"
   },
   "devDependencies": {
-    "@babel/core": "^7.16.0",
+    "@babel/core": "^7.16.5",
     "@babel/preset-env": "^7.16.4",
     "@jest/globals": "^27.4.2",
     "@parcel/optimizer-data-url": "^2.0.1",
@@ -86,7 +86,7 @@
     "supervisor": "^0.12.0",
     "ts-jest": "^27.1.0",
     "typed-css-modules": "^0.7.0",
-    "typescript": "^4.5.2"
+    "typescript": "^4.5.4"
   },
   "targets": {
     "frontend": {
