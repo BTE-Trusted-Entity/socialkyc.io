@@ -44,7 +44,7 @@
     "ky": "^0.28.7",
     "lodash-es": "^4.17.21",
     "node-cache": "^5.1.2",
-    "pino": "^7.5.1",
+    "pino": "^7.6.0",
     "rate-limiter-flexible": "^2.3.6",
     "react": "^17.0.2",
     "react-dom": "^17.0.2",
@@ -53,7 +53,7 @@
     "zod": "^3.11.6"
   },
   "devDependencies": {
-    "@babel/core": "^7.16.0",
+    "@babel/core": "^7.16.5",
     "@babel/preset-env": "^7.16.4",
     "@jest/globals": "^27.4.2",
     "@parcel/optimizer-data-url": "^2.0.1",
