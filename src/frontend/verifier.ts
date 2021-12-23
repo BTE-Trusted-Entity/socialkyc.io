@@ -1,6 +1,7 @@
-import { getSession } from './utilities/session';
 import { requestCredential } from '../backend/verifier/requestCredentialApi';
 import { verifyCredential } from '../backend/verifier/verifyApi';
+
+import { getSession } from './utilities/session';
 
 const credentialForm = document.getElementById(
   'credentialForm',

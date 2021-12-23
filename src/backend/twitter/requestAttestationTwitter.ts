@@ -18,9 +18,10 @@ import {
 } from '../utilities/sessionStorage';
 import { validateEncryptedMessage } from '../utilities/validateEncryptedMessage';
 import { preDecryptMessageContent } from '../utilities/decryptMessage';
-import { tweetsListeners } from './tweets';
 import { makeControlledPromise } from '../utilities/makeControlledPromise';
 import { paths } from '../endpoints/paths';
+
+import { tweetsListeners } from './tweets';
 
 export interface Output {
   secret: string;

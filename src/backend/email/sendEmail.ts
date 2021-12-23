@@ -1,3 +1,6 @@
+import { readFile } from 'node:fs/promises';
+import { join } from 'node:path';
+
 import { StatusCodes } from 'http-status-codes';
 import { SendEmailCommand } from '@aws-sdk/client-ses';
 import {
@@ -12,8 +15,6 @@ import {
   IRequestAttestationContent,
   MessageBodyType,
 } from '@kiltprotocol/types';
-import { readFile } from 'node:fs/promises';
-import { join } from 'node:path';
 
 import { configuration } from '../utilities/configuration';
 import {
@@ -22,11 +23,13 @@ import {
   PayloadWithSession,
   setSession,
 } from '../utilities/sessionStorage';
-import { sesClient } from './sesClient';
+
 import { preDecryptMessageContent } from '../utilities/decryptMessage';
 import { validateEncryptedMessage } from '../utilities/validateEncryptedMessage';
 import { exceptionToError } from '../../frontend/utilities/exceptionToError';
 import { paths } from '../endpoints/paths';
+
+import { sesClient } from './sesClient';
 
 const rateLimiter = new RateLimiterMemory({
   duration: 1 * 60,

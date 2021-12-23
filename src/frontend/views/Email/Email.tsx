@@ -3,6 +3,9 @@ import { Prompt, useRouteMatch } from 'react-router-dom';
 import cx from 'classnames';
 import { IEncryptedMessage } from '@kiltprotocol/types';
 
+import * as flowStyles from '../../components/CredentialFlow/CredentialFlow.module.css';
+import * as styles from './Email.module.css';
+
 import { Session } from '../../utilities/session';
 import { usePreventNavigation } from '../../utilities/usePreventNavigation';
 import { expiryDate } from '../../utilities/expiryDate';
@@ -22,9 +25,6 @@ import { confirmEmail } from '../../../backend/email/confirmEmailApi';
 import { quoteEmail } from '../../../backend/email/quoteEmailApi';
 import { requestAttestationEmail } from '../../../backend/email/sendEmailApi';
 import { paths } from '../../paths';
-
-import * as flowStyles from '../../components/CredentialFlow/CredentialFlow.module.css';
-import * as styles from './Email.module.css';
 
 type AttestationStatus =
   | 'none'

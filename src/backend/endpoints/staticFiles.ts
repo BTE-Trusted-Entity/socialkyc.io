@@ -1,4 +1,5 @@
 import { configuration } from '../utilities/configuration';
+
 import { paths } from './paths';
 
 export const staticFiles = {
