@@ -2,7 +2,6 @@ import ky from 'ky';
 import { StatusCodes } from 'http-status-codes';
 
 import { EncryptedMessageInput } from '../utilities/validateEncryptedMessage';
-
 import { paths } from '../endpoints/paths';
 
 import { Output } from './requestAttestationTwitter';

@@ -25,9 +25,7 @@ import {
 } from '../utilities/sessionStorage';
 
 import { preDecryptMessageContent } from '../utilities/decryptMessage';
-
 import { validateEncryptedMessage } from '../utilities/validateEncryptedMessage';
-
 import { exceptionToError } from '../../frontend/utilities/exceptionToError';
 import { paths } from '../endpoints/paths';
 

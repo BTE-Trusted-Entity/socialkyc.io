@@ -18,7 +18,6 @@ import {
 } from '../utilities/sessionStorage';
 import { validateEncryptedMessage } from '../utilities/validateEncryptedMessage';
 import { preDecryptMessageContent } from '../utilities/decryptMessage';
-
 import { makeControlledPromise } from '../utilities/makeControlledPromise';
 import { paths } from '../endpoints/paths';
 
