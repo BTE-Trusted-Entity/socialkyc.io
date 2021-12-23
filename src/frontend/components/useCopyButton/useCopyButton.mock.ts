@@ -1,4 +1,5 @@
 import { jest } from '@jest/globals';
+
 import { useCopyButton } from './useCopyButton';
 
 jest.mock('./useCopyButton');

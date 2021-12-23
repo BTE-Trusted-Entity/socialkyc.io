@@ -21,6 +21,18 @@
     "react/react-in-jsx-scope": "off",
     "react-hooks/exhaustive-deps": "error",
     "import/no-extraneous-dependencies": "error",
+    "import/order": ["error", {
+      "newlines-between": "always-and-inside-groups",
+      "groups": ["builtin", "type", "external", "internal", "parent", "sibling", "index", "object"],
+      "pathGroups": [
+        {
+          "patternOptions": { "matchBase": true },
+          "pattern": "*.module.css",
+          "group": "internal",
+          "position": "before"
+        }
+      ]
+    }],
     "@typescript-eslint/no-unused-vars": "error"
   },
   "settings": {

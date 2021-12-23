@@ -17,6 +17,7 @@ import { fullDidPromise } from '../utilities/fullDid';
 import { encryptionKeystore } from '../utilities/keystores';
 import { keypairsPromise } from '../utilities/keypairs';
 import { getSession, setSession } from '../utilities/sessionStorage';
+
 import { paths } from './paths';
 
 const zodPayload = z.object({

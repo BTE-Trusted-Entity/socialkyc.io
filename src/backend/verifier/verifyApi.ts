@@ -2,8 +2,10 @@ import ky from 'ky';
 import { StatusCodes } from 'http-status-codes';
 
 import { EncryptedMessageInput } from '../utilities/validateEncryptedMessage';
-import { Output } from './verify';
+
 import { paths } from '../endpoints/paths';
+
+import { Output } from './verify';
 
 export async function verifyCredential(
   input: EncryptedMessageInput,

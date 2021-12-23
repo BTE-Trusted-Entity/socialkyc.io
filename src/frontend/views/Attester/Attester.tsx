@@ -3,6 +3,8 @@ import { Link, Route, Switch, useHistory } from 'react-router-dom';
 import cx from 'classnames';
 import { detect } from 'detect-browser';
 
+import * as styles from './Attester.module.css';
+
 import { apiWindow, getSession, Session } from '../../utilities/session';
 
 import { exceptionToError } from '../../utilities/exceptionToError';
@@ -11,8 +13,6 @@ import { Spinner } from '../../components/Spinner/Spinner';
 import { Email } from '../Email/Email';
 import { Twitter } from '../Twitter/Twitter';
 import { paths } from '../../paths';
-
-import * as styles from './Attester.module.css';
 
 interface HasSporran {
   data?: {

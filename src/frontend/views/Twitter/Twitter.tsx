@@ -3,6 +3,9 @@ import { Prompt } from 'react-router-dom';
 import { IEncryptedMessage } from '@kiltprotocol/types';
 import cx from 'classnames';
 
+import * as flowStyles from '../../components/CredentialFlow/CredentialFlow.module.css';
+import * as styles from './Twitter.module.css';
+
 import { Session } from '../../utilities/session';
 import { usePreventNavigation } from '../../utilities/usePreventNavigation';
 import { useCopyButton } from '../../components/useCopyButton/useCopyButton';
@@ -22,9 +25,6 @@ import { confirmTwitter } from '../../../backend/twitter/confirmTwitterApi';
 import { attestTwitter } from '../../../backend/twitter/attestationTwitterApi';
 import { quoteTwitter } from '../../../backend/twitter/quoteTwitterApi';
 import { requestAttestationTwitter } from '../../../backend/twitter/requestAttestationTwitterApi';
-
-import * as flowStyles from '../../components/CredentialFlow/CredentialFlow.module.css';
-import * as styles from './Twitter.module.css';
 
 const confirmingTimeout = 5 * 60 * 1000;
 

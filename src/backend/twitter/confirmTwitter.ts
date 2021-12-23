@@ -12,8 +12,10 @@ import {
   PayloadWithSession,
   setSession,
 } from '../utilities/sessionStorage';
-import { tweetsListeners } from './tweets';
+
 import { paths } from '../endpoints/paths';
+
+import { tweetsListeners } from './tweets';
 
 const zodPayload = z.object({
   sessionId: z.string(),

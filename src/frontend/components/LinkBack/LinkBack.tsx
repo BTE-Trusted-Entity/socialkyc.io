@@ -1,8 +1,8 @@
 import { Link } from 'react-router-dom';
 
-import { paths } from '../../paths';
-
 import * as styles from './LinkBack.module.css';
+
+import { paths } from '../../paths';
 
 export function LinkBack(): JSX.Element {
   return (

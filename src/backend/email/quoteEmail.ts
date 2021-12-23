@@ -9,11 +9,12 @@ import { z } from 'zod';
 import { Claim } from '@kiltprotocol/core';
 import { IEncryptedMessage, MessageBodyType } from '@kiltprotocol/types';
 
-import { emailCType } from './emailCType';
 import { encryptMessageBody } from '../utilities/encryptMessage';
 import { getSessionWithDid } from '../utilities/sessionStorage';
 import { exceptionToError } from '../../frontend/utilities/exceptionToError';
 import { paths } from '../endpoints/paths';
+
+import { emailCType } from './emailCType';
 
 const zodPayload = z.object({
   email: z.string(),

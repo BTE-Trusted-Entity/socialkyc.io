@@ -9,11 +9,12 @@ import { z } from 'zod';
 import { Claim } from '@kiltprotocol/core';
 import { IEncryptedMessage, MessageBodyType } from '@kiltprotocol/types';
 
-import { twitterCType } from './twitterCType';
 import { encryptMessageBody } from '../utilities/encryptMessage';
 import { paths } from '../endpoints/paths';
 import { getSessionWithDid } from '../utilities/sessionStorage';
 import { exceptionToError } from '../../frontend/utilities/exceptionToError';
+
+import { twitterCType } from './twitterCType';
 
 const zodPayload = z.object({
   username: z.string(),

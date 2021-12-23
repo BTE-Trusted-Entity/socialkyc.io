@@ -1,8 +1,8 @@
 import { useState, useCallback, useRef, ReactNode } from 'react';
 
-import { useHandleOutsideClick } from '../../utilities/useHandleOutsideClick';
-
 import * as styles from './Explainer.module.css';
+
+import { useHandleOutsideClick } from '../../utilities/useHandleOutsideClick';
 
 interface Props {
   children: ReactNode;

@@ -2,6 +2,7 @@ import { render } from 'react-dom';
 import { MemoryRouter } from 'react-router-dom';
 
 import { paths } from '../../paths';
+
 import { Attester } from './Attester';
 
 function getConfirmation(message: string, callback: (ok: boolean) => void) {

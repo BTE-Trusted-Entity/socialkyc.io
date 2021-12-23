@@ -1,7 +1,8 @@
 import ky, { Options } from 'ky';
 
-import { Input, Output } from './confirmTwitter';
 import { paths } from '../endpoints/paths';
+
+import { Input, Output } from './confirmTwitter';
 
 const options: Partial<Options> = {
   timeout: false,
