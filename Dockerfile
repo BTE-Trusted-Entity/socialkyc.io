@@ -20,7 +20,7 @@ RUN yarn install --frozen-lockfile --ignore-optional && yarn cache clean --all &
 FROM base AS release
 
 # add nginx and its configuration
-RUN apk add --update --no-cache nginx
+RUN apk add --update --no-cache nginx nginx-mod-http-brotli
 COPY ./nginx.conf /etc/nginx/http.d/default.conf
 
 # tell the app it will run on port 4000 in production mode

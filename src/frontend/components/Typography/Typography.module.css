@@ -1,6 +1,6 @@
 @font-face {
   font-family: 'Overpass Regular';
-  src: url('Overpass-Regular.ttf');
+  src: url('Overpass-Regular.woff2') format('woff2');
 }
 
 :root {
