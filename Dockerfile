@@ -2,24 +2,31 @@ FROM node:16-alpine AS base
 
 WORKDIR /app
 
+# carry over the dependencies data
+COPY package.json yarn.lock ./
+
 FROM base AS builder
 
 # one of dependencies uses node-gyp which requires build tools
 RUN apk add --update --no-cache python3 g++ make && ln -sf python3 /usr/bin/python
 
 # get the sources
-COPY . ./
+COPY src ./src
+COPY tsconfig.json ./
 
 # install build dependencies, build the app
 RUN yarn install --frozen-lockfile --ignore-optional && yarn cache clean --all && yarn build
 
 FROM base AS release
 
-# tell the app it will run in production mode
+# add nginx and its configuration
+RUN apk add --update --no-cache nginx
+COPY ./nginx.conf /etc/nginx/http.d/default.conf
+
+# tell the app it will run on port 4000 in production mode
+ENV PORT 4000
 ENV NODE_ENV production
 
-# carry over the dependencies data
-COPY package.json yarn.lock ./
 # install the production dependencies only (depends on NODE_ENV)
 RUN yarn install --frozen-lockfile --ignore-optional && yarn cache clean --all
 
@@ -27,4 +34,4 @@ RUN yarn install --frozen-lockfile --ignore-optional && yarn cache clean --all
 COPY --from=builder /app/dist dist
 
 EXPOSE 3000
-ENTRYPOINT ["yarn", "--silent", "start"]
+ENTRYPOINT nginx; exec yarn --silent start
