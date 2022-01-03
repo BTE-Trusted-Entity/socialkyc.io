@@ -1,24 +1,9 @@
-import { Fragment, useCallback, useEffect, useState } from 'react';
-import { Prompt, useRouteMatch } from 'react-router-dom';
-import cx from 'classnames';
+import { FormEvent, useCallback, useEffect, useState } from 'react';
+import { useRouteMatch } from 'react-router-dom';
 import { IEncryptedMessage } from '@kiltprotocol/types';
 
-import * as flowStyles from '../../components/CredentialFlow/CredentialFlow.module.css';
-import * as styles from './Email.module.css';
-
 import { Session } from '../../utilities/session';
-import { usePreventNavigation } from '../../utilities/usePreventNavigation';
-import { expiryDate } from '../../utilities/expiryDate';
 import { exceptionToError } from '../../utilities/exceptionToError';
-
-import { LinkBack } from '../../components/LinkBack/LinkBack';
-import { Spinner } from '../../components/Spinner/Spinner';
-import { Explainer } from '../../components/Explainer/Explainer';
-import { AttestationProcessAnchoring } from '../../components/AttestationProcessAnchoring/AttestationProcessAnchoring';
-import { AttestationProcessReady } from '../../components/AttestationProcessReady/AttestationProcessReady';
-import { AttestationErrorUnknown } from '../../components/AttestationErrorUnknown/AttestationErrorUnknown';
-import { SigningErrorClosed } from '../../components/SigningErrorClosed/SigningErrorClosed';
-import { DetailedMessage } from '../../components/DetailedMessage/DetailedMessage';
 
 import { attestEmail } from '../../../backend/email/attestationEmailApi';
 import { confirmEmail } from '../../../backend/email/confirmEmailApi';
@@ -26,27 +11,14 @@ import { quoteEmail } from '../../../backend/email/quoteEmailApi';
 import { requestAttestationEmail } from '../../../backend/email/sendEmailApi';
 import { paths } from '../../paths';
 
-type AttestationStatus =
-  | 'none'
-  | 'requested'
-  | 'confirming'
-  | 'attesting'
-  | 'ready'
-  | 'error';
+import { AttestationStatus, EmailTemplate, FlowError } from './EmailTemplate';
 
 interface Props {
   session: Session;
 }
 
 export function Email({ session }: Props): JSX.Element {
-  const [emailInput, setEmailInput] = useState('');
   const [inputError, setInputError] = useState<string>();
-
-  const handleInput = useCallback((event) => {
-    setEmailInput(event.target.value);
-  }, []);
-
-  const [email, setEmail] = useState('');
 
   const secret = (
     useRouteMatch(paths.emailConfirmation)?.params as { secret?: string }
@@ -54,15 +26,9 @@ export function Email({ session }: Props): JSX.Element {
 
   const initialStatus = secret ? 'confirming' : 'none';
 
-  const [flowError, setFlowError] = useState<
-    'closed' | 'expired' | 'unknown'
-  >();
+  const [flowError, setFlowError] = useState<FlowError>();
   const [status, setStatus] = useState<AttestationStatus>(initialStatus);
   const [processing, setProcessing] = useState(false);
-
-  const preventNavigation = usePreventNavigation(
-    processing || ['confirming', 'attesting'].includes(status),
-  );
 
   const { sessionId } = session;
   const [backupMessage, setBackupMessage] = useState<IEncryptedMessage>();
@@ -90,18 +56,21 @@ export function Email({ session }: Props): JSX.Element {
   }, [secret, sessionId]);
 
   const handleSubmit = useCallback(
-    async (event) => {
+    async (event: FormEvent) => {
       event.preventDefault();
       setProcessing(true);
       setInputError(undefined);
       setFlowError(undefined);
+
+      const formData = new FormData(event.target as HTMLFormElement);
+      const emailInput = formData.get('email') as string;
 
       try {
         const { sessionId } = session;
 
         await session.listen(async (message) => {
           try {
-            setEmail(await requestAttestationEmail({ sessionId, message }));
+            await requestAttestationEmail({ sessionId, message });
             setStatus('requested');
           } catch (exception) {
             const { message } = exceptionToError(exception);
@@ -131,7 +100,7 @@ export function Email({ session }: Props): JSX.Element {
         setProcessing(false);
       }
     },
-    [emailInput, session],
+    [session],
   );
 
   const handleBackup = useCallback(async () => {
@@ -156,105 +125,15 @@ export function Email({ session }: Props): JSX.Element {
   }, []);
 
   return (
-    <section
-      className={cx(flowStyles.container, {
-        [flowStyles.processing]: processing,
-      })}
-    >
-      {processing && <Spinner />}
-
-      <h1 className={styles.heading}>Email Address Attestation</h1>
-
-      <Prompt
-        when={preventNavigation}
-        message="The email attestation process has already started. Are you sure you want to leave?"
-      />
-
-      <Explainer>
-        After entering your email address, please choose an Identity in your
-        wallet to associate with your email credential. We will email you a link
-        so that we can attest your credential.
-      </Explainer>
-
-      {status === 'none' && (
-        <form onSubmit={handleSubmit}>
-          <label>
-            Your email address
-            <input
-              className={styles.formInput}
-              onInput={handleInput}
-              value={emailInput}
-              type="email"
-              name="email"
-              required
-              maxLength={100}
-            />
-          </label>
-
-          <output className={styles.inputError} hidden={!inputError}>
-            {inputError}
-          </output>
-
-          <p>Validity: one year ({expiryDate})</p>
-
-          {flowError === 'closed' && <SigningErrorClosed />}
-
-          <button
-            type="submit"
-            className={flowStyles.ctaButton}
-            disabled={!emailInput}
-          >
-            Continue in wallet
-          </button>
-        </form>
-      )}
-
-      {status === 'requested' && (
-        <DetailedMessage
-          icon="spinner"
-          heading="Attestation process:"
-          message="Email sent"
-          details={`Email sent to ${email}. Please check your inbox and spam folder and click the link.`}
-        />
-      )}
-
-      {status === 'attesting' && <AttestationProcessAnchoring />}
-
-      {status === 'ready' && (
-        <Fragment>
-          <AttestationProcessReady />
-
-          <button
-            className={flowStyles.ctaButton}
-            type="button"
-            onClick={handleBackup}
-          >
-            Show credential in wallet
-          </button>
-        </Fragment>
-      )}
-
-      {flowError === 'unknown' && <AttestationErrorUnknown />}
-
-      {flowError === 'expired' && (
-        <DetailedMessage
-          icon="exclamation"
-          heading="Attestation error:"
-          message="This link has expired."
-        />
-      )}
-
-      {(flowError === 'unknown' || flowError === 'expired') && (
-        <button
-          type="button"
-          className={flowStyles.ctaButton}
-          onClick={handleTryAgainClick}
-        >
-          Try again
-        </button>
-      )}
-
-      <LinkBack />
-    </section>
+    <EmailTemplate
+      status={status}
+      processing={processing}
+      flowError={flowError}
+      inputError={inputError}
+      setInputError={setInputError}
+      handleSubmit={handleSubmit}
+      handleBackup={handleBackup}
+      handleTryAgainClick={handleTryAgainClick}
+    />
   );
 }
