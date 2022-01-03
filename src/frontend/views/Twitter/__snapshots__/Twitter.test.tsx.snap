@@ -42,7 +42,7 @@ exports[`TwitterTemplate should match snapshot with flowError=closed 1`] = `
         />
         <p>
           Validity: one year (
-          3.1.2023
+          1/3/2023
           )
         </p>
         <section
@@ -321,7 +321,7 @@ exports[`TwitterTemplate should match snapshot with status=none 1`] = `
         />
         <p>
           Validity: one year (
-          3.1.2023
+          1/3/2023
           )
         </p>
         <button
@@ -445,7 +445,7 @@ exports[`TwitterTemplate should match snapshot with status=requested 1`] = `
         />
         <p>
           Validity: one year (
-          3.1.2023
+          1/3/2023
           )
         </p>
         <button
