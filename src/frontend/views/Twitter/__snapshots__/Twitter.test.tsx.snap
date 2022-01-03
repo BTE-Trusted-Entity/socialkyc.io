@@ -1,0 +1,525 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`TwitterTemplate should match snapshot with flowError=closed 1`] = `
+<div>
+  <section
+    class="container"
+  >
+    <h1
+      class="heading"
+    >
+      Twitter Account Attestation
+    </h1>
+    <div
+      class="explainerContainer"
+    >
+      <button
+        aria-label="Toggle explanation"
+        class="showExplainer"
+        type="button"
+      />
+    </div>
+    <section>
+      <form>
+        <label>
+          Your Twitter handle
+          <span
+            class="twitterInputContainer"
+          >
+            <input
+              class="twitterInput"
+              maxlength="100"
+              name="twitterHandle"
+              required=""
+              type="text"
+              value=""
+            />
+          </span>
+        </label>
+        <output
+          class="inputError"
+          hidden=""
+        />
+        <p>
+          Validity: one year (
+          3.1.2023
+          )
+        </p>
+        <section
+          class="container"
+        >
+          <div
+            class="exclamation"
+          />
+          <h2
+            class="heading"
+          >
+            Signing error:
+          </h2>
+          <p
+            class="message"
+          >
+            Your wallet was closed before the request was signed.
+          </p>
+          <p>
+            Click “Continue in Wallet” to try again.
+          </p>
+        </section>
+        <button
+          class="ctaButton"
+          disabled=""
+          type="submit"
+        >
+          Continue in wallet
+        </button>
+      </form>
+    </section>
+    <a
+      class="link"
+      href="/"
+    >
+      Back to list
+    </a>
+  </section>
+</div>
+`;
+
+exports[`TwitterTemplate should match snapshot with flowError=unknown 1`] = `
+<div>
+  <section
+    class="container"
+  >
+    <h1
+      class="heading"
+    >
+      Twitter Account Attestation
+    </h1>
+    <div
+      class="explainerContainer"
+    >
+      <button
+        aria-label="Toggle explanation"
+        class="showExplainer"
+        type="button"
+      />
+    </div>
+    <section>
+      <section
+        class="container"
+      >
+        <div
+          class="exclamation"
+        />
+        <h2
+          class="heading"
+        >
+          Attestation error:
+        </h2>
+        <p
+          class="message"
+        >
+          Something went wrong!
+        </p>
+        <p>
+          Click “Try Again” button or reload the page or restart your browser.
+        </p>
+      </section>
+      <button
+        class="ctaButton"
+        type="button"
+      >
+        Try again
+      </button>
+    </section>
+    <a
+      class="link"
+      href="/"
+    >
+      Back to list
+    </a>
+  </section>
+</div>
+`;
+
+exports[`TwitterTemplate should match snapshot with status=attesting 1`] = `
+<div>
+  <section
+    class="container"
+  >
+    <h1
+      class="heading"
+    >
+      Twitter Account Attestation
+    </h1>
+    <div
+      class="explainerContainer"
+    >
+      <button
+        aria-label="Toggle explanation"
+        class="showExplainer"
+        type="button"
+      />
+    </div>
+    <section>
+      <section
+        class="container"
+      >
+        <div
+          class="spinner"
+        />
+        <h2
+          class="heading"
+        >
+          Attestation process:
+        </h2>
+        <p
+          class="message"
+        >
+          Anchoring credential on KILT blockchain
+        </p>
+        <p>
+          Please leave this tab open until your credential is attested.
+        </p>
+      </section>
+    </section>
+    <a
+      class="link"
+      href="/"
+    >
+      Back to list
+    </a>
+  </section>
+</div>
+`;
+
+exports[`TwitterTemplate should match snapshot with status=confirming 1`] = `
+<div>
+  <section
+    class="container"
+  >
+    <h1
+      class="heading"
+    >
+      Twitter Account Attestation
+    </h1>
+    <div
+      class="explainerContainer"
+    >
+      <button
+        aria-label="Toggle explanation"
+        class="showExplainer"
+        type="button"
+      />
+    </div>
+    <section>
+      <section
+        class="container"
+      >
+        <div
+          class="spinner"
+        />
+        <h2
+          class="heading"
+        >
+          Attestation process:
+        </h2>
+        <p
+          class="message"
+        >
+          Starting
+        </p>
+        <p>
+          Your credential will be attested as soon as you Tweet the text below.
+        </p>
+      </section>
+      <div>
+        <label
+          for="tweet"
+        >
+          Please tweet this message:
+        </label>
+        <p
+          class="tweetContainer"
+        >
+          <textarea
+            class="tweetInput"
+            id="tweet"
+            readonly=""
+          >
+            I use SocialKYC to represent my internet identity. @social_kyc_tech 0123456789
+          </textarea>
+          <button
+            class="copy"
+            type="button"
+          >
+            copy to clipboard
+          </button>
+        </p>
+        <p
+          class="ctaLine"
+        >
+          <a
+            class="ctaLink"
+            href="https://twitter.com/"
+            rel="noreferrer"
+            target="_blank"
+          >
+            Go to Twitter
+          </a>
+        </p>
+      </div>
+    </section>
+    <a
+      class="link"
+      href="/"
+    >
+      Back to list
+    </a>
+  </section>
+</div>
+`;
+
+exports[`TwitterTemplate should match snapshot with status=none 1`] = `
+<div>
+  <section
+    class="container"
+  >
+    <h1
+      class="heading"
+    >
+      Twitter Account Attestation
+    </h1>
+    <div
+      class="explainerContainer"
+    >
+      <button
+        aria-label="Toggle explanation"
+        class="showExplainer"
+        type="button"
+      />
+    </div>
+    <section>
+      <form>
+        <label>
+          Your Twitter handle
+          <span
+            class="twitterInputContainer"
+          >
+            <input
+              class="twitterInput"
+              maxlength="100"
+              name="twitterHandle"
+              required=""
+              type="text"
+              value=""
+            />
+          </span>
+        </label>
+        <output
+          class="inputError"
+          hidden=""
+        />
+        <p>
+          Validity: one year (
+          3.1.2023
+          )
+        </p>
+        <button
+          class="ctaButton"
+          disabled=""
+          type="submit"
+        >
+          Continue in wallet
+        </button>
+      </form>
+    </section>
+    <a
+      class="link"
+      href="/"
+    >
+      Back to list
+    </a>
+  </section>
+</div>
+`;
+
+exports[`TwitterTemplate should match snapshot with status=ready 1`] = `
+<div>
+  <section
+    class="container"
+  >
+    <h1
+      class="heading"
+    >
+      Twitter Account Attestation
+    </h1>
+    <div
+      class="explainerContainer"
+    >
+      <button
+        aria-label="Toggle explanation"
+        class="showExplainer"
+        type="button"
+      />
+    </div>
+    <section>
+      <section
+        class="container"
+      >
+        <div
+          class="checkmark"
+        />
+        <h2
+          class="heading"
+        >
+          Attestation process:
+        </h2>
+        <p
+          class="message"
+        >
+          Credential is ready
+        </p>
+        <p>
+          We recommend that you back up your credential now.
+        </p>
+      </section>
+      <button
+        class="ctaButton"
+        type="button"
+      >
+        Show credential in wallet
+      </button>
+    </section>
+    <a
+      class="link"
+      href="/"
+    >
+      Back to list
+    </a>
+  </section>
+</div>
+`;
+
+exports[`TwitterTemplate should match snapshot with status=requested 1`] = `
+<div>
+  <section
+    class="container processing"
+  >
+    <div
+      class="spinner"
+    />
+    <h1
+      class="heading"
+    >
+      Twitter Account Attestation
+    </h1>
+    <div
+      class="explainerContainer"
+    >
+      <button
+        aria-label="Toggle explanation"
+        class="showExplainer"
+        type="button"
+      />
+    </div>
+    <section>
+      <form>
+        <label>
+          Your Twitter handle
+          <span
+            class="twitterInputContainer"
+          >
+            <input
+              class="twitterInput"
+              maxlength="100"
+              name="twitterHandle"
+              required=""
+              type="text"
+              value=""
+            />
+          </span>
+        </label>
+        <output
+          class="inputError"
+          hidden=""
+        />
+        <p>
+          Validity: one year (
+          3.1.2023
+          )
+        </p>
+        <button
+          class="ctaButton"
+          disabled=""
+          type="submit"
+        >
+          Continue in wallet
+        </button>
+      </form>
+    </section>
+    <a
+      class="link"
+      href="/"
+    >
+      Back to list
+    </a>
+  </section>
+</div>
+`;
+
+exports[`TwitterTemplate should match snapshot with status=unconfirmed 1`] = `
+<div>
+  <section
+    class="container"
+  >
+    <h1
+      class="heading"
+    >
+      Twitter Account Attestation
+    </h1>
+    <div
+      class="explainerContainer"
+    >
+      <button
+        aria-label="Toggle explanation"
+        class="showExplainer"
+        type="button"
+      />
+    </div>
+    <section>
+      <section
+        class="container"
+      >
+        <div
+          class="exclamation"
+        />
+        <h2
+          class="heading"
+        >
+          Attestation error:
+        </h2>
+        <p
+          class="message"
+        >
+          Tweet not found
+        </p>
+        <p>
+          SocialKYC could not find your tweet. Please make sure you tweet the text exactly as provided. You can use the copy button to avoid any typos.
+        </p>
+      </section>
+      <button
+        class="ctaButton"
+        type="button"
+      >
+        Try again
+      </button>
+    </section>
+    <a
+      class="link"
+      href="/"
+    >
+      Back to list
+    </a>
+  </section>
+</div>
+`;
