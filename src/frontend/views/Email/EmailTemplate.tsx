@@ -63,6 +63,19 @@ export function EmailTemplate({
     [setInputError],
   );
 
+  const handleBlur = useCallback(() => {
+    const trimmed = emailInput.trim();
+    if (trimmed !== emailInput) {
+      setEmailInput(trimmed);
+    }
+  }, [emailInput]);
+
+  const handleKeyPress = useCallback((event) => {
+    if (event.key === 'Enter') {
+      event.target.blur();
+    }
+  }, []);
+
   const preventNavigation = usePreventNavigation(
     processing || ['confirming', 'attesting'].includes(status),
   );
@@ -100,6 +113,8 @@ export function EmailTemplate({
               name="email"
               required
               maxLength={100}
+              onBlur={handleBlur}
+              onKeyPress={handleKeyPress}
             />
           </label>
 
