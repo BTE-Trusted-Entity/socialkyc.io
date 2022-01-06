@@ -63,10 +63,22 @@ function Welcome() {
   );
 }
 
+function Unsupported() {
+  return (
+    <section className={styles.unsupported}>
+      <p>
+        Attesting credentials in SocialKYC requires a wallet extension. You seem
+        to use a mobile browser that does not support extensions.
+      </p>
+      <p>Please visit SocialKYC using a browser on your desktop computer.</p>
+    </section>
+  );
+}
+
 function Install() {
   const browser = detect();
   if (!browser) {
-    return null; // TODO: show error
+    return <Unsupported />;
   }
 
   const { name, os } = browser;
@@ -76,8 +88,6 @@ function Install() {
 
   const showWebstoreLink = isDesktop && isChromeOrFirefox;
   const showWebsiteLink = isDesktop && !isChromeOrFirefox;
-
-  // TODO: Handle case of mobile device
 
   if (showWebstoreLink) {
     return (
@@ -118,7 +128,7 @@ function Install() {
     );
   }
 
-  return null;
+  return <Unsupported />;
 }
 
 function GetCredentials() {

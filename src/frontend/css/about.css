@@ -26,12 +26,12 @@ figure img {
 }
 
 figcaption {
-  display: inline;
-  padding: 0.25rem;
+  padding-block: 0.5rem;
 }
 
 #about img {
   display: block;
   margin: auto;
   box-shadow: 2px 2px 2px 0 rgb(var(--color-black-rgb) / 30%);
+  max-width: 100%;
 }
