@@ -59,6 +59,12 @@
   text-align: center;
 }
 
+.unsupported {
+  composes: install;
+  padding-bottom: 0;
+  background-size: auto, 0;
+}
+
 .textLink {
   color: var(--color-magenta);
   text-decoration: none;

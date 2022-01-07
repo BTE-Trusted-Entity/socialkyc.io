@@ -7,6 +7,7 @@ export const email: string;
 export const buttonPrimary: string;
 export const buttonLink: string;
 export const install: string;
+export const unsupported: string;
 export const textLink: string;
 export const webstore: string;
 export const chrome: string;

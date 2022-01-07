@@ -12,10 +12,46 @@
 
 .leftHeadline {
   width: 70%;
-  font-size: 4.25rem;
+  font-size: 7vw;
   padding-top: 30%;
   margin: 0;
   background: url('../images/404.svg') no-repeat center top/contain;
+}
+
+@media screen and (min-width: 800px) {
+  .leftHeadline {
+    font-size: 2.125rem;
+  }
+}
+
+@media screen and (min-width: 950px) {
+  .leftHeadline {
+    font-size: 2.625rem;
+  }
+}
+
+@media screen and (min-width: 1200px) {
+  .leftHeadline {
+    font-size: 3.25rem;
+  }
+}
+
+@media screen and (min-width: 1300px) {
+  .leftHeadline {
+    font-size: 3.625rem;
+  }
+}
+
+@media screen and (min-width: 1400px) {
+  .leftHeadline {
+    font-size: 4rem;
+  }
+}
+
+@media screen and (min-width: 1500px) {
+  .leftHeadline {
+    font-size: 4.25rem;
+  }
 }
 
 .buttonPrimary {
@@ -58,46 +94,4 @@
 .rightHeadline404Bottom {
   padding-left: 6.5em;
   font-size: 1.5em;
-}
-
-@media screen and (max-width: 1500px) {
-  .leftHeadline {
-    font-size: 4rem;
-  }
-}
-
-@media screen and (max-width: 1400px) {
-  .leftHeadline {
-    font-size: 3.75rem;
-  }
-}
-
-@media screen and (max-width: 1300px) {
-  .leftHeadline {
-    font-size: 3.5rem;
-  }
-}
-
-@media screen and (max-width: 1200px) {
-  .leftHeadline {
-    font-size: 3rem;
-  }
-}
-
-@media screen and (max-width: 950px) {
-  .leftHeadline {
-    font-size: 2.5rem;
-  }
-}
-
-@media screen and (max-width: 800px) {
-  .leftHeadline {
-    font-size: 2rem;
-  }
-}
-
-@media screen and (max-width: 800px) {
-  .leftHeadline {
-    font-size: 1.5rem;
-  }
 }
