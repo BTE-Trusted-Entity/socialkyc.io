@@ -5,6 +5,9 @@ import '../../components/useCopyButton/useCopyButton.mock';
 
 import { EmailTemplate } from './EmailTemplate';
 
+jest.useFakeTimers('modern');
+jest.setSystemTime(new Date('2022-01-03T12:00:00'));
+
 const actions = {
   handleSubmit: jest.fn(),
   handleBackup: jest.fn(),

@@ -14,7 +14,7 @@ import * as styles from './Email.module.css';
 import { usePreventNavigation } from '../../utilities/usePreventNavigation';
 import { Spinner } from '../../components/Spinner/Spinner';
 import { Explainer } from '../../components/Explainer/Explainer';
-import { expiryDate } from '../../utilities/expiryDate';
+import { ExpiryDate } from '../../components/ExpiryDate/ExpiryDate';
 import { SigningErrorClosed } from '../../components/SigningErrorClosed/SigningErrorClosed';
 import { DetailedMessage } from '../../components/DetailedMessage/DetailedMessage';
 import { AttestationProcessAnchoring } from '../../components/AttestationProcessAnchoring/AttestationProcessAnchoring';
@@ -122,7 +122,9 @@ export function EmailTemplate({
             {inputError}
           </output>
 
-          <p>Validity: one year ({expiryDate})</p>
+          <p>
+            Validity: one year (<ExpiryDate />)
+          </p>
 
           {flowError === 'closed' && <SigningErrorClosed />}
 
