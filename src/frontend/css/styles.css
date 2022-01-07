@@ -257,3 +257,9 @@ p {
   background: var(--color-magenta);
   border-radius: 0.375rem;
 }
+
+@supports not (aspect-ratio: 545 / 570) {
+  .rightContainer::before {
+    padding-bottom: 100%;
+  }
+}
