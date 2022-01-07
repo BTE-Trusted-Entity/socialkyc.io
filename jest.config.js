@@ -1,5 +1,9 @@
 export default {
   coverageProvider: 'v8',
+  // A map from regular expressions to module names that allow to stub out resources with a single module
+  moduleNameMapper: {
+    '\\.css$': '<rootDir>/src/testing/identity-obj-proxy.js',
+  },
   // The test environment that will be used for testing
   testEnvironment: 'jsdom',
   // A map from regular expressions to paths to transformers
