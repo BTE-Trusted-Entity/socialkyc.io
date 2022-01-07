@@ -68,7 +68,7 @@ function Unsupported() {
     <section className={styles.unsupported}>
       <p>
         Attesting credentials in SocialKYC requires a wallet extension. You seem
-        to use a mobile browser that does not support extensions.
+        to be using a mobile browser that does not support extensions.
       </p>
       <p>Please visit SocialKYC using a browser on your desktop computer.</p>
     </section>
