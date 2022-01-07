@@ -189,7 +189,7 @@ function Connect({ setSession }: { setSession: (s: Session) => void }) {
           [styles.processing]: processing,
         })}
       >
-        {!error && <p>Please authorize access to your wallet</p>}
+        {!error && <p>Please authorize access to your wallet.</p>}
 
         {error === 'closed' && (
           <DetailedMessage
