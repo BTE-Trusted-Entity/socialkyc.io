@@ -67,7 +67,7 @@
     "@storybook/addon-viewport": "6.3.12",
     "@storybook/addons": "6.3.12",
     "@storybook/builder-webpack5": "6.3.12",
-    "@storybook/manager-webpack5": "6.3.12",
+    "@storybook/manager-webpack5": "6.4.9",
     "@storybook/react": "6.3.12",
     "@testing-library/dom": "^8.11.1",
     "@testing-library/jest-dom": "^5.16.1",
