@@ -4,6 +4,8 @@ export default {
   moduleNameMapper: {
     '\\.css$': '<rootDir>/src/testing/identity-obj-proxy.js',
   },
+  // A list of paths to modules that run some code to configure or set up the testing framework before each test
+  setupFilesAfterEnv: ['<rootDir>/src/testing/jest.setup.ts'],
   // The test environment that will be used for testing
   testEnvironment: 'jsdom',
   // A map from regular expressions to paths to transformers

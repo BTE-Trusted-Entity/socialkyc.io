@@ -4,7 +4,7 @@ import { useCopyButton } from './useCopyButton';
 
 jest.mock('./useCopyButton');
 
-(useCopyButton as jest.Mock).mockImplementation(() => ({
+jest.mocked(useCopyButton).mockImplementation(() => ({
   supported: true,
   handleCopyClick: jest.fn(),
   className: 'copy',

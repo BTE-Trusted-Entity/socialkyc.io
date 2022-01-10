@@ -11,5 +11,8 @@
     "jsx": "react-jsx",
     "esModuleInterop": true,
     "skipLibCheck": true
-  }
+  },
+  "include": [
+    "./src/testing/jest.setup.ts"
+  ]
 }

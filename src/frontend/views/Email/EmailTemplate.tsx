@@ -85,6 +85,7 @@ export function EmailTemplate({
       className={cx(flowStyles.container, {
         [flowStyles.processing]: processing,
       })}
+      aria-busy={processing}
     >
       {processing && <Spinner />}
 

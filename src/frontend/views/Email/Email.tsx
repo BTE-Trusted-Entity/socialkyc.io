@@ -5,12 +5,9 @@ import { IEncryptedMessage } from '@kiltprotocol/types';
 import { Session } from '../../utilities/session';
 import { exceptionToError } from '../../utilities/exceptionToError';
 
-import { attestEmail } from '../../../backend/email/attestationEmailApi';
-import { confirmEmail } from '../../../backend/email/confirmEmailApi';
-import { quoteEmail } from '../../../backend/email/quoteEmailApi';
-import { requestAttestationEmail } from '../../../backend/email/sendEmailApi';
 import { paths } from '../../paths';
 
+import { useEmailApi } from './useEmailApi';
 import { AttestationStatus, EmailTemplate, FlowError } from './EmailTemplate';
 
 interface Props {
@@ -30,7 +27,7 @@ export function Email({ session }: Props): JSX.Element {
   const [status, setStatus] = useState<AttestationStatus>(initialStatus);
   const [processing, setProcessing] = useState(false);
 
-  const { sessionId } = session;
+  const emailApi = useEmailApi(session.sessionId);
   const [backupMessage, setBackupMessage] = useState<IEncryptedMessage>();
   useEffect(() => {
     if (!secret) {
@@ -38,7 +35,7 @@ export function Email({ session }: Props): JSX.Element {
     }
     (async () => {
       try {
-        await confirmEmail({ secret, sessionId });
+        await emailApi.confirm({ secret });
         setStatus('attesting');
       } catch {
         setStatus('error');
@@ -46,14 +43,14 @@ export function Email({ session }: Props): JSX.Element {
         return;
       }
       try {
-        setBackupMessage(await attestEmail({ sessionId }));
+        setBackupMessage(await emailApi.attest({}));
         setStatus('ready');
       } catch {
         setStatus('error');
         setFlowError('unknown');
       }
     })();
-  }, [secret, sessionId]);
+  }, [emailApi, secret]);
 
   const handleSubmit = useCallback(
     async (event: FormEvent) => {
@@ -66,11 +63,9 @@ export function Email({ session }: Props): JSX.Element {
       const emailInput = formData.get('email') as string;
 
       try {
-        const { sessionId } = session;
-
         await session.listen(async (message) => {
           try {
-            await requestAttestationEmail({ sessionId, message });
+            await emailApi.requestAttestation({ message });
             setStatus('requested');
           } catch (exception) {
             const { message } = exceptionToError(exception);
@@ -86,9 +81,8 @@ export function Email({ session }: Props): JSX.Element {
           }
         });
 
-        const message = await quoteEmail({
+        const message = await emailApi.quote({
           email: emailInput,
-          sessionId,
         });
 
         await session.send(message);
@@ -100,7 +94,7 @@ export function Email({ session }: Props): JSX.Element {
         setProcessing(false);
       }
     },
-    [session],
+    [emailApi, session],
   );
 
   const handleBackup = useCallback(async () => {

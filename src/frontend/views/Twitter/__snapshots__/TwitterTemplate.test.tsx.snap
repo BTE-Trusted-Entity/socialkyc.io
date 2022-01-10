@@ -3,6 +3,7 @@
 exports[`TwitterTemplate should match snapshot with flowError=closed 1`] = `
 <div>
   <section
+    aria-busy="false"
     class="container"
   >
     <h1
@@ -87,6 +88,7 @@ exports[`TwitterTemplate should match snapshot with flowError=closed 1`] = `
 exports[`TwitterTemplate should match snapshot with flowError=unknown 1`] = `
 <div>
   <section
+    aria-busy="false"
     class="container"
   >
     <h1
@@ -144,6 +146,7 @@ exports[`TwitterTemplate should match snapshot with flowError=unknown 1`] = `
 exports[`TwitterTemplate should match snapshot with status=attesting 1`] = `
 <div>
   <section
+    aria-busy="false"
     class="container"
   >
     <h1
@@ -195,6 +198,7 @@ exports[`TwitterTemplate should match snapshot with status=attesting 1`] = `
 exports[`TwitterTemplate should match snapshot with status=confirming 1`] = `
 <div>
   <section
+    aria-busy="false"
     class="container"
   >
     <h1
@@ -282,6 +286,7 @@ exports[`TwitterTemplate should match snapshot with status=confirming 1`] = `
 exports[`TwitterTemplate should match snapshot with status=none 1`] = `
 <div>
   <section
+    aria-busy="false"
     class="container"
   >
     <h1
@@ -346,6 +351,7 @@ exports[`TwitterTemplate should match snapshot with status=none 1`] = `
 exports[`TwitterTemplate should match snapshot with status=ready 1`] = `
 <div>
   <section
+    aria-busy="false"
     class="container"
   >
     <h1
@@ -403,6 +409,7 @@ exports[`TwitterTemplate should match snapshot with status=ready 1`] = `
 exports[`TwitterTemplate should match snapshot with status=requested 1`] = `
 <div>
   <section
+    aria-busy="true"
     class="container processing"
   >
     <div
@@ -470,6 +477,7 @@ exports[`TwitterTemplate should match snapshot with status=requested 1`] = `
 exports[`TwitterTemplate should match snapshot with status=unconfirmed 1`] = `
 <div>
   <section
+    aria-busy="false"
     class="container"
   >
     <h1
