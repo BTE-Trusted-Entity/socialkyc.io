@@ -81,9 +81,7 @@ export function Email({ session }: Props): JSX.Element {
           }
         });
 
-        const message = await emailApi.quote({
-          email: emailInput,
-        });
+        const message = await emailApi.quote({ email: emailInput });
 
         await session.send(message);
       } catch (error) {
