@@ -4,11 +4,7 @@ import { IEncryptedMessage } from '@kiltprotocol/types';
 import { Session } from '../../utilities/session';
 import { exceptionToError } from '../../utilities/exceptionToError';
 
-import { confirmTwitter } from '../../../backend/twitter/confirmTwitterApi';
-import { attestTwitter } from '../../../backend/twitter/attestationTwitterApi';
-import { quoteTwitter } from '../../../backend/twitter/quoteTwitterApi';
-import { requestAttestationTwitter } from '../../../backend/twitter/requestAttestationTwitterApi';
-
+import { useTwitterApi } from './useTwitterApi';
 import {
   AttestationStatus,
   FlowError,
@@ -31,6 +27,8 @@ export function Twitter({ session }: Props): JSX.Element {
 
   const [backupMessage, setBackupMessage] = useState<IEncryptedMessage>();
 
+  const twitterApi = useTwitterApi(session.sessionId);
+
   const handleSubmit = useCallback(
     async (event: FormEvent) => {
       try {
@@ -50,22 +48,17 @@ export function Twitter({ session }: Props): JSX.Element {
           return;
         }
 
-        const { sessionId } = session;
-
         await session.listen(async (message) => {
           try {
-            const { secret } = await requestAttestationTwitter({
-              sessionId,
-              message,
-            });
+            const { secret } = await twitterApi.requestAttestation({ message });
             setSecret(secret);
             setStatus('confirming');
             setProcessing(false);
 
-            await confirmTwitter({ sessionId });
+            await twitterApi.confirm({});
             setStatus('attesting');
 
-            const attestationMessage = await attestTwitter({ sessionId });
+            const attestationMessage = await twitterApi.attest({});
             setBackupMessage(attestationMessage);
 
             setStatus('ready');
@@ -81,10 +74,7 @@ export function Twitter({ session }: Props): JSX.Element {
           }
         });
 
-        const message = await quoteTwitter({
-          username: twitterHandle,
-          sessionId,
-        });
+        const message = await twitterApi.quote({ username: twitterHandle });
 
         setStatus('requested');
         await session.send(message);
@@ -96,7 +86,7 @@ export function Twitter({ session }: Props): JSX.Element {
         setProcessing(false);
       }
     },
-    [session],
+    [session, twitterApi],
   );
 
   const handleBackup = useCallback(async () => {

@@ -87,6 +87,7 @@ export function TwitterTemplate({
       className={cx(flowStyles.container, {
         [flowStyles.processing]: processing,
       })}
+      aria-busy={processing}
     >
       {processing && <Spinner />}
 

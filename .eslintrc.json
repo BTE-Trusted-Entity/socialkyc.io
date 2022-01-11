@@ -17,7 +17,7 @@
     }
   },
   "rules": {
-    "no-restricted-globals": ["error", "describe", "it", "jest"],
+    "no-restricted-globals": ["error", "describe", "it", "jest", "beforeEach", "afterEach"],
     "react/jsx-uses-react": "off",
     "react/react-in-jsx-scope": "off",
     "react-hooks/exhaustive-deps": "error",
