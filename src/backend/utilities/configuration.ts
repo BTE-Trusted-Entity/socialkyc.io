@@ -59,4 +59,8 @@ export const configuration = {
   twitterSecretBearerToken,
   httpAuthPassword,
   storeDidAndCTypes,
+  discord: {
+    clientId: '931209930961199154',
+    clientSecret: 'dE-Oi2MIFggprNkPU6i4Y6iHz1Rvg9Dq',
+  },
 };
