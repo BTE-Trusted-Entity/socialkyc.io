@@ -40,10 +40,9 @@ export async function startAttestation(session: Session): Promise<Attestation> {
 export async function getAttestationMessage(
   session: Session,
 ): Promise<IEncryptedMessage> {
-  const attestation = session.attestationPromise ? await session.attestationPromise : await startAttestation(session);
-  }
-
-  const attestation = await startAttestation(session);
+  const attestation = session.attestationPromise
+    ? await session.attestationPromise
+    : await startAttestation(session);
 
   return encryptMessageBody(session.encryptionKeyId, {
     content: { attestation },
