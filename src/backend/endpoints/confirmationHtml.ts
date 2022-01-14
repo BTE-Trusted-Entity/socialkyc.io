@@ -44,7 +44,7 @@ async function handler(
     setSession({ ...session, confirmed: true });
 
     getAttestationMessage(session);
-    logger.debug('Attestation started');
+    logger.debug('Email attestation started');
   } catch (exception) {
     // no exceptions should be thrown since they will not be displayed nicely on the frontend
 
