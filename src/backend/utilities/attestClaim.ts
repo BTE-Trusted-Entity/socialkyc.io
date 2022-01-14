@@ -40,14 +40,7 @@ export async function startAttestation(session: Session): Promise<Attestation> {
 export async function getAttestationMessage(
   session: Session,
 ): Promise<IEncryptedMessage> {
-  if (session.attestationPromise) {
-    const attestation = await session.attestationPromise;
-
-    // for email attestions we need to encrypt the migrated session data with the current session encryption key
-    return encryptMessageBody(session.encryptionKeyId, {
-      content: { attestation },
-      type: MessageBodyType.SUBMIT_ATTESTATION,
-    });
+  const attestation = session.attestationPromise ? await session.attestationPromise : await startAttestation(session);
   }
 
   const attestation = await startAttestation(session);
