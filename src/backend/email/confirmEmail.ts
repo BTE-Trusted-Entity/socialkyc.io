@@ -31,13 +31,13 @@ async function handler(
   h: ResponseToolkit,
 ): Promise<ResponseObject> {
   const { logger } = request;
-  logger.debug('Email confirmation started');
+  logger.debug('Session data migration started');
 
   const { secret, sessionId } = request.payload as Input;
 
   // This is the initial session in the first tab the user has open
   const firstSession = getSessionBySecret(secret);
-  const { requestForAttestation } = firstSession;
+  const { requestForAttestation, attestationPromise, confirmed } = firstSession;
   if (!requestForAttestation) {
     throw Boom.notFound('requestForAttestation not found');
   }
@@ -48,13 +48,20 @@ async function handler(
   // Clicking the confirmation link in the email opens a new tab with a new session
   const currentSession = getSession({ sessionId });
 
-  // carry over the request to the current session and clean up the initial one
-  setSession({ ...currentSession, requestForAttestation, confirmed: true });
+  // carry over the request and attestation promise to the current session and clean up the initial one
+  setSession({
+    ...currentSession,
+    requestForAttestation,
+    attestationPromise,
+    confirmed,
+  });
   delete firstSession.requestForAttestation;
+  delete firstSession.attestationPromise;
+  delete firstSession.confirmed;
   setSession(firstSession);
   deleteSecret(secret);
 
-  logger.debug('Email confirmation completed');
+  logger.debug('Session data migration complete');
 
   return h.response(<Output>undefined);
 }

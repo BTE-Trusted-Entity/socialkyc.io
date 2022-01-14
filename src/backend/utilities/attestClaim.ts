@@ -1,6 +1,5 @@
 import Boom from '@hapi/boom';
 import {
-  IDidKeyDetails,
   IEncryptedMessage,
   IRequestForAttestation,
   MessageBodyType,
@@ -14,8 +13,7 @@ import { getSessionWithDid, Session, setSession } from './sessionStorage';
 
 export async function attestClaim(
   requestForAttestation: IRequestForAttestation,
-  encryptionKeyId: IDidKeyDetails['id'],
-): Promise<IEncryptedMessage> {
+): Promise<Attestation> {
   const attestation = Attestation.fromRequestAndDid(
     requestForAttestation,
     configuration.did,
@@ -24,30 +22,30 @@ export async function attestClaim(
   const tx = await attestation.store();
   await signAndSubmit(tx);
 
-  return encryptMessageBody(encryptionKeyId, {
-    content: { attestation },
-    type: MessageBodyType.SUBMIT_ATTESTATION,
-  });
+  return attestation;
+}
+
+export async function startAttestation(session: Session): Promise<Attestation> {
+  const { requestForAttestation, confirmed } = getSessionWithDid(session);
+  if (!requestForAttestation || !confirmed) {
+    throw Boom.notFound('Confirmed requestForAttestation not found');
+  }
+
+  const attestationPromise = attestClaim(requestForAttestation);
+  setSession({ ...session, attestationPromise });
+
+  return attestationPromise;
 }
 
 export async function getAttestationMessage(
   session: Session,
 ): Promise<IEncryptedMessage> {
-  if (session.attestedMessagePromise) {
-    return session.attestedMessagePromise;
-  }
+  const attestation = session.attestationPromise
+    ? await session.attestationPromise
+    : await startAttestation(session);
 
-  const { encryptionKeyId, requestForAttestation, confirmed } =
-    getSessionWithDid(session);
-  if (!requestForAttestation || !confirmed) {
-    throw Boom.notFound('Confirmed requestForAttestation not found');
-  }
-
-  const attestedMessagePromise = attestClaim(
-    requestForAttestation,
-    encryptionKeyId,
-  );
-  setSession({ ...session, attestedMessagePromise });
-
-  return attestedMessagePromise;
+  return encryptMessageBody(session.encryptionKeyId, {
+    content: { attestation },
+    type: MessageBodyType.SUBMIT_ATTESTATION,
+  });
 }

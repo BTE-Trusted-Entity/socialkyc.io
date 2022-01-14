@@ -175,7 +175,6 @@ function Connect({ setSession }: { setSession: (s: Session) => void }) {
           setError('unknown');
           console.error(exception);
         }
-      } finally {
         setProcessing(false);
       }
     },
@@ -249,7 +248,8 @@ function AlmostThere(): JSX.Element {
     <Fragment>
       <h1 className={styles.heading}>Almost there!</h1>
       <p>
-        Please connect to your wallet again to continue the attestation process.
+        Please connect to your wallet again to see the status of the attestation
+        process.
       </p>
     </Fragment>
   );

@@ -113,7 +113,7 @@ async function handler(
   const { requestForAttestation } = content;
 
   const session = getSession(request.payload as PayloadWithSession);
-  delete session.attestedMessagePromise;
+  delete session.attestationPromise;
   setSession({ ...session, requestForAttestation, confirmed: false });
   logger.debug('Email request attestation cached');
 

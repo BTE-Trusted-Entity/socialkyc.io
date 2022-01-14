@@ -30,7 +30,6 @@ async function handler(
   h: ResponseToolkit,
 ): Promise<ResponseObject> {
   const { logger } = request;
-  logger.debug('Email attestation started');
 
   const session = getSession(request.payload as PayloadWithSession);
 
