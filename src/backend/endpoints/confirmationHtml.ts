@@ -11,7 +11,7 @@ import { emailCType } from '../email/emailCType';
 
 import { configuration } from '../utilities/configuration';
 import { getSessionBySecret, setSession } from '../utilities/sessionStorage';
-import { getAttestationMessage } from '../utilities/attestClaim';
+import { startAttestation } from '../utilities/attestClaim';
 
 import { exceptionToError } from '../../frontend/utilities/exceptionToError';
 
@@ -43,7 +43,7 @@ async function handler(
 
     setSession({ ...session, confirmed: true });
 
-    getAttestationMessage(session);
+    startAttestation(session);
     logger.debug('Email attestation started');
   } catch (exception) {
     // no exceptions should be thrown since they will not be displayed nicely on the frontend

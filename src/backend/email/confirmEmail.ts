@@ -37,8 +37,7 @@ async function handler(
 
   // This is the initial session in the first tab the user has open
   const firstSession = getSessionBySecret(secret);
-  const { requestForAttestation, attestedMessagePromise, confirmed } =
-    firstSession;
+  const { requestForAttestation, attestationPromise, confirmed } = firstSession;
   if (!requestForAttestation) {
     throw Boom.notFound('requestForAttestation not found');
   }
@@ -53,11 +52,11 @@ async function handler(
   setSession({
     ...currentSession,
     requestForAttestation,
-    attestedMessagePromise,
+    attestationPromise,
     confirmed,
   });
   delete firstSession.requestForAttestation;
-  delete firstSession.attestedMessagePromise;
+  delete firstSession.attestationPromise;
   delete firstSession.confirmed;
   setSession(firstSession);
   deleteSecret(secret);

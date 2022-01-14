@@ -3,10 +3,10 @@ import Boom from '@hapi/boom';
 import {
   IDidDetails,
   IDidKeyDetails,
-  IEncryptedMessage,
   IRequestForAttestation,
 } from '@kiltprotocol/types';
 import { randomAsNumber } from '@polkadot/util-crypto';
+import { Attestation } from '@kiltprotocol/core';
 
 export interface Session {
   sessionId: string;
@@ -16,7 +16,7 @@ export interface Session {
   didConfirmed?: boolean;
   requestForAttestation?: IRequestForAttestation;
   confirmed?: boolean;
-  attestedMessagePromise?: Promise<IEncryptedMessage>;
+  attestationPromise?: Promise<Attestation>;
   requestChallenge?: string;
 }
 
