@@ -9,12 +9,7 @@ import { Attestation } from '@kiltprotocol/core';
 import { configuration } from './configuration';
 import { signAndSubmit } from './signAndSubmit';
 import { encryptMessageBody } from './encryptMessage';
-import {
-  getSession,
-  getSessionWithDid,
-  Session,
-  setSession,
-} from './sessionStorage';
+import { getSessionWithDid, Session, setSession } from './sessionStorage';
 
 export async function attestClaim(
   requestForAttestation: IRequestForAttestation,
@@ -30,7 +25,7 @@ export async function attestClaim(
   return attestation;
 }
 
-export function startAttestation(session: Session): void {
+export async function startAttestation(session: Session): Promise<Attestation> {
   const { requestForAttestation, confirmed } = getSessionWithDid(session);
   if (!requestForAttestation || !confirmed) {
     throw Boom.notFound('Confirmed requestForAttestation not found');
@@ -38,6 +33,8 @@ export function startAttestation(session: Session): void {
 
   const attestationPromise = attestClaim(requestForAttestation);
   setSession({ ...session, attestationPromise });
+
+  return attestationPromise;
 }
 
 export async function getAttestationMessage(
@@ -53,11 +50,7 @@ export async function getAttestationMessage(
     });
   }
 
-  startAttestation(session);
-  const { sessionId } = session;
-  const sessionWithAttestationPromise = getSession({ sessionId });
-  const { attestationPromise } = sessionWithAttestationPromise;
-  const attestation = await attestationPromise;
+  const attestation = await startAttestation(session);
 
   return encryptMessageBody(session.encryptionKeyId, {
     content: { attestation },
