@@ -19,7 +19,7 @@
     "dev-start": "echo '{\"type\":\"commonjs\"}' > dist/package.json && supervisor --watch dist/backend/ dist/backend/server.js"
   },
   "dependencies": {
-    "@aws-sdk/client-ses": "^3.46.0",
+    "@aws-sdk/client-ses": "^3.47.0",
     "@hapi/basic": "^6.0.0",
     "@hapi/boom": "^9.1.4",
     "@hapi/hapi": "^20.2.1",
@@ -36,7 +36,7 @@
     "@polkadot/util-crypto": "^8.2.2",
     "classnames": "^2.3.1",
     "detect-browser": "^5.3.0",
-    "dotenv": "^11.0.0",
+    "dotenv": "^14.2.0",
     "exiting": "^6.0.1",
     "hapi-dev-errors": "^4.0.0",
     "hapi-gate": "^2.1.0",
