@@ -76,7 +76,7 @@ export async function listenForTweets(): Promise<void> {
 
   // do not await, it runs forever
   onTweet(({ user: { screen_name }, full_text }) => {
-    const userListeners = tweetsListeners.get(screen_name);
+    const userListeners = tweetsListeners.get(screen_name.toLowerCase());
     if (!userListeners) {
       return;
     }
