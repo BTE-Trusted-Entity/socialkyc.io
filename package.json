@@ -19,7 +19,7 @@
     "dev-start": "echo '{\"type\":\"commonjs\"}' > dist/package.json && supervisor --watch dist/backend/ dist/backend/server.js"
   },
   "dependencies": {
-    "@aws-sdk/client-ses": "^3.46.0",
+    "@aws-sdk/client-ses": "^3.47.0",
     "@hapi/basic": "^6.0.0",
     "@hapi/boom": "^9.1.4",
     "@hapi/hapi": "^20.2.1",
@@ -82,7 +82,7 @@
     "@types/lodash-es": "^4.17.5",
     "@types/react": "^17.0.38",
     "@types/react-dom": "^17.0.11",
-    "@types/react-router-dom": "^5.3.2",
+    "@types/react-router-dom": "^5.3.3",
     "@typescript-eslint/eslint-plugin": "^5.10.0",
     "@typescript-eslint/parser": "^5.10.0",
     "eslint": "^8.7.0",
