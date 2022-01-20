@@ -30,7 +30,7 @@
     "@kiltprotocol/messaging": "^0.24.2",
     "@kiltprotocol/types": "^0.24.2",
     "@kiltprotocol/utils": "^0.24.2",
-    "@kiltprotocol/vc-export": "^0.24.2",
+    "@kiltprotocol/vc-export": "^0.25.0",
     "@polkadot/keyring": "^8.2.2",
     "@polkadot/util": "^8.2.2",
     "@polkadot/util-crypto": "^8.2.2",
@@ -55,7 +55,7 @@
   },
   "devDependencies": {
     "@babel/core": "^7.16.7",
-    "@babel/preset-env": "^7.16.8",
+    "@babel/preset-env": "^7.16.10",
     "@jest/globals": "^27.4.6",
     "@parcel/optimizer-data-url": "^2.0.1",
     "@parcel/transformer-inline-string": "^2.0.1",
