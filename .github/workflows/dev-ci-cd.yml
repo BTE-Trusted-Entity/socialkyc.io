@@ -5,7 +5,7 @@ on:
     branches:
       - main
 
-name: Deploy to AWS AKS
+name: Dev deployment
 
 jobs:
   deploy:
