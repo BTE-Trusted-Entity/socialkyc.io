@@ -43,7 +43,6 @@ body {
   --hexagon-content-bottom: 'over your digital identity.';
 }
 
-
 @media screen and (min-width: 800px) {
   .logo {
     margin-left: calc(50% - 207px - 1.5rem);
@@ -187,7 +186,7 @@ p {
 }
 
 .rightHeadlineTop::after {
-  content: var(--hexagon-content-top)
+  content: var(--hexagon-content-top);
 }
 
 .rightHeadlineCenter {
