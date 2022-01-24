@@ -54,7 +54,7 @@
     "zod": "^3.11.6"
   },
   "devDependencies": {
-    "@babel/core": "^7.16.7",
+    "@babel/core": "^7.16.12",
     "@babel/preset-env": "^7.16.11",
     "@jest/globals": "^27.4.6",
     "@parcel/optimizer-data-url": "^2.0.1",
@@ -97,7 +97,7 @@
     "pino-pretty": "^7.5.0",
     "prettier": "^2.5.1",
     "react-router": "^5.2.1",
-    "stylelint": "^14.2.0",
+    "stylelint": "^14.3.0",
     "stylelint-config-css-modules": "^2.3.0",
     "stylelint-config-standard": "^24.0.0",
     "supervisor": "^0.12.0",
