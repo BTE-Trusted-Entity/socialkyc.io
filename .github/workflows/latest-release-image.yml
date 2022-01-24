@@ -35,4 +35,3 @@ jobs:
           docker tag socialkyc:latest-release $ECR_REGISTRY/$ECR_REPOSITORY:latest-release
           docker tag socialkyc:latest-release $ECR_REGISTRY/$ECR_REPOSITORY:$IMAGE_TAG
           docker push $ECR_REGISTRY/$ECR_REPOSITORY:latest-release
-          docker push $ECR_REGISTRY/$ECR_REPOSITORY:$IMAGE_TAG
