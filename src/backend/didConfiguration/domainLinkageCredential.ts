@@ -1,11 +1,23 @@
 import { ICredential, DidSignature, IClaimContents } from '@kiltprotocol/types';
 import {
+  VerifiableCredential,
+  Proof,
+} from '@kiltprotocol/vc-export/lib/esm/types';
+
+/*
+TODO: restore the import and remove the constants when the SDK exports them properly
+import {
   DEFAULT_VERIFIABLECREDENTIAL_CONTEXT,
   DEFAULT_VERIFIABLECREDENTIAL_TYPE,
   KILT_SELF_SIGNED_PROOF_TYPE,
   KILT_VERIFIABLECREDENTIAL_TYPE,
-} from '@kiltprotocol/vc-export/lib/constants.js';
-import { VerifiableCredential, Proof } from '@kiltprotocol/vc-export/lib/types';
+} from '@kiltprotocol/vc-export/lib/esm/constants.js';
+*/
+const DEFAULT_VERIFIABLECREDENTIAL_CONTEXT =
+  'https://www.w3.org/2018/credentials/v1';
+const DEFAULT_VERIFIABLECREDENTIAL_TYPE = 'VerifiableCredential';
+const KILT_VERIFIABLECREDENTIAL_TYPE = 'KiltCredential2020';
+const KILT_SELF_SIGNED_PROOF_TYPE = 'KILTSelfSigned2020';
 
 // taken from https://github.com/KILTprotocol/sdk-js/blob/develop/packages/vc-export/src/exportToVerifiableCredential.ts
 
