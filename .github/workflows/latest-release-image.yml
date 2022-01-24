@@ -23,7 +23,7 @@ jobs:
         uses: aws-actions/amazon-ecr-login@v1
       - name: Build image
         run: |
-          docker build -t socialkyc:latest .
+          docker build -t socialkyc:latest-release .
 
       - name: Tag, and push image to Amazon ECR
         env:
