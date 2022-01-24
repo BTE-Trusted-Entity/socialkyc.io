@@ -19,7 +19,7 @@
     "dev-start": "echo '{\"type\":\"commonjs\"}' > dist/package.json && supervisor --watch dist/backend/ dist/backend/server.js"
   },
   "dependencies": {
-    "@aws-sdk/client-ses": "^3.47.0",
+    "@aws-sdk/client-ses": "^3.48.0",
     "@hapi/basic": "^6.0.0",
     "@hapi/boom": "^9.1.4",
     "@hapi/hapi": "^20.2.1",
@@ -94,7 +94,7 @@
     "eslint-plugin-react-hooks": "^4.3.0",
     "jest": "^27.4.7",
     "parcel": "^2.0.1",
-    "pino-pretty": "^7.3.0",
+    "pino-pretty": "^7.5.0",
     "prettier": "^2.5.1",
     "react-router": "^5.2.1",
     "stylelint": "^14.2.0",
