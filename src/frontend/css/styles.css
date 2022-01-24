@@ -22,6 +22,28 @@ body {
   margin: 3rem 1.5rem 2rem calc(100% - 207px - 4.5rem);
 }
 
+.hexagon1 {
+  --hexagon-image: url('../images/hexagons/phones.jpg');
+  --hexagon-content-top: 'Share';
+  --hexagon-content-center: 'your life,';
+  --hexagon-content-bottom: 'not your personal data.';
+}
+
+.hexagon2 {
+  --hexagon-image: url('../images/hexagons/earth.jpg');
+  --hexagon-content-top: 'Decide';
+  --hexagon-content-center: 'who sees';
+  --hexagon-content-bottom: 'your private information.';
+}
+
+.hexagon3 {
+  --hexagon-image: url('../images/hexagons/keyboard.jpg');
+  --hexagon-content-top: 'Regain';
+  --hexagon-content-center: 'control';
+  --hexagon-content-bottom: 'over your digital identity.';
+}
+
+
 @media screen and (min-width: 800px) {
   .logo {
     margin-left: calc(50% - 207px - 1.5rem);
@@ -100,7 +122,7 @@ p {
 
 .rightContainer::before {
   content: '';
-  background: url('../images/hexagons/phones.jpg') no-repeat center/cover;
+  background: var(--hexagon-image) no-repeat center/cover;
   clip-path:
     polygon(
       40.17% 0.37%,
@@ -113,6 +135,7 @@ p {
   width: 100%;
   height: 100%;
   display: block;
+  padding-top: 3rem;
 }
 
 .rightHeadline {
@@ -163,15 +186,27 @@ p {
   line-height: 0.8;
 }
 
+.rightHeadlineTop::after {
+  content: var(--hexagon-content-top)
+}
+
 .rightHeadlineCenter {
   font-size: 1.5em;
   margin-left: 0.5em;
   margin-right: auto;
 }
 
+.rightHeadlineCenter::after {
+  content: var(--hexagon-content-center);
+}
+
 .rightHeadlineBottom {
   font-size: 1.5em;
   margin-left: 5em;
+}
+
+.rightHeadlineBottom::after {
+  content: var(--hexagon-content-bottom);
 }
 
 .navList {

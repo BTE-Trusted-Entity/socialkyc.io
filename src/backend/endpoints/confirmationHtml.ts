@@ -15,6 +15,8 @@ import { startAttestation } from '../utilities/attestClaim';
 
 import { exceptionToError } from '../../frontend/utilities/exceptionToError';
 
+import { replaceHexagon } from '../utilities/replaceHexagon';
+
 import { paths } from './paths';
 
 const zodParams = z.object({
@@ -51,6 +53,8 @@ async function handler(
     const error = exceptionToError(exception);
     logger.error(`Email confirmation error: ${error}`);
   } finally {
+    await replaceHexagon('index.html');
+    logger.debug('index.html overwritten with new random hexagon');
     return h.file('index.html');
   }
 }
