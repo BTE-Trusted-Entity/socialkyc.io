@@ -55,7 +55,7 @@
   },
   "devDependencies": {
     "@babel/core": "^7.16.7",
-    "@babel/preset-env": "^7.16.10",
+    "@babel/preset-env": "^7.16.11",
     "@jest/globals": "^27.4.6",
     "@parcel/optimizer-data-url": "^2.0.1",
     "@parcel/transformer-inline-string": "^2.0.1",
@@ -103,7 +103,7 @@
     "supervisor": "^0.12.0",
     "ts-jest": "^27.1.3",
     "typed-css-modules": "^0.7.0",
-    "typescript": "^4.5.4"
+    "typescript": "^4.5.5"
   },
   "targets": {
     "frontend": {
