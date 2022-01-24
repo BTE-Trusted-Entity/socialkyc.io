@@ -1,4 +1,4 @@
-name: Production release
+name: Staging release
 
 on: workflow_dispatch
 
