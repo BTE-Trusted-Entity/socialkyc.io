@@ -36,7 +36,7 @@ import { staticFiles } from './endpoints/staticFiles';
 
 import { liveness } from './endpoints/liveness';
 import { notFoundHandler } from './endpoints/notFoundHandler';
-import { index } from './endpoints';
+import { home } from './endpoints/home';
 import { about } from './endpoints/about';
 import { terms } from './endpoints/terms';
 import { privacy } from './endpoints/privacy';
@@ -113,7 +113,7 @@ const logger = {
   server.route(requestCredential);
   server.route(verify);
 
-  server.route(index);
+  server.route(home);
   server.route(about);
   server.route(terms);
   server.route(privacy);

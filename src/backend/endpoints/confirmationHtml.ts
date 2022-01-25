@@ -15,7 +15,7 @@ import { startAttestation } from '../utilities/attestClaim';
 
 import { exceptionToError } from '../../frontend/utilities/exceptionToError';
 
-import { replaceHexagon } from '../utilities/replaceHexagon';
+import { replaceHexagon } from '../utilities/getRandomHexagonRoute';
 
 import { paths } from './paths';
 
