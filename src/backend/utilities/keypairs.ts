@@ -1,6 +1,13 @@
 import { Keyring } from '@polkadot/keyring';
 import { KeyringPair } from '@kiltprotocol/types';
-import { naclBoxPairFromSecret } from '@polkadot/util-crypto';
+import {
+  blake2AsU8a,
+  ed25519PairFromSeed,
+  keyExtractPath,
+  keyFromPath,
+  mnemonicToMiniSecret,
+  naclBoxPairFromSecret,
+} from '@polkadot/util-crypto';
 
 import { initKilt } from './initKilt';
 import { configuration } from './configuration';
@@ -21,19 +28,19 @@ export function getKeypairByBackupPhrase(backupPhrase: string): KeyringPair {
 export const keypairsPromise = (async () => {
   await initKilt();
 
-  const identity = getKeypairByBackupPhrase(configuration.backupPhrase);
+  const { backupPhrase } = configuration;
+
+  const identity = getKeypairByBackupPhrase(backupPhrase);
   const authentication = identity.derive('//did//0');
   const assertion = identity.derive('//did//assertion//0');
-  const keyAgreement = naclBoxPairFromSecret(
-    identity
-      .derive('//did//keyAgreement//0')
-      .encryptMessage(
-        new Uint8Array(24).fill(0),
-        new Uint8Array(24).fill(0),
-        new Uint8Array(24).fill(0),
-      )
-      .slice(24), // first 24 bytes are the nonce
-  );
+
+  const edKeypair = ed25519PairFromSeed(mnemonicToMiniSecret(backupPhrase));
+  const { path } = keyExtractPath('//did//keyAgreement//0');
+  const { secretKey } = keyFromPath(edKeypair, path, 'ed25519');
+  const keyAgreement = {
+    ...naclBoxPairFromSecret(blake2AsU8a(secretKey)),
+    type: 'x25519',
+  };
 
   return {
     identity,
