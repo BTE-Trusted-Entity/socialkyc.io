@@ -1,9 +1,4 @@
-import {
-  ServerRoute,
-  ResponseToolkit,
-  Request,
-  ResponseObject,
-} from '@hapi/hapi';
+import { ServerRoute, Request } from '@hapi/hapi';
 
 import { z } from 'zod';
 
@@ -15,7 +10,7 @@ import { startAttestation } from '../utilities/attestClaim';
 
 import { exceptionToError } from '../../frontend/utilities/exceptionToError';
 
-import { replaceHexagon } from '../utilities/getRandomHexagonRoute';
+import { getHtmlVariant } from '../utilities/htmlVariants';
 
 import { paths } from './paths';
 
@@ -25,10 +20,7 @@ const zodParams = z.object({
 
 type Params = z.infer<typeof zodParams>;
 
-async function handler(
-  request: Request,
-  h: ResponseToolkit,
-): Promise<ResponseObject> {
+async function handler(request: Request): Promise<string> {
   const { logger } = request;
 
   const { secret } = request.params as Params;
@@ -53,9 +45,7 @@ async function handler(
     const error = exceptionToError(exception);
     logger.error(`Email confirmation error: ${error}`);
   } finally {
-    await replaceHexagon('index.html');
-    logger.debug('index.html overwritten with new random hexagon');
-    return h.file('index.html');
+    return getHtmlVariant('index.html');
   }
 }
 

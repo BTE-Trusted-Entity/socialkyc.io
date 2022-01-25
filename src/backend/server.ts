@@ -40,6 +40,7 @@ import { home } from './endpoints/home';
 import { about } from './endpoints/about';
 import { terms } from './endpoints/terms';
 import { privacy } from './endpoints/privacy';
+import { produceHtmlVariants } from './utilities/htmlVariants';
 
 const { isProduction, port } = configuration;
 
@@ -94,6 +95,9 @@ const logger = {
 
   await listenForTweets();
   server.logger.info('Twitter connection initialized');
+
+  await produceHtmlVariants();
+  server.logger.info('HTML variants ready');
 
   server.route(confirmationHtml);
   server.route(wellKnownDidConfig);

@@ -1,5 +1,5 @@
-import { getRandomHexagonRoute } from '../utilities/getRandomHexagonRoute';
+import { getVariantRoute } from '../utilities/htmlVariants';
 
 import { paths } from './paths';
 
-export const about = getRandomHexagonRoute(paths.about, 'about.html');
+export const about = getVariantRoute(paths.about, 'about.html');

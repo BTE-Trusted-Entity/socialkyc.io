@@ -1,5 +1,5 @@
-import { getRandomHexagonRoute } from '../utilities/getRandomHexagonRoute';
+import { getVariantRoute } from '../utilities/htmlVariants';
 
 import { paths } from './paths';
 
-export const privacy = getRandomHexagonRoute(paths.privacy, 'privacy.html');
+export const privacy = getVariantRoute(paths.privacy, 'privacy.html');
