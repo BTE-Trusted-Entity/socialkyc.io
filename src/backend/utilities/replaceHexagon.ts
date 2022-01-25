@@ -15,7 +15,7 @@ export async function replaceHexagon(html: string): Promise<void> {
     encoding: 'utf-8',
   });
 
-  const replaced = htmlTemplate.replace(/hexagon\d/, getRandomHexagon());
+  const replaced = htmlTemplate.replace(/\bhexagon\d\b/, getRandomHexagon());
 
   await writeFile(join(configuration.distFolder, html), replaced, {
     encoding: 'utf-8',
