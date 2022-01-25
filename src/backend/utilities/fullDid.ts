@@ -21,7 +21,6 @@ import { initKilt } from './initKilt';
 import { keypairsPromise } from './keypairs';
 import { configuration } from './configuration';
 import { authenticationKeystore } from './keystores';
-import { didAuthorizeBatchExtrinsic } from './didAuthorizeBatchExtrinsic';
 
 const { authentication, assertionMethod, keyAgreement } = KeyRelationship;
 
@@ -76,23 +75,29 @@ async function ensureLatestEncryptionKey(
     return didDetails;
   }
 
+  const fullDid = await createFullDidDetails(didDetails);
   const keypairs = await keypairsPromise;
-  const { api } = await BlockchainApiConnection.getConnectionOrConnect();
-  const batchExtrinsic = api.tx.utility.batch([
-    await DidChain.getAddKeyExtrinsic(keyAgreement, keypairs.keyAgreement),
-    await DidChain.getRemoveKeyExtrinsic(keyAgreement, existingKey.id),
-  ]);
 
   const { identity } = keypairs;
-  const fullDid = await createFullDidDetails(didDetails);
-  const authorized = await didAuthorizeBatchExtrinsic(
-    fullDid,
-    batchExtrinsic,
+
+  const authorizedAdd = await fullDid.authorizeExtrinsic(
+    await DidChain.getAddKeyExtrinsic(keyAgreement, keypairs.keyAgreement),
+    authenticationKeystore,
+    identity.address,
+  );
+  const authorizedRemove = await fullDid.authorizeExtrinsic(
+    await DidChain.getRemoveKeyExtrinsic(keyAgreement, existingKey.id),
     authenticationKeystore,
     identity.address,
   );
 
-  await BlockchainUtils.signAndSubmitTx(authorized, identity, {
+  const { api } = await BlockchainApiConnection.getConnectionOrConnect();
+  const batchExtrinsic = api.tx.utility.batch([
+    authorizedAdd,
+    authorizedRemove,
+  ]);
+
+  await BlockchainUtils.signAndSubmitTx(batchExtrinsic, identity, {
     resolveOn: BlockchainUtils.IS_FINALIZED,
     reSign: true,
   });
