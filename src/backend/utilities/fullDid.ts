@@ -1,15 +1,15 @@
 import { Keypair } from '@polkadot/util-crypto/types';
 import {
   DefaultResolver,
-  DidChain,
   DidUtils,
+  DidChain,
   FullDidDetails,
 } from '@kiltprotocol/did';
 import {
-  IDidDetails,
-  IDidKeyDetails,
-  KeyRelationship,
   KeyringPair,
+  KeyRelationship,
+  IDidKeyDetails,
+  IDidDetails,
 } from '@kiltprotocol/types';
 import { Crypto } from '@kiltprotocol/utils';
 import {
@@ -153,7 +153,9 @@ export const fullDidPromise = (async () => {
     throw new Error(`Could not resolve the own DID ${configuration.did}`);
   }
 
-  const didDetails = await ensureLatestEncryptionKey(didDocument.details);
+  const didDetails = configuration.storeDidAndCTypes
+    ? await ensureLatestEncryptionKey(didDocument.details)
+    : didDocument.details;
   const fullDid = await createFullDidDetails(didDetails);
 
   await compareAllKeys(fullDid);
