@@ -1,5 +1,8 @@
 export const paths = {
   home: '/',
+  about: '/about.html',
+  terms: '/terms.html',
+  privacy: '/privacy.html',
   confirmationHtml: '/confirmation/{secret}',
   wellKnownDidConfiguration: '/.well-known/did-configuration.json',
 

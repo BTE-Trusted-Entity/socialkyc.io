@@ -1,19 +1,15 @@
-import {
-  ServerRoute,
-  ResponseToolkit,
-  Request,
-  ResponseObject,
-} from '@hapi/hapi';
+import { ServerRoute, Request } from '@hapi/hapi';
 
 import { z } from 'zod';
 
 import { emailCType } from '../email/emailCType';
 
-import { configuration } from '../utilities/configuration';
 import { getSessionBySecret, setSession } from '../utilities/sessionStorage';
 import { startAttestation } from '../utilities/attestClaim';
 
 import { exceptionToError } from '../../frontend/utilities/exceptionToError';
+
+import { getHtmlVariant } from '../utilities/htmlVariants';
 
 import { paths } from './paths';
 
@@ -23,10 +19,7 @@ const zodParams = z.object({
 
 type Params = z.infer<typeof zodParams>;
 
-async function handler(
-  request: Request,
-  h: ResponseToolkit,
-): Promise<ResponseObject> {
+async function handler(request: Request): Promise<string> {
   const { logger } = request;
 
   const { secret } = request.params as Params;
@@ -51,7 +44,7 @@ async function handler(
     const error = exceptionToError(exception);
     logger.error(`Email confirmation error: ${error}`);
   } finally {
-    return h.file('index.html');
+    return await getHtmlVariant('index.html');
   }
 }
 
@@ -59,9 +52,4 @@ export const confirmationHtml: ServerRoute = {
   method: 'GET',
   path: paths.confirmationHtml,
   handler,
-  options: {
-    files: {
-      relativeTo: configuration.distFolder,
-    },
-  },
 };
