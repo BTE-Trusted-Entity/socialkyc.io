@@ -22,10 +22,7 @@ export async function getHtmlVariant(file: string): Promise<string> {
   return htmlVariants[file][random];
 }
 
-export async function getVariantRoute(
-  path: string,
-  file: string,
-): Promise<ServerRoute> {
+export function getVariantRoute(path: string, file: string): ServerRoute {
   return {
     method: 'GET',
     path,

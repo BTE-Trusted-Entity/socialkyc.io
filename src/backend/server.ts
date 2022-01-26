@@ -113,10 +113,10 @@ const logger = {
   server.route(requestCredential);
   server.route(verify);
 
-  server.route(await home);
-  server.route(await about);
-  server.route(await terms);
-  server.route(await privacy);
+  server.route(home);
+  server.route(about);
+  server.route(terms);
+  server.route(privacy);
 
   server.route(staticFiles);
 
