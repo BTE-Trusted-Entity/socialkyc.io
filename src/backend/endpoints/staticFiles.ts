@@ -8,7 +8,6 @@ export const staticFiles = {
   handler: {
     directory: {
       path: configuration.distFolder,
-      index: false,
     },
   },
   options: {

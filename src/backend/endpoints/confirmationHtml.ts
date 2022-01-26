@@ -4,7 +4,6 @@ import { z } from 'zod';
 
 import { emailCType } from '../email/emailCType';
 
-import { configuration } from '../utilities/configuration';
 import { getSessionBySecret, setSession } from '../utilities/sessionStorage';
 import { startAttestation } from '../utilities/attestClaim';
 
@@ -45,7 +44,7 @@ async function handler(request: Request): Promise<string> {
     const error = exceptionToError(exception);
     logger.error(`Email confirmation error: ${error}`);
   } finally {
-    return getHtmlVariant('index.html');
+    return await getHtmlVariant('index.html');
   }
 }
 
@@ -53,9 +52,4 @@ export const confirmationHtml: ServerRoute = {
   method: 'GET',
   path: paths.confirmationHtml,
   handler,
-  options: {
-    files: {
-      relativeTo: configuration.distFolder,
-    },
-  },
 };
