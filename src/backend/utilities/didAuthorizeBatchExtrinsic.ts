@@ -25,6 +25,8 @@ export async function didAuthorizeBatchExtrinsic(
     throw new Error('Own signing key absent');
   }
 
+  // TODO: Remove when we get SDK upgrade which includes this call in authorizeExtrinsic
+  await fullDid.refreshTxIndex();
   const txCounter = fullDid.getNextTxIndex();
 
   return await DidChain.generateDidAuthenticatedTx({

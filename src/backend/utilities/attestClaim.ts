@@ -7,7 +7,7 @@ import {
 import { Attestation } from '@kiltprotocol/core';
 
 import { configuration } from './configuration';
-import { signAndSubmit } from './signAndSubmit';
+import { batchSignAndSubmitAttestation } from './batchSignAndSubmitAttestation';
 import { encryptMessageBody } from './encryptMessage';
 import { getSessionWithDid, Session, setSession } from './sessionStorage';
 
@@ -19,8 +19,7 @@ export async function attestClaim(
     configuration.did,
   );
 
-  const tx = await attestation.store();
-  await signAndSubmit(tx);
+  await batchSignAndSubmitAttestation(attestation);
 
   return attestation;
 }
