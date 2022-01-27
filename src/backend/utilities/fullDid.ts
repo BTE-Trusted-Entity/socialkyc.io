@@ -21,6 +21,7 @@ import { initKilt } from './initKilt';
 import { keypairsPromise } from './keypairs';
 import { configuration } from './configuration';
 import { authenticationKeystore } from './keystores';
+import { didAuthorizeBatchExtrinsic } from './didAuthorizeBatchExtrinsic';
 
 const { authentication, assertionMethod, keyAgreement } = KeyRelationship;
 
@@ -75,38 +76,39 @@ async function ensureLatestEncryptionKey(
     return didDetails;
   }
 
-  const fullDid = await createFullDidDetails(didDetails);
+  console.log('Attempting to update the key agreement key');
   const keypairs = await keypairsPromise;
-
-  const { identity } = keypairs;
-
-  const authorizedAdd = await fullDid.authorizeExtrinsic(
-    await DidChain.getAddKeyExtrinsic(keyAgreement, keypairs.keyAgreement),
-    authenticationKeystore,
-    identity.address,
-  );
-  const authorizedRemove = await fullDid.authorizeExtrinsic(
-    await DidChain.getRemoveKeyExtrinsic(keyAgreement, existingKey.id),
-    authenticationKeystore,
-    identity.address,
-  );
+  const existingKeyId = DidUtils.parseDidUrl(existingKey.id).fragment;
 
   const { api } = await BlockchainApiConnection.getConnectionOrConnect();
-  const batchExtrinsic = api.tx.utility.batch([
-    authorizedAdd,
-    authorizedRemove,
+  const batchExtrinsic = api.tx.utility.batchAll([
+    await DidChain.getRemoveKeyExtrinsic(keyAgreement, existingKeyId),
+    await DidChain.getAddKeyExtrinsic(keyAgreement, keypairs.keyAgreement),
   ]);
 
-  await BlockchainUtils.signAndSubmitTx(batchExtrinsic, identity, {
+  const fullDid = await createFullDidDetails(didDetails);
+  const { identity } = keypairs;
+  const authorized = await didAuthorizeBatchExtrinsic(
+    fullDid,
+    batchExtrinsic,
+    authenticationKeystore,
+    identity.address,
+  );
+
+  await BlockchainUtils.signAndSubmitTx(authorized, identity, {
     resolveOn: BlockchainUtils.IS_FINALIZED,
     reSign: true,
   });
 
   const didDocument = await DefaultResolver.resolveDoc(didDetails.did);
   if (!didDocument || !didDocument.details) {
-    throw new Error(`Could not resolve ${didDetails.did} after key upgrade`);
+    throw new Error(`Could not resolve ${didDetails.did} after key update`);
+  }
+  if (!didDocument.details.getKeys(keyAgreement).pop()) {
+    throw new Error('Could not find the key agreement key after key update');
   }
 
+  console.log('Key agreement key updated');
   return didDocument.details;
 }
 
