@@ -1,0 +1,4 @@
+.heading {
+  composes: heading from '../../components/CredentialFlow/CredentialFlow.module.css';
+  background-image: url('../Attester/discord.svg');
+}

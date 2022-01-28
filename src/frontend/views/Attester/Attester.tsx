@@ -13,6 +13,7 @@ import { Spinner } from '../../components/Spinner/Spinner';
 import { Email } from '../Email/Email';
 import { Twitter } from '../Twitter/Twitter';
 import { paths } from '../../paths';
+import { Discord } from '../Discord/Discord';
 
 interface HasSporran {
   data?: {
@@ -145,6 +146,11 @@ function GetCredentials() {
         <li>
           <Link to={paths.email} className={styles.email}>
             Email Address
+          </Link>
+        </li>
+        <li>
+          <Link to={paths.discord} className={styles.discord}>
+            Discord Account
           </Link>
         </li>
       </ul>
@@ -309,6 +315,9 @@ export function Attester(): JSX.Element {
       </Route>
       <Route path={paths.email}>
         <Email session={session} />
+      </Route>
+      <Route path={paths.discord}>
+        <Discord session={session} />
       </Route>
       <Route>
         <Welcome />

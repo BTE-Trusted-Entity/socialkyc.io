@@ -38,6 +38,12 @@
   --credential-logo: url('email.svg');
 }
 
+.discord {
+  composes: credential;
+
+  --credential-logo: url('discord.svg')
+}
+
 .buttonPrimary {
   composes: buttonPrimary from '../../components/Button/Button.module.css';
   margin: 2.5rem auto;
