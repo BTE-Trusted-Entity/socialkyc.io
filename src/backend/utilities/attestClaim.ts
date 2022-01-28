@@ -1,4 +1,5 @@
 import Boom from '@hapi/boom';
+import { Logger } from 'pino';
 import {
   IEncryptedMessage,
   IRequestForAttestation,
@@ -24,13 +25,18 @@ export async function attestClaim(
   return attestation;
 }
 
-export async function startAttestation(session: Session): Promise<Attestation> {
+export async function startAttestation(
+  session: Session,
+  logger: Logger,
+): Promise<Attestation> {
   const { requestForAttestation, confirmed } = getSessionWithDid(session);
   if (!requestForAttestation || !confirmed) {
     throw Boom.notFound('Confirmed requestForAttestation not found');
   }
 
   const attestationPromise = attestClaim(requestForAttestation);
+  attestationPromise.catch((error) => logger.error(error));
+
   setSession({ ...session, attestationPromise });
 
   return attestationPromise;
@@ -38,10 +44,11 @@ export async function startAttestation(session: Session): Promise<Attestation> {
 
 export async function getAttestationMessage(
   session: Session,
+  logger: Logger,
 ): Promise<IEncryptedMessage> {
   const attestation = session.attestationPromise
     ? await session.attestationPromise
-    : await startAttestation(session);
+    : await startAttestation(session, logger);
 
   return encryptMessageBody(session.encryptionKeyId, {
     content: { attestation },

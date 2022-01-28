@@ -34,7 +34,7 @@ async function handler(
   const session = getSession(request.payload as PayloadWithSession);
 
   try {
-    const response = await getAttestationMessage(session);
+    const response = await getAttestationMessage(session, logger);
     logger.debug('Email attestation completed');
 
     delete session.requestForAttestation;

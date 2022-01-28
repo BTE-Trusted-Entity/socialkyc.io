@@ -36,7 +36,9 @@ async function handler(request: Request): Promise<string> {
 
     setSession({ ...session, confirmed: true });
 
-    startAttestation(session);
+    const attestationPromise = startAttestation(session, logger);
+    attestationPromise.catch((error) => logger.error(error));
+
     logger.debug('Email attestation started');
   } catch (exception) {
     // no exceptions should be thrown since they will not be displayed nicely on the frontend
