@@ -1,8 +1,6 @@
-import Hapi from '@hapi/hapi';
 import inert from '@hapi/inert';
 import pino from 'hapi-pino';
 import gate from 'hapi-gate';
-import exiting from 'exiting';
 
 import { fullDidPromise } from './utilities/fullDid';
 import { storeTwitterCType } from './twitter/twitterCType';
@@ -12,6 +10,8 @@ import { storeDomainLinkageCType } from './didConfiguration/domainLinkageCType';
 import { configuration } from './utilities/configuration';
 import { configureAuthentication } from './utilities/configureAuthentication';
 import { configureDevErrors } from './utilities/configureDevErrors';
+import { manager, server } from './utilities/manager';
+import { exitOnError } from './utilities/exitOnError';
 
 import { confirmationHtml } from './endpoints/confirmationHtml';
 import { wellKnownDidConfig } from './didConfiguration/wellKnownDidConfig';
@@ -41,16 +41,7 @@ import { about } from './endpoints/about';
 import { terms } from './endpoints/terms';
 import { privacy } from './endpoints/privacy';
 
-const { isProduction, port } = configuration;
-
-const server = Hapi.server({
-  port,
-  host: '127.0.0.1',
-  uri: configuration.baseUri,
-  debug: isProduction ? false : undefined,
-  routes: { security: true },
-});
-const manager = exiting.createManager(server);
+const { isProduction } = configuration;
 
 const noWww = {
   plugin: gate,
@@ -126,4 +117,4 @@ const logger = {
   server.logger.info('Routes configured');
 
   await manager.start();
-})();
+})().catch(exitOnError);

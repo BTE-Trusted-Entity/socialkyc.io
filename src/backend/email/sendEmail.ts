@@ -27,6 +27,7 @@ import {
 import { preDecryptMessageContent } from '../utilities/decryptMessage';
 import { validateEncryptedMessage } from '../utilities/validateEncryptedMessage';
 import { exceptionToError } from '../../frontend/utilities/exceptionToError';
+import { exitOnError } from '../utilities/exitOnError';
 import { paths } from '../endpoints/paths';
 
 import { sesClient } from './sesClient';
@@ -40,6 +41,8 @@ const htmlTemplatePromise = readFile(
   join(configuration.distFolder, 'email.html'),
   { encoding: 'utf-8' },
 );
+
+htmlTemplatePromise.catch(exitOnError);
 
 async function send(url: string, email: string): Promise<void> {
   const Data = `Please confirm your email address by clicking on this link:

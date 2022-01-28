@@ -15,8 +15,8 @@
     "storybook": "start-storybook --port 6007",
     "dev": "yarn parcel watch",
     "build": "yarn parcel build",
-    "start": "echo '{\"type\":\"commonjs\"}' > dist/package.json && node dist/backend/server.js",
-    "dev-start": "echo '{\"type\":\"commonjs\"}' > dist/package.json && supervisor --watch dist/backend/ dist/backend/server.js"
+    "start": "echo '{\"type\":\"commonjs\"}' > dist/package.json && node --enable-source-maps dist/backend/server.js",
+    "dev-start": "echo '{\"type\":\"commonjs\"}' > dist/package.json && supervisor --watch dist/backend/ -- --enable-source-maps dist/backend/server.js"
   },
   "dependencies": {
     "@aws-sdk/client-ses": "^3.48.0",

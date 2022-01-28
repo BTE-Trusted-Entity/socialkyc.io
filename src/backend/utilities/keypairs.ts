@@ -12,6 +12,7 @@ import {
 
 import { initKilt } from './initKilt';
 import { configuration } from './configuration';
+import { exitOnError } from './exitOnError';
 
 const ss58Format = 38;
 
@@ -90,3 +91,5 @@ export const keypairsPromise = (async () => {
       : keyAgreement,
   };
 })();
+
+keypairsPromise.catch(exitOnError);
