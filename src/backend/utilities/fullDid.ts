@@ -22,6 +22,7 @@ import { keypairsPromise } from './keypairs';
 import { configuration } from './configuration';
 import { authenticationKeystore } from './keystores';
 import { didAuthorizeBatchExtrinsic } from './didAuthorizeBatchExtrinsic';
+import { exitOnError } from './exitOnError';
 
 const { authentication, assertionMethod, keyAgreement } = KeyRelationship;
 
@@ -169,3 +170,5 @@ export const fullDidPromise = (async () => {
 
   return { fullDid, encryptionKey };
 })();
+
+fullDidPromise.catch(exitOnError);

@@ -12,6 +12,7 @@ import { KeyRelationship } from '@kiltprotocol/types';
 import { configuration } from '../utilities/configuration';
 import { fullDidPromise } from '../utilities/fullDid';
 import { assertionKeystore } from '../utilities/keystores';
+import { exitOnError } from '../utilities/exitOnError';
 
 import { domainLinkageCType } from './domainLinkageCType';
 import { fromCredential } from './domainLinkageCredential';
@@ -64,3 +65,5 @@ export const didConfigResourcePromise = (async () => {
     linked_dids: [domainLinkageCredential],
   };
 })();
+
+didConfigResourcePromise.catch(exitOnError);
