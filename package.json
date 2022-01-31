@@ -12,7 +12,7 @@
     "lint-css": "stylelint --fix \"src/**/*.css\"",
     "css": "tcm --namedExports --pattern 'src/frontend/**/*.module.css' && eslint --fix --config ./.eslintrc.json \"src/**/*.css.d.ts\"",
     "test": "tsc --noEmit && LC_ALL=en_US.UTF-8 jest",
-    "storybook": "start-storybook --port 6007",
+    "storybook": "start-storybook --port 6007 --modern",
     "dev": "yarn parcel watch",
     "build": "yarn parcel build",
     "start": "echo '{\"type\":\"commonjs\"}' > dist/package.json && node --enable-source-maps dist/backend/server.js",
