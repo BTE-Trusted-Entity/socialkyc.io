@@ -1,6 +1,7 @@
 import { Keyring } from '@polkadot/keyring';
-import { KeyRelationship, KeyringPair } from '@kiltprotocol/types';
+import { IIdentity, KeyRelationship, KeyringPair } from '@kiltprotocol/types';
 import { DefaultResolver } from '@kiltprotocol/did';
+import { Balance, BalanceUtils } from '@kiltprotocol/core';
 import {
   blake2AsU8a,
   ed25519PairFromSeed,
@@ -13,6 +14,7 @@ import {
 import { initKilt } from './initKilt';
 import { configuration } from './configuration';
 import { exitOnError } from './exitOnError';
+import { logger } from './logger';
 
 const ss58Format = 38;
 
@@ -65,6 +67,15 @@ async function useLegacy() {
   return storedLegacyKey && !configuration.storeDidAndCTypes;
 }
 
+async function reportBalance(address: IIdentity['address']) {
+  const balances = await Balance.getBalances(address);
+
+  const free = BalanceUtils.formatKiltBalance(balances.free);
+  const reserved = BalanceUtils.formatKiltBalance(balances.reserved);
+
+  logger.info(`Free: ${free}, bonded: ${reserved}`);
+}
+
 export const keypairsPromise = (async () => {
   await initKilt();
 
@@ -81,6 +92,8 @@ export const keypairsPromise = (async () => {
     ...naclBoxPairFromSecret(blake2AsU8a(secretKey)),
     type: 'x25519',
   };
+
+  await reportBalance(identity.address);
 
   return {
     identity,

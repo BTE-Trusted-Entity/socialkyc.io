@@ -23,6 +23,7 @@ import { configuration } from './configuration';
 import { authenticationKeystore } from './keystores';
 import { didAuthorizeBatchExtrinsic } from './didAuthorizeBatchExtrinsic';
 import { exitOnError } from './exitOnError';
+import { logger } from './logger';
 
 const { authentication, assertionMethod, keyAgreement } = KeyRelationship;
 
@@ -40,7 +41,7 @@ export async function createFullDid(): Promise<IDidDetails['did']> {
     relationships,
   );
 
-  console.log('This is your generated DID:', did);
+  logger.warn('This is your generated DID:', did);
 
   await BlockchainUtils.signAndSubmitTx(extrinsic, keypairs.identity, {
     resolveOn: BlockchainUtils.IS_FINALIZED,
@@ -77,7 +78,7 @@ async function ensureLatestEncryptionKey(
     return didDetails;
   }
 
-  console.log('Attempting to update the key agreement key');
+  logger.warn('Attempting to update the key agreement key');
   const keypairs = await keypairsPromise;
   const existingKeyId = DidUtils.parseDidUrl(existingKey.id).fragment;
 
@@ -109,7 +110,7 @@ async function ensureLatestEncryptionKey(
     throw new Error('Could not find the key agreement key after key update');
   }
 
-  console.log('Key agreement key updated');
+  logger.warn('Key agreement key updated');
   return didDocument.details;
 }
 
@@ -144,9 +145,9 @@ export const fullDidPromise = (async () => {
       configuration.did !== 'pending' &&
       (await DefaultResolver.resolveDoc(configuration.did))
     ) {
-      console.log('DID is already on the blockchain');
+      logger.info('DID is already on the blockchain');
     } else {
-      console.log('Storing DID on the blockchain');
+      logger.warn('Storing DID on the blockchain');
       configuration.did = await createFullDid();
     }
   }

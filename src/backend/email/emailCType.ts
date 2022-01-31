@@ -1,6 +1,7 @@
 import { CType, CTypeUtils } from '@kiltprotocol/core';
 
 import { signAndSubmit } from '../utilities/signAndSubmit';
+import { logger } from '../utilities/logger';
 
 /** Run this function once to store the CType */
 export async function storeEmailCType(): Promise<void> {
@@ -16,15 +17,15 @@ export async function storeEmailCType(): Promise<void> {
   });
 
   if (await CTypeUtils.verifyStored(draft)) {
-    console.log('Email CType is already on the blockchain');
+    logger.info('Email CType is already on the blockchain');
     return;
   }
-  console.log('Storing Email CType on the blockchain');
+  logger.warn('Storing Email CType on the blockchain');
 
   const tx = await draft.store();
   await signAndSubmit(tx);
 
-  console.log('Pass this object to CType.fromCType', draft);
+  logger.warn('Pass this object to CType.fromCType', draft);
 }
 
 // This object was logged by storeEmailCType()

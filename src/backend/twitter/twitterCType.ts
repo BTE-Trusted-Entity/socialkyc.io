@@ -1,6 +1,7 @@
 import { CType, CTypeUtils } from '@kiltprotocol/core';
 
 import { signAndSubmit } from '../utilities/signAndSubmit';
+import { logger } from '../utilities/logger';
 
 /** Run this function once to store the CType */
 export async function storeTwitterCType(): Promise<void> {
@@ -16,15 +17,15 @@ export async function storeTwitterCType(): Promise<void> {
   });
 
   if (await CTypeUtils.verifyStored(draft)) {
-    console.log('Twitter CType is already on the blockchain');
+    logger.info('Twitter CType is already on the blockchain');
     return;
   }
-  console.log('Storing Twitter CType on the blockchain');
+  logger.warn('Storing Twitter CType on the blockchain');
 
   const tx = await draft.store();
   await signAndSubmit(tx);
 
-  console.log('Pass this object to CType.fromCType', draft);
+  logger.warn('Pass this object to CType.fromCType', draft);
 }
 
 // This object was logged by storeTwitterCType()
