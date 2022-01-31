@@ -1,6 +1,7 @@
 import { CType, CTypeUtils } from '@kiltprotocol/core';
 
 import { signAndSubmit } from '../utilities/signAndSubmit';
+import { logger } from '../utilities/logger';
 
 /** Run this function once to store the CType */
 export async function storeDomainLinkageCType(): Promise<void> {
@@ -19,15 +20,15 @@ export async function storeDomainLinkageCType(): Promise<void> {
   });
 
   if (await CTypeUtils.verifyStored(draft)) {
-    console.log('Domain Linkage CType is already on the blockchain');
+    logger.info('Domain Linkage CType is already on the blockchain');
     return;
   }
-  console.log('Storing Domain Linkage CType on the blockchain');
+  logger.warn('Storing Domain Linkage CType on the blockchain');
 
   const tx = await draft.store();
   await signAndSubmit(tx);
 
-  console.log('Pass this object to CType.fromCType', draft);
+  logger.warn('Pass this object to CType.fromCType', draft);
 }
 
 // This object was logged by storeDomainLinkageCType()
