@@ -41,7 +41,7 @@
 .discord {
   composes: credential;
 
-  --credential-logo: url('discord.svg')
+  --credential-logo: url('discord.svg');
 }
 
 .buttonPrimary {

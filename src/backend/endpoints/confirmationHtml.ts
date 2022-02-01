@@ -52,6 +52,6 @@ async function handler(request: Request): Promise<string> {
 
 export const confirmationHtml: ServerRoute = {
   method: 'GET',
-  path: paths.confirmationHtml,
+  path: paths.email.confirmationHtml,
   handler,
 };

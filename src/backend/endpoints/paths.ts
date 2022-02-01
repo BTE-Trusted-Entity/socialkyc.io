@@ -3,7 +3,6 @@ export const paths = {
   about: '/about.html',
   terms: '/terms.html',
   privacy: '/privacy.html',
-  confirmationHtml: '/confirmation/{secret}',
   wellKnownDidConfiguration: '/.well-known/did-configuration.json',
 
   session: '/api/session',
@@ -13,6 +12,7 @@ export const paths = {
     confirm: '/api/email/confirm',
     requestAttestation: '/api/email/request-attestation',
     attest: '/api/email/attest',
+    confirmationHtml: '/email/confirmation/{secret}',
   },
 
   twitter: {
@@ -20,6 +20,15 @@ export const paths = {
     confirm: '/api/twitter/confirm',
     requestAttestation: '/api/twitter/request-attestation',
     attest: '/api/twitter/attest',
+  },
+
+  discord: {
+    auth: '/api/discord/auth',
+    authConfirm: '/api/discord/confirm',
+    quote: '/api/discord/quote',
+    requestAttestation: '/api/discord/request-attestation',
+    attest: '/api/discord/attest',
+    authHtml: '/discord/auth',
   },
 
   verifier: {

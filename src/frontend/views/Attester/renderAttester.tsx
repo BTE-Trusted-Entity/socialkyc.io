@@ -12,9 +12,23 @@ function getConfirmation(message: string, callback: (ok: boolean) => void) {
 
 function renderAttester() {
   let initialEntry: string;
-  if (window.location.pathname.includes('confirmation')) {
+  if (window.location.pathname.includes('email/confirmation')) {
     const secret = window.location.href.split('/').pop() as string;
     initialEntry = paths.emailConfirmation.replace(':secret', secret);
+    window.history.replaceState(null, '', '/');
+  } else if (window.location.pathname.includes('discord/auth')) {
+    const searchParams = new URLSearchParams(window.location.search);
+    const code = searchParams.get('code');
+    const secret = searchParams.get('state');
+    const error = searchParams.get('error');
+    if (error) {
+      // TODO: Show special interface?
+      initialEntry = '/';
+    } else {
+      initialEntry = paths.discordAuth
+        .replace(':code', code)
+        .replace(':secret', secret);
+    }
     window.history.replaceState(null, '', '/');
   } else {
     initialEntry = '/';

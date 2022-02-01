@@ -18,6 +18,7 @@ export interface Session {
   confirmed?: boolean;
   attestationPromise?: Promise<Attestation>;
   requestChallenge?: string;
+  accessToken?: string;
 }
 
 type SessionWithDid = Session & {

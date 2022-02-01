@@ -10,28 +10,23 @@ import {
   MessageBodyType,
 } from '@kiltprotocol/types';
 
-import { configuration } from '../utilities/configuration';
 import {
-  getSecretForSession,
   getSession,
   PayloadWithSession,
   setSession,
 } from '../utilities/sessionStorage';
-
-import { preDecryptMessageContent } from '../utilities/decryptMessage';
 import { validateEncryptedMessage } from '../utilities/validateEncryptedMessage';
+import { preDecryptMessageContent } from '../utilities/decryptMessage';
 import { paths } from '../endpoints/paths';
 
-import { discordEndpoints } from './discordEndpoints';
-
-export type Output = string;
+export type Output = Record<string, never>;
 
 async function handler(
   request: Request,
   h: ResponseToolkit,
-): Promise<ResponseObject | string> {
+): Promise<ResponseObject> {
   const { logger } = request;
-  logger.debug('Email request attestation started');
+  logger.debug('Discord request attestation started');
 
   if (!request.pre.content) {
     return h.response().code(StatusCodes.ACCEPTED);
@@ -41,28 +36,16 @@ async function handler(
   const { requestForAttestation } = content;
 
   const session = getSession(request.payload as PayloadWithSession);
-  delete session.attestedMessagePromise;
-  setSession({ ...session, requestForAttestation, confirmed: false });
-  logger.debug('Email request attestation cached');
 
-  const secret = getSecretForSession(session.sessionId);
+  setSession({ ...session, requestForAttestation, confirmed: true });
+  logger.debug('Discord request attestation cached');
 
-  const searchParams = {
-    response_type: 'code',
-    client_id: configuration.discord.clientId,
-    prompt: 'consent',
-    scope: 'identify',
-    state: secret,
-    redirect_uri: discordEndpoints.redirectUri,
-  };
-  const url = new URL(discordEndpoints.authorize);
-  url.search = new URLSearchParams(searchParams).toString();
-  return url.toString();
+  return h.response({}).code(StatusCodes.OK);
 }
 
 export const requestAttestationDiscord: ServerRoute = {
   method: 'POST',
-  path: paths.email.requestAttestation,
+  path: paths.discord.requestAttestation,
   handler,
   options: {
     validate: {

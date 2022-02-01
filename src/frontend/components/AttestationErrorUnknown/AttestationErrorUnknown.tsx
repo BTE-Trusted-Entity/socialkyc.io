@@ -6,7 +6,7 @@ export function AttestationErrorUnknown(): JSX.Element {
       icon="exclamation"
       heading="Attestation error:"
       message="Something went wrong!"
-      details="Click “Try Again” button or reload the page or restart your browser."
+      details="Click “Try Again” or reload the page or restart your browser."
     />
   );
 }

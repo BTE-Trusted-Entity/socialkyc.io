@@ -121,7 +121,7 @@ async function handler(
   logger.debug('Email request attestation cached');
 
   const secret = getSecretForSession(session.sessionId);
-  const path = paths.confirmationHtml.replace('{secret}', secret);
+  const path = paths.email.confirmationHtml.replace('{secret}', secret);
   const url = `${configuration.baseUri}${path}`;
 
   try {

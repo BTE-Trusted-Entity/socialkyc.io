@@ -4,4 +4,5 @@ export const paths = {
   emailConfirmation: '/email/:secret',
   twitter: '/twitter',
   discord: '/discord',
+  discordAuth: '/discord/:code/:secret',
 };

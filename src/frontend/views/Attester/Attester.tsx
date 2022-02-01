@@ -296,7 +296,7 @@ export function Attester(): JSX.Element {
     return (
       <Fragment>
         <Switch>
-          <Route path={paths.emailConfirmation}>
+          <Route path={[paths.emailConfirmation, paths.discordAuth]}>
             <AlmostThere />
           </Route>
           <Route>

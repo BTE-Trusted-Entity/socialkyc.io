@@ -2,3 +2,28 @@
   composes: heading from '../../components/CredentialFlow/CredentialFlow.module.css';
   background-image: url('../Attester/discord.svg');
 }
+
+.buttonsLine {
+  text-align: center;
+}
+
+.ctaButton {
+  composes: ctaButton from '../../components/CredentialFlow/CredentialFlow.module.css';
+  display: inline-flex;
+  margin: 0;
+}
+
+.profile {
+  display: grid;
+  grid-template-columns: max-content auto;
+  gap: 0.5rem;
+  margin-bottom: 2rem;
+}
+
+.profileKey {
+  grid-column-start: 1;
+}
+
+.profileValue {
+  grid-column-start: 2;
+}
