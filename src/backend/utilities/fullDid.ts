@@ -63,6 +63,8 @@ async function createFullDidDetails(didDetails: IDidDetails) {
   });
 }
 
+// TODO: remove
+// eslint-disable-next-line @typescript-eslint/no-unused-vars
 async function ensureLatestEncryptionKey(
   didDetails: IDidDetails,
 ): Promise<IDidDetails> {
@@ -157,9 +159,11 @@ export const fullDidPromise = (async () => {
     throw new Error(`Could not resolve the own DID ${configuration.did}`);
   }
 
-  const didDetails = configuration.storeDidAndCTypes
-    ? await ensureLatestEncryptionKey(didDocument.details)
-    : didDocument.details;
+  const didDetails = didDocument.details;
+  // TODO: restore these lines
+  // const didDetails = configuration.storeDidAndCTypes
+  //   ? await ensureLatestEncryptionKey(didDocument.details)
+  //   : didDocument.details;
   const fullDid = await createFullDidDetails(didDetails);
 
   await compareAllKeys(fullDid);
