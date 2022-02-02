@@ -3,6 +3,7 @@ import { Meta } from '@storybook/react';
 import { action } from '@storybook/addon-actions';
 
 import { DiscordTemplate } from './DiscordTemplate';
+import { DiscordProfile } from './Discord';
 
 export default {
   title: 'Views/Discord',
@@ -14,6 +15,12 @@ const actions = {
   handleSubmit: action('submit'),
   handleBackup: action('backup'),
   handleTryAgainClick: action('tryAgain'),
+};
+
+const profileMock: DiscordProfile = {
+  username: 'TestUser',
+  discriminator: '1234',
+  id: '1234556789',
 };
 
 export function Start(): JSX.Element {
@@ -35,7 +42,7 @@ export function Authorized(): JSX.Element {
     <DiscordTemplate
       status="authorized"
       processing={false}
-      profile={{ id: '1234556789', username: 'TestUser#1234' }}
+      profile={profileMock}
       {...actions}
     />
   );
@@ -46,7 +53,7 @@ export function QuoteOpen(): JSX.Element {
     <DiscordTemplate
       status="authorized"
       processing={true}
-      profile={{ id: '1234556789', username: 'TestUser#1234' }}
+      profile={profileMock}
       {...actions}
     />
   );
@@ -66,7 +73,7 @@ export function UnexpectedError(): JSX.Element {
       status="error"
       processing={false}
       flowError="unknown"
-      profile={{ id: '1234556789', username: 'TestUser#1234' }}
+      profile={profileMock}
       {...actions}
     />
   );
@@ -78,7 +85,7 @@ export function Closed(): JSX.Element {
       status="authorized"
       processing={false}
       flowError="closed"
-      profile={{ id: '1234556789', username: 'TestUser#1234' }}
+      profile={profileMock}
       {...actions}
     />
   );

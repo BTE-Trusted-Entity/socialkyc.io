@@ -18,8 +18,9 @@ import {
 import { useDiscordApi } from './useDiscordApi';
 
 export interface DiscordProfile {
-  id: string;
   username: string;
+  discriminator: string;
+  id: string;
 }
 
 interface Props {

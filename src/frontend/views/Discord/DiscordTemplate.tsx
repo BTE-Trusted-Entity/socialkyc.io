@@ -18,6 +18,8 @@ import { AttestationProcessAnchoring } from '../../components/AttestationProcess
 import { AttestationProcessReady } from '../../components/AttestationProcessReady/AttestationProcessReady';
 import { SigningErrorClosed } from '../../components/SigningErrorClosed/SigningErrorClosed';
 
+import { DiscordProfile } from './Discord';
+
 export type AttestationStatus =
   | 'none'
   | 'urlReady'
@@ -38,7 +40,7 @@ interface Props {
   handleTryAgainClick: MouseEventHandler;
   authUrl?: string;
   flowError?: FlowError;
-  profile?: { id: string; username: string };
+  profile?: DiscordProfile;
 }
 export function DiscordTemplate({
   status,
@@ -108,7 +110,9 @@ export function DiscordTemplate({
             <dd className={styles.profileValue}>{profile.id}</dd>
 
             <dt className={styles.profileKey}>Username:</dt>
-            <dd className={styles.profileValue}>{profile.username}</dd>
+            <dd
+              className={styles.profileValue}
+            >{`${profile.username}#${profile.discriminator}`}</dd>
           </dl>
 
           <p>

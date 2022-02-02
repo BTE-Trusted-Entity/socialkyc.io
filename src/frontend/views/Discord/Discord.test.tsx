@@ -24,8 +24,9 @@ const sessionMock: Session = {
 };
 
 const profileMock: DiscordProfile = {
+  username: 'TestUser',
+  discriminator: '1234',
   id: '1234556789',
-  username: 'TestUser#1234',
 };
 
 const secret = 'SECRET';

@@ -31,8 +31,9 @@ const zodPayload = z.object({
 export type Input = z.infer<typeof zodPayload>;
 
 export interface Output {
-  id: string;
   username: string;
+  discriminator: string;
+  id: string;
 }
 
 async function handler(
@@ -76,18 +77,11 @@ async function handler(
     const headers = {
       authorization: `Bearer ${body.access_token}`,
     };
-    const profileData = (await got(discordEndpoints.profile, {
+    const profile = (await got(discordEndpoints.profile, {
       headers,
-    }).json()) as { id: string; username: string; discriminator: string };
+    }).json()) as { username: string; discriminator: string; id: string };
 
     logger.debug('Found Discord profile');
-
-    const { id, username, discriminator } = profileData;
-
-    const profile = {
-      id,
-      username: `${username}#${discriminator}`,
-    };
 
     await got.post(discordEndpoints.revoke, {
       form: {

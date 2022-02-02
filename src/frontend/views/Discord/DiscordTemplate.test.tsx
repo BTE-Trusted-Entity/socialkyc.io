@@ -4,6 +4,7 @@ import { describe, it, jest } from '@jest/globals';
 import { render } from '../../../testing/testing';
 
 import { DiscordTemplate } from './DiscordTemplate';
+import { DiscordProfile } from './Discord';
 
 jest.useFakeTimers();
 jest.setSystemTime(new Date('2022-01-03T12:00:00'));
@@ -13,6 +14,12 @@ const actions = {
   handleSubmit: jest.fn(),
   handleBackup: jest.fn(),
   handleTryAgainClick: jest.fn(),
+};
+
+const profileMock: DiscordProfile = {
+  username: 'TestUser',
+  discriminator: '1234',
+  id: '1234556789',
 };
 
 describe('DiscordTemplate', () => {
@@ -42,7 +49,7 @@ describe('DiscordTemplate', () => {
       <DiscordTemplate
         status="authorized"
         processing={false}
-        profile={{ id: '1234556789', username: 'TestUser#1234' }}
+        profile={profileMock}
         {...actions}
       />,
     );
@@ -81,7 +88,7 @@ describe('DiscordTemplate', () => {
         status="authorized"
         flowError="closed"
         processing={false}
-        profile={{ id: '1234556789', username: 'TestUser#1234' }}
+        profile={profileMock}
         {...actions}
       />,
     );
