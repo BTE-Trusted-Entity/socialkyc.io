@@ -24,7 +24,7 @@ export const paths = {
 
   discord: {
     auth: '/api/discord/auth',
-    authConfirm: '/api/discord/confirm',
+    confirm: '/api/discord/confirm',
     quote: '/api/discord/quote',
     requestAttestation: '/api/discord/request-attestation',
     attest: '/api/discord/attest',

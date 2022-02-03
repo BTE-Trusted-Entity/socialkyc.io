@@ -35,7 +35,7 @@ const code = 'CODE';
 jest.mock('./useDiscordApi', () => ({ useDiscordApi: jest.fn() }));
 const mockDiscordApi: ReturnType<typeof useDiscordApi> = {
   authUrl: jest.fn(),
-  authConfirm: jest.fn(),
+  confirm: jest.fn(),
   quote: jest.fn(),
   requestAttestation: jest.fn(),
   attest: jest.fn(),
@@ -50,7 +50,7 @@ async function signInWithDiscord() {
 }
 
 function expectQuoteRequested() {
-  expect(mockDiscordApi.quote).toHaveBeenCalledWith(profileMock);
+  expect(mockDiscordApi.quote).toHaveBeenCalledWith({});
 }
 
 async function continueInWallet() {
@@ -87,11 +87,11 @@ function expectAuthUrlCalled() {
   expect(mockDiscordApi.authUrl).toHaveBeenCalledWith({});
 }
 
-function expectAuthConfirmCalledWith(routeParams: {
+function expectconfirmCalledWith(routeParams: {
   secret: string;
   code: string;
 }) {
-  expect(mockDiscordApi.authConfirm).toHaveBeenCalledWith(routeParams);
+  expect(mockDiscordApi.confirm).toHaveBeenCalledWith(routeParams);
 }
 
 function expectQuoteIsSent() {
@@ -120,7 +120,7 @@ async function expectStartOver() {
 
 describe('Discord', () => {
   let authUrlPromise = makeControlledPromise<string>();
-  let authConfirmPromise = makeControlledPromise<DiscordProfile>();
+  let confirmPromise = makeControlledPromise<DiscordProfile>();
   let quotePromise = makeControlledPromise<IEncryptedMessage>();
   let sendPromise = makeControlledPromise<void>();
   let requestPromise = makeControlledPromise<Record<string, never>>();
@@ -135,11 +135,11 @@ describe('Discord', () => {
       .mockReset()
       .mockReturnValue(authUrlPromise.promise);
 
-    authConfirmPromise = makeControlledPromise<DiscordProfile>();
+    confirmPromise = makeControlledPromise<DiscordProfile>();
     jest
-      .mocked(mockDiscordApi.authConfirm)
+      .mocked(mockDiscordApi.confirm)
       .mockReset()
-      .mockReturnValue(authConfirmPromise.promise);
+      .mockReturnValue(confirmPromise.promise);
 
     quotePromise = makeControlledPromise<IEncryptedMessage>();
     jest
@@ -187,7 +187,7 @@ describe('Discord', () => {
     });
 
     await signInWithDiscord();
-    expect(await screen.findByText('Authorizing')).toBeInTheDocument();
+    expect(await screen.findByText('Sign in with Discord')).toBeInTheDocument();
   });
 
   it('should show an error when authUrl fails', async () => {
@@ -218,10 +218,10 @@ describe('Discord', () => {
     );
 
     expectIsNotProcessing(container);
-    expectAuthConfirmCalledWith({ secret, code });
+    expectconfirmCalledWith({ secret, code });
 
     await act(async () => {
-      authConfirmPromise.resolve(profileMock);
+      confirmPromise.resolve(profileMock);
     });
 
     await continueInWallet();
@@ -269,10 +269,10 @@ describe('Discord', () => {
 
     expectIsNotProcessing(container);
 
-    expectAuthConfirmCalledWith({ secret, code });
+    expectconfirmCalledWith({ secret, code });
 
     await act(async () => {
-      authConfirmPromise.reject(new Error('authorization'));
+      confirmPromise.reject(new Error('authorization'));
     });
 
     expect(
@@ -301,10 +301,10 @@ describe('Discord', () => {
     );
 
     expectIsNotProcessing(container);
-    expectAuthConfirmCalledWith({ secret, code });
+    expectconfirmCalledWith({ secret, code });
 
     await act(async () => {
-      authConfirmPromise.resolve(profileMock);
+      confirmPromise.resolve(profileMock);
     });
 
     await continueInWallet();
@@ -336,10 +336,10 @@ describe('Discord', () => {
     );
 
     expectIsNotProcessing(container);
-    expectAuthConfirmCalledWith({ secret, code });
+    expectconfirmCalledWith({ secret, code });
 
     await act(async () => {
-      authConfirmPromise.resolve(profileMock);
+      confirmPromise.resolve(profileMock);
     });
 
     await continueInWallet();
@@ -372,10 +372,10 @@ describe('Discord', () => {
     );
 
     expectIsNotProcessing(container);
-    expectAuthConfirmCalledWith({ secret, code });
+    expectconfirmCalledWith({ secret, code });
 
     await act(async () => {
-      authConfirmPromise.resolve(profileMock);
+      confirmPromise.resolve(profileMock);
     });
 
     await continueInWallet();
@@ -412,10 +412,10 @@ describe('Discord', () => {
     );
 
     expectIsNotProcessing(container);
-    expectAuthConfirmCalledWith({ secret, code });
+    expectconfirmCalledWith({ secret, code });
 
     await act(async () => {
-      authConfirmPromise.resolve(profileMock);
+      confirmPromise.resolve(profileMock);
     });
 
     await continueInWallet();
@@ -461,10 +461,10 @@ describe('Discord', () => {
     );
 
     expectIsNotProcessing(container);
-    expectAuthConfirmCalledWith({ secret, code });
+    expectconfirmCalledWith({ secret, code });
 
     await act(async () => {
-      authConfirmPromise.resolve(profileMock);
+      confirmPromise.resolve(profileMock);
     });
 
     await continueInWallet();

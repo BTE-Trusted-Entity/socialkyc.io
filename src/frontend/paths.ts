@@ -5,4 +5,8 @@ export const paths = {
   twitter: '/twitter',
   discord: '/discord',
   discordAuth: '/discord/:code/:secret',
+  window: {
+    discord: '/discord/auth',
+    email: '/email/confirmation/:secret',
+  },
 };

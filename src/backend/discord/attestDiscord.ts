@@ -37,7 +37,9 @@ async function handler(
     const response = await getAttestationMessage(session, logger);
     logger.debug('Discord attestation completed');
 
+    delete session.claim;
     delete session.requestForAttestation;
+    delete session.confirmed;
     setSession(session);
 
     return h.response(response as Output);

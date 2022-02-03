@@ -10,6 +10,8 @@ import {
   MessageBodyType,
 } from '@kiltprotocol/types';
 
+import Boom from '@hapi/boom';
+
 import {
   getSession,
   PayloadWithSession,
@@ -37,7 +39,16 @@ async function handler(
 
   const session = getSession(request.payload as PayloadWithSession);
 
-  setSession({ ...session, requestForAttestation, confirmed: true });
+  if (session.claim.cTypeHash !== requestForAttestation.claim.cTypeHash) {
+    throw Boom.badRequest('CType does not match claim');
+  }
+
+  if (!session.confirmed) {
+    throw Boom.badRequest('Claim has not been confirmed');
+  }
+
+  setSession({ ...session, requestForAttestation });
+
   logger.debug('Discord request attestation cached');
 
   return h.response({}).code(StatusCodes.OK);

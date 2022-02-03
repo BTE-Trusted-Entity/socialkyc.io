@@ -6,19 +6,19 @@ import {
 } from '@hapi/hapi';
 import Boom from '@hapi/boom';
 import { z } from 'zod';
-import { Claim } from '@kiltprotocol/core';
 import { IEncryptedMessage, MessageBodyType } from '@kiltprotocol/types';
 
 import { encryptMessageBody } from '../utilities/encryptMessage';
-import { getSessionWithDid } from '../utilities/sessionStorage';
+import {
+  getSessionWithDid,
+  PayloadWithSession,
+} from '../utilities/sessionStorage';
 import { exceptionToError } from '../../frontend/utilities/exceptionToError';
 import { paths } from '../endpoints/paths';
 
 import { discordCType } from './discordCType';
 
 const zodPayload = z.object({
-  id: z.string(),
-  username: z.string(),
   sessionId: z.string(),
 });
 
@@ -33,21 +33,16 @@ async function handler(
   const { logger } = request;
   logger.debug('Discord quote started');
 
-  const { id, username, sessionId } = request.payload as Input;
-  const { did, encryptionKeyId } = getSessionWithDid({ sessionId });
+  const { sessionId } = request.payload as PayloadWithSession;
+  const { encryptionKeyId, claim, confirmed } = getSessionWithDid({
+    sessionId,
+  });
+
+  if (!claim || !confirmed) {
+    throw Boom.notFound('Confirmed claim not found');
+  }
 
   try {
-    const claimContents = {
-      'Discord ID': id,
-      'Discord username': username,
-    };
-    const claim = Claim.fromCTypeAndClaimContents(
-      discordCType,
-      claimContents,
-      did,
-    );
-    logger.debug('Discord quote created');
-
     const output = await encryptMessageBody(encryptionKeyId, {
       content: {
         claim,
@@ -61,7 +56,7 @@ async function handler(
     return h.response(output as Output);
   } catch (exception) {
     const error = exceptionToError(exception);
-
+    logger.error(error);
     return Boom.boomify(error);
   }
 }

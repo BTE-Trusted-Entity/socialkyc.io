@@ -30,7 +30,7 @@ import { attestationTwitter } from './twitter/attestationTwitter';
 
 import { authUrlDiscord } from './discord/authUrlDiscord';
 import { authHtmlDiscord } from './discord/authHtmlDiscord';
-import { authConfirmDiscord } from './discord/authConfirmDiscord';
+import { confirmDiscord } from './discord/confirmDiscord';
 import { quoteDiscord } from './discord/quoteDiscord';
 import { requestAttestationDiscord } from './discord/requestAttestationDiscord';
 import { attestDiscord } from './discord/attestDiscord';
@@ -112,7 +112,7 @@ const logger = {
 
   server.route(authHtmlDiscord);
   server.route(authUrlDiscord);
-  server.route(authConfirmDiscord);
+  server.route(confirmDiscord);
   server.route(quoteDiscord);
   server.route(requestAttestationDiscord);
   server.route(attestDiscord);

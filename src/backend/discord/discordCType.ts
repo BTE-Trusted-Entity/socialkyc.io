@@ -9,13 +9,13 @@ export async function storeDiscordCType(): Promise<void> {
     $schema: 'http://kilt-protocol.org/draft-01/ctype#',
     title: 'Discord',
     properties: {
-      username: {
+      Username: {
         type: 'string',
       },
-      discriminator: {
+      Discriminator: {
         type: 'string',
       },
-      id: {
+      'User ID': {
         type: 'string',
       },
     },
@@ -40,19 +40,19 @@ export const discordCType = CType.fromCType({
     $schema: 'http://kilt-protocol.org/draft-01/ctype#',
     title: 'Discord',
     properties: {
-      username: {
+      Username: {
         type: 'string',
       },
-      discriminator: {
+      Discriminator: {
         type: 'string',
       },
-      id: {
+      'User ID': {
         type: 'string',
       },
     },
     type: 'object',
-    $id: 'kilt:ctype:0x22f704c3e1c2160ab5cc780e75ea31285bd29e51e423726450df3150b572db0b',
+    $id: 'kilt:ctype:0xd8c61a235204cb9e3c6acb1898d78880488846a7247d325b833243b46d923abe',
   },
   owner: null,
-  hash: '0x22f704c3e1c2160ab5cc780e75ea31285bd29e51e423726450df3150b572db0b',
+  hash: '0xd8c61a235204cb9e3c6acb1898d78880488846a7247d325b833243b46d923abe',
 });

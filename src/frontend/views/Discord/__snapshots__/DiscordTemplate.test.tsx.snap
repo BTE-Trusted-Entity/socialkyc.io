@@ -24,25 +24,19 @@ exports[`DiscordTemplate should match snapshot with flowError=closed 1`] = `
       <dl
         class="profile"
       >
-        <dt
-          class="profileKey"
-        >
+        <dt>
           User-ID:
         </dt>
-        <dd
-          class="profileValue"
-        >
+        <dd>
           1234556789
         </dd>
-        <dt
-          class="profileKey"
-        >
+        <dt>
           Username:
         </dt>
-        <dd
-          class="profileValue"
-        >
-          TestUser#1234
+        <dd>
+          TestUser
+          #
+          1234
         </dd>
       </dl>
       <p>
@@ -272,25 +266,19 @@ exports[`DiscordTemplate should match snapshot with status=authorized 1`] = `
       <dl
         class="profile"
       >
-        <dt
-          class="profileKey"
-        >
+        <dt>
           User-ID:
         </dt>
-        <dd
-          class="profileValue"
-        >
+        <dd>
           1234556789
         </dd>
-        <dt
-          class="profileKey"
-        >
+        <dt>
           Username:
         </dt>
-        <dd
-          class="profileValue"
-        >
-          TestUser#1234
+        <dd>
+          TestUser
+          #
+          1234
         </dd>
       </dl>
       <p>
@@ -351,7 +339,7 @@ exports[`DiscordTemplate should match snapshot with status=authorizing 1`] = `
         Authorizing
       </p>
       <p>
-        Awaiting authorization from Discord.
+        Please wait, accessing Discord account details.
       </p>
     </section>
     <a
@@ -384,6 +372,26 @@ exports[`DiscordTemplate should match snapshot with status=none 1`] = `
         type="button"
       />
     </div>
+    <section
+      class="container"
+    >
+      <div
+        class="spinner"
+      />
+      <h2
+        class="heading"
+      >
+        Attestation process:
+      </h2>
+      <p
+        class="message"
+      >
+        Generating link
+      </p>
+      <p>
+        Please wait, generating Discord authorization link.
+      </p>
+    </section>
     <a
       class="link"
       href="/"

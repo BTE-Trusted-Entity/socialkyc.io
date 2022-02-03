@@ -10,10 +10,13 @@ import got from 'got';
 
 import Boom from '@hapi/boom';
 
+import { Claim } from '@kiltprotocol/core';
+
 import {
   deleteSecret,
-  getSession,
   getSessionBySecret,
+  getSessionWithDid,
+  setSession,
 } from '../utilities/sessionStorage';
 import { paths } from '../endpoints/paths';
 import { configuration } from '../utilities/configuration';
@@ -21,6 +24,7 @@ import { configuration } from '../utilities/configuration';
 import { exceptionToError } from '../../frontend/utilities/exceptionToError';
 
 import { discordEndpoints } from './discordEndpoints';
+import { discordCType } from './discordCType';
 
 const zodPayload = z.object({
   sessionId: z.string(),
@@ -43,7 +47,6 @@ async function handler(
   const { logger } = request;
   logger.debug('Discord authorization started');
 
-  // https://nicememe.website/?code=NhhvTDYsFcdgNLnnLijcl7Ku7bEEeee&state=15773059ghq9183habn
   const { secret, sessionId, code } = request.payload as Input;
 
   // This is the initial session in the first tab the user has open
@@ -54,7 +57,7 @@ async function handler(
   logger.debug('Found session with secret');
   deleteSecret(secret);
 
-  getSession({ sessionId });
+  const session = getSessionWithDid({ sessionId });
 
   try {
     logger.debug('Exchanging code for access token');
@@ -81,7 +84,24 @@ async function handler(
       headers,
     }).json()) as { username: string; discriminator: string; id: string };
 
-    logger.debug('Found Discord profile');
+    logger.debug('Found Discord profile, creating claim');
+
+    const { username, discriminator, id } = profile;
+
+    const claimContents = {
+      Username: username,
+      Discriminator: discriminator,
+      'User ID': id,
+    };
+    const claim = Claim.fromCTypeAndClaimContents(
+      discordCType,
+      claimContents,
+      session.did,
+    );
+
+    setSession({ ...session, claim, confirmed: true });
+
+    logger.debug('Discord claim created');
 
     await got.post(discordEndpoints.revoke, {
       form: {
@@ -101,9 +121,9 @@ async function handler(
   }
 }
 
-export const authConfirmDiscord: ServerRoute = {
+export const confirmDiscord: ServerRoute = {
   method: 'POST',
-  path: paths.discord.authConfirm,
+  path: paths.discord.confirm,
   handler,
   options: {
     validate: {

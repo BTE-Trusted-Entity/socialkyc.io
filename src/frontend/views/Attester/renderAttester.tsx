@@ -1,5 +1,5 @@
 import { render } from 'react-dom';
-import { MemoryRouter } from 'react-router-dom';
+import { generatePath, matchPath, MemoryRouter } from 'react-router-dom';
 
 import { paths } from '../../paths';
 
@@ -10,33 +10,48 @@ function getConfirmation(message: string, callback: (ok: boolean) => void) {
   callback(allowTransition);
 }
 
-function renderAttester() {
-  let initialEntry: string;
-  if (window.location.pathname.includes('email/confirmation')) {
-    const secret = window.location.href.split('/').pop() as string;
-    initialEntry = paths.emailConfirmation.replace(':secret', secret);
+function getInitialEntry() {
+  const email = matchPath<{ secret: string }>(window.location.pathname, {
+    path: paths.window.email,
+  });
+  const discord = matchPath(window.location.pathname, {
+    path: paths.window.discord,
+  });
+
+  if (email) {
+    const { secret } = email.params;
+
     window.history.replaceState(null, '', '/');
-  } else if (window.location.pathname.includes('discord/auth')) {
+    return generatePath(paths.emailConfirmation, {
+      secret,
+    });
+  }
+
+  if (discord) {
     const searchParams = new URLSearchParams(window.location.search);
     const code = searchParams.get('code');
     const secret = searchParams.get('state');
     const error = searchParams.get('error');
+
     if (error) {
       // TODO: Show special interface?
-      initialEntry = '/';
-    } else {
-      initialEntry = paths.discordAuth
-        .replace(':code', code)
-        .replace(':secret', secret);
+      return '/';
     }
+
     window.history.replaceState(null, '', '/');
-  } else {
-    initialEntry = '/';
+    return generatePath(paths.discordAuth, {
+      code,
+      secret,
+    });
   }
 
+  return '/';
+}
+
+function renderAttester() {
   render(
     <MemoryRouter
-      initialEntries={[initialEntry]}
+      initialEntries={[getInitialEntry()]}
       getUserConfirmation={getConfirmation}
     >
       <Attester />

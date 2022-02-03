@@ -34,7 +34,6 @@ export type FlowError = 'unauthorized' | 'closed' | 'unknown';
 interface Props {
   status: AttestationStatus;
   processing: boolean;
-  handleSignInClick: MouseEventHandler;
   handleSubmit: FormEventHandler;
   handleBackup: MouseEventHandler;
   handleTryAgainClick: MouseEventHandler;
@@ -45,7 +44,6 @@ interface Props {
 export function DiscordTemplate({
   status,
   processing,
-  handleSignInClick,
   handleSubmit,
   handleBackup,
   handleTryAgainClick,
@@ -70,7 +68,7 @@ export function DiscordTemplate({
 
       <Prompt
         when={preventNavigation}
-        message="The email attestation process has already started. Are you sure you want to leave?"
+        message="The Discord attestation process has already started. Are you sure you want to leave?"
       />
 
       <Explainer>
@@ -80,6 +78,15 @@ export function DiscordTemplate({
         Sporran, and SocialKYC will create the credential.
       </Explainer>
 
+      {status === 'none' && (
+        <DetailedMessage
+          icon="spinner"
+          heading="Attestation process:"
+          message="Generating link"
+          details="Please wait, generating Discord authorization link."
+        />
+      )}
+
       {status === 'urlReady' && (
         <p className={styles.buttonsLine}>
           <a
@@ -87,7 +94,6 @@ export function DiscordTemplate({
             href={authUrl}
             target="_blank"
             rel="noreferrer"
-            onClick={handleSignInClick}
           >
             Sign in with Discord
           </a>
@@ -99,20 +105,20 @@ export function DiscordTemplate({
           icon="spinner"
           heading="Attestation process:"
           message="Authorizing"
-          details="Awaiting authorization from Discord."
+          details="Please wait, accessing Discord account details."
         />
       )}
 
       {status === 'authorized' && profile && (
         <form onSubmit={handleSubmit}>
           <dl className={styles.profile}>
-            <dt className={styles.profileKey}>User-ID:</dt>
-            <dd className={styles.profileValue}>{profile.id}</dd>
+            <dt>User-ID:</dt>
+            <dd>{profile.id}</dd>
 
-            <dt className={styles.profileKey}>Username:</dt>
-            <dd
-              className={styles.profileValue}
-            >{`${profile.username}#${profile.discriminator}`}</dd>
+            <dt>Username:</dt>
+            <dd>
+              {profile.username}#{profile.discriminator}
+            </dd>
           </dl>
 
           <p>

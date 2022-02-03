@@ -1,4 +1,4 @@
-import { useState, useEffect, useMemo, useCallback, FormEvent } from 'react';
+import { useState, useEffect, useCallback, FormEvent } from 'react';
 
 import { useRouteMatch } from 'react-router-dom';
 
@@ -28,16 +28,10 @@ interface Props {
 }
 
 export function Discord({ session }: Props): JSX.Element {
-  const match = useRouteMatch(paths.discordAuth)?.params as {
+  const { code, secret } = (useRouteMatch(paths.discordAuth)?.params as {
     code?: string;
     secret?: string;
-  };
-  // useRouteMatch by default returns a new object on each render
-  const params = useMemo(() => {
-    return { code: match?.code, secret: match?.secret };
-  }, [match?.code, match?.secret]);
-
-  const { code, secret } = params;
+  }) || { code: undefined, secret: undefined };
 
   const initialStatus = code && secret ? 'authorizing' : 'none';
 
@@ -76,7 +70,7 @@ export function Discord({ session }: Props): JSX.Element {
     }
     (async () => {
       try {
-        setProfile(await discordApi.authConfirm({ code, secret }));
+        setProfile(await discordApi.confirm({ code, secret }));
         setStatus('authorized');
       } catch {
         setStatus('error');
@@ -84,10 +78,6 @@ export function Discord({ session }: Props): JSX.Element {
       }
     })();
   }, [discordApi, code, secret]);
-
-  const handleSignInClick = useCallback(() => {
-    setStatus('authorizing');
-  }, []);
 
   const handleSubmit = useCallback(
     async (event: FormEvent) => {
@@ -115,11 +105,7 @@ export function Discord({ session }: Props): JSX.Element {
           }
         });
 
-        if (!profile) {
-          throw new Error('No Discord profile');
-        }
-
-        const message = await discordApi.quote(profile);
+        const message = await discordApi.quote({});
 
         await session.send(message);
       } catch (error) {
@@ -130,7 +116,7 @@ export function Discord({ session }: Props): JSX.Element {
         setProcessing(false);
       }
     },
-    [discordApi, session, profile],
+    [discordApi, session],
   );
 
   const handleBackup = useCallback(async () => {
@@ -158,7 +144,6 @@ export function Discord({ session }: Props): JSX.Element {
     <DiscordTemplate
       status={status}
       processing={processing}
-      handleSignInClick={handleSignInClick}
       handleSubmit={handleSubmit}
       handleBackup={handleBackup}
       handleTryAgainClick={handleTryAgainClick}
