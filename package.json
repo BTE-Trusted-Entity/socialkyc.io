@@ -59,7 +59,7 @@
     "@jest/globals": "^27.4.6",
     "@parcel/optimizer-data-url": "^2.0.1",
     "@parcel/transformer-inline-string": "^2.0.1",
-    "@storybook/addon-actions": "^6.4.17",
+    "@storybook/addon-actions": "^6.4.18",
     "@storybook/addon-console": "^1.2.3",
     "@storybook/addon-controls": "^6.4.17",
     "@storybook/addon-links": "^6.4.17",
