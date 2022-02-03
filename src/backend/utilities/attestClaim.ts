@@ -20,7 +20,15 @@ export async function attestClaim(
     configuration.did,
   );
 
-  await batchSignAndSubmitAttestation(attestation);
+  try {
+    await batchSignAndSubmitAttestation(attestation);
+  } catch (exception) {
+    // It happens that despite the error the attestation has gone through, do not fail then
+    const attested = Boolean(await Attestation.query(attestation.claimHash));
+    if (!attested) {
+      throw exception;
+    }
+  }
 
   return attestation;
 }

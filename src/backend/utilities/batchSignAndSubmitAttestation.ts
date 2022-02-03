@@ -39,8 +39,17 @@ async function createPendingTransaction() {
     logger.debug('Current transaction succeeded');
   } catch (error) {
     logger.error(error);
-    // an error means that the current attestations failed, so we schedule them to be done again
-    pendingAttestations = currentAttestations.concat(pendingAttestations);
+
+    for (const attestation of currentAttestations) {
+      // it happens that despite the error the attestation has gone through
+      const failed = !(await Attestation.query(attestation.claimHash));
+      if (failed) {
+        // reschedule the failed attestations in the next batch
+        pendingAttestations.unshift(attestation);
+      }
+    }
+    // TODO: when dependencies versions issue is resolved, optimize the code above using
+    // api.query.attestation.attestations.multi<Option<Codec>>(hashes)
   }
 
   if (syncExitAfterUpdatingReferences()) {
@@ -69,7 +78,6 @@ async function createPendingTransaction() {
   logger.debug('Submitting transaction');
   await BlockchainUtils.signAndSubmitTx(authorized, identity, {
     resolveOn: BlockchainUtils.IS_FINALIZED,
-    reSign: true,
   });
   logger.debug('Transaction submitted');
 }
