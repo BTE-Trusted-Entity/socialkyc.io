@@ -9,7 +9,7 @@
       event.preventDefault();
       const input = event.target.elements.input.value;
       const output = await window.kilt.sporran.signWithDid(input);
-      document.querySelector('#did').textContent = output.did;
+      document.querySelector('#did').textContent = output.didKeyUri;
       document.querySelector('#signature').textContent = output.signature;
     }
   </script>
@@ -23,7 +23,7 @@
     <button type="submit">Sign</button>
   </p>
   <p>
-    DID:
+    DID key:
     <output id="did"></output>
   </p>
   <p>
