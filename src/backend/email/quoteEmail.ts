@@ -60,7 +60,7 @@ async function handler(
   } catch (exception) {
     const error = exceptionToError(exception);
 
-    return Boom.boomify(error);
+    throw Boom.boomify(error);
   }
 }
 

@@ -57,7 +57,7 @@ async function handler(
   } catch (exception) {
     const error = exceptionToError(exception);
     logger.error(error);
-    return Boom.boomify(error);
+    throw Boom.boomify(error);
   }
 }
 
