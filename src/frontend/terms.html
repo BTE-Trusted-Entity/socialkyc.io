@@ -94,8 +94,8 @@
 
       <p>The wallet allows you to create digital identities for which SocialKYC attests verifiable credentials; this
         attestation is done automatically by the Software. You can choose between a set of credentials to be attested.
-        At launch, we are supporting attestations for email addresses and Twitter accounts; credentials for further
-        digital identities are planned to be released over time.</p>
+        At launch, we are supporting attestations for email addresses as well as Twitter and Discord accounts;
+        credentials for further digital identities are planned to be released over time.</p>
 
       <p>To start the attestation process you first need to agree to the terms of a specific attestation (e.g. costs and
         expiration date) by signing a request for attestation with your identity’s password.</p>
@@ -113,6 +113,11 @@
         <li>For your Twitter account, you need to enter your Twitter handle. Subsequently, SocialKYC provides a
           message you need to post publicly on your Twitter account. SocialKYC will check for the posting and verify the
           credential after that.
+        </li>
+        <li>For your Discord account, you click onto the button “Sign in with Discord” and in a new tab you log into
+          the account you want to have attested. Then, you grant us a one-time permission to fetch your Discord user ID
+          as well as username and discriminator. We show you the fetched data and after you clicked to confirm this
+          data, SocialKYC creates the credential with this data and anchors it to the blockchain.
         </li>
       </ul>
 
