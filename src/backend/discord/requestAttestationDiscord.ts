@@ -47,7 +47,7 @@ async function handler(
     throw Boom.badRequest('Discord Claim has not been confirmed');
   }
 
-  if (session.claim.cTypeHash !== requestForAttestation.claim.cTypeHash) {
+  if (session.claim?.cTypeHash !== requestForAttestation.claim.cTypeHash) {
     throw Boom.badRequest(
       'Discord request CType does not match confirmed claim cType',
     );

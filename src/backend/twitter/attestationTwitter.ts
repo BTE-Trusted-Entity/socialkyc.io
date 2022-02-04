@@ -9,7 +9,7 @@ import { z } from 'zod';
 import { IEncryptedMessage } from '@kiltprotocol/types';
 
 import {
-  getSession,
+  getSessionWithDid,
   PayloadWithSession,
   setSession,
 } from '../utilities/sessionStorage';
@@ -32,7 +32,7 @@ async function handler(
   const { logger } = request;
   logger.debug('Twitter attestation started');
 
-  const session = getSession(request.payload as PayloadWithSession);
+  const session = getSessionWithDid(request.payload as PayloadWithSession);
 
   try {
     const response = await getAttestationMessage(session, logger);

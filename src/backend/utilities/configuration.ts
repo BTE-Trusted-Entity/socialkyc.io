@@ -44,7 +44,7 @@ if (!blockchainEndpoint) {
 const httpAuthPassword = env.SECRET_HTTP_AUTH_PASSWORD;
 
 const discord = {
-  clientId: env.DISCORD_CLIENT_ID,
+  clientId: env.DISCORD_CLIENT_ID as string,
   clientSecret: env.DISCORD_CLIENT_SECRET,
 };
 

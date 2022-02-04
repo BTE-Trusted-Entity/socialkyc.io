@@ -22,7 +22,7 @@ export interface Session {
   requestChallenge?: string;
 }
 
-type SessionWithDid = Session & {
+export type SessionWithDid = Session & {
   did: IDidDetails['did'];
   encryptionKeyId: IDidKeyDetails['id'];
 };

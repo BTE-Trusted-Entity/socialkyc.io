@@ -7,12 +7,11 @@
     "typeRoots": ["./node_modules/@types", "./src/@types"],
     "outDir": "dist",
     "strict": true,
-    "sourceMap": true,
     "jsx": "react-jsx",
-    "esModuleInterop": true,
-    "skipLibCheck": true
+    "esModuleInterop": true
   },
   "include": [
+    "./src/**/*",
     "./src/testing/jest.setup.ts"
   ]
 }

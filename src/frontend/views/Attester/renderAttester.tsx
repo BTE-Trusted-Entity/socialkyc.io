@@ -33,7 +33,7 @@ function getInitialEntry() {
     const secret = searchParams.get('state');
     const error = searchParams.get('error');
 
-    if (error) {
+    if (error || !code || !secret) {
       // TODO: Show special interface?
       return '/';
     }

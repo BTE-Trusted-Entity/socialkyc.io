@@ -9,7 +9,7 @@ import Boom from '@hapi/boom';
 import { z } from 'zod';
 
 import {
-  getSession,
+  getSessionWithDid,
   PayloadWithSession,
   setSession,
 } from '../utilities/sessionStorage';
@@ -31,7 +31,7 @@ async function handler(
 ): Promise<ResponseObject> {
   const { logger } = request;
 
-  const session = getSession(request.payload as PayloadWithSession);
+  const session = getSessionWithDid(request.payload as PayloadWithSession);
 
   try {
     const response = await getAttestationMessage(session, logger);

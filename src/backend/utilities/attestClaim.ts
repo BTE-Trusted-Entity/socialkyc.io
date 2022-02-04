@@ -10,7 +10,12 @@ import { Attestation } from '@kiltprotocol/core';
 import { configuration } from './configuration';
 import { batchSignAndSubmitAttestation } from './batchSignAndSubmitAttestation';
 import { encryptMessageBody } from './encryptMessage';
-import { getSessionWithDid, Session, setSession } from './sessionStorage';
+import {
+  getSessionWithDid,
+  Session,
+  SessionWithDid,
+  setSession,
+} from './sessionStorage';
 
 export async function attestClaim(
   requestForAttestation: IRequestForAttestation,
@@ -51,7 +56,7 @@ export async function startAttestation(
 }
 
 export async function getAttestationMessage(
-  session: Session,
+  session: SessionWithDid,
   logger: Logger,
 ): Promise<IEncryptedMessage> {
   const attestation = session.attestationPromise
