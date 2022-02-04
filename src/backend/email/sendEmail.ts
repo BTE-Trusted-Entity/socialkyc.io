@@ -133,7 +133,7 @@ async function handler(
     const error = exceptionToError(exception);
     logger.error(`Error sending email: ${error}`);
 
-    return Boom.boomify(error, {
+    throw Boom.boomify(error, {
       statusCode: 400,
       message: 'Invalid email syntax',
     });
