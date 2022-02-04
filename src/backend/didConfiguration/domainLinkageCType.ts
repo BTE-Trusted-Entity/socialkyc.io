@@ -28,7 +28,7 @@ export async function storeDomainLinkageCType(): Promise<void> {
   const tx = await draft.store();
   await signAndSubmit(tx);
 
-  logger.warn('Pass this object to CType.fromCType', draft);
+  logger.warn(draft, 'Pass this object to CType.fromCType');
 }
 
 // This object was logged by storeDomainLinkageCType()

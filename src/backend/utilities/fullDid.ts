@@ -41,7 +41,7 @@ export async function createFullDid(): Promise<IDidDetails['did']> {
     relationships,
   );
 
-  logger.warn('This is your generated DID:', did);
+  logger.warn(did, 'This is your generated DID:');
 
   await BlockchainUtils.signAndSubmitTx(extrinsic, keypairs.identity, {
     resolveOn: BlockchainUtils.IS_FINALIZED,

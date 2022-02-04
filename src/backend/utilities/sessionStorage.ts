@@ -1,6 +1,7 @@
 import NodeCache from 'node-cache';
 import Boom from '@hapi/boom';
 import {
+  IClaim,
   IDidDetails,
   IDidKeyDetails,
   IRequestForAttestation,
@@ -14,8 +15,9 @@ export interface Session {
   encryptionKeyId?: IDidKeyDetails['id'];
   didChallenge?: string;
   didConfirmed?: boolean;
-  requestForAttestation?: IRequestForAttestation;
+  claim?: IClaim;
   confirmed?: boolean;
+  requestForAttestation?: IRequestForAttestation;
   attestationPromise?: Promise<Attestation>;
   requestChallenge?: string;
 }

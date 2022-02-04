@@ -123,7 +123,7 @@ exports[`TwitterTemplate should match snapshot with flowError=unknown 1`] = `
           Something went wrong!
         </p>
         <p>
-          Click “Try Again” button or reload the page or restart your browser.
+          Click “Try Again” or reload the page or restart your browser.
         </p>
       </section>
       <button

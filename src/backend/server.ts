@@ -6,6 +6,7 @@ import { fullDidPromise } from './utilities/fullDid';
 import { storeTwitterCType } from './twitter/twitterCType';
 import { storeEmailCType } from './email/emailCType';
 import { storeDomainLinkageCType } from './didConfiguration/domainLinkageCType';
+import { storeDiscordCType } from './discord/discordCType';
 
 import { configuration } from './utilities/configuration';
 import { configureAuthentication } from './utilities/configureAuthentication';
@@ -26,6 +27,13 @@ import { quoteTwitter } from './twitter/quoteTwitter';
 import { confirmTwitter } from './twitter/confirmTwitter';
 import { requestTwitter } from './twitter/requestAttestationTwitter';
 import { attestationTwitter } from './twitter/attestationTwitter';
+
+import { authUrlDiscord } from './discord/authUrlDiscord';
+import { authHtmlDiscord } from './discord/authHtmlDiscord';
+import { confirmDiscord } from './discord/confirmDiscord';
+import { quoteDiscord } from './discord/quoteDiscord';
+import { requestAttestationDiscord } from './discord/requestAttestationDiscord';
+import { attestDiscord } from './discord/attestDiscord';
 
 import { requestCredential } from './verifier/requestCredential';
 import { verify } from './verifier/verify';
@@ -77,6 +85,7 @@ const logger = {
     await storeDomainLinkageCType();
     await storeEmailCType();
     await storeTwitterCType();
+    await storeDiscordCType();
     server.logger.warn('Blockchain objects stored');
   }
 
@@ -100,6 +109,13 @@ const logger = {
   server.route(confirmTwitter);
   server.route(requestTwitter);
   server.route(attestationTwitter);
+
+  server.route(authHtmlDiscord);
+  server.route(authUrlDiscord);
+  server.route(confirmDiscord);
+  server.route(quoteDiscord);
+  server.route(requestAttestationDiscord);
+  server.route(attestDiscord);
 
   server.route(requestCredential);
   server.route(verify);
