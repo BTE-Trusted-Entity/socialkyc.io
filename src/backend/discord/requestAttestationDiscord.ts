@@ -10,6 +10,8 @@ import {
   MessageBodyType,
 } from '@kiltprotocol/types';
 
+import { RequestForAttestationUtils } from '@kiltprotocol/core';
+
 import Boom from '@hapi/boom';
 
 import {
@@ -20,6 +22,8 @@ import {
 import { validateEncryptedMessage } from '../utilities/validateEncryptedMessage';
 import { preDecryptMessageContent } from '../utilities/decryptMessage';
 import { paths } from '../endpoints/paths';
+
+import { exceptionToError } from '../../frontend/utilities/exceptionToError';
 
 export type Output = Record<string, never>;
 
@@ -39,13 +43,28 @@ async function handler(
 
   const session = getSession(request.payload as PayloadWithSession);
 
-  if (session.claim.cTypeHash !== requestForAttestation.claim.cTypeHash) {
-    throw Boom.badRequest('CType does not match claim');
+  if (!session.confirmed) {
+    throw Boom.badRequest('Discord Claim has not been confirmed');
   }
 
-  if (!session.confirmed) {
-    throw Boom.badRequest('Claim has not been confirmed');
+  if (session.claim.cTypeHash !== requestForAttestation.claim.cTypeHash) {
+    throw Boom.badRequest(
+      'Discord request CType does not match confirmed claim cType',
+    );
   }
+
+  session.claim.owner = requestForAttestation.claim.owner;
+  requestForAttestation.claim = session.claim;
+
+  try {
+    RequestForAttestationUtils.errorCheck(requestForAttestation);
+  } catch (exception) {
+    const error = exceptionToError(exception);
+    logger.error(error);
+    return Boom.boomify(error);
+  }
+
+  logger.debug('Discord request attestation verified');
 
   setSession({ ...session, requestForAttestation });
 

@@ -1,3 +1,5 @@
+import { paths as backendPaths } from '../backend/endpoints/paths';
+
 export const paths = {
   home: '/',
   email: '/email',
@@ -6,7 +8,7 @@ export const paths = {
   discord: '/discord',
   discordAuth: '/discord/:code/:secret',
   window: {
-    discord: '/discord/auth',
-    email: '/email/confirmation/:secret',
+    discord: backendPaths.discord.authHtml,
+    email: backendPaths.email.confirmationHtml.replace('{secret}', ':secret'),
   },
 };

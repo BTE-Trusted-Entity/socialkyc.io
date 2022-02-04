@@ -79,10 +79,6 @@ async function expectSomethingWrong() {
   expect(await screen.findByText('Something went wrong!')).toBeInTheDocument();
 }
 
-// function expectConfirmCalledWith(secret: string) {
-//   expect(mockDiscordApi.confirm).toHaveBeenCalledWith({ secret });
-// }
-
 function expectAuthUrlCalled() {
   expect(mockDiscordApi.authUrl).toHaveBeenCalledWith({});
 }
