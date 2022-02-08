@@ -1,0 +1,496 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`GithubTemplate should match snapshot with flowError=closed 1`] = `
+<div>
+  <section
+    aria-busy="false"
+    class="container"
+  >
+    <h1
+      class="heading"
+    >
+      Github Account Attestation
+    </h1>
+    <div
+      class="explainerContainer"
+    >
+      <button
+        aria-label="Toggle explanation"
+        class="showExplainer"
+        type="button"
+      />
+    </div>
+    <form>
+      <dl
+        class="profile"
+      >
+        <dt>
+          User-ID:
+        </dt>
+        <dd>
+          1234556789
+        </dd>
+        <dt>
+          Username:
+        </dt>
+        <dd>
+          TestUser
+        </dd>
+      </dl>
+      <p>
+        Validity: one year (
+        1/3/2023
+        )
+      </p>
+      <section
+        class="container"
+      >
+        <div
+          class="exclamation"
+        />
+        <h2
+          class="heading"
+        >
+          Signing error:
+        </h2>
+        <p
+          class="message"
+        >
+          Your wallet was closed before the request was signed.
+        </p>
+        <p>
+          Click “Continue in Wallet” to try again.
+        </p>
+      </section>
+      <button
+        class="ctaButton"
+      >
+        Continue in Wallet
+      </button>
+    </form>
+    <a
+      class="link"
+      href="/"
+    >
+      Back to list
+    </a>
+  </section>
+</div>
+`;
+
+exports[`GithubTemplate should match snapshot with flowError=unknown 1`] = `
+<div>
+  <section
+    aria-busy="false"
+    class="container"
+  >
+    <h1
+      class="heading"
+    >
+      Github Account Attestation
+    </h1>
+    <div
+      class="explainerContainer"
+    >
+      <button
+        aria-label="Toggle explanation"
+        class="showExplainer"
+        type="button"
+      />
+    </div>
+    <section
+      class="container"
+    >
+      <div
+        class="exclamation"
+      />
+      <h2
+        class="heading"
+      >
+        Attestation error:
+      </h2>
+      <p
+        class="message"
+      >
+        Something went wrong!
+      </p>
+      <p>
+        Click “Try Again” or reload the page or restart your browser.
+      </p>
+    </section>
+    <button
+      class="ctaButton"
+      type="button"
+    >
+      Try again
+    </button>
+    <a
+      class="link"
+      href="/"
+    >
+      Back to list
+    </a>
+  </section>
+</div>
+`;
+
+exports[`GithubTemplate should match snapshot with flowerror=unauthorized 1`] = `
+<div>
+  <section
+    aria-busy="false"
+    class="container"
+  >
+    <h1
+      class="heading"
+    >
+      Github Account Attestation
+    </h1>
+    <div
+      class="explainerContainer"
+    >
+      <button
+        aria-label="Toggle explanation"
+        class="showExplainer"
+        type="button"
+      />
+    </div>
+    <section
+      class="container"
+    >
+      <div
+        class="exclamation"
+      />
+      <h2
+        class="heading"
+      >
+        Authorization error:
+      </h2>
+      <p
+        class="message"
+      >
+        There was an error authorizing your Github account.
+      </p>
+      <p>
+        Click “Try Again” or reload the page or restart your browser.
+      </p>
+    </section>
+    <button
+      class="ctaButton"
+      type="button"
+    >
+      Try again
+    </button>
+    <a
+      class="link"
+      href="/"
+    >
+      Back to list
+    </a>
+  </section>
+</div>
+`;
+
+exports[`GithubTemplate should match snapshot with status=attesting 1`] = `
+<div>
+  <section
+    aria-busy="false"
+    class="container"
+  >
+    <h1
+      class="heading"
+    >
+      Github Account Attestation
+    </h1>
+    <div
+      class="explainerContainer"
+    >
+      <button
+        aria-label="Toggle explanation"
+        class="showExplainer"
+        type="button"
+      />
+    </div>
+    <section
+      class="container"
+    >
+      <div
+        class="spinner"
+      />
+      <h2
+        class="heading"
+      >
+        Attestation process:
+      </h2>
+      <p
+        class="message"
+      >
+        Anchoring credential on KILT blockchain
+      </p>
+      <p>
+        Please leave this tab open until your credential is attested.
+      </p>
+    </section>
+    <a
+      class="link"
+      href="/"
+    >
+      Back to list
+    </a>
+  </section>
+</div>
+`;
+
+exports[`GithubTemplate should match snapshot with status=authorized 1`] = `
+<div>
+  <section
+    aria-busy="false"
+    class="container"
+  >
+    <h1
+      class="heading"
+    >
+      Github Account Attestation
+    </h1>
+    <div
+      class="explainerContainer"
+    >
+      <button
+        aria-label="Toggle explanation"
+        class="showExplainer"
+        type="button"
+      />
+    </div>
+    <form>
+      <dl
+        class="profile"
+      >
+        <dt>
+          User-ID:
+        </dt>
+        <dd>
+          1234556789
+        </dd>
+        <dt>
+          Username:
+        </dt>
+        <dd>
+          TestUser
+        </dd>
+      </dl>
+      <p>
+        Validity: one year (
+        1/3/2023
+        )
+      </p>
+      <button
+        class="ctaButton"
+      >
+        Continue in Wallet
+      </button>
+    </form>
+    <a
+      class="link"
+      href="/"
+    >
+      Back to list
+    </a>
+  </section>
+</div>
+`;
+
+exports[`GithubTemplate should match snapshot with status=authorizing 1`] = `
+<div>
+  <section
+    aria-busy="false"
+    class="container"
+  >
+    <h1
+      class="heading"
+    >
+      Github Account Attestation
+    </h1>
+    <div
+      class="explainerContainer"
+    >
+      <button
+        aria-label="Toggle explanation"
+        class="showExplainer"
+        type="button"
+      />
+    </div>
+    <section
+      class="container"
+    >
+      <div
+        class="spinner"
+      />
+      <h2
+        class="heading"
+      >
+        Attestation process:
+      </h2>
+      <p
+        class="message"
+      >
+        Authorizing
+      </p>
+      <p>
+        Please wait, accessing Github account details.
+      </p>
+    </section>
+    <a
+      class="link"
+      href="/"
+    >
+      Back to list
+    </a>
+  </section>
+</div>
+`;
+
+exports[`GithubTemplate should match snapshot with status=none 1`] = `
+<div>
+  <section
+    aria-busy="false"
+    class="container"
+  >
+    <h1
+      class="heading"
+    >
+      Github Account Attestation
+    </h1>
+    <div
+      class="explainerContainer"
+    >
+      <button
+        aria-label="Toggle explanation"
+        class="showExplainer"
+        type="button"
+      />
+    </div>
+    <section
+      class="container"
+    >
+      <div
+        class="spinner"
+      />
+      <h2
+        class="heading"
+      >
+        Attestation process:
+      </h2>
+      <p
+        class="message"
+      >
+        Generating link
+      </p>
+      <p>
+        Please wait, generating Github authorization link.
+      </p>
+    </section>
+    <a
+      class="link"
+      href="/"
+    >
+      Back to list
+    </a>
+  </section>
+</div>
+`;
+
+exports[`GithubTemplate should match snapshot with status=ready 1`] = `
+<div>
+  <section
+    aria-busy="false"
+    class="container"
+  >
+    <h1
+      class="heading"
+    >
+      Github Account Attestation
+    </h1>
+    <div
+      class="explainerContainer"
+    >
+      <button
+        aria-label="Toggle explanation"
+        class="showExplainer"
+        type="button"
+      />
+    </div>
+    <section
+      class="container"
+    >
+      <div
+        class="checkmark"
+      />
+      <h2
+        class="heading"
+      >
+        Attestation process:
+      </h2>
+      <p
+        class="message"
+      >
+        Credential is ready
+      </p>
+      <p>
+        We recommend that you back up your credential now.
+      </p>
+    </section>
+    <button
+      class="ctaButton"
+      type="button"
+    >
+      Show credential in wallet
+    </button>
+    <a
+      class="link"
+      href="/"
+    >
+      Back to list
+    </a>
+  </section>
+</div>
+`;
+
+exports[`GithubTemplate should match snapshot with status=urlReady 1`] = `
+<div>
+  <section
+    aria-busy="false"
+    class="container"
+  >
+    <h1
+      class="heading"
+    >
+      Github Account Attestation
+    </h1>
+    <div
+      class="explainerContainer"
+    >
+      <button
+        aria-label="Toggle explanation"
+        class="showExplainer"
+        type="button"
+      />
+    </div>
+    <p
+      class="buttonsLine"
+    >
+      <a
+        class="ctaButton"
+        rel="noreferrer"
+        target="_blank"
+      >
+        Sign in with Github
+      </a>
+    </p>
+    <a
+      class="link"
+      href="/"
+    >
+      Back to list
+    </a>
+  </section>
+</div>
+`;

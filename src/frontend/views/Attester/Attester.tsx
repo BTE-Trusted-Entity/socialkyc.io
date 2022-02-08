@@ -14,6 +14,7 @@ import { Email } from '../Email/Email';
 import { Twitter } from '../Twitter/Twitter';
 import { paths } from '../../paths';
 import { Discord } from '../Discord/Discord';
+import { Github } from '../Github/Github';
 
 interface HasSporran {
   data?: {
@@ -151,6 +152,11 @@ function GetCredentials() {
         <li>
           <Link to={paths.discord} className={styles.discord}>
             Discord Account
+          </Link>
+        </li>
+        <li>
+          <Link to={paths.github} className={styles.github}>
+            Github Account
           </Link>
         </li>
       </ul>
@@ -296,7 +302,13 @@ export function Attester(): JSX.Element {
     return (
       <Fragment>
         <Switch>
-          <Route path={[paths.emailConfirmation, paths.discordAuth]}>
+          <Route
+            path={[
+              paths.emailConfirmation,
+              paths.discordAuth,
+              paths.githubAuth,
+            ]}
+          >
             <AlmostThere />
           </Route>
           <Route>
@@ -318,6 +330,9 @@ export function Attester(): JSX.Element {
       </Route>
       <Route path={paths.discord}>
         <Discord session={session} />
+      </Route>
+      <Route path={paths.github}>
+        <Github session={session} />
       </Route>
       <Route>
         <Welcome />

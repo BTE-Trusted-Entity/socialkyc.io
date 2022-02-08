@@ -9,5 +9,5 @@ export const discordEndpoints = {
   profile: 'https://discord.com/api/users/@me',
   revoke: 'https://discord.com/api/oauth2/token/revoke',
 
-  redirectUri: `${configuration.baseUri}${paths.discord.authHtml}`,
+  redirectUri: `${configuration.baseUri}${paths.oauth.discord}`,
 };

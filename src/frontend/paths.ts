@@ -7,8 +7,11 @@ export const paths = {
   twitter: '/twitter',
   discord: '/discord',
   discordAuth: '/discord/:code/:secret',
+  github: '/github',
+  githubAuth: '/github/:code/:secret',
   window: {
-    discord: backendPaths.discord.authHtml,
     email: backendPaths.email.confirmationHtml.replace('{secret}', ':secret'),
+    discord: backendPaths.oauth.discord,
+    github: backendPaths.oauth.github,
   },
 };
