@@ -39,8 +39,8 @@ export const paths = {
   },
 
   oauth: {
-    discord: '/oauth/discord',
-    github: '/oauth/github',
+    discord: '/discord/auth',
+    github: '/github/auth',
   },
 
   verifier: {
