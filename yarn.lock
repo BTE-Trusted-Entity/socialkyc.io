@@ -8329,10 +8329,10 @@ exit@^0.1.2:
   resolved "https://registry.yarnpkg.com/exit/-/exit-0.1.2.tgz#0632638f8d877cc82107d30a0fff1a17cba1cd0c"
   integrity sha1-BjJjj42HfMghB9MKD/8aF8uhzQw=
 
-exiting@^6.0.1:
-  version "6.0.1"
-  resolved "https://registry.yarnpkg.com/exiting/-/exiting-6.0.1.tgz#c44e5f00564eb32350cf9a6bb34f7b9b739cee16"
-  integrity sha512-0kUQkyWTMJUZ2wKkxjducVojsL5vtDxw26q9sd07SwyWZswbHOrWN9Bs2jk9uXffatsGp2QP5tmQUYXiPi1Z2A==
+exiting@^6.1.0:
+  version "6.1.0"
+  resolved "https://registry.yarnpkg.com/exiting/-/exiting-6.1.0.tgz#eaf43eab4509ea20ac630742e953d16b7f4408f9"
+  integrity sha512-BZjiof55/K1hrj9P5wM+AihAjqAgIXV1E+mGB+Mu86M97r1GJdSBihYBqNKkwkbe1MBg/lC4fdmel3bCLYzymA==
   dependencies:
     "@hapi/bounce" "^2.0.0"
     "@hapi/hoek" "^9.0.2"
