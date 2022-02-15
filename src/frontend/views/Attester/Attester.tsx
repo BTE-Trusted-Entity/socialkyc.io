@@ -156,7 +156,7 @@ function GetCredentials() {
         </li>
         <li>
           <Link to={paths.github} className={styles.github}>
-            Github Account
+            GitHub Account
           </Link>
         </li>
       </ul>

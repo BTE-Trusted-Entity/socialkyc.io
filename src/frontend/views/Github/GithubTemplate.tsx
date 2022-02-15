@@ -72,8 +72,8 @@ export function GithubTemplate({
       />
 
       <Explainer>
-        After you sign into your Github account and give SocialKYC permission,
-        SocialKYC requests your Github information for the credential. You can
+        After you sign into your GitHub account and give SocialKYC permission,
+        SocialKYC requests your GitHub information for the credential. You can
         then sign the data with one of your identities in Sporran, and SocialKYC
         will create the credential.
       </Explainer>
@@ -83,7 +83,7 @@ export function GithubTemplate({
           icon="spinner"
           heading="Attestation process:"
           message="Generating link"
-          details="Please wait, generating Github authorization link."
+          details="Please wait, generating GitHub authorization link."
         />
       )}
 
@@ -95,7 +95,7 @@ export function GithubTemplate({
             target="_blank"
             rel="noreferrer"
           >
-            Sign in with Github
+            Sign in with GitHub
           </a>
         </p>
       )}
