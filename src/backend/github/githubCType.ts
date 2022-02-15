@@ -7,9 +7,9 @@ import { logger } from '../utilities/logger';
 export async function storeGithubCType(): Promise<void> {
   const draft = CType.fromSchema({
     $schema: 'http://kilt-protocol.org/draft-01/ctype#',
-    title: 'Github',
+    title: 'GitHub',
     properties: {
-      Username: {
+      Login: {
         type: 'string',
       },
       'User ID': {
@@ -35,9 +35,9 @@ export async function storeGithubCType(): Promise<void> {
 export const githubCType = CType.fromCType({
   schema: {
     $schema: 'http://kilt-protocol.org/draft-01/ctype#',
-    title: 'Github',
+    title: 'GitHub',
     properties: {
-      Username: {
+      Login: {
         type: 'string',
       },
       'User ID': {
@@ -45,8 +45,8 @@ export const githubCType = CType.fromCType({
       },
     },
     type: 'object',
-    $id: 'kilt:ctype:0x83b480b1b7513a4ec4f78cc0c6ffae16b989909985f092f6a4c7c7d5dee55a52',
+    $id: 'kilt:ctype:0xb91940ac5a54540cb1c3a2f246bee488c9a0bd72e4997733ba8f24f7d2525bbb',
   },
   owner: null,
-  hash: '0x83b480b1b7513a4ec4f78cc0c6ffae16b989909985f092f6a4c7c7d5dee55a52',
+  hash: '0xb91940ac5a54540cb1c3a2f246bee488c9a0bd72e4997733ba8f24f7d2525bbb',
 });

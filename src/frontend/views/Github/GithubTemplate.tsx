@@ -72,10 +72,10 @@ export function GithubTemplate({
       />
 
       <Explainer>
-        After you sign into your Github account and give SocialKYC a one-time
-        permission, SocialKYC requests your Github information for the
-        credential. You can then sign the data with one of your identities in
-        Sporran, and SocialKYC will create the credential.
+        After you sign into your Github account and give SocialKYC permission,
+        SocialKYC requests your Github information for the credential. You can
+        then sign the data with one of your identities in Sporran, and SocialKYC
+        will create the credential.
       </Explainer>
 
       {status === 'none' && (

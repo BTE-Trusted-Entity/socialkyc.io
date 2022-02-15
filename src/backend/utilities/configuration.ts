@@ -54,7 +54,7 @@ if (!discord.clientId || !discord.clientSecret) {
 
 const github = {
   clientId: env.GITHUB_CLIENT_ID as string,
-  secret: env.GITHUB_SECRET,
+  secret: env.SECRET_GITHUB,
 };
 
 if (!github.clientId || !github.secret) {

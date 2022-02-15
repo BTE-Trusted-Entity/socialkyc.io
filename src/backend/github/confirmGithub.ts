@@ -92,7 +92,7 @@ async function handler(
     const { login, id } = profile;
 
     const claimContents = {
-      Username: login,
+      Login: login,
       'User ID': id.toString(),
     };
     const claim = Claim.fromCTypeAndClaimContents(
