@@ -385,7 +385,7 @@ exports[`GithubTemplate should match snapshot with status=none 1`] = `
         Generating link
       </p>
       <p>
-        Please wait, generating Github authorization link.
+        Please wait, generating GitHub authorization link.
       </p>
     </section>
     <a
@@ -482,7 +482,7 @@ exports[`GithubTemplate should match snapshot with status=urlReady 1`] = `
         rel="noreferrer"
         target="_blank"
       >
-        Sign in with Github
+        Sign in with GitHub
       </a>
     </p>
     <a

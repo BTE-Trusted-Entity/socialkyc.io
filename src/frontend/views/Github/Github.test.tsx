@@ -43,7 +43,7 @@ jest.mocked(useGithubApi).mockReturnValue(mockGithubApi);
 
 async function signInWithGithub() {
   const signInLink = await screen.findByRole('link', {
-    name: 'Sign in with Github',
+    name: 'Sign in with GitHub',
   });
   await userEvent.click(signInLink);
 }
@@ -182,7 +182,7 @@ describe('Github', () => {
     });
 
     await signInWithGithub();
-    expect(await screen.findByText('Sign in with Github')).toBeInTheDocument();
+    expect(await screen.findByText('Sign in with GitHub')).toBeInTheDocument();
   });
 
   it('should show an error when authUrl fails', async () => {
