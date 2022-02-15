@@ -62,7 +62,7 @@ The SocialKYC identity verification service is brought to you by B.T.E. BOTLabs 
   const html = (await htmlTemplatePromise)
     .replace('${URL}', url)
     .replace(/src="/g, `src="${configuration.baseUri}`)
-    .replace(/url\(('?)/g, `url($1${configuration.baseUri}/`);
+    .replace(/url\((['"]?)/g, `url($1${configuration.baseUri}/`);
 
   const command = new SendEmailCommand({
     Destination: {
