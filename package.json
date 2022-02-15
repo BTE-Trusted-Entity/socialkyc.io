@@ -128,7 +128,6 @@
       "scopeHoist": false
     },
     "backend": {
-      "isLibrary": false,
       "context": "node",
       "source": "src/backend/server.ts",
       "distDir": "dist/backend",
