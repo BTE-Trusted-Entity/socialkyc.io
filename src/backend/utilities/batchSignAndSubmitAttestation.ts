@@ -11,6 +11,8 @@ import { didAuthorizeBatchExtrinsic } from './didAuthorizeBatchExtrinsic';
 import { assertionKeystore } from './keystores';
 import { signAndSubmit } from './signAndSubmit';
 
+const TRANSACTION_TIMEOUT = 5 * 60 * 1000;
+
 let currentAttestations: Attestation[] = [];
 let currentTransaction: Promise<void> | undefined = undefined;
 let pendingAttestations: Attestation[] = [];
@@ -31,6 +33,19 @@ function syncExitAfterUpdatingReferences(): boolean {
   pendingAttestations = [];
   pendingTransaction = createPendingTransaction();
   return false;
+}
+
+async function timeout(delay: number, error: Error) {
+  return new Promise((resolve, reject) =>
+    setTimeout(() => reject(error), delay),
+  );
+}
+
+async function runTransactionWithTimeout<Result>(transaction: Promise<Result>) {
+  await Promise.race([
+    transaction,
+    timeout(TRANSACTION_TIMEOUT, new Error('Transaction timed out')),
+  ]);
 }
 
 async function createPendingTransaction() {
@@ -76,9 +91,11 @@ async function createPendingTransaction() {
   );
 
   logger.debug('Submitting transaction');
-  await BlockchainUtils.signAndSubmitTx(authorized, identity, {
-    resolveOn: BlockchainUtils.IS_FINALIZED,
-  });
+  await runTransactionWithTimeout(
+    BlockchainUtils.signAndSubmitTx(authorized, identity, {
+      resolveOn: BlockchainUtils.IS_FINALIZED,
+    }),
+  );
   logger.debug('Transaction submitted');
 }
 
@@ -91,10 +108,12 @@ export async function batchSignAndSubmitAttestation(attestation: Attestation) {
   }
 
   logger.debug('Started immediate attestation');
-  pendingTransaction = (async () => {
-    const transaction = await attestation.store();
-    await signAndSubmit(transaction);
-  })();
+  pendingTransaction = runTransactionWithTimeout(
+    (async () => {
+      const transaction = await attestation.store();
+      await signAndSubmit(transaction);
+    })(),
+  );
   syncExitAfterUpdatingReferences();
 
   return currentTransaction;
