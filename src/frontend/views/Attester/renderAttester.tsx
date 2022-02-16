@@ -49,6 +49,11 @@ function getInitialEntry() {
 }
 
 function renderAttester() {
+  const container = document.querySelector('.leftContainer');
+  if (!container) {
+    return;
+  }
+
   render(
     <MemoryRouter
       initialEntries={[getInitialEntry()]}
@@ -56,7 +61,7 @@ function renderAttester() {
     >
       <Attester />
     </MemoryRouter>,
-    document.querySelector('.leftContainer'),
+    container,
   );
 }
 
