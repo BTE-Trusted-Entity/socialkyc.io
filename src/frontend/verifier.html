@@ -7,6 +7,22 @@
     <script>
       window.kilt = {};
     </script>
+    <style>
+      #credentialForm {
+        margin: 2rem;
+      }
+      #values {
+        padding-left: 2rem;
+      }
+      #claimer-did {
+        display: inline-block;
+        vertical-align: bottom;
+        max-width: 60%;
+        white-space: nowrap;
+        overflow: hidden;
+        text-overflow: ellipsis;
+      }
+    </style>
   </head>
   <body>
     <h1>Verifier Test Page</h1>
@@ -29,26 +45,30 @@
 
       <section id="shared" hidden>
         <p>
-          Claimer DID:
-          <output id="claimer-did"></output>
+          CType:
+          <output id="cType"></output>
+        </p>
+        <div>
+          Content:
+          <dl id="values"></dl>
+        </div>
+        <p>
+          Status:
+          <output id="status"></output>
         </p>
         <p>
           Attester DID:
           <output id="attester-did"></output>
         </p>
         <p>
-          CType:
-          <output id="ctypeHash"></output>
-        </p>
-        <p>
-          Status:
-          <output id="status"></output>
+          Claimer DID:
+          <output id="claimer-did"></output>
         </p>
         <br />
-        <p>
-          Full credential object:
+        <details>
+          <summary>Full credential object</summary>
           <output><pre id="json"></pre></output>
-        </p>
+        </details>
       </section>
     </form>
     <footer>
