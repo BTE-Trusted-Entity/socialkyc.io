@@ -1,7 +1,4 @@
 import { paths } from '../endpoints/paths';
 import { getVariantRoute } from '../utilities/htmlVariants';
 
-export const authHtmlDiscord = getVariantRoute(
-  paths.oauth.discord,
-  'index.html',
-);
+export const authHtmlGithub = getVariantRoute(paths.oauth.github, 'index.html');

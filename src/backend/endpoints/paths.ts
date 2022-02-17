@@ -23,12 +23,24 @@ export const paths = {
   },
 
   discord: {
-    auth: '/api/discord/auth',
+    authUrl: '/api/discord/authUrl',
     confirm: '/api/discord/confirm',
     quote: '/api/discord/quote',
     requestAttestation: '/api/discord/request-attestation',
     attest: '/api/discord/attest',
-    authHtml: '/discord/auth',
+  },
+
+  github: {
+    authUrl: '/api/github/authUrl',
+    confirm: '/api/github/confirm',
+    quote: '/api/github/quote',
+    requestAttestation: '/api/github/request-attestation',
+    attest: '/api/github/attest',
+  },
+
+  oauth: {
+    discord: '/discord/auth',
+    github: '/github/auth',
   },
 
   verifier: {

@@ -52,6 +52,15 @@ if (!discord.clientId || !discord.clientSecret) {
   throw new Error('No discord client credentials provided');
 }
 
+const github = {
+  clientId: env.GITHUB_CLIENT_ID as string,
+  secret: env.SECRET_GITHUB,
+};
+
+if (!github.clientId || !github.secret) {
+  throw new Error('No github client credentials provided');
+}
+
 export const configuration = {
   aws: {
     region,
@@ -69,4 +78,5 @@ export const configuration = {
   httpAuthPassword,
   storeDidAndCTypes,
   discord,
+  github,
 };

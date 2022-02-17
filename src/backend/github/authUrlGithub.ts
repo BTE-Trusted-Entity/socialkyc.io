@@ -15,7 +15,7 @@ import { paths } from '../endpoints/paths';
 
 import { exceptionToError } from '../../frontend/utilities/exceptionToError';
 
-import { discordEndpoints } from './discordEndpoints';
+import { githubEndpoints } from './githubEndpoints';
 
 const zodPayload = z.object({
   sessionId: z.string(),
@@ -27,23 +27,21 @@ export type Output = string;
 
 async function handler(request: Request): Promise<string> {
   const { logger } = request;
-  logger.debug('Discord auth started');
+  logger.debug('github auth started');
   try {
     const session = getSession(request.payload as PayloadWithSession);
 
     const secret = getSecretForSession(session.sessionId);
 
     const searchParams = {
-      response_type: 'code',
-      client_id: configuration.discord.clientId,
-      prompt: 'consent',
-      scope: 'identify',
+      client_id: configuration.github.clientId,
+      scope: 'user',
       state: secret,
-      redirect_uri: discordEndpoints.redirectUri,
+      redirect_uri: githubEndpoints.redirectUri,
     };
-    const url = new URL(discordEndpoints.authorize);
+    const url = new URL(githubEndpoints.authorize);
     url.search = new URLSearchParams(searchParams).toString();
-    logger.debug('Generated discord auth URL');
+    logger.debug('Generated github auth URL');
     return url.toString() as Output;
   } catch (exception) {
     const error = exceptionToError(exception);
@@ -52,9 +50,9 @@ async function handler(request: Request): Promise<string> {
   }
 }
 
-export const authUrlDiscord: ServerRoute = {
+export const authUrlgithub: ServerRoute = {
   method: 'POST',
-  path: paths.discord.authUrl,
+  path: paths.github.authUrl,
   handler,
   options: {
     validate: {
