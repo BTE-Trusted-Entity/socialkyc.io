@@ -9,7 +9,7 @@ export async function storeGithubCType(): Promise<void> {
     $schema: 'http://kilt-protocol.org/draft-01/ctype#',
     title: 'GitHub',
     properties: {
-      Login: {
+      Username: {
         type: 'string',
       },
       'User ID': {
@@ -37,7 +37,7 @@ export const githubCType = CType.fromCType({
     $schema: 'http://kilt-protocol.org/draft-01/ctype#',
     title: 'GitHub',
     properties: {
-      Login: {
+      Username: {
         type: 'string',
       },
       'User ID': {
@@ -45,8 +45,8 @@ export const githubCType = CType.fromCType({
       },
     },
     type: 'object',
-    $id: 'kilt:ctype:0xb91940ac5a54540cb1c3a2f246bee488c9a0bd72e4997733ba8f24f7d2525bbb',
+    $id: 'kilt:ctype:0xad52bd7a8bd8a52e03181a99d2743e00d0a5e96fdc0182626655fcf0c0a776d0',
   },
   owner: null,
-  hash: '0xb91940ac5a54540cb1c3a2f246bee488c9a0bd72e4997733ba8f24f7d2525bbb',
+  hash: '0xad52bd7a8bd8a52e03181a99d2743e00d0a5e96fdc0182626655fcf0c0a776d0',
 });

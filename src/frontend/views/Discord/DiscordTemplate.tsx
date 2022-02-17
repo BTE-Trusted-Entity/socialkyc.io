@@ -115,7 +115,7 @@ export function DiscordTemplate({
             <dt>User-ID:</dt>
             <dd>{profile.id}</dd>
 
-            <dt>Login:</dt>
+            <dt>Username:</dt>
             <dd>
               {profile.username}#{profile.discriminator}
             </dd>

@@ -31,7 +31,7 @@ exports[`DiscordTemplate should match snapshot with flowError=closed 1`] = `
           1234556789
         </dd>
         <dt>
-          Login:
+          Username:
         </dt>
         <dd>
           TestUser
@@ -273,7 +273,7 @@ exports[`DiscordTemplate should match snapshot with status=authorized 1`] = `
           1234556789
         </dd>
         <dt>
-          Login:
+          Username:
         </dt>
         <dd>
           TestUser
