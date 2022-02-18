@@ -32,5 +32,5 @@ jobs:
           ECR_REPOSITORY: socialkyc
           IMAGE_TAG: ${{ github.sha }}
         with:
-          args: -n social-kyc set image deployment/socialkyc socialkyc=$ECR_REGISTRY/$ECR_REPOSITORY:${{ github.event.inputs.tag }} --dry-run
+          args: set image deployment/socialkyc socialkyc=$ECR_REGISTRY/$ECR_REPOSITORY@${{ github.event.inputs.tag }} -n social-kyc
 
