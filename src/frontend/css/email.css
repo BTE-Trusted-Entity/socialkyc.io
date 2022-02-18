@@ -93,7 +93,7 @@ html,
   .main {
     padding-left: 4rem;
     padding-right: 4rem;
-    background-position-x: 1.25rem, center;
+    background-position: left 1.25rem top 2.125rem, center bottom;
   }
 }
 
@@ -105,6 +105,6 @@ html,
   .main {
     padding-left: 6rem;
     padding-right: 6rem;
-    background-position-x: 3.25rem, center;
+    background-position: left 3.25rem top 2.125rem, center bottom;
   }
 }
