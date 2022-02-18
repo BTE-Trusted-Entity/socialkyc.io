@@ -44,6 +44,12 @@
   --credential-logo: url('discord.svg');
 }
 
+.github {
+  composes: credential;
+
+  --credential-logo: url('github.svg');
+}
+
 .buttonPrimary {
   composes: buttonPrimary from '../../components/Button/Button.module.css';
   margin: 2.5rem auto;

@@ -17,6 +17,9 @@ function getInitialEntry() {
   const discord = matchPath(window.location.pathname, {
     path: paths.window.discord,
   });
+  const github = matchPath(window.location.pathname, {
+    path: paths.window.github,
+  });
 
   if (email) {
     const { secret } = email.params;
@@ -27,7 +30,7 @@ function getInitialEntry() {
     });
   }
 
-  if (discord) {
+  if (discord || github) {
     const searchParams = new URLSearchParams(window.location.search);
     const code = searchParams.get('code');
     const secret = searchParams.get('state');
@@ -38,8 +41,10 @@ function getInitialEntry() {
       return '/';
     }
 
+    const path = discord ? paths.discordAuth : paths.githubAuth;
+
     window.history.replaceState(null, '', '/');
-    return generatePath(paths.discordAuth, {
+    return generatePath(path, {
       code,
       secret,
     });
