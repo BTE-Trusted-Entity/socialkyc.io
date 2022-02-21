@@ -14,6 +14,7 @@ import { IEncryptedMessage, MessageBodyType } from '@kiltprotocol/types';
 import { emailCType } from '../email/emailCType';
 import { twitterCType } from '../twitter/twitterCType';
 import { discordCType } from '../discord/discordCType';
+import { githubCType } from '../github/githubCType';
 import { encryptMessageBody } from '../utilities/encryptMessage';
 import { paths } from '../endpoints/paths';
 import { getSessionWithDid, setSession } from '../utilities/sessionStorage';
@@ -31,6 +32,7 @@ const cTypes: Record<string, CType['hash']> = {
   email: emailCType.hash,
   twitter: twitterCType.hash,
   discord: discordCType.hash,
+  github: githubCType.hash,
 };
 
 function getCTypeHash(cType: string) {

@@ -29,14 +29,11 @@
 
     <form id="credentialForm">
       <p>Credential type:</p>
-      <input type="radio" id="email" name="ctype" value="email" checked />
-      <label for="email">Email</label>
 
-      <input type="radio" id="twitter" name="ctype" value="twitter" />
-      <label for="twitter">Twitter</label>
-
-      <input type="radio" id="discord" name="ctype" value="discord" />
-      <label for="discord">Discord</label>
+      <label><input type="radio" name="ctype" value="email" checked /> Email</label>
+      <label><input type="radio" name="ctype" value="twitter" /> Twitter</label>
+      <label><input type="radio" name="ctype" value="discord" /> Discord</label>
+      <label><input type="radio" name="ctype" value="github" /> GitHub</label>
 
       <p>
         <button type="submit" id="submit">Select Credential</button>
