@@ -23,6 +23,8 @@ const cTypes: Record<string, string> = {
     'Twitter',
   '0xd8c61a235204cb9e3c6acb1898d78880488846a7247d325b833243b46d923abe':
     'Discord',
+  '0xad52bd7a8bd8a52e03181a99d2743e00d0a5e96fdc0182626655fcf0c0a776d0':
+    'GitHub',
 };
 
 function handleBeforeUnload(event: Event) {
