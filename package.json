@@ -58,7 +58,7 @@
     "@babel/core": "^7.17.5",
     "@babel/preset-env": "^7.16.11",
     "@jest/globals": "^27.5.1",
-    "@parcel/optimizer-data-url": "^2.3.1",
+    "@parcel/optimizer-data-url": "^2.3.2",
     "@parcel/transformer-inline-string": "^2.3.1",
     "@storybook/addon-actions": "^6.4.19",
     "@storybook/addon-console": "^1.2.3",
