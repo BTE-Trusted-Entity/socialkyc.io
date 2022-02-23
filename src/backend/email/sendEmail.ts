@@ -131,7 +131,7 @@ async function handler(
     return requestForAttestation.claim.contents['Email'] as string as Output;
   } catch (exception) {
     const error = exceptionToError(exception);
-    logger.error(`Error sending email: ${error}`);
+    logger.error(error, 'Error sending email');
 
     throw Boom.boomify(error, {
       statusCode: 400,
