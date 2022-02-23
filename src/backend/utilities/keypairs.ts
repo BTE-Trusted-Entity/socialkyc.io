@@ -64,16 +64,7 @@ async function useLegacy() {
     '0xf2c90875e0630bd1700412341e5e9339a57d2fefdbba08de1cac8db5b4145f6e';
   const storedLegacyKey = existingKey.publicKeyHex === legacyKey;
 
-  // TODO: restore this line
-  // return storedLegacyKey && !configuration.storeDidAndCTypes;
-
-  if (
-    configuration.blockchainEndpoint ===
-    'wss://peregrine.kilt.io/parachain-public-ws'
-  ) {
-    return false;
-  }
-  return true || (storedLegacyKey && !configuration.storeDidAndCTypes);
+  return storedLegacyKey && !configuration.storeDidAndCTypes;
 }
 
 async function reportBalance(address: IIdentity['address']) {
