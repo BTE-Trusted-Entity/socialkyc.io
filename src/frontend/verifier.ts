@@ -68,11 +68,12 @@ async function handleSubmit(event: Event) {
           values.textContent = 'Not disclosed';
         }
 
-        attesterDid.textContent =
-          credential.attestation.owner ===
-          'did:kilt:4pehddkhEanexVTTzWAtrrfo2R7xPnePpuiJLC7shQU894aY'
-            ? 'SocialKYC ✅'
-            : 'Unknown';
+        attesterDid.textContent = [
+          'did:kilt:4pehddkhEanexVTTzWAtrrfo2R7xPnePpuiJLC7shQU894aY', // peregrine
+          'did:kilt:4pnfkRn5UurBJTW92d9TaVLR2CqJdY4z5HPjrEbpGyBykare', // spiritnet
+        ].includes(credential.attestation.owner)
+          ? 'SocialKYC ✅'
+          : 'Unknown';
 
         claimerDid.textContent = `✅ ${credential.request.claim.owner}`;
         claimerDid.title = credential.request.claim.owner;
