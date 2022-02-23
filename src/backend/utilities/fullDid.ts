@@ -12,16 +12,12 @@ import {
   IDidDetails,
 } from '@kiltprotocol/types';
 import { Crypto } from '@kiltprotocol/utils';
-import {
-  BlockchainApiConnection,
-  BlockchainUtils,
-} from '@kiltprotocol/chain-helpers';
+import { BlockchainUtils } from '@kiltprotocol/chain-helpers';
 
 import { initKilt } from './initKilt';
 import { keypairsPromise } from './keypairs';
 import { configuration } from './configuration';
 import { authenticationKeystore } from './keystores';
-import { didAuthorizeBatchExtrinsic } from './didAuthorizeBatchExtrinsic';
 import { exitOnError } from './exitOnError';
 import { logger } from './logger';
 
@@ -61,57 +57,6 @@ async function createFullDidDetails(didDetails: IDidDetails) {
     },
     lastTxIndex: await DidChain.queryLastTxCounter(didDetails.did),
   });
-}
-
-async function ensureLatestEncryptionKey(
-  didDetails: IDidDetails,
-): Promise<IDidDetails> {
-  const existingKey = didDetails.getKeys(keyAgreement).pop();
-  if (!existingKey) {
-    throw new Error('Key agreement key not found');
-  }
-
-  const keyToUpdate =
-    '0xf2c90875e0630bd1700412341e5e9339a57d2fefdbba08de1cac8db5b4145f6e';
-  const noUpdateNeeded = existingKey.publicKeyHex !== keyToUpdate;
-  if (noUpdateNeeded) {
-    return didDetails;
-  }
-
-  logger.warn('Attempting to update the key agreement key');
-  const keypairs = await keypairsPromise;
-  const existingKeyId = DidUtils.parseDidUrl(existingKey.id).fragment;
-
-  const { api } = await BlockchainApiConnection.getConnectionOrConnect();
-  const batchExtrinsic = api.tx.utility.batchAll([
-    await DidChain.getRemoveKeyExtrinsic(keyAgreement, existingKeyId),
-    await DidChain.getAddKeyExtrinsic(keyAgreement, keypairs.keyAgreement),
-  ]);
-
-  const fullDid = await createFullDidDetails(didDetails);
-  const { identity } = keypairs;
-  const authorized = await didAuthorizeBatchExtrinsic(
-    fullDid,
-    batchExtrinsic,
-    authenticationKeystore,
-    identity.address,
-  );
-
-  await BlockchainUtils.signAndSubmitTx(authorized, identity, {
-    resolveOn: BlockchainUtils.IS_FINALIZED,
-    reSign: true,
-  });
-
-  const didDocument = await DefaultResolver.resolveDoc(didDetails.did);
-  if (!didDocument || !didDocument.details) {
-    throw new Error(`Could not resolve ${didDetails.did} after key update`);
-  }
-  if (!didDocument.details.getKeys(keyAgreement).pop()) {
-    throw new Error('Could not find the key agreement key after key update');
-  }
-
-  logger.warn('Key agreement key updated');
-  return didDocument.details;
 }
 
 async function compareKeys(
@@ -157,10 +102,7 @@ export const fullDidPromise = (async () => {
     throw new Error(`Could not resolve the own DID ${configuration.did}`);
   }
 
-  const didDetails = configuration.storeDidAndCTypes
-    ? await ensureLatestEncryptionKey(didDocument.details)
-    : didDocument.details;
-  const fullDid = await createFullDidDetails(didDetails);
+  const fullDid = await createFullDidDetails(didDocument.details);
 
   await compareAllKeys(fullDid);
 
