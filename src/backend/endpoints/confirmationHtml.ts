@@ -44,7 +44,7 @@ async function handler(request: Request): Promise<string> {
     // no exceptions should be thrown since they will not be displayed nicely on the frontend
 
     const error = exceptionToError(exception);
-    logger.error(`Email confirmation error: ${error}`);
+    logger.error(error, 'Email confirmation error');
   } finally {
     return await getHtmlVariant('index.html');
   }

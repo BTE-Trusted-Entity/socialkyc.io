@@ -3,9 +3,9 @@ import pino from 'pino';
 import { configuration } from './configuration';
 
 export const logger = pino({
-  level: 'info',
+  level: 'debug',
   ...(!configuration.isProduction && {
-    level: 'debug',
+    level: 'trace',
     transport: {
       target: 'pino-pretty',
     },

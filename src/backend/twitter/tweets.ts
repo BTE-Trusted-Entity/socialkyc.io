@@ -45,7 +45,7 @@ async function onTweet(handleTweet: (tweet: TweetV1) => void) {
         try {
           handleTweet(tweet);
         } catch (error) {
-          logger.error(`Error handling tweet: ${error}`, tweet);
+          logger.error(error, 'Error handling tweet', tweet);
         }
       }
     } catch (error) {
@@ -53,12 +53,12 @@ async function onTweet(handleTweet: (tweet: TweetV1) => void) {
         try {
           await rateLimitToBeReset(error);
         } catch (rateError) {
-          logger.error(`Error processing the rate limit: ${rateError}`);
+          logger.error(rateError, 'Error processing the rate limit');
         }
         continue;
       }
 
-      logger.error(`Unexpected TwitterAPI error: ${error}`);
+      logger.error(error, 'Unexpected TwitterAPI error');
     }
 
     // wait before the next request
@@ -85,7 +85,7 @@ export async function listenForTweets(): Promise<void> {
       logger.debug('Tweet includes the secret!');
       resolve();
     } else {
-      logger.debug(`Tweet does not include the secret: ${secret}`);
+      logger.trace(`Tweet does not include the secret: ${secret}`);
     }
   });
 }
