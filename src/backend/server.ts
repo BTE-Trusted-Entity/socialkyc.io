@@ -72,7 +72,7 @@ const logger = {
   options: {
     ...(!isProduction && { transport: { target: 'pino-pretty' } }),
     ignoreTags: ['noLogs'],
-    level: isProduction ? 'info' : 'debug',
+    level: isProduction ? 'debug' : 'trace',
     logRequestComplete: isProduction,
     redact: isProduction
       ? ['req.headers.authorization']
