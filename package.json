@@ -79,7 +79,7 @@
     "@types/hapi__boom": "^9.0.1",
     "@types/hapi__hapi": "^20.0.10",
     "@types/hapi__inert": "^5.2.3",
-    "@types/jest": "^27.4.0",
+    "@types/jest": "^27.4.1",
     "@types/lodash-es": "^4.17.6",
     "@types/react": "^17.0.39",
     "@types/react-dom": "^17.0.11",
