@@ -30,7 +30,7 @@
     "@kiltprotocol/messaging": "^0.25.3",
     "@kiltprotocol/types": "^0.25.3",
     "@kiltprotocol/utils": "^0.25.3",
-    "@kiltprotocol/vc-export": "^0.25.3",
+    "@kiltprotocol/vc-export": "^0.25.5",
     "@polkadot/keyring": "^8.2.2",
     "@polkadot/util": "^8.2.2",
     "@polkadot/util-crypto": "^8.2.2",
