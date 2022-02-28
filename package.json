@@ -26,7 +26,7 @@
     "@hapi/inert": "^6.0.5",
     "@kiltprotocol/chain-helpers": "^0.25.3",
     "@kiltprotocol/core": "^0.25.3",
-    "@kiltprotocol/did": "^0.25.3",
+    "@kiltprotocol/did": "^0.25.5",
     "@kiltprotocol/messaging": "^0.25.3",
     "@kiltprotocol/types": "^0.25.3",
     "@kiltprotocol/utils": "^0.25.3",
