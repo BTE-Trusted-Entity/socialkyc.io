@@ -61,6 +61,12 @@ if (!github.clientId || !github.secret) {
   throw new Error('No github client credentials provided');
 }
 
+const lowBalanceAlertRecipients = env.LOW_BALANCE_ALERT_RECIPIENTS;
+
+if (!lowBalanceAlertRecipients) {
+  throw new Error('No email recipients for low balance alerts');
+}
+
 export const configuration = {
   aws: {
     region,
@@ -79,4 +85,5 @@ export const configuration = {
   storeDidAndCTypes,
   discord,
   github,
+  lowBalanceAlertRecipients,
 };

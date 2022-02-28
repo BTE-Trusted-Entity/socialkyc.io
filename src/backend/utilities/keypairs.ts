@@ -1,6 +1,5 @@
 import { Keyring } from '@polkadot/keyring';
-import { IIdentity, KeyringPair } from '@kiltprotocol/types';
-import { Balance, BalanceUtils } from '@kiltprotocol/core';
+import { KeyringPair } from '@kiltprotocol/types';
 import {
   blake2AsU8a,
   ed25519PairFromSeed,
@@ -13,7 +12,7 @@ import {
 import { initKilt } from './initKilt';
 import { configuration } from './configuration';
 import { exitOnError } from './exitOnError';
-import { logger } from './logger';
+import { reportBalance } from './reportBalance';
 
 const ss58Format = 38;
 
@@ -26,15 +25,6 @@ function makeKeyring(): Keyring {
 
 export function getKeypairByBackupPhrase(backupPhrase: string): KeyringPair {
   return makeKeyring().addFromUri(backupPhrase);
-}
-
-async function reportBalance(address: IIdentity['address']) {
-  const balances = await Balance.getBalances(address);
-
-  const free = BalanceUtils.formatKiltBalance(balances.free);
-  const reserved = BalanceUtils.formatKiltBalance(balances.reserved);
-
-  logger.info(`Free: ${free}, bonded: ${reserved}`);
 }
 
 export const keypairsPromise = (async () => {
