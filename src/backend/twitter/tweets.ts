@@ -1,27 +1,44 @@
-import { TwitterApi, TweetV1, ApiResponseError } from 'twitter-api-v2';
+import { ApiResponseError, TweetV1, TwitterApi } from 'twitter-api-v2';
 
 import { configuration } from '../utilities/configuration';
 import { ControlledPromise } from '../utilities/makeControlledPromise';
 import { logger } from '../utilities/logger';
+import { trackConnectionState } from '../utilities/trackConnectionState';
+import { sleep } from '../utilities/sleep';
 
 const screen_name = 'social_kyc_tech';
 const searchQuery = '@social_kyc_tech';
 
 const requestsFrequencyMs = 10 * 1000;
 
+export const twitterConnectionState = trackConnectionState(3 * 60 * 1000);
+
 const client = new TwitterApi(configuration.twitterSecretBearerToken);
 
-async function getTweets() {
-  const { statuses } = await client.v1.get('search/tweets.json', {
-    q: searchQuery,
-    result_type: 'recent',
-    tweet_mode: 'extended',
-  });
-  return statuses as TweetV1[];
+export async function canAccessTwitter() {
+  try {
+    await client.v1.user({ screen_name });
+    twitterConnectionState.on();
+  } catch (error) {
+    twitterConnectionState.off();
+    logger.error(error, 'Error connecting to Twitter');
+    throw error;
+  }
 }
 
-function sleep(milliseconds: number) {
-  return new Promise((resolve) => setTimeout(resolve, milliseconds));
+async function getTweets() {
+  try {
+    const { statuses } = await client.v1.get('search/tweets.json', {
+      q: searchQuery,
+      result_type: 'recent',
+      tweet_mode: 'extended',
+    });
+    twitterConnectionState.on();
+    return statuses as TweetV1[];
+  } catch (error) {
+    twitterConnectionState.off();
+    throw error;
+  }
 }
 
 async function rateLimitToBeReset(error: ApiResponseError) {
@@ -45,7 +62,7 @@ async function onTweet(handleTweet: (tweet: TweetV1) => void) {
         try {
           handleTweet(tweet);
         } catch (error) {
-          logger.error(error, 'Error handling tweet', tweet);
+          logger.error(error, 'Error handling tweet', tweet.id);
         }
       }
     } catch (error) {
@@ -71,9 +88,6 @@ export const tweetsListeners: Map<string, [string, ControlledPromise<void>]> =
   new Map();
 
 export async function listenForTweets(): Promise<void> {
-  // ensure we’re authorized to access Twitter API
-  await client.v1.user({ screen_name });
-
   // do not await, it runs forever
   onTweet(({ user: { screen_name }, full_text }) => {
     const userListeners = tweetsListeners.get(screen_name.toLowerCase());

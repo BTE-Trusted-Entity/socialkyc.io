@@ -2,9 +2,10 @@ import { CType, CTypeUtils } from '@kiltprotocol/core';
 
 import { signAndSubmit } from '../utilities/signAndSubmit';
 import { logger } from '../utilities/logger';
+import { configuration } from '../utilities/configuration';
 
 /** Run this function once to store the CType */
-export async function storeTwitterCType(): Promise<void> {
+export async function testTwitterCType(): Promise<void> {
   const draft = CType.fromSchema({
     $schema: 'http://kilt-protocol.org/draft-01/ctype#',
     title: 'Twitter',
@@ -17,9 +18,16 @@ export async function storeTwitterCType(): Promise<void> {
   });
 
   if (await CTypeUtils.verifyStored(draft)) {
-    logger.info('Twitter CType is already on the blockchain');
+    if (configuration.storeDidAndCTypes) {
+      logger.info('Twitter CType is already on the blockchain');
+    }
     return;
   }
+
+  if (!configuration.storeDidAndCTypes) {
+    throw new Error('Twitter CType missing, cannot add it');
+  }
+
   logger.warn('Storing Twitter CType on the blockchain');
 
   const tx = await draft.store();

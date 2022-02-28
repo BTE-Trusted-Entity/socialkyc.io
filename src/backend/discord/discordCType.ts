@@ -2,9 +2,10 @@ import { CType, CTypeUtils } from '@kiltprotocol/core';
 
 import { signAndSubmit } from '../utilities/signAndSubmit';
 import { logger } from '../utilities/logger';
+import { configuration } from '../utilities/configuration';
 
 /** Run this function once to store the CType */
-export async function storeDiscordCType(): Promise<void> {
+export async function testDiscordCType(): Promise<void> {
   const draft = CType.fromSchema({
     $schema: 'http://kilt-protocol.org/draft-01/ctype#',
     title: 'Discord',
@@ -23,9 +24,16 @@ export async function storeDiscordCType(): Promise<void> {
   });
 
   if (await CTypeUtils.verifyStored(draft)) {
-    logger.info('Discord CType is already on the blockchain');
+    if (configuration.storeDidAndCTypes) {
+      logger.info('Discord CType is already on the blockchain');
+    }
     return;
   }
+
+  if (!configuration.storeDidAndCTypes) {
+    throw new Error('Discord CType missing, cannot add it');
+  }
+
   logger.warn('Storing Discord CType on the blockchain');
 
   const tx = await draft.store();
