@@ -1,7 +1,4 @@
-import { IIdentity } from '@kiltprotocol/types';
 import { Balance, BalanceUtils } from '@kiltprotocol/core';
-
-import { BN } from '@polkadot/util';
 
 import { SendEmailCommand } from '@aws-sdk/client-ses';
 
@@ -9,8 +6,9 @@ import { sesClient } from '../email/sesClient';
 
 import { logger } from './logger';
 import { configuration } from './configuration';
+import { getKeypairByBackupPhrase } from './keypairs';
 
-const REPORT_THRESHOLD = new BN('10000000000000000000');
+const REPORT_THRESHOLD = BalanceUtils.toFemtoKilt(1000);
 const REPORT_FREQUENCY = 24 * 60 * 60 * 1000;
 
 async function sendLowBalanceAlert(balance: string) {
@@ -48,19 +46,23 @@ function sleep(milliseconds: number) {
   return new Promise((resolve) => setTimeout(resolve, milliseconds));
 }
 
-export async function reportBalance(
-  address: IIdentity['address'],
-): Promise<void> {
+export async function reportBalance(): Promise<void> {
   while (true) {
-    const balances = await Balance.getBalances(address);
+    try {
+      const { backupPhrase } = configuration;
+      const { address } = getKeypairByBackupPhrase(backupPhrase);
+      const balances = await Balance.getBalances(address);
 
-    const free = BalanceUtils.formatKiltBalance(balances.free);
-    const reserved = BalanceUtils.formatKiltBalance(balances.reserved);
+      const free = BalanceUtils.formatKiltBalance(balances.free);
+      const reserved = BalanceUtils.formatKiltBalance(balances.reserved);
 
-    logger.info(`Free: ${free}, bonded: ${reserved}`);
+      logger.info(`Free: ${free}, bonded: ${reserved}`);
 
-    if (balances.free.lt(REPORT_THRESHOLD)) {
-      await sendLowBalanceAlert(free);
+      if (balances.free.lt(REPORT_THRESHOLD)) {
+        await sendLowBalanceAlert(free);
+      }
+    } catch (error) {
+      logger.error(error, 'Error getting attester balance');
     }
 
     await sleep(REPORT_FREQUENCY);

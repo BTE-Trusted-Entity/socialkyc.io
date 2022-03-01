@@ -12,7 +12,6 @@ import {
 import { initKilt } from './initKilt';
 import { configuration } from './configuration';
 import { exitOnError } from './exitOnError';
-import { reportBalance } from './reportBalance';
 
 const ss58Format = 38;
 
@@ -43,8 +42,6 @@ export const keypairsPromise = (async () => {
     ...naclBoxPairFromSecret(blake2AsU8a(secretKey)),
     type: 'x25519',
   };
-
-  await reportBalance(identity.address);
 
   return {
     identity,
