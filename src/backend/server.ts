@@ -3,7 +3,7 @@ import pino from 'hapi-pino';
 import gate from 'hapi-gate';
 
 import { fullDidPromise } from './utilities/fullDid';
-import { reportBalance } from './utilities/reportBalance';
+import { noAwaitReportBalance } from './utilities/noAwaitReportBalance';
 import { storeTwitterCType } from './twitter/twitterCType';
 import { storeEmailCType } from './email/emailCType';
 import { storeDomainLinkageCType } from './didConfiguration/domainLinkageCType';
@@ -102,7 +102,7 @@ const logger = {
   await fullDidPromise;
   server.logger.info('Blockchain connection initialized');
 
-  await reportBalance();
+  noAwaitReportBalance();
 
   await listenForTweets();
   server.logger.info('Twitter connection initialized');
