@@ -46,7 +46,7 @@ function sleep(milliseconds: number) {
   return new Promise((resolve) => setTimeout(resolve, milliseconds));
 }
 
-export async function reportBalance(): Promise<void> {
+export async function noAwaitReportBalance(): Promise<void> {
   while (true) {
     try {
       const { identity } = await keypairsPromise;
