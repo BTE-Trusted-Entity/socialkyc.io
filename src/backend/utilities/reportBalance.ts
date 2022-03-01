@@ -6,7 +6,7 @@ import { sesClient } from '../email/sesClient';
 
 import { logger } from './logger';
 import { configuration } from './configuration';
-import { getKeypairByBackupPhrase } from './keypairs';
+import { keypairsPromise } from './keypairs';
 
 const REPORT_THRESHOLD = BalanceUtils.toFemtoKilt(1000);
 const REPORT_FREQUENCY = 24 * 60 * 60 * 1000;
@@ -49,9 +49,8 @@ function sleep(milliseconds: number) {
 export async function reportBalance(): Promise<void> {
   while (true) {
     try {
-      const { backupPhrase } = configuration;
-      const { address } = getKeypairByBackupPhrase(backupPhrase);
-      const balances = await Balance.getBalances(address);
+      const { identity } = await keypairsPromise;
+      const balances = await Balance.getBalances(identity.address);
 
       const free = BalanceUtils.formatKiltBalance(balances.free);
       const reserved = BalanceUtils.formatKiltBalance(balances.reserved);
