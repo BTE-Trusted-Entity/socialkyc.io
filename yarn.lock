@@ -12050,10 +12050,10 @@ pino-abstract-transport@^0.5.0, pino-abstract-transport@v0.5.0:
     duplexify "^4.1.2"
     split2 "^4.0.0"
 
-pino-pretty@^7.5.1:
-  version "7.5.1"
-  resolved "https://registry.yarnpkg.com/pino-pretty/-/pino-pretty-7.5.1.tgz#4614b8c1077b718428c5a630749c905247951693"
-  integrity sha512-xEOUJiokdBGcZ9d0v7OY6SqEp+rrVH2drE3bHOUsK8elw44eh9V83InZqeL1dFwgD1IDnd6crUoec3hIXxfdBQ==
+pino-pretty@^7.5.2:
+  version "7.5.2"
+  resolved "https://registry.yarnpkg.com/pino-pretty/-/pino-pretty-7.5.2.tgz#a4f108efb4e96e9918354bb3b7d466faf5ab6357"
+  integrity sha512-oIbK2TXfCjG1Lgv3tjLCnb6uspC3NDqhQiIPNbSSWbC13MTIkcNr+w+fvpk/4dVVVsnZCY79KSPsmXq15qpQmQ==
   dependencies:
     args "^5.0.1"
     colorette "^2.0.7"
@@ -15689,10 +15689,10 @@ youch@~2.0.10:
     mustache "^3.0.0"
     stack-trace "0.0.10"
 
-zod@^3.12.0:
-  version "3.12.0"
-  resolved "https://registry.yarnpkg.com/zod/-/zod-3.12.0.tgz#84ba9f6bdb7835e2483982d5f52cfffcb6a00346"
-  integrity sha512-w+mmntgEL4hDDL5NLFdN6Fq2DSzxfmlSoJqiYE1/CApO8EkOCxvJvRYEVf8Vr/lRs3i6gqoiyFM6KRcWqqdBzQ==
+zod@^3.13.3:
+  version "3.13.3"
+  resolved "https://registry.yarnpkg.com/zod/-/zod-3.13.3.tgz#a280a831eb8c6d739efc029f6aa2153ae0c6dda9"
+  integrity sha512-EKG59eCMMw3vVhOccNp8lLNN4i1FUGedFlYs6fMKfN15mKkCi/8kYSzVMkApvo2vPdiFKTBQQ2MRbo0L3/92/w==
 
 zwitch@^1.0.0:
   version "1.0.5"
