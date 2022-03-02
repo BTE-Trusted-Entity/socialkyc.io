@@ -13,7 +13,7 @@ export const blockchainConnectionState = trackConnectionState(60 * 1000);
 
 export async function disconnectHandler(value?: string) {
   blockchainConnectionState.off();
-  logger.warn(value, 'Received disconnect even from the blockchain');
+  logger.warn(value, 'Received disconnect event from the blockchain');
 
   while (true) {
     try {
