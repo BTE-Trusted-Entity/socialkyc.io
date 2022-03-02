@@ -3,11 +3,11 @@ import {
   BlockchainApiConnection,
   BlockchainUtils,
 } from '@kiltprotocol/chain-helpers';
+import { DidBatchBuilder } from '@kiltprotocol/did';
 
 import { logger } from './logger';
 import { fullDidPromise } from './fullDid';
 import { keypairsPromise } from './keypairs';
-import { didAuthorizeBatchExtrinsic } from './didAuthorizeBatchExtrinsic';
 import { assertionKeystore } from './keystores';
 import { signAndSubmit } from './signAndSubmit';
 
@@ -74,21 +74,15 @@ async function createPendingTransaction() {
   logger.debug('Scheduling next transaction');
 
   const extrinsics = await Promise.all(
-    currentAttestations.map((attestation) => attestation.store()),
+    currentAttestations.map((attestation) => attestation.getStoreTx()),
   );
   const { api } = await BlockchainApiConnection.getConnectionOrConnect();
-  const batchExtrinsic = api.tx.utility.batchAll(extrinsics);
-
   const { fullDid } = await fullDidPromise;
   const { identity } = await keypairsPromise;
 
-  logger.debug('Signing transaction');
-  const authorized = await didAuthorizeBatchExtrinsic(
-    fullDid,
-    batchExtrinsic,
-    assertionKeystore,
-    identity.address,
-  );
+  const authorized = await new DidBatchBuilder(api, fullDid)
+    .addMultipleExtrinsics(extrinsics)
+    .consume(assertionKeystore, identity.address);
 
   logger.debug('Submitting transaction');
   await runTransactionWithTimeout(
@@ -110,7 +104,7 @@ export async function batchSignAndSubmitAttestation(attestation: Attestation) {
   logger.debug('Started immediate attestation');
   pendingTransaction = runTransactionWithTimeout(
     (async () => {
-      const transaction = await attestation.store();
+      const transaction = await attestation.getStoreTx();
       await signAndSubmit(transaction);
     })(),
   );

@@ -1,4 +1,4 @@
-import { IDidKeyDetails, IEncryptedMessage } from '@kiltprotocol/types';
+import { DidPublicKey, IEncryptedMessage } from '@kiltprotocol/types';
 
 import {
   checkSession,
@@ -11,7 +11,7 @@ interface PubSubSession {
   ) => Promise<void>;
   close: () => Promise<void>;
   send: (message: IEncryptedMessage) => Promise<void>;
-  encryptionKeyId: IDidKeyDetails['id'];
+  encryptionKeyId: DidPublicKey['id'];
   encryptedChallenge: string;
   nonce: string;
 }
@@ -19,7 +19,7 @@ interface PubSubSession {
 interface InjectedWindowProvider {
   startSession: (
     dAppName: string,
-    dAppEncryptionKeyId: IDidKeyDetails['id'],
+    dAppEncryptionKeyId: DidPublicKey['id'],
     challenge: string,
   ) => Promise<PubSubSession>;
   name: string;

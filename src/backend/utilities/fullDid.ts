@@ -1,18 +1,23 @@
 import { Keypair } from '@polkadot/util-crypto/types';
 import {
-  DefaultResolver,
+  DidResolver,
   DidUtils,
-  DidChain,
+  FullDidCreationBuilder,
   FullDidDetails,
 } from '@kiltprotocol/did';
 import {
-  KeyringPair,
-  KeyRelationship,
-  IDidKeyDetails,
+  DidKey,
   IDidDetails,
+  KeyRelationship,
+  KeyringPair,
+  NewDidVerificationKey,
+  VerificationKeyType,
 } from '@kiltprotocol/types';
 import { Crypto } from '@kiltprotocol/utils';
-import { BlockchainUtils } from '@kiltprotocol/chain-helpers';
+import {
+  BlockchainApiConnection,
+  BlockchainUtils,
+} from '@kiltprotocol/chain-helpers';
 
 import { initKilt } from './initKilt';
 import { keypairsPromise } from './keypairs';
@@ -23,50 +28,51 @@ import { logger } from './logger';
 
 const { authentication, assertionMethod, keyAgreement } = KeyRelationship;
 
-export async function createFullDid(): Promise<IDidDetails['did']> {
-  const keypairs = await keypairsPromise;
-  const relationships = {
-    [authentication]: keypairs.authentication,
-    [assertionMethod]: keypairs.assertion,
-    [keyAgreement]: keypairs.keyAgreement,
+function getDidKeyFromKeypair(keypair: KeyringPair): NewDidVerificationKey {
+  return {
+    ...keypair,
+    type: VerificationKeyType.Sr25519,
   };
+}
 
-  const { extrinsic, did } = await DidUtils.writeDidFromPublicKeys(
+export async function createFullDid(): Promise<IDidDetails['did']> {
+  const { api } = await BlockchainApiConnection.getConnectionOrConnect();
+
+  const keypairs = await keypairsPromise;
+  const authenticationKey = getDidKeyFromKeypair(keypairs.authentication);
+  const assertionKey = getDidKeyFromKeypair(keypairs.assertion);
+
+  const builder = new FullDidCreationBuilder(api, authenticationKey)
+    .setAttestationKey(assertionKey)
+    .addEncryptionKey(keypairs.keyAgreement);
+
+  const fullDidDetails = await builder.consumeWithHandler(
     authenticationKeystore,
     keypairs.identity.address,
-    relationships,
+    async (extrinsic) => {
+      await BlockchainUtils.signAndSubmitTx(extrinsic, keypairs.identity, {
+        resolveOn: BlockchainUtils.IS_FINALIZED,
+      });
+    },
   );
 
-  logger.warn(did, 'This is your generated DID:');
+  const { did } = fullDidDetails;
 
-  await BlockchainUtils.signAndSubmitTx(extrinsic, keypairs.identity, {
-    resolveOn: BlockchainUtils.IS_FINALIZED,
-  });
+  logger.warn(did, 'This is your generated DID:');
 
   return did;
 }
 
-async function createFullDidDetails(didDetails: IDidDetails) {
-  return new FullDidDetails({
-    did: didDetails.did,
-    keys: didDetails.getKeys(),
-    keyRelationships: {
-      [authentication]: didDetails.getKeyIds(authentication),
-      [assertionMethod]: didDetails.getKeyIds(assertionMethod),
-      [keyAgreement]: didDetails.getKeyIds(keyAgreement),
-    },
-    lastTxIndex: await DidChain.queryLastTxCounter(didDetails.did),
-  });
-}
-
 async function compareKeys(
   derived: KeyringPair | Keypair,
-  fullDid: FullDidDetails,
+  resolved: DidKey | undefined,
   relationship: KeyRelationship,
 ): Promise<void> {
+  if (!resolved) {
+    throw new Error(`Resolved key for ${relationship} is undefined`);
+  }
   const derivedHex = Crypto.u8aToHex(derived.publicKey);
-  const resolved = fullDid.getKeys(relationship).pop() as IDidKeyDetails;
-  const resolvedHex = resolved.publicKeyHex;
+  const resolvedHex = Crypto.u8aToHex(resolved.publicKey);
   if (derivedHex !== resolvedHex) {
     throw new Error(
       `Derived key for ${relationship} does not match resolved one ${resolved.id}`,
@@ -77,9 +83,17 @@ async function compareKeys(
 async function compareAllKeys(fullDid: FullDidDetails): Promise<void> {
   const keypairs = await keypairsPromise;
 
-  await compareKeys(keypairs.authentication, fullDid, authentication);
-  await compareKeys(keypairs.assertion, fullDid, assertionMethod);
-  await compareKeys(keypairs.keyAgreement, fullDid, keyAgreement);
+  await compareKeys(
+    keypairs.authentication,
+    fullDid.authenticationKey,
+    authentication,
+  );
+  await compareKeys(
+    keypairs.assertion,
+    fullDid.attestationKey,
+    assertionMethod,
+  );
+  await compareKeys(keypairs.keyAgreement, fullDid.encryptionKey, keyAgreement);
 }
 
 export const fullDidPromise = (async () => {
@@ -88,7 +102,7 @@ export const fullDidPromise = (async () => {
   if (configuration.storeDidAndCTypes) {
     if (
       configuration.did !== 'pending' &&
-      (await DefaultResolver.resolveDoc(configuration.did))
+      (await DidResolver.resolveDoc(configuration.did))
     ) {
       logger.info('DID is already on the blockchain');
     } else {
@@ -97,16 +111,14 @@ export const fullDidPromise = (async () => {
     }
   }
 
-  const didDocument = await DefaultResolver.resolveDoc(configuration.did);
-  if (!didDocument || !didDocument.details) {
+  const { identifier } = DidUtils.parseDidUri(configuration.did);
+  const fullDid = await FullDidDetails.fromChainInfo(identifier);
+  if (!fullDid) {
     throw new Error(`Could not resolve the own DID ${configuration.did}`);
   }
 
-  const fullDid = await createFullDidDetails(didDocument.details);
-
   await compareAllKeys(fullDid);
-
-  const encryptionKey = fullDid.getKeys(keyAgreement).pop();
+  const { encryptionKey } = fullDid;
   if (!encryptionKey) {
     throw new Error('Key agreement key not found');
   }

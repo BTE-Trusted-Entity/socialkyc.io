@@ -1,5 +1,5 @@
 import { Keyring } from '@polkadot/keyring';
-import { KeyringPair } from '@kiltprotocol/types';
+import { KeyringPair, EncryptionKeyType } from '@kiltprotocol/types';
 import {
   blake2AsU8a,
   ed25519PairFromSeed,
@@ -40,7 +40,7 @@ export const keypairsPromise = (async () => {
   const { secretKey } = keyFromPath(edKeypair, path, 'ed25519');
   const keyAgreement = {
     ...naclBoxPairFromSecret(blake2AsU8a(secretKey)),
-    type: 'x25519',
+    type: EncryptionKeyType.X25519,
   };
 
   return {

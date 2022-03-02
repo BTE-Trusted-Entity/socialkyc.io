@@ -5,6 +5,7 @@ import { Message } from '@kiltprotocol/messaging';
 
 import { encryptionKeystore } from './keystores';
 import { EncryptedMessageInput } from './validateEncryptedMessage';
+import { fullDidPromise } from './fullDid';
 
 export function preDecryptMessageContent(
   expectedType: MessageBodyType,
@@ -15,7 +16,12 @@ export function preDecryptMessageContent(
     logger.debug('Message will be decrypted');
 
     const payload = request.payload as EncryptedMessageInput;
-    const message = await Message.decrypt(payload.message, encryptionKeystore);
+    const { fullDid } = await fullDidPromise;
+    const message = await Message.decrypt(
+      payload.message,
+      encryptionKeystore,
+      fullDid,
+    );
     logger.debug('Message decrypted');
 
     const messageBody = message.body;
