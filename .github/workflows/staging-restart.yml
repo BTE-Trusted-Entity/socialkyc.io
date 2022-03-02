@@ -10,7 +10,7 @@ jobs:
 
     steps:
     - name: Checkout
-      uses: actions/checkout@v2.4.0
+      uses: actions/checkout@v3
 
     - name: Deploy to kilt cluster
       uses: kodermax/kubectl-aws-eks@master
