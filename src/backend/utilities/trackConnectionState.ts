@@ -8,7 +8,7 @@ export function trackConnectionState(toleratedOffDurationMs: number) {
     off() {
       offSince = new Date();
     },
-    offForTooLong() {
+    isOffForTooLong() {
       if (!offSince) {
         return false;
       }

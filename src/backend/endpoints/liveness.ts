@@ -43,11 +43,11 @@ export async function testLiveness() {
 }
 
 function handler() {
-  const kiltOk = !blockchainConnectionState.offForTooLong();
-  const twitterOk = !twitterConnectionState.offForTooLong();
-  const sesOk = !sesConnectionState.offForTooLong();
-  const discordOk = !discordConnectionState.offForTooLong();
-  const githubOk = !githubConnectionState.offForTooLong();
+  const kiltOk = !blockchainConnectionState.isOffForTooLong();
+  const twitterOk = !twitterConnectionState.isOffForTooLong();
+  const sesOk = !sesConnectionState.isOffForTooLong();
+  const discordOk = !discordConnectionState.isOffForTooLong();
+  const githubOk = !githubConnectionState.isOffForTooLong();
   return kiltOk && twitterOk && sesOk && discordOk && githubOk;
 }
 
