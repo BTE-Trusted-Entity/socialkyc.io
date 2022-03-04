@@ -9,15 +9,13 @@ import {
 import cx from 'classnames';
 import { detect } from 'detect-browser';
 
-import { find } from 'lodash-es';
-
 import * as styles from './Attester.module.css';
 
 import {
+  apiWindow,
   getSession,
   Session,
   getWindowExtensions,
-  InjectedWindowProvider,
 } from '../../utilities/session';
 
 import { exceptionToError } from '../../utilities/exceptionToError';
@@ -187,9 +185,10 @@ function Connect({ setSession }: { setSession: (s: Session) => void }) {
   const [processing, setProcessing] = useState(false);
   const [error, setError] = useState<'closed' | 'rejected' | 'unknown'>();
 
-  const extensions = getWindowExtensions();
+  const { kilt } = apiWindow;
+  const extensions = Object.keys(kilt);
 
-  const [extension, setExtension] = useState<InjectedWindowProvider>();
+  const [extension, setExtension] = useState<string>('');
 
   const isEmailConfirmation = useRouteMatch(paths.emailConfirmation);
 
@@ -197,8 +196,7 @@ function Connect({ setSession }: { setSession: (s: Session) => void }) {
     if (isEmailConfirmation) {
       extensionInput.postMessage('GET_BROADCASTED_EXTENSION');
 
-      extensionOutput.onmessage = ({ data: name }) => {
-        const extension = find(extensions, { name });
+      extensionOutput.onmessage = ({ data: extension }) => {
         setExtension(extension);
       };
     }
@@ -209,7 +207,7 @@ function Connect({ setSession }: { setSession: (s: Session) => void }) {
         return;
       }
       for (const extension of extensions) {
-        if (extension.name === 'Sporran') {
+        if (extension === 'sporran') {
           setExtension(extension);
           return;
         }
@@ -218,13 +216,9 @@ function Connect({ setSession }: { setSession: (s: Session) => void }) {
     }
   }, [isEmailConfirmation, extensions]);
 
-  const handleInput = useCallback(
-    (event) => {
-      const match = find(extensions, { name: event.target.value });
-      setExtension(match);
-    },
-    [extensions],
-  );
+  const handleInput = useCallback((event) => {
+    setExtension(event.target.value);
+  }, []);
 
   const handleConnect = useCallback(
     async (event) => {
@@ -236,10 +230,10 @@ function Connect({ setSession }: { setSession: (s: Session) => void }) {
         setProcessing(true);
         setError(undefined);
 
-        setSession(await getSession(extension));
+        setSession(await getSession(kilt[extension]));
 
         extensionInput.onmessage = () => {
-          extensionOutput.postMessage(extension.name);
+          extensionOutput.postMessage(extension);
         };
       } catch (exception) {
         const { message } = exceptionToError(exception);
@@ -255,7 +249,7 @@ function Connect({ setSession }: { setSession: (s: Session) => void }) {
         setProcessing(false);
       }
     },
-    [extension, setSession],
+    [extension, setSession, kilt],
   );
 
   if (!extension) {
@@ -283,11 +277,15 @@ function Connect({ setSession }: { setSession: (s: Session) => void }) {
                 className={styles.extensionInput}
                 name="selected"
                 onInput={handleInput}
-                value={extension.name}
+                value={extension}
                 autoFocus
               >
-                {Object.values(extensions).map(({ name }) => (
-                  <option value={name} label={name} key={name} />
+                {extensions.map((extension) => (
+                  <option
+                    value={extension}
+                    label={kilt[extension].name}
+                    key={extension}
+                  />
                 ))}
               </select>
             </label>

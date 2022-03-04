@@ -16,7 +16,7 @@ interface PubSubSession {
   nonce: string;
 }
 
-export interface InjectedWindowProvider {
+interface InjectedWindowProvider {
   startSession: (
     dAppName: string,
     dAppEncryptionKeyId: IDidKeyDetails['id'],
