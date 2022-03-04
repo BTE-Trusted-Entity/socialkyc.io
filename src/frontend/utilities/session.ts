@@ -16,7 +16,7 @@ interface PubSubSession {
   nonce: string;
 }
 
-interface InjectedWindowProvider {
+export interface InjectedWindowProvider {
   startSession: (
     dAppName: string,
     dAppEncryptionKeyId: IDidKeyDetails['id'],
@@ -28,15 +28,21 @@ interface InjectedWindowProvider {
 }
 
 export const apiWindow = window as unknown as {
-  kilt: { sporran?: InjectedWindowProvider };
+  kilt: Record<string, InjectedWindowProvider>;
 };
+
+export function getWindowExtensions(): InjectedWindowProvider[] {
+  return Object.values(apiWindow.kilt);
+}
 
 export type Session = PubSubSession & {
   sessionId: string;
+  name: string;
 };
 
-export async function getSession(): Promise<Session> {
-  const provider = apiWindow.kilt.sporran;
+export async function getSession(
+  provider: InjectedWindowProvider,
+): Promise<Session> {
   if (!provider) {
     throw new Error('No provider');
   }
@@ -58,5 +64,7 @@ export async function getSession(): Promise<Session> {
     sessionId,
   });
 
-  return { ...session, sessionId };
+  const { name } = provider;
+
+  return { ...session, sessionId, name };
 }
