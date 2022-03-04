@@ -2,7 +2,7 @@ import { ServerRoute } from '@hapi/hapi';
 
 import {
   initKilt,
-  reConnect,
+  connect,
   blockchainConnectionState,
 } from '../utilities/initKilt';
 import { canAccessTwitter, twitterConnectionState } from '../twitter/tweets';
@@ -27,7 +27,7 @@ import { paths } from './paths';
 
 export async function testLiveness() {
   await initKilt();
-  await reConnect();
+  await connect();
   noAwaitReportBalance();
 
   await canAccessTwitter();

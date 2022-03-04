@@ -14,20 +14,10 @@ export const blockchainConnectionState = trackConnectionState(60 * 1000);
 export async function disconnectHandler(value?: string) {
   blockchainConnectionState.off();
   logger.warn(value, 'Received disconnect event from the blockchain');
-
-  while (true) {
-    try {
-      await reConnect();
-      blockchainConnectionState.on();
-      break;
-    } catch (error) {
-      logger.error(error, 'Cannot reconnect to the blockchain');
-      await new Promise((resolve) => setTimeout(resolve, 1000));
-    }
-  }
 }
 
-export async function reConnect() {
+export async function connect() {
   const { api } = await BlockchainApiConnection.getConnectionOrConnect();
-  api.once('disconnected', disconnectHandler);
+  api.on('disconnected', disconnectHandler);
+  api.on('connected', () => blockchainConnectionState.on());
 }
