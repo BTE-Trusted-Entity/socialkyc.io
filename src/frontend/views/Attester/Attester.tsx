@@ -11,12 +11,7 @@ import { detect } from 'detect-browser';
 
 import * as styles from './Attester.module.css';
 
-import {
-  apiWindow,
-  getSession,
-  Session,
-  getWindowExtensions,
-} from '../../utilities/session';
+import { apiWindow, getSession, Session } from '../../utilities/session';
 
 import { exceptionToError } from '../../utilities/exceptionToError';
 import { DetailedMessage } from '../../components/DetailedMessage/DetailedMessage';
@@ -41,10 +36,11 @@ interface HasExtension {
 function useHasExtension(): HasExtension {
   const [hasExtension, setHasExtension] = useState<boolean>();
 
+  const { kilt } = apiWindow;
+
   useEffect(() => {
     const intervalId = setInterval(() => {
-      const extensions = getWindowExtensions();
-      if (extensions.length > 0) {
+      if (Object.entries(kilt).length > 0) {
         setHasExtension(true);
       }
     }, 100);
@@ -59,7 +55,7 @@ function useHasExtension(): HasExtension {
       clearInterval(intervalId);
       clearInterval(timeoutId);
     };
-  }, [hasExtension]);
+  }, [hasExtension, kilt]);
 
   return typeof hasExtension === 'boolean' ? { data: { hasExtension } } : {};
 }

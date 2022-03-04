@@ -31,10 +31,6 @@ export const apiWindow = window as unknown as {
   kilt: Record<string, InjectedWindowProvider>;
 };
 
-export function getWindowExtensions(): InjectedWindowProvider[] {
-  return Object.values(apiWindow.kilt);
-}
-
 export type Session = PubSubSession & {
   sessionId: string;
   name: string;
