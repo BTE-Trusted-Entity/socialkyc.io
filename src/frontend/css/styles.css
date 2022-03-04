@@ -62,7 +62,6 @@ p {
 }
 
 .left {
-  position: relative;
   margin-left: auto;
   box-sizing: border-box;
   padding-inline: 3rem;

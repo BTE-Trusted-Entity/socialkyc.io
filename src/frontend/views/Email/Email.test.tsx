@@ -21,6 +21,7 @@ const sessionMock: Session = {
   close: jest.fn(),
   listen: jest.fn(),
   sessionId: 'foo',
+  name: 'foo bar',
 };
 
 jest.mock('./useEmailApi', () => ({ useEmailApi: jest.fn() }));

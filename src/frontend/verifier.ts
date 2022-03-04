@@ -1,7 +1,7 @@
 import { requestCredential } from '../backend/verifier/requestCredentialApi';
 import { verifyCredential } from '../backend/verifier/verifyApi';
 
-import { getSession } from './utilities/session';
+import { apiWindow, getSession } from './utilities/session';
 
 const credentialForm = document.getElementById(
   'credentialForm',
@@ -44,7 +44,7 @@ async function handleSubmit(event: Event) {
   const requestedCType = target.elements.ctype.value;
 
   try {
-    const session = await getSession();
+    const session = await getSession(apiWindow.kilt.sporran);
     const { sessionId } = session;
 
     await session.listen(async (message) => {
