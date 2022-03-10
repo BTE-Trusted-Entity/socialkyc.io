@@ -1,4 +1,4 @@
-import { Fragment, useCallback, useEffect, useState } from 'react';
+import { Fragment, useCallback, useEffect, useState, useMemo } from 'react';
 import {
   Link,
   Route,
@@ -182,7 +182,7 @@ function Connect({ setSession }: { setSession: (s: Session) => void }) {
   const [error, setError] = useState<'closed' | 'rejected' | 'unknown'>();
 
   const { kilt } = apiWindow;
-  const extensions = Object.keys(kilt);
+  const extensions = useMemo(() => Object.keys(kilt), [kilt]);
 
   const [extension, setExtension] = useState<string>('');
 
