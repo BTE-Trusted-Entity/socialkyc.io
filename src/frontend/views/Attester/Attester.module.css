@@ -116,16 +116,16 @@
 }
 
 .extension {
-  display: inline-flex;
+  display: flex;
   align-items: center;
-  justify-content: center;
+  justify-content: flex-start;
   gap: 1rem;
 }
 
 .extensionInput {
   composes: input from '../../components/Input/Input.module.css';
   border-radius: 0.25rem;
-  width: calc(300rem / 16);
+  max-width: calc(300rem / 16);
   margin: 0;
   box-shadow: none;
   border: 0.75px solid rgb(var(--color-white-rgb) / 50%);
