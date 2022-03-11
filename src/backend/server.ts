@@ -9,6 +9,7 @@ import { storeEmailCType } from './email/emailCType';
 import { storeDomainLinkageCType } from './didConfiguration/domainLinkageCType';
 import { storeDiscordCType } from './discord/discordCType';
 import { storeGithubCType } from './github/githubCType';
+import { storeTwitchCType } from './twitch/twitchCType';
 
 import { configuration } from './utilities/configuration';
 import { configureAuthentication } from './utilities/configureAuthentication';
@@ -43,6 +44,13 @@ import { confirmGithub } from './github/confirmGithub';
 import { quoteGithub } from './github/quoteGithub';
 import { requestAttestationGithub } from './github/requestAttestationGithub';
 import { attestGithub } from './github/attestGithub';
+
+import { authUrlTwitch } from './twitch/authUrlTwitch';
+import { authHtmlTwitch } from './twitch/authHtmlTwitch';
+import { confirmTwitch } from './twitch/confirmTwitch';
+import { quoteTwitch } from './twitch/quoteTwitch';
+import { requestAttestationTwitch } from './twitch/requestAttestationTwitch';
+import { attestTwitch } from './twitch/attestTwitch';
 
 import { requestCredential } from './verifier/requestCredential';
 import { verify } from './verifier/verify';
@@ -96,6 +104,7 @@ const logger = {
     await storeTwitterCType();
     await storeDiscordCType();
     await storeGithubCType();
+    await storeTwitchCType();
     server.logger.warn('Blockchain objects stored');
   }
 
@@ -135,6 +144,13 @@ const logger = {
   server.route(quoteGithub);
   server.route(requestAttestationGithub);
   server.route(attestGithub);
+
+  server.route(authHtmlTwitch);
+  server.route(authUrlTwitch);
+  server.route(confirmTwitch);
+  server.route(quoteTwitch);
+  server.route(requestAttestationTwitch);
+  server.route(attestTwitch);
 
   server.route(requestCredential);
   server.route(verify);

@@ -61,6 +61,15 @@ if (!github.clientId || !github.secret) {
   throw new Error('No github client credentials provided');
 }
 
+const twitch = {
+  clientId: env.CLIENT_ID_TWITCH as string,
+  secret: env.SECRET_TWITCH,
+};
+
+if (!twitch.clientId || !twitch.secret) {
+  throw new Error('No Twitch client credentials provided');
+}
+
 const lowBalanceAlertRecipients = env.LOW_BALANCE_ALERT_RECIPIENTS;
 
 if (!lowBalanceAlertRecipients) {
@@ -85,5 +94,6 @@ export const configuration = {
   storeDidAndCTypes,
   discord,
   github,
+  twitch,
   lowBalanceAlertRecipients,
 };

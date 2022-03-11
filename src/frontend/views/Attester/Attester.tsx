@@ -21,6 +21,7 @@ import { Twitter } from '../Twitter/Twitter';
 import { paths } from '../../paths';
 import { Discord } from '../Discord/Discord';
 import { Github } from '../Github/Github';
+import { Twitch } from '../Twitch/Twitch';
 import { Disconnect } from '../../components/Disconnect/Disconnect';
 import {
   extensionInput,
@@ -170,6 +171,11 @@ function GetCredentials() {
         <li>
           <Link to={paths.github} className={styles.github}>
             GitHub Account
+          </Link>
+        </li>
+        <li>
+          <Link to={paths.twitch} className={styles.twitch}>
+            Twitch Account
           </Link>
         </li>
       </ul>
@@ -395,6 +401,7 @@ export function Attester(): JSX.Element {
               paths.emailConfirmation,
               paths.discordAuth,
               paths.githubAuth,
+              paths.twitchAuth,
             ]}
           >
             <AlmostThere />
@@ -424,6 +431,9 @@ export function Attester(): JSX.Element {
         </Route>
         <Route path={paths.github}>
           <Github session={session} />
+        </Route>
+        <Route path={paths.twitch}>
+          <Twitch session={session} />
         </Route>
         <Route>
           <Welcome />

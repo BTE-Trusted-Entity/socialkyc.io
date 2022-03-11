@@ -20,6 +20,9 @@ function getInitialEntry() {
   const github = matchPath(window.location.pathname, {
     path: paths.window.github,
   });
+  const twitch = matchPath(window.location.pathname, {
+    path: paths.window.twitch,
+  });
 
   if (email) {
     const { secret } = email.params;
@@ -30,7 +33,7 @@ function getInitialEntry() {
     });
   }
 
-  if (discord || github) {
+  if (discord || github || twitch) {
     const searchParams = new URLSearchParams(window.location.search);
     const code = searchParams.get('code');
     const secret = searchParams.get('state');
@@ -41,7 +44,21 @@ function getInitialEntry() {
       return '/';
     }
 
-    const path = discord ? paths.discordAuth : paths.githubAuth;
+    let path;
+
+    if (discord) {
+      path = paths.discordAuth;
+    }
+    if (github) {
+      path = paths.githubAuth;
+    }
+    if (twitch) {
+      path = paths.twitchAuth;
+    }
+
+    if (!path) {
+      throw new Error('No matching path');
+    }
 
     window.history.replaceState(null, '', '/');
     return generatePath(path, {
