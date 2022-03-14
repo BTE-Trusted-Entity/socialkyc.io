@@ -38,9 +38,18 @@ export const paths = {
     attest: '/api/github/attest',
   },
 
+  twitch: {
+    authUrl: '/api/twitch/authUrl',
+    confirm: '/api/twitch/confirm',
+    quote: '/api/twitch/quote',
+    requestAttestation: '/api/twitch/request-attestation',
+    attest: '/api/twitch/attest',
+  },
+
   oauth: {
     discord: '/discord/auth',
     github: '/github/auth',
+    twitch: '/twitch/auth',
   },
 
   verifier: {
