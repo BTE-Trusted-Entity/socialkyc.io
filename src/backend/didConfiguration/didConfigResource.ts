@@ -5,9 +5,7 @@ import {
   Credential,
 } from '@kiltprotocol/core';
 
-import { DidUtils } from '@kiltprotocol/did';
 import { Crypto } from '@kiltprotocol/utils';
-import { KeyRelationship } from '@kiltprotocol/types';
 
 import { configuration } from '../utilities/configuration';
 import { fullDidPromise } from '../utilities/fullDid';
@@ -33,11 +31,15 @@ async function attestDomainLinkage() {
 
   const { fullDid } = await fullDidPromise;
 
-  const { signature, keyId } = await DidUtils.signWithDid(
+  const attestationKey = fullDid.attestationKey;
+  if (!attestationKey) {
+    throw new Error('The attestation key is not defined?!?');
+  }
+
+  const { signature, keyId } = await fullDid.signPayload(
     Crypto.coToUInt8(requestForAttestation.rootHash),
-    fullDid,
     assertionKeystore,
-    fullDid.getKeyIds(KeyRelationship.assertionMethod)[0],
+    attestationKey.id,
   );
 
   const selfSignedRequest = await requestForAttestation.addSignature(

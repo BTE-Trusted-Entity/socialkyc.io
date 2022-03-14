@@ -28,7 +28,7 @@ export async function storeDiscordCType(): Promise<void> {
   }
   logger.warn('Storing Discord CType on the blockchain');
 
-  const tx = await draft.store();
+  const tx = await draft.getStoreTx();
   await signAndSubmit(tx);
 
   logger.warn(draft, 'Pass this object to CType.fromCType');

@@ -3,7 +3,7 @@ import Boom from '@hapi/boom';
 import {
   IClaim,
   IDidDetails,
-  IDidKeyDetails,
+  DidPublicKey,
   IRequestForAttestation,
 } from '@kiltprotocol/types';
 import { randomAsNumber } from '@polkadot/util-crypto';
@@ -12,7 +12,7 @@ import { Attestation } from '@kiltprotocol/core';
 export interface Session {
   sessionId: string;
   did?: IDidDetails['did'];
-  encryptionKeyId?: IDidKeyDetails['id'];
+  encryptionKeyId?: DidPublicKey['id'];
   didChallenge?: string;
   didConfirmed?: boolean;
   claim?: IClaim;
@@ -24,7 +24,7 @@ export interface Session {
 
 export type SessionWithDid = Session & {
   did: IDidDetails['did'];
-  encryptionKeyId: IDidKeyDetails['id'];
+  encryptionKeyId: DidPublicKey['id'];
 };
 
 export interface PayloadWithSession {
