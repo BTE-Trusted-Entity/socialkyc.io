@@ -15,6 +15,7 @@ import { emailCType } from '../email/emailCType';
 import { twitterCType } from '../twitter/twitterCType';
 import { discordCType } from '../discord/discordCType';
 import { githubCType } from '../github/githubCType';
+import { twitchCType } from '../twitch/twitchCType';
 import { encryptMessageBody } from '../utilities/encryptMessage';
 import { paths } from '../endpoints/paths';
 import { getSessionWithDid, setSession } from '../utilities/sessionStorage';
@@ -33,6 +34,7 @@ const cTypes: Record<string, CType['hash']> = {
   twitter: twitterCType.hash,
   discord: discordCType.hash,
   github: githubCType.hash,
+  twitch: twitchCType.hash,
 };
 
 function getCTypeHash(cType: string) {
