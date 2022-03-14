@@ -27,7 +27,7 @@
     "@kiltprotocol/chain-helpers": "^0.25.5",
     "@kiltprotocol/core": "^0.25.5",
     "@kiltprotocol/did": "^0.25.5",
-    "@kiltprotocol/messaging": "^0.25.5",
+    "@kiltprotocol/messaging": "^0.26.0",
     "@kiltprotocol/types": "^0.25.5",
     "@kiltprotocol/utils": "^0.25.5",
     "@kiltprotocol/vc-export": "^0.25.5",
