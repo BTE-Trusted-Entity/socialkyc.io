@@ -21,6 +21,11 @@ import {
   githubConnectionState,
   checkGitHubConnection,
 } from '../github/githubConnection';
+import {
+  canAccessTwitch,
+  checkTwitchConnection,
+  twitchConnectionState,
+} from '../twitch/twitchConnection';
 import { reportBalance } from '../utilities/reportBalance';
 
 import { paths } from './paths';
@@ -40,6 +45,9 @@ export async function testLiveness() {
 
   await canAccessGitHub();
   checkGitHubConnection();
+
+  await canAccessTwitch();
+  checkTwitchConnection();
 }
 
 function handler() {
@@ -48,7 +56,8 @@ function handler() {
   const sesOk = !sesConnectionState.isOffForTooLong();
   const discordOk = !discordConnectionState.isOffForTooLong();
   const githubOk = !githubConnectionState.isOffForTooLong();
-  return kiltOk && twitterOk && sesOk && discordOk && githubOk;
+  const twitchOk = !twitchConnectionState.isOffForTooLong();
+  return kiltOk && twitterOk && sesOk && discordOk && githubOk && twitchOk;
 }
 
 export const liveness: ServerRoute = {
