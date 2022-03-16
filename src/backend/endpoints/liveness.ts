@@ -8,38 +8,38 @@ import {
 import { canAccessTwitter, twitterConnectionState } from '../twitter/tweets';
 import {
   canAccessAmazonSES,
-  noAwaitCheckSesConnection,
+  checkSesConnection,
   sesConnectionState,
 } from '../email/sesConnection';
 import {
   canAccessDiscord,
   discordConnectionState,
-  noAwaitCheckDiscordConnection,
+  checkDiscordConnection,
 } from '../discord/discordConnection';
 import {
   canAccessGitHub,
   githubConnectionState,
-  noAwaitCheckGitHubConnection,
+  checkGitHubConnection,
 } from '../github/githubConnection';
-import { noAwaitReportBalance } from '../utilities/noAwaitReportBalance';
+import { reportBalance } from '../utilities/reportBalance';
 
 import { paths } from './paths';
 
 export async function testLiveness() {
   await initKilt();
   await connect();
-  noAwaitReportBalance();
+  reportBalance();
 
   await canAccessTwitter();
 
   await canAccessDiscord();
-  noAwaitCheckDiscordConnection();
+  checkDiscordConnection();
 
   await canAccessAmazonSES();
-  noAwaitCheckSesConnection();
+  checkSesConnection();
 
   await canAccessGitHub();
-  noAwaitCheckGitHubConnection();
+  checkGitHubConnection();
 }
 
 function handler() {

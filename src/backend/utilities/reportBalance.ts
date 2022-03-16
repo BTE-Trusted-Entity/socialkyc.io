@@ -13,9 +13,9 @@ const REPORT_FREQUENCY = 24 * 60 * 60 * 1000;
 
 async function sendLowBalanceAlert(balance: string) {
   const Data = `The SocialKYC balance is currently low. Please add more KILT coins.
-  
+
 Current balance: ${balance}
-  
+
 This is an automatically generated email.`;
 
   const { lowBalanceAlertRecipients } = configuration;
@@ -42,12 +42,8 @@ This is an automatically generated email.`;
   await sesClient.send(command);
 }
 
-function sleep(milliseconds: number) {
-  return new Promise((resolve) => setTimeout(resolve, milliseconds));
-}
-
-export async function noAwaitReportBalance(): Promise<void> {
-  while (true) {
+export function reportBalance() {
+  setInterval(async () => {
     try {
       const { identity } = await keypairsPromise;
       const balances = await Balance.getBalances(identity.address);
@@ -63,7 +59,5 @@ export async function noAwaitReportBalance(): Promise<void> {
     } catch (error) {
       logger.error(error, 'Error getting attester balance');
     }
-
-    await sleep(REPORT_FREQUENCY);
-  }
+  }, REPORT_FREQUENCY);
 }

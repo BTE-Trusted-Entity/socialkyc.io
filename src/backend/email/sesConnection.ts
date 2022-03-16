@@ -2,7 +2,6 @@ import { SendEmailCommand } from '@aws-sdk/client-ses';
 
 import { exceptionToError } from '../../frontend/utilities/exceptionToError';
 import { trackConnectionState } from '../utilities/trackConnectionState';
-import { sleep } from '../utilities/sleep';
 import { logger } from '../utilities/logger';
 
 import { sesClient } from './sesClient';
@@ -36,11 +35,10 @@ export async function canAccessAmazonSES() {
   }
 }
 
-export async function noAwaitCheckSesConnection() {
-  while (true) {
-    await sleep(10 * 60 * 1000);
+export function checkSesConnection() {
+  setInterval(async () => {
     try {
       await canAccessAmazonSES();
     } catch {}
-  }
+  }, 10 * 60 * 1000);
 }

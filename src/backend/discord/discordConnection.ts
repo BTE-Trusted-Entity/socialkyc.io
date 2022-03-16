@@ -1,7 +1,6 @@
 import got from 'got';
 
 import { trackConnectionState } from '../utilities/trackConnectionState';
-import { sleep } from '../utilities/sleep';
 import { logger } from '../utilities/logger';
 import { configuration } from '../utilities/configuration';
 
@@ -29,11 +28,10 @@ export async function canAccessDiscord() {
   }
 }
 
-export async function noAwaitCheckDiscordConnection() {
-  while (true) {
-    await sleep(5 * 60 * 1000);
+export function checkDiscordConnection() {
+  setInterval(async () => {
     try {
       await canAccessDiscord();
     } catch {}
-  }
+  }, 5 * 60 * 1000);
 }
