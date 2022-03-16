@@ -50,6 +50,12 @@
   --credential-logo: url('github.svg');
 }
 
+.twitch {
+  composes: credential;
+
+  --credential-logo: url('twitch.svg');
+}
+
 .buttonPrimary {
   composes: buttonPrimary from '../../components/Button/Button.module.css';
   margin: 2.5rem auto;
@@ -109,9 +115,29 @@
 
 .connect {
   height: 100%;
-  text-align: center;
 }
 
 .processing {
   composes: processing from '../../components/processing/processing.module.css';
+}
+
+.extension {
+  display: flex;
+  align-items: center;
+  justify-content: flex-start;
+  gap: 1rem;
+}
+
+.extensionInput {
+  composes: input from '../../components/Input/Input.module.css';
+  border-radius: 0.25rem;
+  max-width: calc(300rem / 16);
+  margin: 0;
+  box-shadow: none;
+  border: 0.75px solid rgb(var(--color-white-rgb) / 50%);
+}
+
+.authorize {
+  margin: 3rem 0 1.75rem;
+  text-align: center;
 }

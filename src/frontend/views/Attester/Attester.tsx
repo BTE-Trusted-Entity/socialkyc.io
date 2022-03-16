@@ -1,5 +1,11 @@
-import { Fragment, useCallback, useEffect, useState } from 'react';
-import { Link, Route, Switch, useHistory } from 'react-router-dom';
+import { Fragment, useCallback, useEffect, useState, useMemo } from 'react';
+import {
+  Link,
+  Route,
+  Switch,
+  useHistory,
+  useRouteMatch,
+} from 'react-router-dom';
 import cx from 'classnames';
 import { detect } from 'detect-browser';
 
@@ -15,26 +21,34 @@ import { Twitter } from '../Twitter/Twitter';
 import { paths } from '../../paths';
 import { Discord } from '../Discord/Discord';
 import { Github } from '../Github/Github';
+import { Twitch } from '../Twitch/Twitch';
+import { Disconnect } from '../../components/Disconnect/Disconnect';
+import {
+  extensionInput,
+  extensionOutput,
+} from '../../utilities/broadcastChannels';
 
-interface HasSporran {
+interface HasExtension {
   data?: {
-    hasSporran: boolean;
+    hasExtension: boolean;
   };
 }
 
-function useHasSporran(): HasSporran {
-  const [hasSporran, setHasSporran] = useState<boolean>();
+function useHasExtension(): HasExtension {
+  const [hasExtension, setHasExtension] = useState<boolean>();
+
+  const { kilt } = apiWindow;
 
   useEffect(() => {
     const intervalId = setInterval(() => {
-      if (Boolean(apiWindow.kilt.sporran)) {
-        setHasSporran(true);
+      if (Object.entries(kilt).length > 0) {
+        setHasExtension(true);
       }
     }, 100);
 
     const timeoutId = setTimeout(() => {
-      if (hasSporran === undefined) {
-        setHasSporran(false);
+      if (hasExtension === undefined) {
+        setHasExtension(false);
       }
     }, 500);
 
@@ -42,9 +56,9 @@ function useHasSporran(): HasSporran {
       clearInterval(intervalId);
       clearInterval(timeoutId);
     };
-  }, [hasSporran]);
+  }, [hasExtension, kilt]);
 
-  return typeof hasSporran === 'boolean' ? { data: { hasSporran } } : {};
+  return typeof hasExtension === 'boolean' ? { data: { hasExtension } } : {};
 }
 
 function Welcome() {
@@ -159,6 +173,11 @@ function GetCredentials() {
             GitHub Account
           </Link>
         </li>
+        <li>
+          <Link to={paths.twitch} className={styles.twitch}>
+            Twitch Account
+          </Link>
+        </li>
       </ul>
     </Fragment>
   );
@@ -168,14 +187,56 @@ function Connect({ setSession }: { setSession: (s: Session) => void }) {
   const [processing, setProcessing] = useState(false);
   const [error, setError] = useState<'closed' | 'rejected' | 'unknown'>();
 
-  const handleConnectClick = useCallback(
+  const { kilt } = apiWindow;
+  const extensions = useMemo(() => Object.keys(kilt), [kilt]);
+
+  const [extension, setExtension] = useState<string>('');
+
+  const isEmailConfirmation = useRouteMatch(paths.emailConfirmation);
+
+  useEffect(() => {
+    if (isEmailConfirmation) {
+      extensionInput.postMessage('GET_BROADCASTED_EXTENSION');
+
+      extensionOutput.onmessage = ({ data: extension }) => {
+        setExtension(extension);
+      };
+    }
+
+    if (!isEmailConfirmation) {
+      if (extensions.length === 1) {
+        setExtension(extensions[0]);
+        return;
+      }
+      for (const extension of extensions) {
+        if (extension === 'sporran') {
+          setExtension(extension);
+          return;
+        }
+      }
+      setExtension(extensions[0]);
+    }
+  }, [isEmailConfirmation, extensions]);
+
+  const handleInput = useCallback((event) => {
+    setExtension(event.target.value);
+  }, []);
+
+  const handleConnect = useCallback(
     async (event) => {
+      if (!extension) {
+        return;
+      }
       try {
         event.preventDefault();
         setProcessing(true);
         setError(undefined);
 
-        setSession(await getSession());
+        setSession(await getSession(kilt[extension]));
+
+        extensionInput.onmessage = () => {
+          extensionOutput.postMessage(extension);
+        };
       } catch (exception) {
         const { message } = exceptionToError(exception);
         // TODO: need to conform to the spec
@@ -190,17 +251,49 @@ function Connect({ setSession }: { setSession: (s: Session) => void }) {
         setProcessing(false);
       }
     },
-    [setSession],
+    [extension, setSession, kilt],
   );
 
+  if (!extension) {
+    return null;
+  }
+
   return (
-    <section className={styles.connectContainer}>
+    <form onSubmit={handleConnect} className={styles.connectContainer}>
       <div
         className={cx(styles.connect, {
           [styles.processing]: processing,
         })}
       >
-        {!error && <p>Please authorize access to your wallet.</p>}
+        {!error && isEmailConfirmation && (
+          <p className={styles.authorize}>
+            Please authorize access to your wallet.
+          </p>
+        )}
+
+        {!error && !isEmailConfirmation && (
+          <div>
+            <label className={styles.extension}>
+              First select your wallet
+              <select
+                className={styles.extensionInput}
+                name="selected"
+                onInput={handleInput}
+                value={extension}
+                autoFocus
+              >
+                {extensions.map((extension) => (
+                  <option
+                    value={extension}
+                    label={kilt[extension].name}
+                    key={extension}
+                  />
+                ))}
+              </select>
+            </label>
+            <p className={styles.authorize}>Then authorize access to it</p>
+          </div>
+        )}
 
         {error === 'closed' && (
           <DetailedMessage
@@ -240,9 +333,8 @@ function Connect({ setSession }: { setSession: (s: Session) => void }) {
           </a>
         ) : (
           <button
-            type="button"
+            type="submit"
             className={styles.buttonPrimary}
-            onClick={handleConnectClick}
             disabled={processing}
           >
             Connect to wallet
@@ -251,7 +343,7 @@ function Connect({ setSession }: { setSession: (s: Session) => void }) {
       </div>
 
       {processing && <Spinner />}
-    </section>
+    </form>
   );
 }
 
@@ -280,16 +372,18 @@ function useLogoNavigation() {
 export function Attester(): JSX.Element {
   useLogoNavigation();
 
-  const { data } = useHasSporran();
+  const { data } = useHasExtension();
 
   const [session, setSession] = useState<Session>();
+
+  const clearSession = useCallback(() => setSession(undefined), []);
 
   if (!data) {
     return <Spinner />;
   }
 
-  const { hasSporran } = data;
-  if (!hasSporran) {
+  const { hasExtension } = data;
+  if (!hasExtension) {
     return (
       <Fragment>
         <Welcome />
@@ -307,6 +401,7 @@ export function Attester(): JSX.Element {
               paths.emailConfirmation,
               paths.discordAuth,
               paths.githubAuth,
+              paths.twitchAuth,
             ]}
           >
             <AlmostThere />
@@ -321,23 +416,30 @@ export function Attester(): JSX.Element {
   }
 
   return (
-    <Switch>
-      <Route path={paths.twitter}>
-        <Twitter session={session} />
-      </Route>
-      <Route path={paths.email}>
-        <Email session={session} />
-      </Route>
-      <Route path={paths.discord}>
-        <Discord session={session} />
-      </Route>
-      <Route path={paths.github}>
-        <Github session={session} />
-      </Route>
-      <Route>
-        <Welcome />
-        <GetCredentials />
-      </Route>
-    </Switch>
+    <Fragment>
+      <Disconnect session={session} onDisconnect={clearSession} />
+
+      <Switch>
+        <Route path={paths.twitter}>
+          <Twitter session={session} />
+        </Route>
+        <Route path={paths.email}>
+          <Email session={session} />
+        </Route>
+        <Route path={paths.discord}>
+          <Discord session={session} />
+        </Route>
+        <Route path={paths.github}>
+          <Github session={session} />
+        </Route>
+        <Route path={paths.twitch}>
+          <Twitch session={session} />
+        </Route>
+        <Route>
+          <Welcome />
+          <GetCredentials />
+        </Route>
+      </Switch>
+    </Fragment>
   );
 }

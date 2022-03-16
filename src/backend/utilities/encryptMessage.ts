@@ -1,10 +1,9 @@
 import {
-  IDidKeyDetails,
+  DidPublicKey,
   IEncryptedMessage,
   MessageBody,
 } from '@kiltprotocol/types';
 import { Message } from '@kiltprotocol/messaging';
-import { DefaultResolver } from '@kiltprotocol/did';
 
 import { fullDidPromise } from './fullDid';
 import { encryptionKeystore } from './keystores';
@@ -12,25 +11,25 @@ import { configuration } from './configuration';
 
 export async function encryptMessage(
   message: Message,
-  encryptionKeyId: IDidKeyDetails['id'],
+  encryptionKeyId: DidPublicKey['id'],
 ): Promise<IEncryptedMessage> {
-  const receiverEncryptionKey = await DefaultResolver.resolveKey(
-    encryptionKeyId,
-  );
-  if (!receiverEncryptionKey) {
-    throw new Error(`Cannot resolve the receiver DID key ${encryptionKeyId}`);
+  const { fullDid } = await fullDidPromise;
+
+  const encryptionKey = fullDid.encryptionKey;
+  if (!encryptionKey) {
+    throw new Error('Own encryption key does not exist');
   }
 
-  const { encryptionKey } = await fullDidPromise;
   return message.encrypt(
-    encryptionKey,
-    receiverEncryptionKey,
+    encryptionKey.id,
+    fullDid,
     encryptionKeystore,
+    encryptionKeyId,
   );
 }
 
 export async function encryptMessageBody(
-  encryptionKeyId: IDidKeyDetails['id'],
+  encryptionKeyId: DidPublicKey['id'],
   messageBody: MessageBody,
 ): Promise<IEncryptedMessage> {
   // TODO: restore that after the SDK fixes parsing of light DIDs

@@ -1,7 +1,7 @@
 import { requestCredential } from '../backend/verifier/requestCredentialApi';
 import { verifyCredential } from '../backend/verifier/verifyApi';
 
-import { getSession } from './utilities/session';
+import { apiWindow, getSession } from './utilities/session';
 
 const credentialForm = document.getElementById(
   'credentialForm',
@@ -25,6 +25,8 @@ const cTypes: Record<string, string> = {
     'Discord',
   '0xad52bd7a8bd8a52e03181a99d2743e00d0a5e96fdc0182626655fcf0c0a776d0':
     'GitHub',
+  '0x568ec5ffd7771c4677a5470771adcdea1ea4d6b566f060dc419ff133a0089d80':
+    'Twitch',
 };
 
 function handleBeforeUnload(event: Event) {
@@ -44,7 +46,7 @@ async function handleSubmit(event: Event) {
   const requestedCType = target.elements.ctype.value;
 
   try {
-    const session = await getSession();
+    const session = await getSession(apiWindow.kilt.sporran);
     const { sessionId } = session;
 
     await session.listen(async (message) => {

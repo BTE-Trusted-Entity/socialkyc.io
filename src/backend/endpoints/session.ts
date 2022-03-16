@@ -8,9 +8,9 @@ import Boom from '@hapi/boom';
 import { z } from 'zod';
 import { StatusCodes } from 'http-status-codes';
 
-import { DefaultResolver } from '@kiltprotocol/did';
+import { DidResolver } from '@kiltprotocol/did';
 import { Crypto } from '@kiltprotocol/utils';
-import { IDidKeyDetails } from '@kiltprotocol/types';
+import { DidKey } from '@kiltprotocol/types';
 import { randomAsHex } from '@polkadot/util-crypto';
 
 import { fullDidPromise } from '../utilities/fullDid';
@@ -28,7 +28,7 @@ const zodPayload = z.object({
 });
 
 export interface GetSessionOutput {
-  dAppEncryptionKeyId: IDidKeyDetails['id'];
+  dAppEncryptionKeyId: DidKey['id'];
   sessionId: string;
   challenge: string;
 }
@@ -48,7 +48,7 @@ async function handler(
   const { encryptionKeyId, encryptedChallenge, nonce } = payload;
   const session = getSession(payload);
 
-  const encryptionKey = await DefaultResolver.resolveKey(encryptionKeyId);
+  const encryptionKey = await DidResolver.resolveKey(encryptionKeyId);
   if (!encryptionKey) {
     throw Boom.forbidden(`Could not resolve the DID key ${encryptionKeyId}`);
   }
@@ -60,7 +60,7 @@ async function handler(
     data: Crypto.coToUInt8(encryptedChallenge),
     nonce: Crypto.coToUInt8(nonce),
     publicKey: keyAgreement.publicKey,
-    peerPublicKey: Crypto.coToUInt8(encryptionKey.publicKeyHex),
+    peerPublicKey: encryptionKey.publicKey,
     alg: 'x25519-xsalsa20-poly1305',
   });
   logger.debug('Session confirmation decrypted challenge');
@@ -101,11 +101,14 @@ export const session: ServerRoute[] = [
   {
     method: 'GET',
     path,
-    handler: async () =>
-      ({
-        dAppEncryptionKeyId: (await fullDidPromise).encryptionKey.id,
+    handler: async () => {
+      const { fullDid, encryptionKey } = await fullDidPromise;
+      const dAppEncryptionKeyId = fullDid.assembleKeyId(encryptionKey.id);
+      return {
+        dAppEncryptionKeyId,
         ...startSession(),
-      } as GetSessionOutput),
+      } as GetSessionOutput;
+    },
   },
   {
     method: 'POST',

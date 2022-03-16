@@ -2,8 +2,17 @@ import { cwd } from 'node:process';
 import path from 'node:path';
 
 import dotenv from 'dotenv';
+import pino from 'pino';
 
 dotenv.config();
+
+class ConfigurationError extends Error {
+  constructor(message: string) {
+    super(message);
+    pino().fatal(message);
+    process.exit(1);
+  }
+}
 
 const { env } = process;
 
@@ -12,33 +21,33 @@ const accessKeyId = env.AWS_ACCESS_KEY_ID;
 const secretAccessKey = env.AWS_SECRET_ACCESS_KEY;
 
 if (!region || !accessKeyId || !secretAccessKey) {
-  throw new Error('No AWS access values provided');
+  throw new ConfigurationError('No AWS access values provided');
 }
 
 const twitterSecretBearerToken = env.TWITTER_SECRET_BEARER_TOKEN;
 if (!twitterSecretBearerToken) {
-  throw new Error('No Twitter token provided');
+  throw new ConfigurationError('No Twitter token provided');
 }
 
 const baseUri = env.URL;
 if (!baseUri) {
-  throw new Error('No base URI provided');
+  throw new ConfigurationError('No base URI provided');
 }
 
 const did = env.DID || 'pending';
 const storeDidAndCTypes = env.STORE_DID_AND_CTYPES === 'true';
 if (did === 'pending' && !storeDidAndCTypes) {
-  throw new Error('Neither DID nor STORE_DID_AND_CTYPES provided');
+  throw new ConfigurationError('Neither DID nor STORE_DID_AND_CTYPES provided');
 }
 
 const backupPhrase = env.SECRET_BACKUP_PHRASE;
 if (!backupPhrase) {
-  throw new Error('No backup phrase provided');
+  throw new ConfigurationError('No backup phrase provided');
 }
 
 const blockchainEndpoint = env.BLOCKCHAIN_ENDPOINT;
 if (!blockchainEndpoint) {
-  throw new Error('No blockchain endpoint provided');
+  throw new ConfigurationError('No blockchain endpoint provided');
 }
 
 const httpAuthPassword = env.SECRET_HTTP_AUTH_PASSWORD;
@@ -49,7 +58,7 @@ const discord = {
 };
 
 if (!discord.clientId || !discord.clientSecret) {
-  throw new Error('No discord client credentials provided');
+  throw new ConfigurationError('No discord client credentials provided');
 }
 
 const github = {
@@ -58,13 +67,22 @@ const github = {
 };
 
 if (!github.clientId || !github.secret) {
-  throw new Error('No github client credentials provided');
+  throw new ConfigurationError('No github client credentials provided');
+}
+
+const twitch = {
+  clientId: env.CLIENT_ID_TWITCH as string,
+  secret: env.SECRET_TWITCH,
+};
+
+if (!twitch.clientId || !twitch.secret) {
+  throw new ConfigurationError('No Twitch client credentials provided');
 }
 
 const lowBalanceAlertRecipients = env.LOW_BALANCE_ALERT_RECIPIENTS;
 
 if (!lowBalanceAlertRecipients) {
-  throw new Error('No email recipients for low balance alerts');
+  throw new ConfigurationError('No email recipients for low balance alerts');
 }
 
 export const configuration = {
@@ -85,5 +103,6 @@ export const configuration = {
   storeDidAndCTypes,
   discord,
   github,
+  twitch,
   lowBalanceAlertRecipients,
 };

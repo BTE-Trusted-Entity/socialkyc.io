@@ -1,4 +1,4 @@
-import { IDidKeyDetails, IEncryptedMessage } from '@kiltprotocol/types';
+import { DidPublicKey, IEncryptedMessage } from '@kiltprotocol/types';
 
 import {
   checkSession,
@@ -11,7 +11,7 @@ interface PubSubSession {
   ) => Promise<void>;
   close: () => Promise<void>;
   send: (message: IEncryptedMessage) => Promise<void>;
-  encryptionKeyId: IDidKeyDetails['id'];
+  encryptionKeyId: DidPublicKey['id'];
   encryptedChallenge: string;
   nonce: string;
 }
@@ -19,7 +19,7 @@ interface PubSubSession {
 interface InjectedWindowProvider {
   startSession: (
     dAppName: string,
-    dAppEncryptionKeyId: IDidKeyDetails['id'],
+    dAppEncryptionKeyId: DidPublicKey['id'],
     challenge: string,
   ) => Promise<PubSubSession>;
   name: string;
@@ -28,15 +28,17 @@ interface InjectedWindowProvider {
 }
 
 export const apiWindow = window as unknown as {
-  kilt: { sporran?: InjectedWindowProvider };
+  kilt: Record<string, InjectedWindowProvider>;
 };
 
 export type Session = PubSubSession & {
   sessionId: string;
+  name: string;
 };
 
-export async function getSession(): Promise<Session> {
-  const provider = apiWindow.kilt.sporran;
+export async function getSession(
+  provider: InjectedWindowProvider,
+): Promise<Session> {
   if (!provider) {
     throw new Error('No provider');
   }
@@ -58,5 +60,7 @@ export async function getSession(): Promise<Session> {
     sessionId,
   });
 
-  return { ...session, sessionId };
+  const { name } = provider;
+
+  return { ...session, sessionId, name };
 }
