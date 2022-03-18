@@ -20,4 +20,5 @@ export async function connect() {
   const { api } = await BlockchainApiConnection.getConnectionOrConnect();
   api.on('disconnected', disconnectHandler);
   api.on('connected', () => blockchainConnectionState.on());
+  api.on('error', (error) => logger.error(error));
 }
