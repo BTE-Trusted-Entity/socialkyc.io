@@ -31,6 +31,7 @@ import { exitOnError } from '../utilities/exitOnError';
 import { paths } from '../endpoints/paths';
 
 import { sesClient } from './sesClient';
+import { sesConnectionState } from './sesConnection';
 
 const rateLimiter = new RateLimiterMemory({
   duration: 1 * 60,
@@ -88,6 +89,7 @@ The SocialKYC identity verification service is brought to you by B.T.E. BOTLabs 
   });
 
   await sesClient.send(command);
+  sesConnectionState.on();
 }
 
 export type Output = string;

@@ -3,13 +3,12 @@ import pino from 'hapi-pino';
 import gate from 'hapi-gate';
 
 import { fullDidPromise } from './utilities/fullDid';
-import { noAwaitReportBalance } from './utilities/noAwaitReportBalance';
-import { storeTwitterCType } from './twitter/twitterCType';
-import { storeEmailCType } from './email/emailCType';
-import { storeDomainLinkageCType } from './didConfiguration/domainLinkageCType';
-import { storeDiscordCType } from './discord/discordCType';
-import { storeGithubCType } from './github/githubCType';
-import { storeTwitchCType } from './twitch/twitchCType';
+import { testTwitterCType } from './twitter/twitterCType';
+import { testEmailCType } from './email/emailCType';
+import { testDomainLinkageCType } from './didConfiguration/domainLinkageCType';
+import { testDiscordCType } from './discord/discordCType';
+import { testGithubCType } from './github/githubCType';
+import { testTwitchCType } from './twitch/twitchCType';
 
 import { configuration } from './utilities/configuration';
 import { configureAuthentication } from './utilities/configureAuthentication';
@@ -59,7 +58,7 @@ import { session } from './endpoints/session';
 
 import { staticFiles } from './endpoints/staticFiles';
 
-import { liveness } from './endpoints/liveness';
+import { liveness, testLiveness } from './endpoints/liveness';
 import { notFoundHandler } from './endpoints/notFoundHandler';
 import { home } from './endpoints/home';
 import { about } from './endpoints/about';
@@ -97,21 +96,19 @@ const logger = {
   await configureDevErrors(server);
   server.logger.info('Server configured');
 
-  if (configuration.storeDidAndCTypes) {
-    await fullDidPromise;
-    await storeDomainLinkageCType();
-    await storeEmailCType();
-    await storeTwitterCType();
-    await storeDiscordCType();
-    await storeGithubCType();
-    await storeTwitchCType();
-    server.logger.warn('Blockchain objects stored');
-  }
+  await testLiveness();
+  server.logger.info('Liveness tests passed');
 
   await fullDidPromise;
   server.logger.info('Blockchain connection initialized');
 
-  noAwaitReportBalance();
+  await testDomainLinkageCType();
+  await testEmailCType();
+  await testTwitterCType();
+  await testDiscordCType();
+  await testGithubCType();
+  await testTwitchCType();
+  server.logger.info('CTypes tested');
 
   await listenForTweets();
   server.logger.info('Twitter connection initialized');

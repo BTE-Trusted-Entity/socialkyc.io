@@ -2,9 +2,10 @@ import { CType, CTypeUtils } from '@kiltprotocol/core';
 
 import { signAndSubmit } from '../utilities/signAndSubmit';
 import { logger } from '../utilities/logger';
+import { configuration } from '../utilities/configuration';
 
 /** Run this function once to store the CType */
-export async function storeTwitchCType(): Promise<void> {
+export async function testTwitchCType(): Promise<void> {
   const draft = CType.fromSchema({
     $schema: 'http://kilt-protocol.org/draft-01/ctype#',
     title: 'Twitch',
@@ -20,9 +21,16 @@ export async function storeTwitchCType(): Promise<void> {
   });
 
   if (await CTypeUtils.verifyStored(draft)) {
-    logger.info('Twitch CType is already on the blockchain');
+    if (configuration.storeDidAndCTypes) {
+      logger.info('Twitch CType is already on the blockchain');
+    }
     return;
   }
+
+  if (!configuration.storeDidAndCTypes) {
+    throw new Error('Twitch CType missing, cannot add it');
+  }
+
   logger.warn('Storing Twitch CType on the blockchain');
 
   const tx = await draft.getStoreTx();
