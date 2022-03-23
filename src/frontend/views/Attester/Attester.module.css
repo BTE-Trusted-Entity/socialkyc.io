@@ -29,31 +29,31 @@
 .twitter {
   composes: credential;
 
-  --credential-logo: url('twitter.svg');
+  --credential-logo: url('/src/frontend/views/Attester/twitter.svg');
 }
 
 .email {
   composes: credential;
 
-  --credential-logo: url('email.svg');
+  --credential-logo: url('/src/frontend/views/Attester/email.svg');
 }
 
 .discord {
   composes: credential;
 
-  --credential-logo: url('discord.svg');
+  --credential-logo: url('/src/frontend/views/Attester/discord.svg');
 }
 
 .github {
   composes: credential;
 
-  --credential-logo: url('github.svg');
+  --credential-logo: url('/src/frontend/views/Attester/github.svg');
 }
 
 .twitch {
   composes: credential;
 
-  --credential-logo: url('twitch.svg');
+  --credential-logo: url('/src/frontend/views/Attester/twitch.svg');
 }
 
 .buttonPrimary {
