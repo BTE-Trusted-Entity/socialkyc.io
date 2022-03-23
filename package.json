@@ -58,8 +58,8 @@
     "@babel/core": "^7.17.8",
     "@babel/preset-env": "^7.16.11",
     "@jest/globals": "^27.5.1",
-    "@parcel/optimizer-data-url": "^2.3.2",
-    "@parcel/transformer-inline-string": "^2.3.2",
+    "@parcel/optimizer-data-url": "^2.4.0",
+    "@parcel/transformer-inline-string": "^2.4.0",
     "@storybook/addon-actions": "^6.4.19",
     "@storybook/addon-console": "^1.2.3",
     "@storybook/addon-controls": "^6.4.19",
@@ -94,7 +94,7 @@
     "eslint-plugin-react": "^7.29.4",
     "eslint-plugin-react-hooks": "^4.3.0",
     "jest": "^27.5.1",
-    "parcel": "^2.3.2",
+    "parcel": "^2.4.0",
     "pino-pretty": "^7.5.4",
     "postcss": "^8.4.12",
     "postcss-modules": "^4.3.1",
@@ -124,15 +124,13 @@
         "src/frontend/sign.html",
         "src/frontend/404.html"
       ],
-      "distDir": "dist/frontend",
-      "scopeHoist": false
+      "distDir": "dist/frontend"
     },
     "backend": {
       "context": "node",
       "source": "src/backend/server.ts",
       "distDir": "dist/backend",
-      "outputFormat": "esmodule",
-      "scopeHoist": false
+      "outputFormat": "esmodule"
     }
   }
 }

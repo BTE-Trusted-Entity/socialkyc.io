@@ -23,21 +23,21 @@ body {
 }
 
 .hexagon1 {
-  --hexagon-image: url('../images/hexagons/phones.jpg');
+  --hexagon-image: url('/src/frontend/images/hexagons/phones.jpg');
   --hexagon-content-top: 'Share';
   --hexagon-content-center: 'your life,';
   --hexagon-content-bottom: 'not your personal data.';
 }
 
 .hexagon2 {
-  --hexagon-image: url('../images/hexagons/earth.jpg');
+  --hexagon-image: url('/src/frontend/images/hexagons/earth.jpg');
   --hexagon-content-top: 'Decide';
   --hexagon-content-center: 'who sees';
   --hexagon-content-bottom: 'your private information.';
 }
 
 .hexagon3 {
-  --hexagon-image: url('../images/hexagons/keyboard.jpg');
+  --hexagon-image: url('/src/frontend/images/hexagons/keyboard.jpg');
   --hexagon-content-top: 'Regain';
   --hexagon-content-center: 'control';
   --hexagon-content-bottom: 'over your digital identity.';
