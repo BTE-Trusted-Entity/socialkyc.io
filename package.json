@@ -15,7 +15,7 @@
     "storybook": "start-storybook --port 6007 --modern",
     "dev": "yarn parcel watch",
     "build": "yarn parcel build",
-    "start": "echo '{\"type\":\"commonjs\"}' > dist/package.json && node --enable-source-maps dist/backend/server.js",
+    "start": "node --enable-source-maps dist/backend/server.js",
     "dev-start": "echo '{\"type\":\"commonjs\"}' > dist/package.json && supervisor --watch dist/backend/ -- --enable-source-maps dist/backend/server.js"
   },
   "dependencies": {

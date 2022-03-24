@@ -2,20 +2,19 @@ FROM node:16-alpine AS base
 
 WORKDIR /app
 
-# carry over the dependencies data
-COPY package.json yarn.lock ./
-
 FROM base AS builder
 
 # one of dependencies uses node-gyp which requires build tools
 RUN apk add --update --no-cache python3 g++ make && ln -sf python3 /usr/bin/python
 
-# get the sources
+# get the dependencies and sources
+COPY package.json yarn.lock ./
 COPY src ./src
 COPY tsconfig.json ./
 
 # install build dependencies, build the app
-RUN yarn install --frozen-lockfile --ignore-optional && yarn cache clean --all && yarn build
+# @parcel/css-linux-x64-musl is not optional but marked so
+RUN yarn install --frozen-lockfile --ignore-optional && yarn add --dev @parcel/css-linux-x64-musl && yarn cache clean --all && yarn build
 
 FROM base AS release
 
@@ -27,6 +26,8 @@ COPY ./nginx.conf /etc/nginx/http.d/default.conf
 ENV PORT 4000
 ENV NODE_ENV production
 
+# get the dependencies and sources
+COPY package.json yarn.lock ./
 # install the production dependencies only (depends on NODE_ENV)
 RUN yarn install --frozen-lockfile --ignore-optional && yarn cache clean --all
 
