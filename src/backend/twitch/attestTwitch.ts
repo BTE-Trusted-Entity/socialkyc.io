@@ -5,7 +5,6 @@ import {
   ResponseToolkit,
   ServerRoute,
 } from '@hapi/hapi';
-import Boom from '@hapi/boom';
 import { z } from 'zod';
 
 import {
@@ -14,7 +13,6 @@ import {
   setSession,
 } from '../utilities/sessionStorage';
 import { getAttestationMessage } from '../utilities/attestClaim';
-import { exceptionToError } from '../../frontend/utilities/exceptionToError';
 import { paths } from '../endpoints/paths';
 
 const zodPayload = z.object({
@@ -33,24 +31,15 @@ async function handler(
 
   const session = getSessionWithDid(request.payload as PayloadWithSession);
 
-  try {
-    const response = await getAttestationMessage(session, logger);
-    logger.debug('Twitch attestation completed');
+  const response = await getAttestationMessage(session, logger);
+  logger.debug('Twitch attestation completed');
 
-    delete session.claim;
-    delete session.requestForAttestation;
-    delete session.confirmed;
-    setSession(session);
+  delete session.claim;
+  delete session.requestForAttestation;
+  delete session.confirmed;
+  setSession(session);
 
-    return h.response(response as Output);
-  } catch (exception) {
-    const error = exceptionToError(exception);
-
-    throw Boom.boomify(error, {
-      message: 'Attestation failed',
-      override: false,
-    });
-  }
+  return h.response(response as Output);
 }
 
 export const attestTwitch: ServerRoute = {

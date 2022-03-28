@@ -23,8 +23,6 @@ import { validateEncryptedMessage } from '../utilities/validateEncryptedMessage'
 import { preDecryptMessageContent } from '../utilities/decryptMessage';
 import { paths } from '../endpoints/paths';
 
-import { exceptionToError } from '../../frontend/utilities/exceptionToError';
-
 export type Output = Record<string, never>;
 
 async function handler(
@@ -56,13 +54,7 @@ async function handler(
   session.claim.owner = requestForAttestation.claim.owner;
   requestForAttestation.claim = session.claim;
 
-  try {
-    RequestForAttestationUtils.errorCheck(requestForAttestation);
-  } catch (exception) {
-    const error = exceptionToError(exception);
-    logger.error(error);
-    throw Boom.boomify(error);
-  }
+  RequestForAttestationUtils.errorCheck(requestForAttestation);
 
   logger.debug('Github request attestation verified');
 

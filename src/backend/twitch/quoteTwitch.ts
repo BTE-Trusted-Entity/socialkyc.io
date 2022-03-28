@@ -13,7 +13,6 @@ import {
   getSessionWithDid,
   PayloadWithSession,
 } from '../utilities/sessionStorage';
-import { exceptionToError } from '../../frontend/utilities/exceptionToError';
 import { paths } from '../endpoints/paths';
 
 import { twitchCType } from './twitchCType';
@@ -42,23 +41,17 @@ async function handler(
     throw Boom.notFound('Confirmed claim not found');
   }
 
-  try {
-    const output = await encryptMessageBody(encryptionKeyId, {
-      content: {
-        claim,
-        legitimations: [],
-        cTypes: [twitchCType],
-      },
-      type: MessageBodyType.SUBMIT_TERMS,
-    });
+  const output = await encryptMessageBody(encryptionKeyId, {
+    content: {
+      claim,
+      legitimations: [],
+      cTypes: [twitchCType],
+    },
+    type: MessageBodyType.SUBMIT_TERMS,
+  });
 
-    logger.debug('Twitch quote completed');
-    return h.response(output as Output);
-  } catch (exception) {
-    const error = exceptionToError(exception);
-    logger.error(error);
-    throw Boom.boomify(error);
-  }
+  logger.debug('Twitch quote completed');
+  return h.response(output as Output);
 }
 
 export const quoteTwitch: ServerRoute = {

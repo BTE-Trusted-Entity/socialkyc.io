@@ -132,10 +132,7 @@ async function handler(
 
     return requestForAttestation.claim.contents['Email'] as string as Output;
   } catch (exception) {
-    const error = exceptionToError(exception);
-    logger.error(error, 'Error sending email');
-
-    throw Boom.boomify(error, {
+    throw Boom.boomify(exceptionToError(exception), {
       statusCode: 400,
       message: 'Invalid email syntax',
     });

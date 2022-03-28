@@ -1,8 +1,5 @@
 import { Request, ServerRoute } from '@hapi/hapi';
-
 import { z } from 'zod';
-
-import Boom from '@hapi/boom';
 
 import { configuration } from '../utilities/configuration';
 import {
@@ -10,10 +7,7 @@ import {
   getSession,
   PayloadWithSession,
 } from '../utilities/sessionStorage';
-
 import { paths } from '../endpoints/paths';
-
-import { exceptionToError } from '../../frontend/utilities/exceptionToError';
 
 import { twitchEndpoints } from './twitchEndpoints';
 
@@ -28,27 +22,22 @@ export type Output = string;
 async function handler(request: Request): Promise<string> {
   const { logger } = request;
   logger.debug('Twitch auth started');
-  try {
-    const session = getSession(request.payload as PayloadWithSession);
 
-    const secret = getSecretForSession(session.sessionId);
+  const session = getSession(request.payload as PayloadWithSession);
 
-    const searchParams = {
-      response_type: 'code',
-      client_id: configuration.twitch.clientId,
-      state: secret,
-      redirect_uri: twitchEndpoints.redirectUri,
-      force_verify: 'true',
-    };
-    const url = new URL(twitchEndpoints.authorize);
-    url.search = new URLSearchParams(searchParams).toString();
-    logger.debug('Generated twitch auth URL');
-    return url.toString() as Output;
-  } catch (exception) {
-    const error = exceptionToError(exception);
-    logger.error(error);
-    throw Boom.boomify(error);
-  }
+  const secret = getSecretForSession(session.sessionId);
+
+  const searchParams = {
+    response_type: 'code',
+    client_id: configuration.twitch.clientId,
+    state: secret,
+    redirect_uri: twitchEndpoints.redirectUri,
+    force_verify: 'true',
+  };
+  const url = new URL(twitchEndpoints.authorize);
+  url.search = new URLSearchParams(searchParams).toString();
+  logger.debug('Generated twitch auth URL');
+  return url.toString() as Output;
 }
 
 export const authUrlTwitch: ServerRoute = {
