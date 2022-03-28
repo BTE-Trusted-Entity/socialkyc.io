@@ -83,7 +83,11 @@ const logger = {
     level: isProduction ? 'debug' : 'trace',
     logRequestComplete: isProduction,
     redact: isProduction
-      ? ['req.headers.authorization']
+      ? [
+          'req.headers.authorization',
+          'req.headers.x-forwarded-for',
+          'req.headers.x-real-ip',
+        ]
       : { paths: ['req', 'res'], remove: true },
   },
 };
