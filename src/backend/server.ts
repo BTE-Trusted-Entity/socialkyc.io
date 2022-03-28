@@ -85,8 +85,8 @@ const logger = {
     redact: isProduction
       ? [
           'req.headers.authorization',
-          'req.headers.x-forwarded-for',
-          'req.headers.x-real-ip',
+          'req.headers["x-forwarded-for"]',
+          'req.headers["x-real-ip"]',
         ]
       : { paths: ['req', 'res'], remove: true },
   },
