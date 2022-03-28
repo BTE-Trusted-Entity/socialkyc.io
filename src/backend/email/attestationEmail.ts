@@ -42,12 +42,7 @@ async function handler(
 
     return h.response(response as Output);
   } catch (exception) {
-    const error = exceptionToError(exception);
-
-    throw Boom.boomify(error, {
-      message: 'Attestation failed',
-      override: false,
-    });
+    throw Boom.boomify(exceptionToError(exception));
   }
 }
 
