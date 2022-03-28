@@ -59,9 +59,7 @@ async function handler(
   try {
     RequestForAttestationUtils.errorCheck(requestForAttestation);
   } catch (exception) {
-    const error = exceptionToError(exception);
-    logger.error(error);
-    throw Boom.boomify(error);
+    throw Boom.boomify(exceptionToError(exception));
   }
 
   logger.debug('Github request attestation verified');

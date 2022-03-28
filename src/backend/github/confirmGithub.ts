@@ -107,9 +107,7 @@ async function handler(
 
     return h.response(profile as Output);
   } catch (exception) {
-    const error = exceptionToError(exception);
-    logger.error(error);
-    throw Boom.boomify(error);
+    throw Boom.boomify(exceptionToError(exception));
   }
 }
 

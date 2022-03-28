@@ -45,9 +45,7 @@ async function handler(request: Request): Promise<string> {
     logger.debug('Generated twitch auth URL');
     return url.toString() as Output;
   } catch (exception) {
-    const error = exceptionToError(exception);
-    logger.error(error);
-    throw Boom.boomify(error);
+    throw Boom.boomify(exceptionToError(exception));
   }
 }
 

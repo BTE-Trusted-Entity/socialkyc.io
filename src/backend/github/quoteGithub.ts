@@ -55,9 +55,7 @@ async function handler(
     logger.debug('Github quote completed');
     return h.response(output as Output);
   } catch (exception) {
-    const error = exceptionToError(exception);
-    logger.error(error);
-    throw Boom.boomify(error);
+    throw Boom.boomify(exceptionToError(exception));
   }
 }
 
