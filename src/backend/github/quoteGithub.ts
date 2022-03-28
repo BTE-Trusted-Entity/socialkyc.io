@@ -13,7 +13,6 @@ import {
   getSessionWithDid,
   PayloadWithSession,
 } from '../utilities/sessionStorage';
-import { exceptionToError } from '../../frontend/utilities/exceptionToError';
 import { paths } from '../endpoints/paths';
 
 import { githubCType } from './githubCType';
@@ -42,21 +41,17 @@ async function handler(
     throw Boom.notFound('Confirmed claim not found');
   }
 
-  try {
-    const output = await encryptMessageBody(encryptionKeyId, {
-      content: {
-        claim,
-        legitimations: [],
-        cTypes: [githubCType],
-      },
-      type: MessageBodyType.SUBMIT_TERMS,
-    });
+  const output = await encryptMessageBody(encryptionKeyId, {
+    content: {
+      claim,
+      legitimations: [],
+      cTypes: [githubCType],
+    },
+    type: MessageBodyType.SUBMIT_TERMS,
+  });
 
-    logger.debug('Github quote completed');
-    return h.response(output as Output);
-  } catch (exception) {
-    throw Boom.boomify(exceptionToError(exception));
-  }
+  logger.debug('Github quote completed');
+  return h.response(output as Output);
 }
 
 export const quoteGithub: ServerRoute = {

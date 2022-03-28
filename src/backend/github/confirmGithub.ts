@@ -21,8 +21,6 @@ import {
 import { paths } from '../endpoints/paths';
 import { configuration } from '../utilities/configuration';
 
-import { exceptionToError } from '../../frontend/utilities/exceptionToError';
-
 import { githubEndpoints } from './githubEndpoints';
 import { githubCType } from './githubCType';
 
@@ -58,57 +56,53 @@ async function handler(
 
   const session = getSessionWithDid({ sessionId });
 
-  try {
-    logger.debug('Exchanging code for access token');
+  logger.debug('Exchanging code for access token');
 
-    const formatHeader = {
-      Accept: 'application/json',
-    };
-    const body = (await got
-      .post(githubEndpoints.token, {
-        headers: formatHeader,
-        form: {
-          code,
-          client_id: configuration.github.clientId,
-          client_secret: configuration.github.secret,
-          redirect_uri: githubEndpoints.redirectUri,
-        },
-      })
-      .json()) as { access_token: string };
+  const formatHeader = {
+    Accept: 'application/json',
+  };
+  const body = (await got
+    .post(githubEndpoints.token, {
+      headers: formatHeader,
+      form: {
+        code,
+        client_id: configuration.github.clientId,
+        client_secret: configuration.github.secret,
+        redirect_uri: githubEndpoints.redirectUri,
+      },
+    })
+    .json()) as { access_token: string };
 
-    logger.debug('Access token granted, fetching github profile');
+  logger.debug('Access token granted, fetching github profile');
 
-    const { access_token } = body;
+  const { access_token } = body;
 
-    const accessHeader = {
-      Authorization: `token ${access_token}`,
-    };
-    const profile = (await got(githubEndpoints.profile, {
-      headers: accessHeader,
-    }).json()) as { login: string; id: string };
+  const accessHeader = {
+    Authorization: `token ${access_token}`,
+  };
+  const profile = (await got(githubEndpoints.profile, {
+    headers: accessHeader,
+  }).json()) as { login: string; id: string };
 
-    logger.debug('Found Github profile, creating claim');
+  logger.debug('Found Github profile, creating claim');
 
-    const { login, id } = profile;
+  const { login, id } = profile;
 
-    const claimContents = {
-      Username: login,
-      'User ID': id.toString(),
-    };
-    const claim = Claim.fromCTypeAndClaimContents(
-      githubCType,
-      claimContents,
-      session.did,
-    );
+  const claimContents = {
+    Username: login,
+    'User ID': id.toString(),
+  };
+  const claim = Claim.fromCTypeAndClaimContents(
+    githubCType,
+    claimContents,
+    session.did,
+  );
 
-    setSession({ ...session, claim, confirmed: true });
+  setSession({ ...session, claim, confirmed: true });
 
-    logger.debug('Github claim created');
+  logger.debug('Github claim created');
 
-    return h.response(profile as Output);
-  } catch (exception) {
-    throw Boom.boomify(exceptionToError(exception));
-  }
+  return h.response(profile as Output);
 }
 
 export const confirmGithub: ServerRoute = {

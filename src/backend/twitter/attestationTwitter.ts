@@ -4,7 +4,6 @@ import {
   ResponseToolkit,
   ServerRoute,
 } from '@hapi/hapi';
-import Boom from '@hapi/boom';
 import { z } from 'zod';
 import { IEncryptedMessage } from '@kiltprotocol/types';
 
@@ -14,7 +13,6 @@ import {
   setSession,
 } from '../utilities/sessionStorage';
 import { getAttestationMessage } from '../utilities/attestClaim';
-import { exceptionToError } from '../../frontend/utilities/exceptionToError';
 import { paths } from '../endpoints/paths';
 
 const zodPayload = z.object({
@@ -34,16 +32,12 @@ async function handler(
 
   const session = getSessionWithDid(request.payload as PayloadWithSession);
 
-  try {
-    const response = await getAttestationMessage(session, logger);
-    delete session.requestForAttestation;
-    setSession(session);
+  const response = await getAttestationMessage(session, logger);
+  delete session.requestForAttestation;
+  setSession(session);
 
-    logger.debug('Twitter attestation completed');
-    return h.response(response as Output);
-  } catch (exception) {
-    throw Boom.boomify(exceptionToError(exception));
-  }
+  logger.debug('Twitter attestation completed');
+  return h.response(response as Output);
 }
 
 export const attestationTwitter: ServerRoute = {

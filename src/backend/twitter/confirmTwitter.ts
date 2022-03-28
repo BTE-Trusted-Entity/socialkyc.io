@@ -46,17 +46,13 @@ async function handler(
     throw Boom.notFound(`Twitter handle not found: ${username}`);
   }
 
-  try {
-    logger.debug('Twitter confirmation waiting for tweet');
-    const confirmation = userListeners[1];
-    await confirmation.promise;
-    tweetsListeners.delete(username.toLowerCase());
-    setSession({ ...session, confirmed: true });
+  logger.debug('Twitter confirmation waiting for tweet');
+  const confirmation = userListeners[1];
+  await confirmation.promise;
+  tweetsListeners.delete(username.toLowerCase());
+  setSession({ ...session, confirmed: true });
 
-    return h.response(<Output>undefined);
-  } catch (error) {
-    throw Boom.internal('Confirmation failed', error);
-  }
+  return h.response(<Output>undefined);
 }
 
 export const confirmTwitter: ServerRoute = {

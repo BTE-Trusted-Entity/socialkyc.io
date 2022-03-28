@@ -5,7 +5,6 @@ import {
   ResponseToolkit,
   ServerRoute,
 } from '@hapi/hapi';
-import Boom from '@hapi/boom';
 import { z } from 'zod';
 
 import {
@@ -14,7 +13,6 @@ import {
   setSession,
 } from '../utilities/sessionStorage';
 import { getAttestationMessage } from '../utilities/attestClaim';
-import { exceptionToError } from '../../frontend/utilities/exceptionToError';
 import { paths } from '../endpoints/paths';
 
 const zodPayload = z.object({
@@ -33,17 +31,13 @@ async function handler(
 
   const session = getSessionWithDid(request.payload as PayloadWithSession);
 
-  try {
-    const response = await getAttestationMessage(session, logger);
-    logger.debug('Email attestation completed');
+  const response = await getAttestationMessage(session, logger);
+  logger.debug('Email attestation completed');
 
-    delete session.requestForAttestation;
-    setSession(session);
+  delete session.requestForAttestation;
+  setSession(session);
 
-    return h.response(response as Output);
-  } catch (exception) {
-    throw Boom.boomify(exceptionToError(exception));
-  }
+  return h.response(response as Output);
 }
 
 export const attestationEmail: ServerRoute = {
