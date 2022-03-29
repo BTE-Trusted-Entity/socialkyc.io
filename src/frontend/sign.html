@@ -31,6 +31,33 @@
     <output id="signature"></output>
   </p>
 </form>
+<form>
+  <p>
+    <button type="button" id="web3name">Sign web3name</button>
+    <button type="button" id="addEndpoint">Sign did.addEndpoint</button>
+  </p>
+  <p>
+    DID key:
+    <output id="didKeyUri"></output>
+  </p>
+  <p>
+    Signed extrinsic:
+    <output id="signed"></output>
+  </p>
+  <p><a href="https://polkadot.js.org/apps/?rpc=wss%3A%2F%2Fsporran-testnet.kilt.io#/extrinsics/decode">Test it here</a></p>
+</form>
 
+<script type="module">
+  document.querySelector('#web3name').onclick = async function (event) {
+    const output = await window.kilt.sporran.signExtrinsicWithDid('0x1c0426000c666f6f', '4tMMYZHsFfqzfCsgCPLJSBmomBv2d6cBEYzHKMGVKz2VjACR');
+    document.querySelector('#didKeyUri').textContent = output.didKeyUri;
+    document.querySelector('#signed').textContent = output.signed;
+  }
+  document.querySelector('#addEndpoint').onclick = async function (event) {
+    const output = await window.kilt.sporran.signExtrinsicWithDid('0x88040c0810666f6f31040c666f6f044c68747470733a2f2f6578616d706c652e636f6d', '4tMMYZHsFfqzfCsgCPLJSBmomBv2d6cBEYzHKMGVKz2VjACR');
+    document.querySelector('#didKeyUri').textContent = output.didKeyUri;
+    document.querySelector('#signed').textContent = output.signed;
+  }
+</script>
 </body>
 </html>
