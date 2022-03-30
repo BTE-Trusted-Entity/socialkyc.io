@@ -21,7 +21,7 @@ const sessionMock: Session = {
   sessionId: 'foo',
   name: 'foo bar',
 };
-jest.setTimeout(500000)
+
 jest.mock('./useTwitterApi', () => ({ useTwitterApi: jest.fn() }));
 const mockTwitterApi: ReturnType<typeof useTwitterApi> = {
   quote: jest.fn(),
