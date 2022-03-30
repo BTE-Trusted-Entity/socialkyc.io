@@ -85,7 +85,9 @@ async function anchoringInProgress() {
 }
 
 async function tryAgain() {
-  userEvent.click(await screen.findByRole('button', { name: 'Try again' }));
+  await userEvent.click(
+    await screen.findByRole('button', { name: 'Try again' }),
+  );
 }
 
 describe('Email', () => {
@@ -329,7 +331,7 @@ describe('Email', () => {
     expect(await screen.findByText('Credential is ready')).toBeInTheDocument();
 
     expect(sessionMock.send).not.toHaveBeenCalled();
-    userEvent.click(
+    await userEvent.click(
       await screen.findByRole('button', { name: 'Show credential in wallet' }),
     );
     expect(sessionMock.send).toHaveBeenCalledTimes(1);

@@ -79,7 +79,9 @@ async function expectAnchoringInProgress() {
 }
 
 async function tryAgain() {
-  userEvent.click(await screen.findByRole('button', { name: 'Try again' }));
+  await userEvent.click(
+    await screen.findByRole('button', { name: 'Try again' }),
+  );
 }
 
 async function expectSecretInMessage() {
@@ -186,7 +188,7 @@ describe('Twitter', () => {
       sendPromise.resolve(undefined);
     });
 
-    userEvent.click(
+    await userEvent.click(
       await screen.findByRole('button', { name: 'Show credential in wallet' }),
     );
     expect(sessionMock.send).toHaveBeenCalledWith({ done: '' });
