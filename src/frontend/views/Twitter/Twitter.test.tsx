@@ -79,7 +79,9 @@ async function expectAnchoringInProgress() {
 }
 
 async function tryAgain() {
-  userEvent.click(await screen.findByRole('button', { name: 'Try again' }));
+  await userEvent.click(
+    await screen.findByRole('button', { name: 'Try again' }),
+  );
 }
 
 async function expectSecretInMessage() {
@@ -186,7 +188,7 @@ describe('Twitter', () => {
       sendPromise.resolve(undefined);
     });
 
-    userEvent.click(
+    await userEvent.click(
       await screen.findByRole('button', { name: 'Show credential in wallet' }),
     );
     expect(sessionMock.send).toHaveBeenCalledWith({ done: '' });
@@ -316,8 +318,6 @@ describe('Twitter', () => {
   });
 
   it('should advice about the slow confirmation', async () => {
-    jest.useFakeTimers();
-
     const { container } = render(<Twitter session={sessionMock} />);
 
     await enterTwitter();
@@ -328,6 +328,7 @@ describe('Twitter', () => {
     await respondWithQuote();
     expectQuoteIsSent();
 
+    jest.useFakeTimers();
     callSessionListenerWith({ signed: 'quote' });
     expectAttestationRequested();
 
@@ -341,14 +342,13 @@ describe('Twitter', () => {
 
     expect(await screen.findByText('Tweet not found')).toBeInTheDocument();
 
+    jest.useRealTimers();
     await tryAgain();
     await continueInWallet();
     expect(mockTwitterApi.quote).toHaveBeenCalledTimes(2);
   });
 
   it('should advice about the slow attestation', async () => {
-    jest.useFakeTimers();
-
     const { container } = render(<Twitter session={sessionMock} />);
 
     await enterTwitter();
@@ -359,6 +359,7 @@ describe('Twitter', () => {
     await respondWithQuote();
     expectQuoteIsSent();
 
+    jest.useFakeTimers();
     callSessionListenerWith({ signed: 'quote' });
     expectAttestationRequested();
 
