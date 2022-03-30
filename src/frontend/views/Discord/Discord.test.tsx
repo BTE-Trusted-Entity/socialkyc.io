@@ -447,8 +447,6 @@ describe('Discord', () => {
   });
 
   it('should advice about the slow attestation', async () => {
-    jest.useFakeTimers();
-
     const { container } = render(
       <MemoryRouter
         initialEntries={[
@@ -473,6 +471,7 @@ describe('Discord', () => {
     await respondWithQuote();
     expectQuoteIsSent();
 
+    jest.useFakeTimers();
     callSessionListenerWith({ signed: 'quote' });
     expectAttestationRequested();
 

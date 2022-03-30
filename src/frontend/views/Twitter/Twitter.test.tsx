@@ -21,7 +21,7 @@ const sessionMock: Session = {
   sessionId: 'foo',
   name: 'foo bar',
 };
-
+jest.setTimeout(500000)
 jest.mock('./useTwitterApi', () => ({ useTwitterApi: jest.fn() }));
 const mockTwitterApi: ReturnType<typeof useTwitterApi> = {
   quote: jest.fn(),
@@ -318,8 +318,6 @@ describe('Twitter', () => {
   });
 
   it('should advice about the slow confirmation', async () => {
-    jest.useFakeTimers();
-
     const { container } = render(<Twitter session={sessionMock} />);
 
     await enterTwitter();
@@ -330,6 +328,7 @@ describe('Twitter', () => {
     await respondWithQuote();
     expectQuoteIsSent();
 
+    jest.useFakeTimers();
     callSessionListenerWith({ signed: 'quote' });
     expectAttestationRequested();
 
@@ -343,14 +342,13 @@ describe('Twitter', () => {
 
     expect(await screen.findByText('Tweet not found')).toBeInTheDocument();
 
+    jest.useRealTimers();
     await tryAgain();
     await continueInWallet();
     expect(mockTwitterApi.quote).toHaveBeenCalledTimes(2);
   });
 
   it('should advice about the slow attestation', async () => {
-    jest.useFakeTimers();
-
     const { container } = render(<Twitter session={sessionMock} />);
 
     await enterTwitter();
@@ -361,6 +359,7 @@ describe('Twitter', () => {
     await respondWithQuote();
     expectQuoteIsSent();
 
+    jest.useFakeTimers();
     callSessionListenerWith({ signed: 'quote' });
     expectAttestationRequested();
 
