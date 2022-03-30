@@ -11,10 +11,6 @@ import {
 } from '@hapi/hapi';
 import Boom from '@hapi/boom';
 import { RateLimiterMemory } from 'rate-limiter-flexible';
-import {
-  IRequestAttestationContent,
-  MessageBodyType,
-} from '@kiltprotocol/types';
 
 import { configuration } from '../utilities/configuration';
 import {
@@ -24,7 +20,7 @@ import {
   setSession,
 } from '../utilities/sessionStorage';
 
-import { preDecryptMessageContent } from '../utilities/decryptMessage';
+import { decryptRequestAttestationContent } from '../utilities/decryptMessage';
 import { validateEncryptedMessage } from '../utilities/validateEncryptedMessage';
 import { exceptionToError } from '../../frontend/utilities/exceptionToError';
 import { exitOnError } from '../utilities/exitOnError';
@@ -110,11 +106,11 @@ async function handler(
     );
   }
 
-  if (!request.pre.content) {
+  const content = await decryptRequestAttestationContent(request);
+  if (!content) {
     return h.response().code(StatusCodes.ACCEPTED);
   }
 
-  const content = request.pre.content as IRequestAttestationContent;
   const { requestForAttestation } = content;
 
   const session = getSession(request.payload as PayloadWithSession);
@@ -147,14 +143,5 @@ export const request: ServerRoute = {
     validate: {
       payload: validateEncryptedMessage,
     },
-    pre: [
-      {
-        assign: 'content',
-        method: preDecryptMessageContent(
-          MessageBodyType.REQUEST_ATTESTATION,
-          MessageBodyType.REJECT_TERMS,
-        ),
-      },
-    ],
   },
 };
