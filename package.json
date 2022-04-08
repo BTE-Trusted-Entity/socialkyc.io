@@ -51,7 +51,7 @@
     "react": "^17.0.2",
     "react-dom": "^17.0.2",
     "react-router-dom": "^5.3.0",
-    "twitter-api-v2": "^1.11.2",
+    "twitter-api-v2": "^1.11.3",
     "zod": "^3.14.4"
   },
   "devDependencies": {
