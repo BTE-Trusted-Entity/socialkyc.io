@@ -1,6 +1,8 @@
 import {
+  FormEvent,
   FormEventHandler,
   Fragment,
+  KeyboardEventHandler,
   MouseEventHandler,
   useCallback,
   useState,
@@ -56,8 +58,8 @@ export function EmailTemplate({
   const [emailInput, setEmailInput] = useState('');
 
   const handleInput = useCallback(
-    (event) => {
-      setEmailInput(event.target.value);
+    (event: FormEvent<HTMLInputElement>) => {
+      setEmailInput((event.target as HTMLInputElement).value);
       setInputError(undefined);
     },
     [setInputError],
@@ -70,11 +72,14 @@ export function EmailTemplate({
     }
   }, [emailInput]);
 
-  const handleKeyPress = useCallback((event) => {
-    if (event.key === 'Enter') {
-      event.target.blur();
-    }
-  }, []);
+  const handleKeyPress: KeyboardEventHandler<HTMLInputElement> = useCallback(
+    (event) => {
+      if (event.key === 'Enter') {
+        (event.target as HTMLInputElement).blur();
+      }
+    },
+    [],
+  );
 
   const preventNavigation = usePreventNavigation(
     processing || ['confirming', 'attesting'].includes(status),
