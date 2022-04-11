@@ -19,7 +19,7 @@
     "dev-start": "echo '{\"type\":\"commonjs\"}' > dist/package.json && supervisor --watch dist/backend/ -- --enable-source-maps dist/backend/server.js"
   },
   "dependencies": {
-    "@aws-sdk/client-ses": "^3.58.0",
+    "@aws-sdk/client-ses": "^3.67.0",
     "@hapi/basic": "^6.0.0",
     "@hapi/boom": "^9.1.4",
     "@hapi/hapi": "^20.2.1",
@@ -60,7 +60,7 @@
     "@jest/globals": "^27.5.1",
     "@parcel/optimizer-data-url": "^2.4.1",
     "@parcel/transformer-inline-string": "^2.4.1",
-    "@storybook/addon-actions": "^6.4.20",
+    "@storybook/addon-actions": "^6.4.21",
     "@storybook/addon-console": "^1.2.3",
     "@storybook/addon-controls": "^6.4.20",
     "@storybook/addon-links": "^6.4.20",
