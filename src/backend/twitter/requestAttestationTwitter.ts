@@ -5,10 +5,6 @@ import {
   ResponseToolkit,
   ServerRoute,
 } from '@hapi/hapi';
-import {
-  IRequestAttestationContent,
-  MessageBodyType,
-} from '@kiltprotocol/types';
 
 import {
   getSecretForSession,
@@ -17,7 +13,7 @@ import {
   setSession,
 } from '../utilities/sessionStorage';
 import { validateEncryptedMessage } from '../utilities/validateEncryptedMessage';
-import { preDecryptMessageContent } from '../utilities/decryptMessage';
+import { decryptRequestAttestationContent } from '../utilities/decryptMessage';
 import { makeControlledPromise } from '../utilities/makeControlledPromise';
 import { paths } from '../endpoints/paths';
 
@@ -34,11 +30,11 @@ async function handler(
   const { logger } = request;
   logger.debug('Twitter request attestation started');
 
-  if (!request.pre.content) {
+  const content = await decryptRequestAttestationContent(request);
+  if (!content) {
     return h.response().code(StatusCodes.ACCEPTED);
   }
 
-  const content = request.pre.content as IRequestAttestationContent;
   const { requestForAttestation } = content;
 
   const session = getSession(request.payload as PayloadWithSession);
@@ -65,14 +61,5 @@ export const requestTwitter: ServerRoute = {
     validate: {
       payload: validateEncryptedMessage,
     },
-    pre: [
-      {
-        assign: 'content',
-        method: preDecryptMessageContent(
-          MessageBodyType.REQUEST_ATTESTATION,
-          MessageBodyType.REJECT_TERMS,
-        ),
-      },
-    ],
   },
 };

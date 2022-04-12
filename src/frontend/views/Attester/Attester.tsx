@@ -1,4 +1,11 @@
-import { Fragment, useCallback, useEffect, useState, useMemo } from 'react';
+import {
+  FormEvent,
+  Fragment,
+  useCallback,
+  useEffect,
+  useMemo,
+  useState,
+} from 'react';
 import {
   Link,
   Route,
@@ -218,12 +225,12 @@ function Connect({ setSession }: { setSession: (s: Session) => void }) {
     }
   }, [isEmailConfirmation, extensions]);
 
-  const handleInput = useCallback((event) => {
-    setExtension(event.target.value);
+  const handleInput = useCallback((event: FormEvent<HTMLSelectElement>) => {
+    setExtension((event.target as HTMLSelectElement).value);
   }, []);
 
   const handleConnect = useCallback(
-    async (event) => {
+    async (event: FormEvent<HTMLFormElement>) => {
       if (!extension) {
         return;
       }

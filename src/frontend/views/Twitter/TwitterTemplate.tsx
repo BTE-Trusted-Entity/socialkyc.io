@@ -1,4 +1,5 @@
 import {
+  FormEvent,
   FormEventHandler,
   Fragment,
   MouseEventHandler,
@@ -61,8 +62,8 @@ export function TwitterTemplate({
   const [twitterHandle, setTwitterHandle] = useState('');
 
   const handleInput = useCallback(
-    (event) => {
-      setTwitterHandle(event.target.value);
+    (event: FormEvent<HTMLInputElement>) => {
+      setTwitterHandle((event.target as HTMLInputElement).value);
       setInputError(undefined);
     },
     [setInputError],

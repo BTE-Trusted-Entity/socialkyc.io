@@ -9,7 +9,7 @@ import { MessageBodyType, ICredential } from '@kiltprotocol/types';
 import { Credential } from '@kiltprotocol/core';
 import Boom from '@hapi/boom';
 
-import { preDecryptMessageContent } from '../utilities/decryptMessage';
+import { decryptMessageContent } from '../utilities/decryptMessage';
 import {
   EncryptedMessageInput,
   validateEncryptedMessage,
@@ -29,7 +29,12 @@ async function handler(
   const { logger } = request;
   logger.debug('Verification started');
 
-  if (!request.pre.content) {
+  const content = await decryptMessageContent<ICredential[]>(
+    request,
+    MessageBodyType.SUBMIT_CREDENTIAL,
+  );
+
+  if (!content) {
     return h.response().code(StatusCodes.ACCEPTED);
   }
 
@@ -38,8 +43,6 @@ async function handler(
     throw Boom.forbidden('No request challenge');
   }
   const challenge = session.requestChallenge;
-
-  const content = request.pre.content as ICredential[];
 
   const credential = Credential.fromCredential(content[0]);
   logger.debug('Verification credential constructed');
@@ -58,11 +61,5 @@ export const verify: ServerRoute = {
     validate: {
       payload: validateEncryptedMessage,
     },
-    pre: [
-      {
-        assign: 'content',
-        method: preDecryptMessageContent(MessageBodyType.SUBMIT_CREDENTIAL),
-      },
-    ],
   },
 };

@@ -101,7 +101,9 @@ async function expectAnchoringInProgress() {
 }
 
 async function tryAgain() {
-  userEvent.click(await screen.findByRole('button', { name: 'Try again' }));
+  await userEvent.click(
+    await screen.findByRole('button', { name: 'Try again' }),
+  );
 }
 
 function expectAttestationRequested() {
@@ -246,7 +248,7 @@ describe('Github', () => {
       sendPromise.resolve(undefined);
     });
 
-    userEvent.click(
+    await userEvent.click(
       await screen.findByRole('button', { name: 'Show credential in wallet' }),
     );
     expect(sessionMock.send).toHaveBeenCalledWith({ done: '' });
@@ -444,8 +446,6 @@ describe('Github', () => {
   });
 
   it('should advice about the slow attestation', async () => {
-    jest.useFakeTimers();
-
     const { container } = render(
       <MemoryRouter
         initialEntries={[
@@ -470,6 +470,7 @@ describe('Github', () => {
     await respondWithQuote();
     expectQuoteIsSent();
 
+    jest.useFakeTimers();
     callSessionListenerWith({ signed: 'quote' });
     expectAttestationRequested();
 
