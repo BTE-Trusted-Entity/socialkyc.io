@@ -94,7 +94,13 @@ async function createPendingTransaction() {
 }
 
 export async function batchSignAndSubmitAttestation(attestation: Attestation) {
-  pendingAttestations.push(attestation);
+  // prevent two identical attestations from going into the same batch
+  const alreadyAdded = pendingAttestations.some(
+    ({ claimHash }) => claimHash === attestation.claimHash,
+  );
+  if (!alreadyAdded) {
+    pendingAttestations.push(attestation);
+  }
 
   if (pendingTransaction) {
     logger.debug('Scheduled attestation for next transaction');
