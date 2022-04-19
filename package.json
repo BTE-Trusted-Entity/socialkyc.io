@@ -19,7 +19,7 @@
     "dev-start": "echo '{\"type\":\"commonjs\"}' > dist/package.json && supervisor --watch dist/backend/ -- --enable-source-maps dist/backend/server.js"
   },
   "dependencies": {
-    "@aws-sdk/client-ses": "^3.67.0",
+    "@aws-sdk/client-ses": "^3.72.0",
     "@hapi/basic": "^6.0.0",
     "@hapi/boom": "^9.1.4",
     "@hapi/hapi": "^20.2.1",
@@ -81,8 +81,8 @@
     "@types/hapi__inert": "^5.2.3",
     "@types/jest": "^27.4.1",
     "@types/lodash-es": "^4.17.6",
-    "@types/react": "^18.0.4",
-    "@types/react-dom": "^18.0.0",
+    "@types/react": "^18.0.5",
+    "@types/react-dom": "^18.0.1",
     "@types/react-router-dom": "^5.3.3",
     "@typescript-eslint/eslint-plugin": "^5.19.0",
     "@typescript-eslint/parser": "^5.19.0",
