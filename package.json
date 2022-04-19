@@ -100,7 +100,7 @@
     "postcss-modules": "^4.3.1",
     "prettier": "^2.6.2",
     "react-router": "^5.2.1",
-    "stylelint": "^14.6.1",
+    "stylelint": "^14.7.1",
     "stylelint-config-css-modules": "^4.1.0",
     "stylelint-config-standard": "^25.0.0",
     "supervisor": "^0.12.0",
