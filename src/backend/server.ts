@@ -9,7 +9,7 @@ import { testDomainLinkageCType } from './didConfiguration/domainLinkageCType';
 import { testDiscordCType } from './discord/discordCType';
 import { testGithubCType } from './github/githubCType';
 import { testTwitchCType } from './twitch/twitchCType';
-
+import { testTelegramCType } from './telegram/telegramCType';
 import { configuration } from './utilities/configuration';
 import { configureAuthentication } from './utilities/configureAuthentication';
 import { configureDevErrors } from './utilities/configureDevErrors';
@@ -50,6 +50,12 @@ import { confirmTwitch } from './twitch/confirmTwitch';
 import { quoteTwitch } from './twitch/quoteTwitch';
 import { requestAttestationTwitch } from './twitch/requestAttestationTwitch';
 import { attestTwitch } from './twitch/attestTwitch';
+
+import { authUrlTelegram } from './telegram/authUrlTelegram';
+import { confirmTelegram } from './telegram/confirmTelegram';
+import { quoteTelegram } from './telegram/quoteTelegram';
+import { requestAttestationTelegram } from './telegram/requestAttestationTelegram';
+import { attestTelegram } from './telegram/attestTelegram';
 
 import { requestCredential } from './verifier/requestCredential';
 import { verify } from './verifier/verify';
@@ -112,6 +118,7 @@ const logger = {
   await testDiscordCType();
   await testGithubCType();
   await testTwitchCType();
+  await testTelegramCType();
   server.logger.info('CTypes tested');
 
   await listenForTweets();
@@ -152,6 +159,12 @@ const logger = {
   server.route(quoteTwitch);
   server.route(requestAttestationTwitch);
   server.route(attestTwitch);
+
+  server.route(authUrlTelegram);
+  server.route(confirmTelegram);
+  server.route(quoteTelegram);
+  server.route(requestAttestationTelegram);
+  server.route(attestTelegram);
 
   server.route(requestCredential);
   server.route(verify);

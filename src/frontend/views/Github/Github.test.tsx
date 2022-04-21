@@ -83,7 +83,7 @@ function expectAuthUrlCalled() {
   expect(mockGithubApi.authUrl).toHaveBeenCalledWith({});
 }
 
-function expectconfirmCalledWith(routeParams: {
+function expectConfirmCalledWith(routeParams: {
   secret: string;
   code: string;
 }) {
@@ -216,7 +216,7 @@ describe('Github', () => {
     );
 
     expectIsNotProcessing(container);
-    expectconfirmCalledWith({ secret, code });
+    expectConfirmCalledWith({ secret, code });
 
     await act(async () => {
       confirmPromise.resolve(profileMock);
@@ -267,7 +267,7 @@ describe('Github', () => {
 
     expectIsNotProcessing(container);
 
-    expectconfirmCalledWith({ secret, code });
+    expectConfirmCalledWith({ secret, code });
 
     await act(async () => {
       confirmPromise.reject(new Error('authorization'));
@@ -299,7 +299,7 @@ describe('Github', () => {
     );
 
     expectIsNotProcessing(container);
-    expectconfirmCalledWith({ secret, code });
+    expectConfirmCalledWith({ secret, code });
 
     await act(async () => {
       confirmPromise.resolve(profileMock);
@@ -334,7 +334,7 @@ describe('Github', () => {
     );
 
     expectIsNotProcessing(container);
-    expectconfirmCalledWith({ secret, code });
+    expectConfirmCalledWith({ secret, code });
 
     await act(async () => {
       confirmPromise.resolve(profileMock);
@@ -370,7 +370,7 @@ describe('Github', () => {
     );
 
     expectIsNotProcessing(container);
-    expectconfirmCalledWith({ secret, code });
+    expectConfirmCalledWith({ secret, code });
 
     await act(async () => {
       confirmPromise.resolve(profileMock);
@@ -410,7 +410,7 @@ describe('Github', () => {
     );
 
     expectIsNotProcessing(container);
-    expectconfirmCalledWith({ secret, code });
+    expectConfirmCalledWith({ secret, code });
 
     await act(async () => {
       confirmPromise.resolve(profileMock);
@@ -457,7 +457,7 @@ describe('Github', () => {
     );
 
     expectIsNotProcessing(container);
-    expectconfirmCalledWith({ secret, code });
+    expectConfirmCalledWith({ secret, code });
 
     await act(async () => {
       confirmPromise.resolve(profileMock);

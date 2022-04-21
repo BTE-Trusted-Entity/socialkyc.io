@@ -7,6 +7,7 @@ export const email: string;
 export const discord: string;
 export const github: string;
 export const twitch: string;
+export const telegram: string;
 export const buttonPrimary: string;
 export const buttonLink: string;
 export const install: string;

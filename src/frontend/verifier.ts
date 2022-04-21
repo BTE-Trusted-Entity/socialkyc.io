@@ -27,6 +27,8 @@ const cTypes: Record<string, string> = {
     'GitHub',
   '0x568ec5ffd7771c4677a5470771adcdea1ea4d6b566f060dc419ff133a0089d80':
     'Twitch',
+  '0xcef8f3fe5aa7379faea95327942fd77287e1c144e3f53243e55705f11e890a4c':
+    'Telegram',
 };
 
 function handleBeforeUnload(event: Event) {
