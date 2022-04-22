@@ -106,7 +106,7 @@
     "supervisor": "^0.12.0",
     "ts-jest": "^27.1.4",
     "typed-css-modules": "^0.7.1",
-    "typescript": "^4.5.5"
+    "typescript": "^4.6.3"
   },
   "targets": {
     "frontend": {
