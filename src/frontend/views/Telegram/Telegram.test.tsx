@@ -1,17 +1,16 @@
 // expect cannot be imported because of https://github.com/testing-library/jest-dom/issues/426
 import { afterEach, beforeEach, describe, it, jest } from '@jest/globals';
 import userEvent from '@testing-library/user-event';
-import { MemoryRouter } from 'react-router-dom';
 import { IEncryptedMessage } from '@kiltprotocol/types';
 
 import { act, render, screen } from '../../../testing/testing';
 import '../../components/useCopyButton/useCopyButton.mock';
-import { paths } from '../../paths';
 import { Session } from '../../utilities/session';
 import { makeControlledPromise } from '../../../backend/utilities/makeControlledPromise';
 
-import { useTwitchApi } from './useTwitchApi';
-import { Twitch, TwitchProfile } from './Twitch';
+import { useTelegramApi } from './useTelegramApi';
+import { useAuthData } from './useAuthData';
+import { Telegram, TelegramProfile } from './Telegram';
 
 const sessionMock: Session = {
   encryptionKeyId: 'encryptionKeyId',
@@ -24,33 +23,27 @@ const sessionMock: Session = {
   name: 'foo bar',
 };
 
-const profileMock: TwitchProfile = {
-  login: 'TestUser',
-  id: '1234556789',
+const profileMock: TelegramProfile = {
+  first_name: 'TestUser',
+  id: 1234556789,
 };
 
-const secret = 'SECRET';
-const code = 'CODE';
-
-jest.mock('./useTwitchApi', () => ({ useTwitchApi: jest.fn() }));
-const mockTwitchApi: ReturnType<typeof useTwitchApi> = {
+jest.mock('./useTelegramApi', () => ({ useTelegramApi: jest.fn() }));
+const mockTelegramApi: ReturnType<typeof useTelegramApi> = {
   authUrl: jest.fn(),
   confirm: jest.fn(),
   quote: jest.fn(),
   requestAttestation: jest.fn(),
   attest: jest.fn(),
 };
-jest.mocked(useTwitchApi).mockReturnValue(mockTwitchApi);
+jest.mocked(useTelegramApi).mockReturnValue(mockTelegramApi);
 
-async function signInWithTwitch() {
-  const signInLink = await screen.findByRole('link', {
-    name: 'Sign in with Twitch',
-  });
-  await userEvent.click(signInLink);
-}
+jest.mock('./useAuthData');
+const authData = '{"auth": "data"}';
+jest.mocked(useAuthData).mockReturnValue(authData);
 
 function expectQuoteRequested() {
-  expect(mockTwitchApi.quote).toHaveBeenCalledWith({});
+  expect(mockTelegramApi.quote).toHaveBeenCalledWith({});
 }
 
 async function continueInWallet() {
@@ -80,14 +73,11 @@ async function expectSomethingWrong() {
 }
 
 function expectAuthUrlCalled() {
-  expect(mockTwitchApi.authUrl).toHaveBeenCalledWith({});
+  expect(mockTelegramApi.authUrl).toHaveBeenCalledWith({});
 }
 
-function expectConfirmCalledWith(routeParams: {
-  secret: string;
-  code: string;
-}) {
-  expect(mockTwitchApi.confirm).toHaveBeenCalledWith(routeParams);
+function expectConfirmCalledWith(authData: { json: string }) {
+  expect(mockTelegramApi.confirm).toHaveBeenCalledWith(authData);
 }
 
 function expectQuoteIsSent() {
@@ -107,18 +97,18 @@ async function tryAgain() {
 }
 
 function expectAttestationRequested() {
-  expect(mockTwitchApi.requestAttestation).toHaveBeenCalledWith({
+  expect(mockTelegramApi.requestAttestation).toHaveBeenCalledWith({
     message: { signed: 'quote' },
   });
 }
 
 async function expectStartOver() {
-  expect(mockTwitchApi.authUrl).toHaveBeenCalled();
+  expect(mockTelegramApi.authUrl).toHaveBeenCalled();
 }
 
-describe('Twitch', () => {
+describe('Telegram', () => {
   let authUrlPromise = makeControlledPromise<string>();
-  let confirmPromise = makeControlledPromise<TwitchProfile>();
+  let confirmPromise = makeControlledPromise<TelegramProfile>();
   let quotePromise = makeControlledPromise<IEncryptedMessage>();
   let sendPromise = makeControlledPromise<void>();
   let requestPromise = makeControlledPromise<Record<string, never>>();
@@ -129,19 +119,19 @@ describe('Twitch', () => {
 
     authUrlPromise = makeControlledPromise<string>();
     jest
-      .mocked(mockTwitchApi.authUrl)
+      .mocked(mockTelegramApi.authUrl)
       .mockReset()
       .mockReturnValue(authUrlPromise.promise);
 
-    confirmPromise = makeControlledPromise<TwitchProfile>();
+    confirmPromise = makeControlledPromise<TelegramProfile>();
     jest
-      .mocked(mockTwitchApi.confirm)
+      .mocked(mockTelegramApi.confirm)
       .mockReset()
       .mockReturnValue(confirmPromise.promise);
 
     quotePromise = makeControlledPromise<IEncryptedMessage>();
     jest
-      .mocked(mockTwitchApi.quote)
+      .mocked(mockTelegramApi.quote)
       .mockReset()
       .mockReturnValue(quotePromise.promise);
 
@@ -154,13 +144,13 @@ describe('Twitch', () => {
 
     requestPromise = makeControlledPromise<Record<string, never>>();
     jest
-      .mocked(mockTwitchApi.requestAttestation)
+      .mocked(mockTelegramApi.requestAttestation)
       .mockReset()
       .mockReturnValue(requestPromise.promise);
 
     attestPromise = makeControlledPromise<IEncryptedMessage>();
     jest
-      .mocked(mockTwitchApi.attest)
+      .mocked(mockTelegramApi.attest)
       .mockReset()
       .mockReturnValue(attestPromise.promise);
   });
@@ -175,21 +165,22 @@ describe('Twitch', () => {
     });
   }
 
-  it('should go through the happy path until redirected to Twitch', async () => {
-    render(<Twitch session={sessionMock} />);
+  it('should go through the happy path until Telegram is shown', async () => {
+    const { container } = render(<Telegram session={sessionMock} />);
 
     expectAuthUrlCalled();
 
     await act(async () => {
-      authUrlPromise.resolve('https://twitch-auth-url.example');
+      authUrlPromise.resolve('https://telegram-auth-url.example/');
     });
 
-    await signInWithTwitch();
-    expect(await screen.findByText('Sign in with Twitch')).toBeInTheDocument();
+    const iframe = container.querySelector('iframe');
+    expect(iframe).toBeInTheDocument();
+    expect(iframe?.src).toEqual('https://telegram-auth-url.example/');
   });
 
   it('should show an error when authUrl fails', async () => {
-    render(<Twitch session={sessionMock} />);
+    render(<Telegram session={sessionMock} />);
 
     expectAuthUrlCalled();
 
@@ -199,24 +190,16 @@ describe('Twitch', () => {
 
     await expectSomethingWrong();
 
-    expect(mockTwitchApi.authUrl).toHaveBeenCalledTimes(1);
+    expect(mockTelegramApi.authUrl).toHaveBeenCalledTimes(1);
     await tryAgain();
-    expect(mockTwitchApi.authUrl).toHaveBeenCalledTimes(2);
+    expect(mockTelegramApi.authUrl).toHaveBeenCalledTimes(2);
   });
 
   it('should finish the happy path after authorization', async () => {
-    const { container } = render(
-      <MemoryRouter
-        initialEntries={[
-          paths.twitchAuth.replace(':secret', secret).replace(':code', code),
-        ]}
-      >
-        <Twitch session={sessionMock} />
-      </MemoryRouter>,
-    );
+    const { container } = render(<Telegram session={sessionMock} />);
 
     expectIsNotProcessing(container);
-    expectConfirmCalledWith({ secret, code });
+    expectConfirmCalledWith({ json: authData });
 
     await act(async () => {
       confirmPromise.resolve(profileMock);
@@ -255,19 +238,11 @@ describe('Twitch', () => {
   });
 
   it('should show authorization error', async () => {
-    const { container } = render(
-      <MemoryRouter
-        initialEntries={[
-          paths.twitchAuth.replace(':secret', secret).replace(':code', code),
-        ]}
-      >
-        <Twitch session={sessionMock} />
-      </MemoryRouter>,
-    );
+    const { container } = render(<Telegram session={sessionMock} />);
 
     expectIsNotProcessing(container);
 
-    expectConfirmCalledWith({ secret, code });
+    expectConfirmCalledWith({ json: authData });
 
     await act(async () => {
       confirmPromise.reject(new Error('authorization'));
@@ -275,7 +250,7 @@ describe('Twitch', () => {
 
     expect(
       await screen.findByText(
-        'There was an error authorizing your Twitch account.',
+        'There was an error authorizing your Telegram account.',
       ),
     ).toBeInTheDocument();
 
@@ -288,18 +263,10 @@ describe('Twitch', () => {
   });
 
   it('should show error when quote fails', async () => {
-    const { container } = render(
-      <MemoryRouter
-        initialEntries={[
-          paths.twitchAuth.replace(':secret', secret).replace(':code', code),
-        ]}
-      >
-        <Twitch session={sessionMock} />
-      </MemoryRouter>,
-    );
+    const { container } = render(<Telegram session={sessionMock} />);
 
     expectIsNotProcessing(container);
-    expectConfirmCalledWith({ secret, code });
+    expectConfirmCalledWith({ json: authData });
 
     await act(async () => {
       confirmPromise.resolve(profileMock);
@@ -323,18 +290,10 @@ describe('Twitch', () => {
 
   // eslint-disable-next-line jest/expect-expect
   it('should show an error when the wallet communication fails', async () => {
-    const { container } = render(
-      <MemoryRouter
-        initialEntries={[
-          paths.twitchAuth.replace(':secret', secret).replace(':code', code),
-        ]}
-      >
-        <Twitch session={sessionMock} />
-      </MemoryRouter>,
-    );
+    const { container } = render(<Telegram session={sessionMock} />);
 
     expectIsNotProcessing(container);
-    expectConfirmCalledWith({ secret, code });
+    expectConfirmCalledWith({ json: authData });
 
     await act(async () => {
       confirmPromise.resolve(profileMock);
@@ -359,18 +318,10 @@ describe('Twitch', () => {
 
   // eslint-disable-next-line jest/expect-expect
   it('should show an error when there’s an error in Sporran', async () => {
-    const { container } = render(
-      <MemoryRouter
-        initialEntries={[
-          paths.twitchAuth.replace(':secret', secret).replace(':code', code),
-        ]}
-      >
-        <Twitch session={sessionMock} />
-      </MemoryRouter>,
-    );
+    const { container } = render(<Telegram session={sessionMock} />);
 
     expectIsNotProcessing(container);
-    expectConfirmCalledWith({ secret, code });
+    expectConfirmCalledWith({ json: authData });
 
     await act(async () => {
       confirmPromise.resolve(profileMock);
@@ -399,18 +350,10 @@ describe('Twitch', () => {
   });
 
   it('should advice when the popup is closed', async () => {
-    const { container } = render(
-      <MemoryRouter
-        initialEntries={[
-          paths.twitchAuth.replace(':secret', secret).replace(':code', code),
-        ]}
-      >
-        <Twitch session={sessionMock} />
-      </MemoryRouter>,
-    );
+    const { container } = render(<Telegram session={sessionMock} />);
 
     expectIsNotProcessing(container);
-    expectConfirmCalledWith({ secret, code });
+    expectConfirmCalledWith({ json: authData });
 
     await act(async () => {
       confirmPromise.resolve(profileMock);
@@ -424,7 +367,7 @@ describe('Twitch', () => {
     expectQuoteIsSent();
 
     const listenerPromise = callSessionListenerWith({ popup: 'closed' });
-    expect(mockTwitchApi.requestAttestation).toHaveBeenCalledWith({
+    expect(mockTelegramApi.requestAttestation).toHaveBeenCalledWith({
       message: { popup: 'closed' },
     });
 
@@ -442,22 +385,14 @@ describe('Twitch', () => {
     ).toBeInTheDocument();
 
     await continueInWallet();
-    expect(mockTwitchApi.quote).toHaveBeenCalledTimes(2);
+    expect(mockTelegramApi.quote).toHaveBeenCalledTimes(2);
   });
 
   it('should advice about the slow attestation', async () => {
-    const { container } = render(
-      <MemoryRouter
-        initialEntries={[
-          paths.twitchAuth.replace(':secret', secret).replace(':code', code),
-        ]}
-      >
-        <Twitch session={sessionMock} />
-      </MemoryRouter>,
-    );
+    const { container } = render(<Telegram session={sessionMock} />);
 
     expectIsNotProcessing(container);
-    expectConfirmCalledWith({ secret, code });
+    expectConfirmCalledWith({ json: authData });
 
     await act(async () => {
       confirmPromise.resolve(profileMock);

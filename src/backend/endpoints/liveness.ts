@@ -27,6 +27,11 @@ import {
   twitchConnectionState,
 } from '../twitch/twitchConnection';
 import { reportBalance } from '../utilities/reportBalance';
+import {
+  canAccessTelegram,
+  checkTelegramConnection,
+  telegramConnectionState,
+} from '../telegram/telegramConnection';
 
 import { paths } from './paths';
 
@@ -48,6 +53,9 @@ export async function testLiveness() {
 
   await canAccessTwitch();
   checkTwitchConnection();
+
+  await canAccessTelegram();
+  checkTelegramConnection();
 }
 
 function handler() {
@@ -57,7 +65,17 @@ function handler() {
   const discordOk = !discordConnectionState.isOffForTooLong();
   const githubOk = !githubConnectionState.isOffForTooLong();
   const twitchOk = !twitchConnectionState.isOffForTooLong();
-  return kiltOk && twitterOk && sesOk && discordOk && githubOk && twitchOk;
+  const telegramOk = !telegramConnectionState.isOffForTooLong();
+
+  return (
+    kiltOk &&
+    twitterOk &&
+    sesOk &&
+    discordOk &&
+    githubOk &&
+    twitchOk &&
+    telegramOk
+  );
 }
 
 export const liveness: ServerRoute = {
