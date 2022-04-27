@@ -83,6 +83,10 @@ const telegram = {
   token: env.SECRET_TELEGRAM as string,
 };
 
+if (!telegram.token) {
+  throw new ConfigurationError('No Telegram token provided');
+}
+
 const lowBalanceAlertRecipients = env.LOW_BALANCE_ALERT_RECIPIENTS;
 
 if (!lowBalanceAlertRecipients) {
