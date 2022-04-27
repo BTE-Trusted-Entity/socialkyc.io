@@ -935,6 +935,24 @@
               stored about this user is immediately deleted from the server.
             </li>
           </ul>
+          <p><u>When issuing a credential for Telegram username:</u></p>
+
+          <ul>
+            <li>Our server receives the properties from the user.</li>
+            <li>
+              The server prepares a Request for attestation object for the user to sign and sends it to the user. This object contains the properties but is not stored anywhere.
+            </li>
+            <li>
+              Our server receives the signed Request for attestation object from the user and temporarily stores it until the user confirmation, but no longer than 1 hour after the last user activity. The object contains the user ID, first name and the DID and optionally the last name and the username, if available. SocialKYC asks the user to verify their Telegram account. To do that, you click on the button and a modal pops up. The user has to enter their phone number and will have to confirm it on Telegram. The server stores the properties.
+            </li>
+            <li>
+              If the user is inactive for one hour, all their stored data, the
+              properties, and the confirmation code are deleted.
+            </li>
+            <li>
+              The server signs the stored Request for attestation object. Only the signature is then stored on the public KILT blockchain, but the signature itself does not contain any of the personal information, and this information is not recoverable from the signature. After that all the information stored about this user is immediately deleted from the server.
+            </li>
+          </ul>
         </section>
       </div>
     </main>
