@@ -10,6 +10,8 @@ import { testDiscordCType } from './discord/discordCType';
 import { testGithubCType } from './github/githubCType';
 import { testTwitchCType } from './twitch/twitchCType';
 import { testTelegramCType } from './telegram/telegramCType';
+import { testYoutubeCType } from './youtube/youtubeCType';
+
 import { configuration } from './utilities/configuration';
 import { configureAuthentication } from './utilities/configureAuthentication';
 import { configureDevErrors } from './utilities/configureDevErrors';
@@ -56,6 +58,13 @@ import { confirmTelegram } from './telegram/confirmTelegram';
 import { quoteTelegram } from './telegram/quoteTelegram';
 import { requestAttestationTelegram } from './telegram/requestAttestationTelegram';
 import { attestTelegram } from './telegram/attestTelegram';
+
+import { authUrlYoutube } from './youtube/authUrlYoutube';
+import { authHtmlYoutube } from './youtube/authHtmlYoutube';
+import { confirmYoutube } from './youtube/confirmYoutube';
+import { quoteYoutube } from './youtube/quoteYoutube';
+import { requestAttestationYoutube } from './youtube/requestAttestationYoutube';
+import { attestYoutube } from './youtube/attestYoutube';
 
 import { requestCredential } from './verifier/requestCredential';
 import { verify } from './verifier/verify';
@@ -119,6 +128,8 @@ const logger = {
   await testGithubCType();
   await testTwitchCType();
   await testTelegramCType();
+  await testYoutubeCType();
+
   server.logger.info('CTypes tested');
 
   await listenForTweets();
@@ -165,6 +176,13 @@ const logger = {
   server.route(quoteTelegram);
   server.route(requestAttestationTelegram);
   server.route(attestTelegram);
+
+  server.route(authHtmlYoutube);
+  server.route(authUrlYoutube);
+  server.route(confirmYoutube);
+  server.route(quoteYoutube);
+  server.route(requestAttestationYoutube);
+  server.route(attestYoutube);
 
   server.route(requestCredential);
   server.route(verify);

@@ -54,10 +54,19 @@ export const paths = {
     attest: '/api/telegram/attest',
   },
 
+  youtube: {
+    authUrl: '/api/youtube/authUrl',
+    confirm: '/api/youtube/confirm',
+    quote: '/api/youtube/quote',
+    requestAttestation: '/api/youtube/request-attestation',
+    attest: '/api/youtube/attest',
+  },
+
   oauth: {
     discord: '/discord/auth',
     github: '/github/auth',
     twitch: '/twitch/auth',
+    youtube: '/youtube/auth',
   },
 
   verifier: {
