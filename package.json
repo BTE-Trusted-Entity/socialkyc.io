@@ -21,7 +21,7 @@
   "dependencies": {
     "@aws-sdk/client-ses": "^3.74.0",
     "@hapi/basic": "^6.0.0",
-    "@hapi/boom": "^9.1.4",
+    "@hapi/boom": "^10.0.0",
     "@hapi/hapi": "^20.2.2",
     "@hapi/inert": "^6.0.5",
     "@kiltprotocol/chain-helpers": "0.27.0",
@@ -55,7 +55,7 @@
     "zod": "^3.14.4"
   },
   "devDependencies": {
-    "@babel/core": "^7.17.9",
+    "@babel/core": "^7.17.10",
     "@babel/preset-env": "^7.16.11",
     "@jest/globals": "^27.5.1",
     "@parcel/optimizer-data-url": "^2.5.0",
@@ -86,7 +86,7 @@
     "@types/react-router-dom": "^5.3.3",
     "@typescript-eslint/eslint-plugin": "^5.20.0",
     "@typescript-eslint/parser": "^5.20.0",
-    "eslint": "^8.13.0",
+    "eslint": "^8.14.0",
     "eslint-config-prettier": "^8.5.0",
     "eslint-plugin-import": "^2.26.0",
     "eslint-plugin-jest": "^26.1.5",
