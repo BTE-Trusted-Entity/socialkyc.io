@@ -13,7 +13,7 @@ import { makeControlledPromise } from '../../../backend/utilities/makeControlled
 import { useTwitchApi } from './useTwitchApi';
 import { Twitch, TwitchProfile } from './Twitch';
 
-const sessionMock: Session = {
+const sessionMock = {
   encryptionKeyId: 'encryptionKeyId',
   encryptedChallenge: 'encryptedChallenge',
   nonce: 'nonce',
@@ -22,7 +22,7 @@ const sessionMock: Session = {
   listen: jest.fn(),
   sessionId: 'foo',
   name: 'foo bar',
-};
+} as Session;
 
 const profileMock: TwitchProfile = {
   login: 'TestUser',
@@ -33,13 +33,13 @@ const secret = 'SECRET';
 const code = 'CODE';
 
 jest.mock('./useTwitchApi', () => ({ useTwitchApi: jest.fn() }));
-const mockTwitchApi: ReturnType<typeof useTwitchApi> = {
+const mockTwitchApi = {
   authUrl: jest.fn(),
   confirm: jest.fn(),
   quote: jest.fn(),
   requestAttestation: jest.fn(),
   attest: jest.fn(),
-};
+} as ReturnType<typeof useTwitchApi>;
 jest.mocked(useTwitchApi).mockReturnValue(mockTwitchApi);
 
 async function signInWithTwitch() {

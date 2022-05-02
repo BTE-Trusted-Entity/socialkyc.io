@@ -13,7 +13,7 @@ import { makeControlledPromise } from '../../../backend/utilities/makeControlled
 import { useDiscordApi } from './useDiscordApi';
 import { Discord, DiscordProfile } from './Discord';
 
-const sessionMock: Session = {
+const sessionMock = {
   encryptionKeyId: 'encryptionKeyId',
   encryptedChallenge: 'encryptedChallenge',
   nonce: 'nonce',
@@ -22,7 +22,7 @@ const sessionMock: Session = {
   listen: jest.fn(),
   sessionId: 'foo',
   name: 'foo bar',
-};
+} as Session;
 
 const profileMock: DiscordProfile = {
   username: 'TestUser',
@@ -34,13 +34,13 @@ const secret = 'SECRET';
 const code = 'CODE';
 
 jest.mock('./useDiscordApi', () => ({ useDiscordApi: jest.fn() }));
-const mockDiscordApi: ReturnType<typeof useDiscordApi> = {
+const mockDiscordApi = {
   authUrl: jest.fn(),
   confirm: jest.fn(),
   quote: jest.fn(),
   requestAttestation: jest.fn(),
   attest: jest.fn(),
-};
+} as ReturnType<typeof useDiscordApi>;
 jest.mocked(useDiscordApi).mockReturnValue(mockDiscordApi);
 
 async function signInWithDiscord() {

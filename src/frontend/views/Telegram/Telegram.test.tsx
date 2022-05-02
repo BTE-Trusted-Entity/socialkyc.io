@@ -12,7 +12,7 @@ import { useTelegramApi } from './useTelegramApi';
 import { useAuthData } from './useAuthData';
 import { Telegram, TelegramProfile } from './Telegram';
 
-const sessionMock: Session = {
+const sessionMock = {
   encryptionKeyId: 'encryptionKeyId',
   encryptedChallenge: 'encryptedChallenge',
   nonce: 'nonce',
@@ -21,7 +21,7 @@ const sessionMock: Session = {
   listen: jest.fn(),
   sessionId: 'foo',
   name: 'foo bar',
-};
+} as Session;
 
 const profileMock: TelegramProfile = {
   first_name: 'TestUser',
@@ -29,13 +29,13 @@ const profileMock: TelegramProfile = {
 };
 
 jest.mock('./useTelegramApi', () => ({ useTelegramApi: jest.fn() }));
-const mockTelegramApi: ReturnType<typeof useTelegramApi> = {
+const mockTelegramApi = {
   authUrl: jest.fn(),
   confirm: jest.fn(),
   quote: jest.fn(),
   requestAttestation: jest.fn(),
   attest: jest.fn(),
-};
+} as ReturnType<typeof useTelegramApi>;
 jest.mocked(useTelegramApi).mockReturnValue(mockTelegramApi);
 
 jest.mock('./useAuthData');

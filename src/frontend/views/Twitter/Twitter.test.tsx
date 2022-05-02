@@ -11,7 +11,7 @@ import { makeControlledPromise } from '../../../backend/utilities/makeControlled
 import { useTwitterApi } from './useTwitterApi';
 import { Twitter } from './Twitter';
 
-const sessionMock: Session = {
+const sessionMock = {
   encryptionKeyId: 'encryptionKeyId',
   encryptedChallenge: 'encryptedChallenge',
   nonce: 'nonce',
@@ -20,15 +20,15 @@ const sessionMock: Session = {
   listen: jest.fn(),
   sessionId: 'foo',
   name: 'foo bar',
-};
+} as Session;
 
 jest.mock('./useTwitterApi', () => ({ useTwitterApi: jest.fn() }));
-const mockTwitterApi: ReturnType<typeof useTwitterApi> = {
+const mockTwitterApi = {
   quote: jest.fn(),
   requestAttestation: jest.fn(),
   attest: jest.fn(),
   confirm: jest.fn(),
-};
+} as ReturnType<typeof useTwitterApi>;
 jest.mocked(useTwitterApi).mockReturnValue(mockTwitterApi);
 
 async function enterTwitter() {

@@ -13,7 +13,7 @@ import { makeControlledPromise } from '../../../backend/utilities/makeControlled
 import { useEmailApi } from './useEmailApi';
 import { Email } from './Email';
 
-const sessionMock: Session = {
+const sessionMock = {
   encryptionKeyId: 'encryptionKeyId',
   encryptedChallenge: 'encryptedChallenge',
   nonce: 'nonce',
@@ -22,15 +22,15 @@ const sessionMock: Session = {
   listen: jest.fn(),
   sessionId: 'foo',
   name: 'foo bar',
-};
+} as Session;
 
 jest.mock('./useEmailApi', () => ({ useEmailApi: jest.fn() }));
-const mockEmailApi: ReturnType<typeof useEmailApi> = {
+const mockEmailApi = {
   quote: jest.fn(),
   requestAttestation: jest.fn(),
   attest: jest.fn(),
   confirm: jest.fn(),
-};
+} as ReturnType<typeof useEmailApi>;
 jest.mocked(useEmailApi).mockReturnValue(mockEmailApi);
 
 async function enterEmail() {
