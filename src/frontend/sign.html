@@ -35,6 +35,7 @@
   <p>
     <button type="button" id="web3name">Sign web3name</button>
     <button type="button" id="addEndpoint">Sign did.addEndpoint</button>
+    <button type="button" id="removeEndpoint">Sign did.removeEndpoint</button>
     <button type="button" id="addKey">Sign did.addKey (forbidden) </button>
   </p>
   <p>
@@ -55,7 +56,12 @@
     document.querySelector('#signed').textContent = output.signed;
   }
   document.querySelector('#addEndpoint').onclick = async function (event) {
-    const output = await window.kilt.sporran.signExtrinsicWithDid('0x900440081837303634333904146473616664044468747470733a2f2f73646664732e636f6d', '4safqRNsTyQnjBh2yq9Yeo2MC8BnDpDomgsd8PWimTcP5FSh');
+    const output = await window.kilt.sporran.signExtrinsicWithDid('0xa8044008183132333435360424536f6d657468696e67044c68747470733a2f2f73706f7272616e2e6f7267', '4safqRNsTyQnjBh2yq9Yeo2MC8BnDpDomgsd8PWimTcP5FSh');
+    document.querySelector('#didKeyUri').textContent = output.didKeyUri;
+    document.querySelector('#signed').textContent = output.signed;
+  }
+  document.querySelector('#removeEndpoint').onclick = async function (event) {
+    const output = await window.kilt.sporran.signExtrinsicWithDid('0x2804400918313233343536', '4safqRNsTyQnjBh2yq9Yeo2MC8BnDpDomgsd8PWimTcP5FSh');
     document.querySelector('#didKeyUri').textContent = output.didKeyUri;
     document.querySelector('#signed').textContent = output.signed;
   }
