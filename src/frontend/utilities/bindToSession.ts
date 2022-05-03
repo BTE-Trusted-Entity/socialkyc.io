@@ -4,10 +4,6 @@ interface Callable {
   (...args: any[]): any;
 }
 
-export type SessionBound<CallbackType extends Callable> = (
-  input: Omit<Parameters<CallbackType>[0], 'sessionId'>,
-) => ReturnType<CallbackType>;
-
 export function bindToSession<CallbackType extends Callable>(
   sessionId: string,
 ): (

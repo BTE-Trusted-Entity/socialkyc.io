@@ -6,15 +6,9 @@ import { quoteDiscord } from '../../../backend/discord/quoteDiscordApi';
 import { requestAttestationDiscord } from '../../../backend/discord/requestAttestationDiscordApi';
 import { attestDiscord } from '../../../backend/discord/attestDiscordApi';
 
-import { bindToSession, SessionBound } from '../../utilities/bindToSession';
+import { bindToSession } from '../../utilities/bindToSession';
 
-export function useDiscordApi(sessionId: string): {
-  authUrl: SessionBound<typeof authUrlDiscord>;
-  confirm: SessionBound<typeof confirmDiscord>;
-  quote: SessionBound<typeof quoteDiscord>;
-  requestAttestation: SessionBound<typeof requestAttestationDiscord>;
-  attest: SessionBound<typeof attestDiscord>;
-} {
+export function useDiscordApi(sessionId: string) {
   return useMemo(() => {
     const sessionBound = bindToSession(sessionId);
     return {

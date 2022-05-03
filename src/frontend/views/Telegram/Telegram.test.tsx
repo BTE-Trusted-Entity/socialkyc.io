@@ -3,40 +3,36 @@ import { afterEach, beforeEach, describe, it, jest } from '@jest/globals';
 import userEvent from '@testing-library/user-event';
 import { IEncryptedMessage } from '@kiltprotocol/types';
 
-import { act, render, screen } from '../../../testing/testing';
+import {
+  act,
+  makeTestPromise,
+  render,
+  screen,
+  TestPromise,
+} from '../../../testing/testing';
 import '../../components/useCopyButton/useCopyButton.mock';
-import { Session } from '../../utilities/session';
-import { makeControlledPromise } from '../../../backend/utilities/makeControlledPromise';
+import {
+  sessionMockSendPromise,
+  sessionMock,
+  sessionMockReset,
+} from '../../utilities/session.mock';
 
 import { useTelegramApi } from './useTelegramApi';
 import { useAuthData } from './useAuthData';
 import { Telegram, TelegramProfile } from './Telegram';
-
-const sessionMock = {
-  encryptionKeyId: 'encryptionKeyId',
-  encryptedChallenge: 'encryptedChallenge',
-  nonce: 'nonce',
-  send: jest.fn(),
-  close: jest.fn(),
-  listen: jest.fn(),
-  sessionId: 'foo',
-  name: 'foo bar',
-} as Session;
 
 const profileMock: TelegramProfile = {
   first_name: 'TestUser',
   id: 1234556789,
 };
 
-jest.mock('./useTelegramApi', () => ({ useTelegramApi: jest.fn() }));
-const mockTelegramApi = {
-  authUrl: jest.fn(),
-  confirm: jest.fn(),
-  quote: jest.fn(),
-  requestAttestation: jest.fn(),
-  attest: jest.fn(),
-} as ReturnType<typeof useTelegramApi>;
-jest.mocked(useTelegramApi).mockReturnValue(mockTelegramApi);
+jest.mock('./useTelegramApi');
+let mockTelegramApi: ReturnType<typeof useTelegramApi>;
+let authUrlPromise: TestPromise<string>;
+let confirmPromise: TestPromise<TelegramProfile>;
+let quotePromise: TestPromise<IEncryptedMessage>;
+let requestPromise: TestPromise<Record<string, never>>;
+let attestPromise: TestPromise<IEncryptedMessage>;
 
 jest.mock('./useAuthData');
 const authData = '{"auth": "data"}';
@@ -102,68 +98,41 @@ function expectAttestationRequested() {
   });
 }
 
-async function expectStartOver() {
+function expectStartOver() {
   expect(mockTelegramApi.authUrl).toHaveBeenCalled();
 }
 
+async function respondWithQuote() {
+  await act(async () => {
+    quotePromise.resolve({ quote: '' } as unknown as IEncryptedMessage);
+  });
+}
+
 describe('Telegram', () => {
-  let authUrlPromise = makeControlledPromise<string>();
-  let confirmPromise = makeControlledPromise<TelegramProfile>();
-  let quotePromise = makeControlledPromise<IEncryptedMessage>();
-  let sendPromise = makeControlledPromise<void>();
-  let requestPromise = makeControlledPromise<Record<string, never>>();
-  let attestPromise = makeControlledPromise<IEncryptedMessage>();
-
   beforeEach(() => {
+    authUrlPromise = makeTestPromise();
+    confirmPromise = makeTestPromise();
+    quotePromise = makeTestPromise();
+    requestPromise = makeTestPromise();
+    attestPromise = makeTestPromise();
+
+    mockTelegramApi = {
+      authUrl: authUrlPromise.jestFn,
+      confirm: confirmPromise.jestFn,
+      quote: quotePromise.jestFn,
+      requestAttestation: requestPromise.jestFn,
+      attest: attestPromise.jestFn,
+    };
+    jest.mocked(useTelegramApi).mockReturnValue(mockTelegramApi);
+
+    sessionMockReset();
+
     jest.spyOn(console, 'error').mockImplementation(() => undefined);
-
-    authUrlPromise = makeControlledPromise<string>();
-    jest
-      .mocked(mockTelegramApi.authUrl)
-      .mockReset()
-      .mockReturnValue(authUrlPromise.promise);
-
-    confirmPromise = makeControlledPromise<TelegramProfile>();
-    jest
-      .mocked(mockTelegramApi.confirm)
-      .mockReset()
-      .mockReturnValue(confirmPromise.promise);
-
-    quotePromise = makeControlledPromise<IEncryptedMessage>();
-    jest
-      .mocked(mockTelegramApi.quote)
-      .mockReset()
-      .mockReturnValue(quotePromise.promise);
-
-    sendPromise = makeControlledPromise<void>();
-    jest
-      .mocked(sessionMock.send)
-      .mockReset()
-      .mockReturnValue(sendPromise.promise);
-    jest.mocked(sessionMock.listen).mockReset();
-
-    requestPromise = makeControlledPromise<Record<string, never>>();
-    jest
-      .mocked(mockTelegramApi.requestAttestation)
-      .mockReset()
-      .mockReturnValue(requestPromise.promise);
-
-    attestPromise = makeControlledPromise<IEncryptedMessage>();
-    jest
-      .mocked(mockTelegramApi.attest)
-      .mockReset()
-      .mockReturnValue(attestPromise.promise);
   });
 
   afterEach(() => {
     jest.mocked(console.error).mockRestore();
   });
-
-  async function respondWithQuote() {
-    await act(async () => {
-      quotePromise.resolve({ quote: '' } as unknown as IEncryptedMessage);
-    });
-  }
 
   it('should go through the happy path until Telegram is shown', async () => {
     const { container } = render(<Telegram session={sessionMock} />);
@@ -228,7 +197,7 @@ describe('Telegram', () => {
 
     await act(async () => {
       await listenerPromise;
-      sendPromise.resolve(undefined);
+      sessionMockSendPromise.resolve(undefined);
     });
 
     await userEvent.click(
@@ -306,7 +275,7 @@ describe('Telegram', () => {
     await respondWithQuote();
     expectQuoteIsSent();
     await act(async () => {
-      sendPromise.reject(new Error('closed'));
+      sessionMockSendPromise.reject(new Error('closed'));
     });
 
     expectIsNotProcessing(container);
@@ -339,7 +308,7 @@ describe('Telegram', () => {
     await act(async () => {
       requestPromise.reject(new Error('unknown'));
       await listenerPromise;
-      sendPromise.resolve(undefined);
+      sessionMockSendPromise.resolve(undefined);
     });
 
     expectIsNotProcessing(container);
@@ -374,7 +343,7 @@ describe('Telegram', () => {
     await act(async () => {
       requestPromise.reject(new Error('closed'));
       await listenerPromise;
-      sendPromise.resolve(undefined);
+      sessionMockSendPromise.resolve(undefined);
     });
 
     expectIsNotProcessing(container);

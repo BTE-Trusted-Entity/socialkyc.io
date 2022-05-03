@@ -1,28 +1,26 @@
 // expect cannot be imported because of https://github.com/testing-library/jest-dom/issues/426
 import { afterEach, beforeEach, describe, it, jest } from '@jest/globals';
 import userEvent from '@testing-library/user-event';
-import { MemoryRouter } from 'react-router-dom';
+import { generatePath, MemoryRouter } from 'react-router-dom';
 import { IEncryptedMessage } from '@kiltprotocol/types';
 
-import { act, render, screen } from '../../../testing/testing';
+import {
+  act,
+  makeTestPromise,
+  render,
+  screen,
+  TestPromise,
+} from '../../../testing/testing';
 import '../../components/useCopyButton/useCopyButton.mock';
 import { paths } from '../../paths';
-import { Session } from '../../utilities/session';
-import { makeControlledPromise } from '../../../backend/utilities/makeControlledPromise';
+import {
+  sessionMock,
+  sessionMockReset,
+  sessionMockSendPromise,
+} from '../../utilities/session.mock';
 
 import { useGithubApi } from './useGithubApi';
 import { Github, GithubProfile } from './Github';
-
-const sessionMock = {
-  encryptionKeyId: 'encryptionKeyId',
-  encryptedChallenge: 'encryptedChallenge',
-  nonce: 'nonce',
-  send: jest.fn(),
-  close: jest.fn(),
-  listen: jest.fn(),
-  sessionId: 'foo',
-  name: 'foo bar',
-} as Session;
 
 const profileMock: GithubProfile = {
   login: 'TestUser',
@@ -32,15 +30,13 @@ const profileMock: GithubProfile = {
 const secret = 'SECRET';
 const code = 'CODE';
 
-jest.mock('./useGithubApi', () => ({ useGithubApi: jest.fn() }));
-const mockGithubApi = {
-  authUrl: jest.fn(),
-  confirm: jest.fn(),
-  quote: jest.fn(),
-  requestAttestation: jest.fn(),
-  attest: jest.fn(),
-} as ReturnType<typeof useGithubApi>;
-jest.mocked(useGithubApi).mockReturnValue(mockGithubApi);
+jest.mock('./useGithubApi');
+let mockGithubApi: ReturnType<typeof useGithubApi>;
+let authUrlPromise: TestPromise<string>;
+let confirmPromise: TestPromise<GithubProfile>;
+let quotePromise: TestPromise<IEncryptedMessage>;
+let requestPromise: TestPromise<Record<string, never>>;
+let attestPromise: TestPromise<IEncryptedMessage>;
 
 async function signInWithGithub() {
   const signInLink = await screen.findByRole('link', {
@@ -112,68 +108,41 @@ function expectAttestationRequested() {
   });
 }
 
-async function expectStartOver() {
+function expectStartOver() {
   expect(mockGithubApi.authUrl).toHaveBeenCalled();
 }
 
+async function respondWithQuote() {
+  await act(async () => {
+    quotePromise.resolve({ quote: '' } as unknown as IEncryptedMessage);
+  });
+}
+
 describe('Github', () => {
-  let authUrlPromise = makeControlledPromise<string>();
-  let confirmPromise = makeControlledPromise<GithubProfile>();
-  let quotePromise = makeControlledPromise<IEncryptedMessage>();
-  let sendPromise = makeControlledPromise<void>();
-  let requestPromise = makeControlledPromise<Record<string, never>>();
-  let attestPromise = makeControlledPromise<IEncryptedMessage>();
-
   beforeEach(() => {
+    authUrlPromise = makeTestPromise();
+    confirmPromise = makeTestPromise();
+    quotePromise = makeTestPromise();
+    requestPromise = makeTestPromise();
+    attestPromise = makeTestPromise();
+
+    mockGithubApi = {
+      authUrl: authUrlPromise.jestFn,
+      confirm: confirmPromise.jestFn,
+      quote: quotePromise.jestFn,
+      requestAttestation: requestPromise.jestFn,
+      attest: attestPromise.jestFn,
+    };
+    jest.mocked(useGithubApi).mockReturnValue(mockGithubApi);
+
+    sessionMockReset();
+
     jest.spyOn(console, 'error').mockImplementation(() => undefined);
-
-    authUrlPromise = makeControlledPromise<string>();
-    jest
-      .mocked(mockGithubApi.authUrl)
-      .mockReset()
-      .mockReturnValue(authUrlPromise.promise);
-
-    confirmPromise = makeControlledPromise<GithubProfile>();
-    jest
-      .mocked(mockGithubApi.confirm)
-      .mockReset()
-      .mockReturnValue(confirmPromise.promise);
-
-    quotePromise = makeControlledPromise<IEncryptedMessage>();
-    jest
-      .mocked(mockGithubApi.quote)
-      .mockReset()
-      .mockReturnValue(quotePromise.promise);
-
-    sendPromise = makeControlledPromise<void>();
-    jest
-      .mocked(sessionMock.send)
-      .mockReset()
-      .mockReturnValue(sendPromise.promise);
-    jest.mocked(sessionMock.listen).mockReset();
-
-    requestPromise = makeControlledPromise<Record<string, never>>();
-    jest
-      .mocked(mockGithubApi.requestAttestation)
-      .mockReset()
-      .mockReturnValue(requestPromise.promise);
-
-    attestPromise = makeControlledPromise<IEncryptedMessage>();
-    jest
-      .mocked(mockGithubApi.attest)
-      .mockReset()
-      .mockReturnValue(attestPromise.promise);
   });
 
   afterEach(() => {
     jest.mocked(console.error).mockRestore();
   });
-
-  async function respondWithQuote() {
-    await act(async () => {
-      quotePromise.resolve({ quote: '' } as unknown as IEncryptedMessage);
-    });
-  }
 
   it('should go through the happy path until redirected to Github', async () => {
     render(<Github session={sessionMock} />);
@@ -207,9 +176,7 @@ describe('Github', () => {
   it('should finish the happy path after authorization', async () => {
     const { container } = render(
       <MemoryRouter
-        initialEntries={[
-          paths.githubAuth.replace(':secret', secret).replace(':code', code),
-        ]}
+        initialEntries={[generatePath(paths.githubAuth, { secret, code })]}
       >
         <Github session={sessionMock} />
       </MemoryRouter>,
@@ -245,7 +212,7 @@ describe('Github', () => {
 
     await act(async () => {
       await listenerPromise;
-      sendPromise.resolve(undefined);
+      sessionMockSendPromise.resolve(undefined);
     });
 
     await userEvent.click(
@@ -257,9 +224,7 @@ describe('Github', () => {
   it('should show authorization error', async () => {
     const { container } = render(
       <MemoryRouter
-        initialEntries={[
-          paths.githubAuth.replace(':secret', secret).replace(':code', code),
-        ]}
+        initialEntries={[generatePath(paths.githubAuth, { secret, code })]}
       >
         <Github session={sessionMock} />
       </MemoryRouter>,
@@ -290,9 +255,7 @@ describe('Github', () => {
   it('should show error when quote fails', async () => {
     const { container } = render(
       <MemoryRouter
-        initialEntries={[
-          paths.githubAuth.replace(':secret', secret).replace(':code', code),
-        ]}
+        initialEntries={[generatePath(paths.githubAuth, { secret, code })]}
       >
         <Github session={sessionMock} />
       </MemoryRouter>,
@@ -325,9 +288,7 @@ describe('Github', () => {
   it('should show an error when the wallet communication fails', async () => {
     const { container } = render(
       <MemoryRouter
-        initialEntries={[
-          paths.githubAuth.replace(':secret', secret).replace(':code', code),
-        ]}
+        initialEntries={[generatePath(paths.githubAuth, { secret, code })]}
       >
         <Github session={sessionMock} />
       </MemoryRouter>,
@@ -347,7 +308,7 @@ describe('Github', () => {
     await respondWithQuote();
     expectQuoteIsSent();
     await act(async () => {
-      sendPromise.reject(new Error('closed'));
+      sessionMockSendPromise.reject(new Error('closed'));
     });
 
     expectIsNotProcessing(container);
@@ -361,9 +322,7 @@ describe('Github', () => {
   it('should show an error when there’s an error in Sporran', async () => {
     const { container } = render(
       <MemoryRouter
-        initialEntries={[
-          paths.githubAuth.replace(':secret', secret).replace(':code', code),
-        ]}
+        initialEntries={[generatePath(paths.githubAuth, { secret, code })]}
       >
         <Github session={sessionMock} />
       </MemoryRouter>,
@@ -388,7 +347,7 @@ describe('Github', () => {
     await act(async () => {
       requestPromise.reject(new Error('unknown'));
       await listenerPromise;
-      sendPromise.resolve(undefined);
+      sessionMockSendPromise.resolve(undefined);
     });
 
     expectIsNotProcessing(container);
@@ -401,9 +360,7 @@ describe('Github', () => {
   it('should advice when the popup is closed', async () => {
     const { container } = render(
       <MemoryRouter
-        initialEntries={[
-          paths.githubAuth.replace(':secret', secret).replace(':code', code),
-        ]}
+        initialEntries={[generatePath(paths.githubAuth, { secret, code })]}
       >
         <Github session={sessionMock} />
       </MemoryRouter>,
@@ -431,7 +388,7 @@ describe('Github', () => {
     await act(async () => {
       requestPromise.reject(new Error('closed'));
       await listenerPromise;
-      sendPromise.resolve(undefined);
+      sessionMockSendPromise.resolve(undefined);
     });
 
     expectIsNotProcessing(container);
@@ -448,9 +405,7 @@ describe('Github', () => {
   it('should advice about the slow attestation', async () => {
     const { container } = render(
       <MemoryRouter
-        initialEntries={[
-          paths.githubAuth.replace(':secret', secret).replace(':code', code),
-        ]}
+        initialEntries={[generatePath(paths.githubAuth, { secret, code })]}
       >
         <Github session={sessionMock} />
       </MemoryRouter>,
