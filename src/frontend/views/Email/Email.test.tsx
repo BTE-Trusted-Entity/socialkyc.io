@@ -1,37 +1,33 @@
 // expect cannot be imported because of https://github.com/testing-library/jest-dom/issues/426
 import { afterEach, beforeEach, describe, it, jest } from '@jest/globals';
 import userEvent from '@testing-library/user-event';
-import { MemoryRouter } from 'react-router-dom';
+import { generatePath, MemoryRouter } from 'react-router-dom';
 import { IEncryptedMessage } from '@kiltprotocol/types';
 
-import { act, render, screen } from '../../../testing/testing';
+import {
+  act,
+  makeTestPromise,
+  render,
+  screen,
+  TestPromise,
+} from '../../../testing/testing';
 import '../../components/useCopyButton/useCopyButton.mock';
 import { paths } from '../../paths';
-import { Session } from '../../utilities/session';
-import { makeControlledPromise } from '../../../backend/utilities/makeControlledPromise';
+import {
+  sessionMock,
+  sessionMockReset,
+  sessionMockSendPromise,
+} from '../../utilities/session.mock';
 
 import { useEmailApi } from './useEmailApi';
 import { Email } from './Email';
 
-const sessionMock = {
-  encryptionKeyId: 'encryptionKeyId',
-  encryptedChallenge: 'encryptedChallenge',
-  nonce: 'nonce',
-  send: jest.fn(),
-  close: jest.fn(),
-  listen: jest.fn(),
-  sessionId: 'foo',
-  name: 'foo bar',
-} as Session;
-
-jest.mock('./useEmailApi', () => ({ useEmailApi: jest.fn() }));
-const mockEmailApi = {
-  quote: jest.fn(),
-  requestAttestation: jest.fn(),
-  attest: jest.fn(),
-  confirm: jest.fn(),
-} as ReturnType<typeof useEmailApi>;
-jest.mocked(useEmailApi).mockReturnValue(mockEmailApi);
+jest.mock('./useEmailApi');
+let mockEmailApi: ReturnType<typeof useEmailApi>;
+let quotePromise: TestPromise<IEncryptedMessage>;
+let requestPromise: TestPromise<string>;
+let confirmPromise: TestPromise<undefined>;
+let attestPromise: TestPromise<IEncryptedMessage>;
 
 async function enterEmail() {
   const input = await screen.findByLabelText('Your email address');
@@ -90,57 +86,35 @@ async function tryAgain() {
   );
 }
 
+async function respondWithQuote() {
+  await act(async () => {
+    quotePromise.resolve({ quote: '' } as unknown as IEncryptedMessage);
+  });
+}
+
 describe('Email', () => {
-  let quotePromise = makeControlledPromise<IEncryptedMessage>();
-  let sendPromise = makeControlledPromise<void>();
-  let requestPromise = makeControlledPromise<string>();
-  let confirmPromise = makeControlledPromise<undefined>();
-  let attestPromise = makeControlledPromise<IEncryptedMessage>();
-
   beforeEach(() => {
+    quotePromise = makeTestPromise();
+    requestPromise = makeTestPromise();
+    confirmPromise = makeTestPromise();
+    attestPromise = makeTestPromise();
+
+    mockEmailApi = {
+      quote: quotePromise.jestFn,
+      requestAttestation: requestPromise.jestFn,
+      attest: attestPromise.jestFn,
+      confirm: confirmPromise.jestFn,
+    };
+    jest.mocked(useEmailApi).mockReturnValue(mockEmailApi);
+
+    sessionMockReset();
+
     jest.spyOn(console, 'error').mockImplementation(() => undefined);
-
-    sendPromise = makeControlledPromise<void>();
-    jest
-      .mocked(sessionMock.send)
-      .mockReset()
-      .mockReturnValue(sendPromise.promise);
-    jest.mocked(sessionMock.listen).mockReset();
-
-    quotePromise = makeControlledPromise<IEncryptedMessage>();
-    jest
-      .mocked(mockEmailApi.quote)
-      .mockReset()
-      .mockReturnValue(quotePromise.promise);
-
-    requestPromise = makeControlledPromise<string>();
-    jest
-      .mocked(mockEmailApi.requestAttestation)
-      .mockReset()
-      .mockReturnValue(requestPromise.promise);
-
-    confirmPromise = makeControlledPromise<undefined>();
-    jest
-      .mocked(mockEmailApi.confirm)
-      .mockReset()
-      .mockReturnValue(confirmPromise.promise);
-
-    attestPromise = makeControlledPromise<IEncryptedMessage>();
-    jest
-      .mocked(mockEmailApi.attest)
-      .mockReset()
-      .mockReturnValue(attestPromise.promise);
   });
 
   afterEach(() => {
     jest.mocked(console.error).mockRestore();
   });
-
-  async function respondWithQuote() {
-    await act(async () => {
-      quotePromise.resolve({ quote: '' } as unknown as IEncryptedMessage);
-    });
-  }
 
   it('should go through the happy path', async () => {
     const { container } = render(<Email session={sessionMock} />);
@@ -161,7 +135,7 @@ describe('Email', () => {
     await act(async () => {
       requestPromise.resolve('PASS');
       await listenerPromise;
-      sendPromise.resolve(undefined);
+      sessionMockSendPromise.resolve(undefined);
     });
 
     expectIsNotProcessing(container);
@@ -202,7 +176,7 @@ describe('Email', () => {
     expectQuoteIsSent();
 
     await act(async () => {
-      sendPromise.reject(new Error('closed'));
+      sessionMockSendPromise.reject(new Error('closed'));
     });
 
     expectIsNotProcessing(container);
@@ -232,7 +206,7 @@ describe('Email', () => {
     await act(async () => {
       requestPromise.reject(new Error('unknown'));
       await listenerPromise;
-      sendPromise.resolve(undefined);
+      sessionMockSendPromise.resolve(undefined);
     });
 
     expectIsNotProcessing(container);
@@ -262,7 +236,7 @@ describe('Email', () => {
     await act(async () => {
       requestPromise.reject(new Error('closed'));
       await listenerPromise;
-      sendPromise.resolve(undefined);
+      sessionMockSendPromise.resolve(undefined);
     });
 
     expectIsNotProcessing(container);
@@ -295,7 +269,7 @@ describe('Email', () => {
     await act(async () => {
       requestPromise.reject(new Error('400: send email failed'));
       await listenerPromise;
-      sendPromise.resolve(undefined);
+      sessionMockSendPromise.resolve(undefined);
     });
 
     expectIsNotProcessing(container);
@@ -311,7 +285,7 @@ describe('Email', () => {
     const secret = 'SECRET';
     const { container } = render(
       <MemoryRouter
-        initialEntries={[paths.emailConfirmation.replace(':secret', secret)]}
+        initialEntries={[generatePath(paths.emailConfirmation, { secret })]}
       >
         <Email session={sessionMock} />
       </MemoryRouter>,
@@ -343,7 +317,7 @@ describe('Email', () => {
     const secret = 'SECRET';
     const { container } = render(
       <MemoryRouter
-        initialEntries={[paths.emailConfirmation.replace(':secret', secret)]}
+        initialEntries={[generatePath(paths.emailConfirmation, { secret })]}
       >
         <Email session={sessionMock} />
       </MemoryRouter>,
@@ -370,7 +344,7 @@ describe('Email', () => {
     const secret = 'SECRET';
     const { container } = render(
       <MemoryRouter
-        initialEntries={[paths.emailConfirmation.replace(':secret', secret)]}
+        initialEntries={[generatePath(paths.emailConfirmation, { secret })]}
       >
         <Email session={sessionMock} />
       </MemoryRouter>,

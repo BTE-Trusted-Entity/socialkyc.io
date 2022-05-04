@@ -6,6 +6,11 @@ import { jest } from '@jest/globals';
 import { render as externalRender } from '@testing-library/react';
 import { MemoryRouter } from 'react-router-dom';
 
+import {
+  ControlledPromise,
+  makeControlledPromise,
+} from '../backend/utilities/makeControlledPromise';
+
 // We do want to override the `render` from testing-library
 // eslint-disable-next-line import/export
 export function render(
@@ -32,4 +37,19 @@ export async function runWithJSDOMErrorsDisabled(
   await callback();
 
   console.emit = emit;
+}
+
+export interface TestPromise<ReturnType> extends ControlledPromise<ReturnType> {
+  jestFn: () => Promise<ReturnType>;
+}
+
+export function makeTestPromise<ReturnType>(): TestPromise<ReturnType> {
+  const promise = makeControlledPromise<ReturnType>();
+  const jestFn = jest
+    .fn()
+    .mockReturnValue(promise.promise) as () => Promise<ReturnType>;
+  return {
+    ...promise,
+    jestFn,
+  };
 }

@@ -6,15 +6,9 @@ import { quoteTelegram } from '../../../backend/telegram/quoteTelegramApi';
 import { requestAttestationTelegram } from '../../../backend/telegram/requestAttestationTelegramApi';
 import { attestTelegram } from '../../../backend/telegram/attestTelegramApi';
 
-import { bindToSession, SessionBound } from '../../utilities/bindToSession';
+import { bindToSession } from '../../utilities/bindToSession';
 
-export function useTelegramApi(sessionId: string): {
-  authUrl: SessionBound<typeof authUrlTelegram>;
-  confirm: SessionBound<typeof confirmTelegram>;
-  quote: SessionBound<typeof quoteTelegram>;
-  requestAttestation: SessionBound<typeof requestAttestationTelegram>;
-  attest: SessionBound<typeof attestTelegram>;
-} {
+export function useTelegramApi(sessionId: string) {
   return useMemo(() => {
     const sessionBound = bindToSession(sessionId);
     return {
