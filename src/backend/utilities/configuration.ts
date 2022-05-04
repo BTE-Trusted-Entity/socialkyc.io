@@ -79,6 +79,14 @@ if (!twitch.clientId || !twitch.secret) {
   throw new ConfigurationError('No Twitch client credentials provided');
 }
 
+const telegram = {
+  token: env.SECRET_TELEGRAM as string,
+};
+
+if (!telegram.token) {
+  throw new ConfigurationError('No Telegram token provided');
+}
+
 const lowBalanceAlertRecipients = env.LOW_BALANCE_ALERT_RECIPIENTS;
 
 if (!lowBalanceAlertRecipients) {
@@ -104,5 +112,6 @@ export const configuration = {
   discord,
   github,
   twitch,
+  telegram,
   lowBalanceAlertRecipients,
 };

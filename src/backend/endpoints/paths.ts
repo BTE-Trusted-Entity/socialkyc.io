@@ -46,6 +46,14 @@ export const paths = {
     attest: '/api/twitch/attest',
   },
 
+  telegram: {
+    authUrl: '/api/telegram/authUrl',
+    confirm: '/api/telegram/confirm',
+    quote: '/api/telegram/quote',
+    requestAttestation: '/api/telegram/request-attestation',
+    attest: '/api/telegram/attest',
+  },
+
   oauth: {
     discord: '/discord/auth',
     github: '/github/auth',

@@ -11,6 +11,7 @@ export const paths = {
   githubAuth: '/github/:code/:secret',
   twitch: '/twitch',
   twitchAuth: '/twitch/:code/:secret',
+  telegram: '/telegram',
   window: {
     email: backendPaths.email.confirmationHtml.replace('{secret}', ':secret'),
     discord: backendPaths.oauth.discord,

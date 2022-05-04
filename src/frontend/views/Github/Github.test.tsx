@@ -13,7 +13,7 @@ import { makeControlledPromise } from '../../../backend/utilities/makeControlled
 import { useGithubApi } from './useGithubApi';
 import { Github, GithubProfile } from './Github';
 
-const sessionMock: Session = {
+const sessionMock = {
   encryptionKeyId: 'encryptionKeyId',
   encryptedChallenge: 'encryptedChallenge',
   nonce: 'nonce',
@@ -22,7 +22,7 @@ const sessionMock: Session = {
   listen: jest.fn(),
   sessionId: 'foo',
   name: 'foo bar',
-};
+} as Session;
 
 const profileMock: GithubProfile = {
   login: 'TestUser',
@@ -33,13 +33,13 @@ const secret = 'SECRET';
 const code = 'CODE';
 
 jest.mock('./useGithubApi', () => ({ useGithubApi: jest.fn() }));
-const mockGithubApi: ReturnType<typeof useGithubApi> = {
+const mockGithubApi = {
   authUrl: jest.fn(),
   confirm: jest.fn(),
   quote: jest.fn(),
   requestAttestation: jest.fn(),
   attest: jest.fn(),
-};
+} as ReturnType<typeof useGithubApi>;
 jest.mocked(useGithubApi).mockReturnValue(mockGithubApi);
 
 async function signInWithGithub() {
@@ -83,7 +83,7 @@ function expectAuthUrlCalled() {
   expect(mockGithubApi.authUrl).toHaveBeenCalledWith({});
 }
 
-function expectconfirmCalledWith(routeParams: {
+function expectConfirmCalledWith(routeParams: {
   secret: string;
   code: string;
 }) {
@@ -216,7 +216,7 @@ describe('Github', () => {
     );
 
     expectIsNotProcessing(container);
-    expectconfirmCalledWith({ secret, code });
+    expectConfirmCalledWith({ secret, code });
 
     await act(async () => {
       confirmPromise.resolve(profileMock);
@@ -267,7 +267,7 @@ describe('Github', () => {
 
     expectIsNotProcessing(container);
 
-    expectconfirmCalledWith({ secret, code });
+    expectConfirmCalledWith({ secret, code });
 
     await act(async () => {
       confirmPromise.reject(new Error('authorization'));
@@ -299,7 +299,7 @@ describe('Github', () => {
     );
 
     expectIsNotProcessing(container);
-    expectconfirmCalledWith({ secret, code });
+    expectConfirmCalledWith({ secret, code });
 
     await act(async () => {
       confirmPromise.resolve(profileMock);
@@ -334,7 +334,7 @@ describe('Github', () => {
     );
 
     expectIsNotProcessing(container);
-    expectconfirmCalledWith({ secret, code });
+    expectConfirmCalledWith({ secret, code });
 
     await act(async () => {
       confirmPromise.resolve(profileMock);
@@ -370,7 +370,7 @@ describe('Github', () => {
     );
 
     expectIsNotProcessing(container);
-    expectconfirmCalledWith({ secret, code });
+    expectConfirmCalledWith({ secret, code });
 
     await act(async () => {
       confirmPromise.resolve(profileMock);
@@ -410,7 +410,7 @@ describe('Github', () => {
     );
 
     expectIsNotProcessing(container);
-    expectconfirmCalledWith({ secret, code });
+    expectConfirmCalledWith({ secret, code });
 
     await act(async () => {
       confirmPromise.resolve(profileMock);
@@ -457,7 +457,7 @@ describe('Github', () => {
     );
 
     expectIsNotProcessing(container);
-    expectconfirmCalledWith({ secret, code });
+    expectConfirmCalledWith({ secret, code });
 
     await act(async () => {
       confirmPromise.resolve(profileMock);
