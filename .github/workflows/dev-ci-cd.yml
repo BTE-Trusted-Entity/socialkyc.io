@@ -15,7 +15,7 @@ jobs:
 
     steps:
     - name: Checkout
-      uses: actions/checkout@v2
+      uses: actions/checkout@v3
 
     - name: Configure AWS credentials
       uses: aws-actions/configure-aws-credentials@v1
@@ -27,20 +27,20 @@ jobs:
     - name: Login to Amazon ECR
       id: login-ecr
       uses: aws-actions/amazon-ecr-login@v1
-#    - name: Build image
-#      run: |
-#        docker build -t socialkyc:latest .
-#
-#    - name: Tag, and push image to Amazon ECR
-#      env:
-#        ECR_REGISTRY: ${{ steps.login-ecr.outputs.registry }}
-#        ECR_REPOSITORY: socialkyc
-#        IMAGE_TAG: ${{ github.sha }}
-#      run: |
-#        docker tag socialkyc $ECR_REGISTRY/$ECR_REPOSITORY:latest
-#        docker tag socialkyc $ECR_REGISTRY/$ECR_REPOSITORY:$IMAGE_TAG
-#        docker push $ECR_REGISTRY/$ECR_REPOSITORY:$IMAGE_TAG
-#        docker push $ECR_REGISTRY/$ECR_REPOSITORY:latest
+    - name: Build image
+      run: |
+        docker build -t socialkyc:latest .
+
+    - name: Tag, and push image to Amazon ECR
+      env:
+        ECR_REGISTRY: ${{ steps.login-ecr.outputs.registry }}
+        ECR_REPOSITORY: socialkyc
+        IMAGE_TAG: ${{ github.sha }}
+      run: |
+        docker tag socialkyc $ECR_REGISTRY/$ECR_REPOSITORY:latest
+        docker tag socialkyc $ECR_REGISTRY/$ECR_REPOSITORY:$IMAGE_TAG
+        docker push $ECR_REGISTRY/$ECR_REPOSITORY:$IMAGE_TAG
+        docker push $ECR_REGISTRY/$ECR_REPOSITORY:latest
     - name: Deploy to kilt cluster
       uses: evosecurity/kubectl-aws-eks@master
       env:
