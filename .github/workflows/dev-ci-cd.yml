@@ -3,7 +3,7 @@ on:
     types: [ created ]
   push:
     branches:
-      - aws-config
+      - main
 
 name: Dev deployment
 
