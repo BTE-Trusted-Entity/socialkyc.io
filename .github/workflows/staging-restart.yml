@@ -23,7 +23,7 @@ jobs:
       uses: aws-actions/amazon-ecr-login@v1
 
     - name: Deploy to kilt cluster
-      uses: kodermax/kubectl-aws-eks@1.0.7
+      uses: kodermax/kubectl-aws-eks@1.0.8
       env:
         KUBE_CONFIG_DATA: ${{ secrets.KUBE_CONFIG }}
       with:
