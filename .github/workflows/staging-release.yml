@@ -38,7 +38,7 @@ jobs:
           docker push $ECR_REGISTRY/$ECR_REPOSITORY:latest-release
 
       - name: Deploy to kilt cluster
-        uses: kodermax/kubectl-aws-eks@v1.0.7
+        uses: kodermax/kubectl-aws-eks@1.0.7
         env:
           KUBE_CONFIG_DATA: ${{ secrets.KUBE_CONFIG }}
           ECR_REGISTRY: ${{ steps.login-ecr.outputs.registry }}
