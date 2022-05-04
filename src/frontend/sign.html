@@ -35,6 +35,8 @@
   <p>
     <button type="button" id="web3name">Sign web3name</button>
     <button type="button" id="addEndpoint">Sign did.addEndpoint</button>
+    <button type="button" id="removeEndpoint">Sign did.removeEndpoint</button>
+    <button type="button" id="addKey">Sign did.addKey (forbidden) </button>
   </p>
   <p>
     DID key:
@@ -44,17 +46,27 @@
     Signed extrinsic:
     <output id="signed"></output>
   </p>
-  <p><a href="https://polkadot.js.org/apps/?rpc=wss%3A%2F%2Fsporran-testnet.kilt.io#/extrinsics/decode">Test it here</a></p>
+  <p><a href="https://polkadot.js.org/apps/?rpc=wss%3A%2F%2Fperegrine.kilt.io%2Fparachain-public-ws%2F#/extrinsics/decode">Test it here</a></p>
 </form>
 
 <script type="module">
   document.querySelector('#web3name').onclick = async function (event) {
-    const output = await window.kilt.sporran.signExtrinsicWithDid('0x1c0426000c666f6f', '4tMMYZHsFfqzfCsgCPLJSBmomBv2d6cBEYzHKMGVKz2VjACR');
+    const output = await window.kilt.sporran.signExtrinsicWithDid('0x3404440024746573742d6e616d65', '4safqRNsTyQnjBh2yq9Yeo2MC8BnDpDomgsd8PWimTcP5FSh');
     document.querySelector('#didKeyUri').textContent = output.didKeyUri;
     document.querySelector('#signed').textContent = output.signed;
   }
   document.querySelector('#addEndpoint').onclick = async function (event) {
-    const output = await window.kilt.sporran.signExtrinsicWithDid('0x88040c0810666f6f31040c666f6f044c68747470733a2f2f6578616d706c652e636f6d', '4tMMYZHsFfqzfCsgCPLJSBmomBv2d6cBEYzHKMGVKz2VjACR');
+    const output = await window.kilt.sporran.signExtrinsicWithDid('0xa8044008183132333435360424536f6d657468696e67044c68747470733a2f2f73706f7272616e2e6f7267', '4safqRNsTyQnjBh2yq9Yeo2MC8BnDpDomgsd8PWimTcP5FSh');
+    document.querySelector('#didKeyUri').textContent = output.didKeyUri;
+    document.querySelector('#signed').textContent = output.signed;
+  }
+  document.querySelector('#removeEndpoint').onclick = async function (event) {
+    const output = await window.kilt.sporran.signExtrinsicWithDid('0x2804400918313233343536', '4safqRNsTyQnjBh2yq9Yeo2MC8BnDpDomgsd8PWimTcP5FSh');
+    document.querySelector('#didKeyUri').textContent = output.didKeyUri;
+    document.querySelector('#signed').textContent = output.signed;
+  }
+  document.querySelector('#addKey').onclick = async function (event) {
+    const output = await window.kilt.sporran.signExtrinsicWithDid('0x9004400600def12e42f3e487e9b14095aa8d5cc16a33491f1b50dadcf8811d1480f3fa8627', '4safqRNsTyQnjBh2yq9Yeo2MC8BnDpDomgsd8PWimTcP5FSh');
     document.querySelector('#didKeyUri').textContent = output.didKeyUri;
     document.querySelector('#signed').textContent = output.signed;
   }
