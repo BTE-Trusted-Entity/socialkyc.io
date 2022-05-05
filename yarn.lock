@@ -1912,19 +1912,19 @@
     "@hapi/boom" "9.x.x"
     "@hapi/hoek" "9.x.x"
 
-"@hapi/boom@*", "@hapi/boom@^10.0.0":
-  version "10.0.0"
-  resolved "https://registry.yarnpkg.com/@hapi/boom/-/boom-10.0.0.tgz#3624831d0a26b3378423b246f50eacea16e04a08"
-  integrity sha512-1YVs9tLHhypBqqinKQRqh7FUERIolarQApO37OWkzD+z6y6USi871Sv746zBPKcIOBuI6g6y4FrwX87mmJ90Gg==
-  dependencies:
-    "@hapi/hoek" "10.x.x"
-
 "@hapi/boom@9.x.x", "@hapi/boom@^9.0.0", "@hapi/boom@^9.1.0":
   version "9.1.4"
   resolved "https://registry.yarnpkg.com/@hapi/boom/-/boom-9.1.4.tgz#1f9dad367c6a7da9f8def24b4a986fc5a7bd9db6"
   integrity sha512-Ls1oH8jaN1vNsqcaHVYJrKmgMcKsC1wcp8bujvXrHaAqD2iDYq3HoOwsxwo09Cuda5R5nC0o0IxlrlTuvPuzSw==
   dependencies:
     "@hapi/hoek" "9.x.x"
+
+"@hapi/boom@^10.0.0":
+  version "10.0.0"
+  resolved "https://registry.yarnpkg.com/@hapi/boom/-/boom-10.0.0.tgz#3624831d0a26b3378423b246f50eacea16e04a08"
+  integrity sha512-1YVs9tLHhypBqqinKQRqh7FUERIolarQApO37OWkzD+z6y6USi871Sv746zBPKcIOBuI6g6y4FrwX87mmJ90Gg==
+  dependencies:
+    "@hapi/hoek" "10.x.x"
 
 "@hapi/bounce@2.x.x", "@hapi/bounce@^2.0.0":
   version "2.0.0"
@@ -4632,13 +4632,6 @@
   dependencies:
     "@types/hapi__hapi" "*"
     joi "^17.3.0"
-
-"@types/hapi__boom@^9.0.1":
-  version "9.0.1"
-  resolved "https://registry.yarnpkg.com/@types/hapi__boom/-/hapi__boom-9.0.1.tgz#8fbf719d0358e361b831802fb05fb4feced2ac29"
-  integrity sha512-TSqwgnTmNNp3/9uOpV16S8IVJv+QDmZLEImSuQrzGLCzmuK5P3bx3wdaXGXxfWLlN09Qqnd27POLrEAKhVCM5g==
-  dependencies:
-    "@hapi/boom" "*"
 
 "@types/hapi__catbox@*":
   version "10.2.4"
