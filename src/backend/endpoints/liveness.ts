@@ -32,6 +32,10 @@ import {
   checkTelegramConnection,
   telegramConnectionState,
 } from '../telegram/telegramConnection';
+import {
+  canAccessLinkedIn,
+  checkLinkedInConnection,
+} from '../linkedIn/linkedInConnection';
 
 import { paths } from './paths';
 
@@ -56,6 +60,9 @@ export async function testLiveness() {
 
   await canAccessTelegram();
   checkTelegramConnection();
+
+  await canAccessLinkedIn();
+  checkLinkedInConnection();
 }
 
 function handler() {
