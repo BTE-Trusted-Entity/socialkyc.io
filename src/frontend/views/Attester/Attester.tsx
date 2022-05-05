@@ -75,9 +75,9 @@ function Welcome() {
       <h1 className={styles.heading}>Your Identity, back in your hands!</h1>
 
       <p>
-        Create your decentralized social credentials here. Your personal data
-        will be anchored on the KILT blockchain and only you will decide who can
-        access it.
+        Create your decentralized social credentials here. You decide who has
+        access to your data and only the validity of your credential is anchored
+        on the blockchain.
       </p>
       <p>
         SocialKYC does not store, share or sell any of your data. The service
