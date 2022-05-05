@@ -2,6 +2,7 @@
   "extends": [
     "config:base"
   ],
+  "enabledManagers": ["npm"],
   "packageRules": [
     {
       "matchPackagePatterns": ["kiltprotocol"],
