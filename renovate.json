@@ -1,5 +1,25 @@
 {
   "extends": [
     "config:base"
+  ],
+  "packageRules": [
+    {
+      "matchPackagePatterns": ["kiltprotocol"],
+      "groupName": "kiltprotocol packages"
+    },
+    {
+      "matchPackagePatterns": ["parcel"],
+      "groupName": "parcel packages"
+    },
+    {
+      "matchPackagePatterns": [
+        "^@polkadot/*"
+      ],
+      "separateMajorMinor": false,
+      "separateMultipleMajor": false,
+      "separateMinorPatch": false,
+      "groupName": "polkadot dependencies",
+      "groupSlug": "polkadot"
+    }
   ]
 }
