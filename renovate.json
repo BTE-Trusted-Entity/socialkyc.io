@@ -3,6 +3,9 @@
     "config:base"
   ],
   "rangeStrategy": "bump",
+  "postUpdateOptions": [
+    "yarnDedupeHighest"
+  ],
   "packageRules": [
     {
       "matchPackagePatterns": ["kiltprotocol"],
