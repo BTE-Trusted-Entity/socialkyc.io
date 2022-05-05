@@ -21,10 +21,7 @@ export async function canAccessLinkedIn() {
       .json();
     linkedInConnectionState.on();
   } catch (error) {
-    if (
-      error instanceof HTTPError &&
-      !error.response.statusCode.toString().match(/^5/)
-    ) {
+    if (error instanceof HTTPError && error.response.statusCode < 500) {
       linkedInConnectionState.on();
       return;
     }

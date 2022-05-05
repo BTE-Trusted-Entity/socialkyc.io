@@ -13,5 +13,5 @@ const options: Partial<Options> = {
 };
 
 export async function attestLinkedIn(input: Input): Promise<Output> {
-  return ky.post(paths.twitch.attest, { json: input, ...options }).json();
+  return ky.post(paths.linkedIn.attest, { json: input, ...options }).json();
 }

@@ -93,7 +93,7 @@ const linkedIn = {
 };
 
 if (!linkedIn.clientId || !linkedIn.secret) {
-  throw new ConfigurationError('No Twitch client credentials provided');
+  throw new ConfigurationError('No LinkedIn client credentials provided');
 }
 
 const lowBalanceAlertRecipients = env.LOW_BALANCE_ALERT_RECIPIENTS;
