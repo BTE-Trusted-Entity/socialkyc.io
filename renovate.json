@@ -12,7 +12,7 @@
       "groupName": "parcel"
     },
     {
-      "matchPackagePatterns": ["polkadot"],
+      "matchPackagePatterns": ["@polkadot"],
       "groupName": "polkadot"
     }
   ]
