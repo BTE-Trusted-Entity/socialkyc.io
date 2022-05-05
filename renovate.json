@@ -2,7 +2,7 @@
   "extends": [
     "config:base"
   ],
-  "enabledManagers": ["npm"],
+  "enabledManagers": ["maven"],
   "packageRules": [
     {
       "matchPackagePatterns": ["kiltprotocol"],
