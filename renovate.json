@@ -5,21 +5,15 @@
   "packageRules": [
     {
       "matchPackagePatterns": ["kiltprotocol"],
-      "groupName": "kiltprotocol packages"
+      "groupName": "kiltprotocol"
     },
     {
       "matchPackagePatterns": ["parcel"],
-      "groupName": "parcel packages"
+      "groupName": "parcel"
     },
     {
-      "matchPackagePatterns": [
-        "^@polkadot/*"
-      ],
-      "separateMajorMinor": false,
-      "separateMultipleMajor": false,
-      "separateMinorPatch": false,
-      "groupName": "polkadot dependencies",
-      "groupSlug": "polkadot"
+      "matchPackagePatterns": ["polkadot"],
+      "groupName": "polkadot"
     }
   ]
 }
