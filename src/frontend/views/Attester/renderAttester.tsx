@@ -1,4 +1,4 @@
-import { render } from 'react-dom';
+import { createRoot } from 'react-dom/client';
 import { generatePath, matchPath, MemoryRouter } from 'react-router-dom';
 
 import { paths } from '../../paths';
@@ -82,14 +82,14 @@ function renderAttester() {
     return;
   }
 
-  render(
+  const root = createRoot(container);
+  root.render(
     <MemoryRouter
       initialEntries={[getInitialEntry()]}
       getUserConfirmation={getConfirmation}
     >
       <Attester />
     </MemoryRouter>,
-    container,
   );
 }
 
