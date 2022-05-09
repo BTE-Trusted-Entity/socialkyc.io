@@ -25,7 +25,7 @@ import { DetailedMessage } from '../../components/DetailedMessage/DetailedMessag
 import { Spinner } from '../../components/Spinner/Spinner';
 import { Email } from '../Email/Email';
 import { Twitter } from '../Twitter/Twitter';
-import { paths } from '../../paths';
+import { paths, redirectedPaths } from '../../paths';
 import { Discord } from '../Discord/Discord';
 import { Github } from '../Github/Github';
 import { Twitch } from '../Twitch/Twitch';
@@ -209,12 +209,12 @@ function Connect({ setSession }: { setSession: (s: Session) => void }) {
   const { kilt } = apiWindow;
   const extensions = useMemo(() => Object.keys(kilt), [kilt]);
 
-  const [extension, setExtension] = useState<string>('');
+  const [extension, setExtension] = useState<string>(extensions[0]);
 
-  const isEmailConfirmation = useRouteMatch(paths.emailConfirmation);
+  const isRedirected = useRouteMatch(redirectedPaths);
 
   useEffect(() => {
-    if (isEmailConfirmation) {
+    if (isRedirected) {
       extensionInput.postMessage('GET_BROADCASTED_EXTENSION');
 
       extensionOutput.onmessage = ({ data: extension }) => {
@@ -222,20 +222,10 @@ function Connect({ setSession }: { setSession: (s: Session) => void }) {
       };
     }
 
-    if (!isEmailConfirmation) {
-      if (extensions.length === 1) {
-        setExtension(extensions[0]);
-        return;
-      }
-      for (const extension of extensions) {
-        if (extension === 'sporran') {
-          setExtension(extension);
-          return;
-        }
-      }
-      setExtension(extensions[0]);
+    if (!isRedirected && extensions.includes('sporran')) {
+      setExtension('sporran');
     }
-  }, [isEmailConfirmation, extensions]);
+  }, [isRedirected, extensions]);
 
   const handleInput = useCallback((event: FormEvent<HTMLSelectElement>) => {
     setExtension((event.target as HTMLSelectElement).value);
@@ -273,10 +263,6 @@ function Connect({ setSession }: { setSession: (s: Session) => void }) {
     [extension, setSession, kilt],
   );
 
-  if (!extension) {
-    return null;
-  }
-
   return (
     <form onSubmit={handleConnect} className={styles.connectContainer}>
       <div
@@ -284,13 +270,13 @@ function Connect({ setSession }: { setSession: (s: Session) => void }) {
           [styles.processing]: processing,
         })}
       >
-        {!error && isEmailConfirmation && (
+        {!error && isRedirected && (
           <p className={styles.authorize}>
             Please authorize access to your wallet.
           </p>
         )}
 
-        {!error && !isEmailConfirmation && (
+        {!error && !isRedirected && (
           <div>
             <label className={styles.extension}>
               First select your wallet
@@ -415,15 +401,7 @@ export function Attester(): JSX.Element {
     return (
       <Fragment>
         <Switch>
-          <Route
-            path={[
-              paths.emailConfirmation,
-              paths.discordAuth,
-              paths.githubAuth,
-              paths.twitchAuth,
-              paths.linkedInAuth,
-            ]}
-          >
+          <Route path={redirectedPaths}>
             <AlmostThere />
           </Route>
           <Route>
