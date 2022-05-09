@@ -421,6 +421,7 @@ export function Attester(): JSX.Element {
               paths.discordAuth,
               paths.githubAuth,
               paths.twitchAuth,
+              paths.linkedInAuth,
             ]}
           >
             <AlmostThere />
