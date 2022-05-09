@@ -13,7 +13,7 @@ export function SlowAttestation(): JSX.Element | null {
   }, []);
 
   if (!slow) {
-    return null;
+    return null; // do not show until we consider it slow
   }
 
   return (

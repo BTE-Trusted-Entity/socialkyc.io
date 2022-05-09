@@ -22,3 +22,11 @@ export const paths = {
     linkedIn: backendPaths.oauth.linkedIn,
   },
 };
+
+export const redirectedPaths = [
+  paths.emailConfirmation,
+  paths.discordAuth,
+  paths.githubAuth,
+  paths.twitchAuth,
+  paths.linkedInAuth,
+];
