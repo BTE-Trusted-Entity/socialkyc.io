@@ -1,28 +1,25 @@
 // expect cannot be imported because of https://github.com/testing-library/jest-dom/issues/426
 import { afterEach, beforeEach, describe, it, jest } from '@jest/globals';
 import userEvent from '@testing-library/user-event';
-import { MemoryRouter } from 'react-router-dom';
+import { generatePath, MemoryRouter } from 'react-router-dom';
 import { IEncryptedMessage } from '@kiltprotocol/types';
 
-import { act, render, screen } from '../../../testing/testing';
+import {
+  act,
+  makeTestPromise,
+  render,
+  screen,
+  TestPromise,
+} from '../../../testing/testing';
 import '../../components/useCopyButton/useCopyButton.mock';
 import { paths } from '../../paths';
-import { Session } from '../../utilities/session';
-import { makeControlledPromise } from '../../../backend/utilities/makeControlledPromise';
-
+import {
+  sessionMock,
+  sessionMockReset,
+  sessionMockSendPromise,
+} from '../../utilities/session.mock';
 import { useYoutubeApi } from './useYoutubeApi';
 import { Youtube, YoutubeChannel } from './Youtube';
-
-const sessionMock: Session = {
-  encryptionKeyId: 'encryptionKeyId',
-  encryptedChallenge: 'encryptedChallenge',
-  nonce: 'nonce',
-  send: jest.fn(),
-  close: jest.fn(),
-  listen: jest.fn(),
-  sessionId: 'foo',
-  name: 'foo bar',
-};
 
 const channelMock: YoutubeChannel = {
   name: 'TestUser',
@@ -32,15 +29,13 @@ const channelMock: YoutubeChannel = {
 const secret = 'SECRET';
 const code = 'CODE';
 
-jest.mock('./useYoutubeApi', () => ({ useYoutubeApi: jest.fn() }));
-const mockYoutubeApi: ReturnType<typeof useYoutubeApi> = {
-  authUrl: jest.fn(),
-  confirm: jest.fn(),
-  quote: jest.fn(),
-  requestAttestation: jest.fn(),
-  attest: jest.fn(),
-};
-jest.mocked(useYoutubeApi).mockReturnValue(mockYoutubeApi);
+jest.mock('./useYoutubeApi');
+let mockYoutubeApi: ReturnType<typeof useYoutubeApi>;
+let authUrlPromise: TestPromise<string>;
+let confirmPromise: TestPromise<YoutubeChannel>;
+let quotePromise: TestPromise<IEncryptedMessage>;
+let requestPromise: TestPromise<Record<string, never>>;
+let attestPromise: TestPromise<IEncryptedMessage>;
 
 async function signInWithYoutube() {
   const signInLink = await screen.findByRole('link', {
@@ -119,68 +114,41 @@ function expectAttestationRequested() {
   });
 }
 
-async function expectStartOver() {
+function expectStartOver() {
   expect(mockYoutubeApi.authUrl).toHaveBeenCalled();
 }
 
+async function respondWithQuote() {
+  await act(async () => {
+    quotePromise.resolve({ quote: '' } as unknown as IEncryptedMessage);
+  });
+}
+
 describe('Youtube', () => {
-  let authUrlPromise = makeControlledPromise<string>();
-  let confirmPromise = makeControlledPromise<YoutubeChannel>();
-  let quotePromise = makeControlledPromise<IEncryptedMessage>();
-  let sendPromise = makeControlledPromise<void>();
-  let requestPromise = makeControlledPromise<Record<string, never>>();
-  let attestPromise = makeControlledPromise<IEncryptedMessage>();
-
   beforeEach(() => {
+    authUrlPromise = makeTestPromise();
+    confirmPromise = makeTestPromise();
+    quotePromise = makeTestPromise();
+    requestPromise = makeTestPromise();
+    attestPromise = makeTestPromise();
+
+    mockYoutubeApi = {
+      authUrl: authUrlPromise.jestFn,
+      confirm: confirmPromise.jestFn,
+      quote: quotePromise.jestFn,
+      requestAttestation: requestPromise.jestFn,
+      attest: attestPromise.jestFn,
+    };
+    jest.mocked(useYoutubeApi).mockReturnValue(mockYoutubeApi);
+
+    sessionMockReset();
+
     jest.spyOn(console, 'error').mockImplementation(() => undefined);
-
-    authUrlPromise = makeControlledPromise<string>();
-    jest
-      .mocked(mockYoutubeApi.authUrl)
-      .mockReset()
-      .mockReturnValue(authUrlPromise.promise);
-
-    confirmPromise = makeControlledPromise<YoutubeChannel>();
-    jest
-      .mocked(mockYoutubeApi.confirm)
-      .mockReset()
-      .mockReturnValue(confirmPromise.promise);
-
-    quotePromise = makeControlledPromise<IEncryptedMessage>();
-    jest
-      .mocked(mockYoutubeApi.quote)
-      .mockReset()
-      .mockReturnValue(quotePromise.promise);
-
-    sendPromise = makeControlledPromise<void>();
-    jest
-      .mocked(sessionMock.send)
-      .mockReset()
-      .mockReturnValue(sendPromise.promise);
-    jest.mocked(sessionMock.listen).mockReset();
-
-    requestPromise = makeControlledPromise<Record<string, never>>();
-    jest
-      .mocked(mockYoutubeApi.requestAttestation)
-      .mockReset()
-      .mockReturnValue(requestPromise.promise);
-
-    attestPromise = makeControlledPromise<IEncryptedMessage>();
-    jest
-      .mocked(mockYoutubeApi.attest)
-      .mockReset()
-      .mockReturnValue(attestPromise.promise);
   });
 
   afterEach(() => {
     jest.mocked(console.error).mockRestore();
   });
-
-  async function respondWithQuote() {
-    await act(async () => {
-      quotePromise.resolve({ quote: '' } as unknown as IEncryptedMessage);
-    });
-  }
 
   it('should go through the happy path until redirected to Youtube', async () => {
     render(<Youtube session={sessionMock} />);
@@ -214,9 +182,7 @@ describe('Youtube', () => {
   it('should finish the happy path after authorization', async () => {
     const { container } = render(
       <MemoryRouter
-        initialEntries={[
-          paths.youtubeAuth.replace(':secret', secret).replace(':code', code),
-        ]}
+        initialEntries={[generatePath(paths.youtubeAuth, { secret, code })]}
       >
         <Youtube session={sessionMock} />
       </MemoryRouter>,
@@ -252,7 +218,7 @@ describe('Youtube', () => {
 
     await act(async () => {
       await listenerPromise;
-      sendPromise.resolve(undefined);
+      sessionMockSendPromise.resolve(undefined);
     });
 
     await userEvent.click(
@@ -264,9 +230,7 @@ describe('Youtube', () => {
   it('should show authorization error', async () => {
     const { container } = render(
       <MemoryRouter
-        initialEntries={[
-          paths.youtubeAuth.replace(':secret', secret).replace(':code', code),
-        ]}
+        initialEntries={[generatePath(paths.youtubeAuth, { secret, code })]}
       >
         <Youtube session={sessionMock} />
       </MemoryRouter>,
@@ -297,9 +261,7 @@ describe('Youtube', () => {
   it.only('should show no channel error', async () => {
     const { container } = render(
       <MemoryRouter
-        initialEntries={[
-          paths.youtubeAuth.replace(':secret', secret).replace(':code', code),
-        ]}
+        initialEntries={[generatePath(paths.youtubeAuth, { secret, code })]}
       >
         <Youtube session={sessionMock} />
       </MemoryRouter>,
@@ -330,9 +292,7 @@ describe('Youtube', () => {
   it('should show error when quote fails', async () => {
     const { container } = render(
       <MemoryRouter
-        initialEntries={[
-          paths.youtubeAuth.replace(':secret', secret).replace(':code', code),
-        ]}
+        initialEntries={[generatePath(paths.youtubeAuth, { secret, code })]}
       >
         <Youtube session={sessionMock} />
       </MemoryRouter>,
@@ -365,9 +325,7 @@ describe('Youtube', () => {
   it('should show an error when the wallet communication fails', async () => {
     const { container } = render(
       <MemoryRouter
-        initialEntries={[
-          paths.youtubeAuth.replace(':secret', secret).replace(':code', code),
-        ]}
+        initialEntries={[generatePath(paths.youtubeAuth, { secret, code })]}
       >
         <Youtube session={sessionMock} />
       </MemoryRouter>,
@@ -387,7 +345,7 @@ describe('Youtube', () => {
     await respondWithQuote();
     expectQuoteIsSent();
     await act(async () => {
-      sendPromise.reject(new Error('closed'));
+      sessionMockSendPromise.reject(new Error('closed'));
     });
 
     expectIsNotProcessing(container);
@@ -401,9 +359,7 @@ describe('Youtube', () => {
   it('should show an error when there’s an error in Sporran', async () => {
     const { container } = render(
       <MemoryRouter
-        initialEntries={[
-          paths.youtubeAuth.replace(':secret', secret).replace(':code', code),
-        ]}
+        initialEntries={[generatePath(paths.youtubeAuth, { secret, code })]}
       >
         <Youtube session={sessionMock} />
       </MemoryRouter>,
@@ -428,7 +384,7 @@ describe('Youtube', () => {
     await act(async () => {
       requestPromise.reject(new Error('unknown'));
       await listenerPromise;
-      sendPromise.resolve(undefined);
+      sessionMockSendPromise.resolve(undefined);
     });
 
     expectIsNotProcessing(container);
@@ -441,9 +397,7 @@ describe('Youtube', () => {
   it('should advice when the popup is closed', async () => {
     const { container } = render(
       <MemoryRouter
-        initialEntries={[
-          paths.youtubeAuth.replace(':secret', secret).replace(':code', code),
-        ]}
+        initialEntries={[generatePath(paths.youtubeAuth, { secret, code })]}
       >
         <Youtube session={sessionMock} />
       </MemoryRouter>,
@@ -471,7 +425,7 @@ describe('Youtube', () => {
     await act(async () => {
       requestPromise.reject(new Error('closed'));
       await listenerPromise;
-      sendPromise.resolve(undefined);
+      sessionMockSendPromise.resolve(undefined);
     });
 
     expectIsNotProcessing(container);
@@ -488,9 +442,7 @@ describe('Youtube', () => {
   it('should advice about the slow attestation', async () => {
     const { container } = render(
       <MemoryRouter
-        initialEntries={[
-          paths.youtubeAuth.replace(':secret', secret).replace(':code', code),
-        ]}
+        initialEntries={[generatePath(paths.youtubeAuth, { secret, code })]}
       >
         <Youtube session={sessionMock} />
       </MemoryRouter>,
