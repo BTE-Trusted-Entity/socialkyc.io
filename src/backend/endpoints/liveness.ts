@@ -1,4 +1,5 @@
 import { ServerRoute } from '@hapi/hapi';
+
 import {
   initKilt,
   connect,

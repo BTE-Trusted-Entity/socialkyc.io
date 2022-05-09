@@ -18,6 +18,7 @@ import {
   sessionMockReset,
   sessionMockSendPromise,
 } from '../../utilities/session.mock';
+
 import { useYoutubeApi } from './useYoutubeApi';
 import { Youtube, YoutubeChannel } from './Youtube';
 
@@ -258,7 +259,7 @@ describe('Youtube', () => {
     expectStartOver();
   });
 
-  it.only('should show no channel error', async () => {
+  it('should show no channel error', async () => {
     const { container } = render(
       <MemoryRouter
         initialEntries={[generatePath(paths.youtubeAuth, { secret, code })]}
