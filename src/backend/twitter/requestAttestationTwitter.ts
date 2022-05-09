@@ -1,10 +1,4 @@
-import { StatusCodes } from 'http-status-codes';
-import {
-  Request,
-  ResponseObject,
-  ResponseToolkit,
-  ServerRoute,
-} from '@hapi/hapi';
+import { Request, ServerRoute } from '@hapi/hapi';
 
 import {
   getSecretForSession,
@@ -13,32 +7,22 @@ import {
   setSession,
 } from '../utilities/sessionStorage';
 import { validateEncryptedMessage } from '../utilities/validateEncryptedMessage';
-import { decryptRequestAttestationContent } from '../utilities/decryptMessage';
+import { decryptRequestAttestation } from '../utilities/decryptMessage';
 import { makeControlledPromise } from '../utilities/makeControlledPromise';
 import { paths } from '../endpoints/paths';
 
 import { tweetsListeners } from './tweets';
 
-export interface Output {
-  secret: string;
-}
+export type Output = string;
 
-async function handler(
-  request: Request,
-  h: ResponseToolkit,
-): Promise<ResponseObject> {
+async function handler(request: Request): Promise<string> {
   const { logger } = request;
   logger.debug('Twitter request attestation started');
 
-  const content = await decryptRequestAttestationContent(request);
-  if (!content) {
-    return h.response().code(StatusCodes.ACCEPTED);
-  }
-
-  const { requestForAttestation } = content;
-
   const session = getSession(request.payload as PayloadWithSession);
   delete session.attestationPromise;
+
+  const { requestForAttestation } = await decryptRequestAttestation(request);
   setSession({ ...session, requestForAttestation, confirmed: false });
   logger.debug('Twitter request attestation cached');
 
@@ -50,7 +34,7 @@ async function handler(
   tweetsListeners.set(username.toLowerCase(), [secret, confirmation]);
   logger.debug('Twitter request attestation listener added');
 
-  return h.response({ secret } as Output);
+  return secret as Output;
 }
 
 export const requestTwitter: ServerRoute = {

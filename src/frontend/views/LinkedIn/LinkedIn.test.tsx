@@ -18,6 +18,7 @@ import {
   sessionMockReset,
   sessionMockSendPromise,
 } from '../../utilities/session.mock';
+import { ClosedRejection } from '../../utilities/session';
 
 import { useLinkedInApi } from './useLinkedInApi';
 import { LinkedIn, LinkedInProfile } from './LinkedIn';
@@ -36,7 +37,7 @@ let mockLinkedInApi: ReturnType<typeof useLinkedInApi>;
 let authUrlPromise: TestPromise<string>;
 let confirmPromise: TestPromise<LinkedInProfile>;
 let quotePromise: TestPromise<IEncryptedMessage>;
-let requestPromise: TestPromise<Record<string, never>>;
+let requestPromise: TestPromise<void>;
 let attestPromise: TestPromise<IEncryptedMessage>;
 
 async function signInWithLinkedIn() {
@@ -203,7 +204,7 @@ describe('LinkedIn', () => {
     expectAttestationRequested();
 
     await act(async () => {
-      requestPromise.resolve({});
+      requestPromise.resolve();
     });
     expectIsNotProcessing(container);
     await expectAnchoringInProgress();
@@ -389,7 +390,7 @@ describe('LinkedIn', () => {
     });
 
     await act(async () => {
-      requestPromise.reject(new Error('closed'));
+      requestPromise.reject(new ClosedRejection());
       await listenerPromise;
       sessionMockSendPromise.resolve(undefined);
     });
@@ -433,7 +434,7 @@ describe('LinkedIn', () => {
     expectAttestationRequested();
 
     await act(async () => {
-      requestPromise.resolve({});
+      requestPromise.resolve();
     });
     expectIsNotProcessing(container);
     await expectAnchoringInProgress();

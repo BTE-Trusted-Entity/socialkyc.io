@@ -35,7 +35,7 @@ export interface GetSessionOutput {
 
 export type CheckSessionInput = z.infer<typeof zodPayload>;
 
-export type CheckSessionOutput = undefined;
+export type CheckSessionOutput = void;
 
 async function handler(
   request: Request,
@@ -80,7 +80,7 @@ async function handler(
   });
 
   logger.debug('Challenge confirmation matches');
-  return h.response(<CheckSessionOutput>undefined).code(StatusCodes.NO_CONTENT);
+  return h.response().code(StatusCodes.NO_CONTENT);
 }
 
 function startSession() {

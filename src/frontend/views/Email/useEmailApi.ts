@@ -1,7 +1,7 @@
 import { useMemo } from 'react';
 
 import { quoteEmail } from '../../../backend/email/quoteEmailApi';
-import { requestAttestationEmail } from '../../../backend/email/sendEmailApi';
+import { requestAttestationEmail } from '../../../backend/email/requestAttestationEmailApi';
 import { confirmEmail } from '../../../backend/email/confirmEmailApi';
 import { attestEmail } from '../../../backend/email/attestationEmailApi';
 

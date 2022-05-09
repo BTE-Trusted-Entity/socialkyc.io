@@ -22,7 +22,7 @@ import { wellKnownDidConfig } from './didConfiguration/wellKnownDidConfig';
 
 import { quoteEmail } from './email/quoteEmail';
 import { confirmEmail } from './email/confirmEmail';
-import { request } from './email/sendEmail';
+import { requestAttestationEmail } from './email/requestAttestationEmail';
 import { attestationEmail } from './email/attestationEmail';
 
 import { listenForTweets } from './twitter/tweets';
@@ -140,7 +140,7 @@ const logger = {
 
   server.route(quoteEmail);
   server.route(confirmEmail);
-  server.route(request);
+  server.route(requestAttestationEmail);
   server.route(attestationEmail);
 
   server.route(quoteTwitter);

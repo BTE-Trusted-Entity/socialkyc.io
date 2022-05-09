@@ -1,8 +1,7 @@
 import { FormEvent, useCallback, useEffect, useState } from 'react';
 import { IEncryptedMessage } from '@kiltprotocol/types';
 
-import { Session } from '../../utilities/session';
-import { exceptionToError } from '../../utilities/exceptionToError';
+import { Rejection, Session } from '../../utilities/session';
 
 import {
   AttestationStatus,
@@ -86,8 +85,7 @@ export function Telegram({ session }: Props): JSX.Element {
             setBackupMessage(await telegramApi.attest({}));
             setStatus('ready');
           } catch (exception) {
-            const { message } = exceptionToError(exception);
-            if (message.includes('closed') || message.includes('rejected')) {
+            if (exception instanceof Rejection) {
               setFlowError('closed');
             } else {
               console.error(exception);
@@ -118,8 +116,7 @@ export function Telegram({ session }: Props): JSX.Element {
       }
       await session.send(backupMessage);
     } catch (exception) {
-      const { message } = exceptionToError(exception);
-      if (message.includes('closed')) {
+      if (exception instanceof Rejection) {
         return; // don’t care that the user has closed the dialog
       }
       setFlowError('unknown');

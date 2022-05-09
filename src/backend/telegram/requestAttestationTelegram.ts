@@ -16,10 +16,10 @@ import {
   setSession,
 } from '../utilities/sessionStorage';
 import { validateEncryptedMessage } from '../utilities/validateEncryptedMessage';
-import { decryptRequestAttestationContent } from '../utilities/decryptMessage';
+import { decryptRequestAttestation } from '../utilities/decryptMessage';
 import { paths } from '../endpoints/paths';
 
-export type Output = Record<string, never>;
+export type Output = void;
 
 async function handler(
   request: Request,
@@ -28,19 +28,12 @@ async function handler(
   const { logger } = request;
   logger.debug('Telegram request attestation started');
 
-  const content = await decryptRequestAttestationContent(request);
-  if (!content) {
-    return h.response().code(StatusCodes.ACCEPTED);
-  }
-
-  const { requestForAttestation } = content;
-
   const session = getSession(request.payload as PayloadWithSession);
-
   if (!session.confirmed) {
     throw Boom.badRequest('Telegram claim has not been confirmed');
   }
 
+  const { requestForAttestation } = await decryptRequestAttestation(request);
   if (session.claim?.cTypeHash !== requestForAttestation.claim.cTypeHash) {
     throw Boom.badRequest(
       'Telegram request CType does not match confirmed claim cType',
@@ -53,12 +46,9 @@ async function handler(
   RequestForAttestationUtils.errorCheck(requestForAttestation);
 
   logger.debug('Telegram request attestation verified');
-
   setSession({ ...session, requestForAttestation });
 
-  logger.debug('Telegram request attestation cached');
-
-  return h.response({}).code(StatusCodes.OK);
+  return h.response().code(StatusCodes.NO_CONTENT);
 }
 
 export const requestAttestationTelegram: ServerRoute = {

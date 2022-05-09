@@ -1,8 +1,7 @@
 import { FormEvent, useCallback, useEffect, useState } from 'react';
 import { IEncryptedMessage } from '@kiltprotocol/types';
 
-import { Session } from '../../utilities/session';
-import { exceptionToError } from '../../utilities/exceptionToError';
+import { Rejection, Session } from '../../utilities/session';
 
 import { useTwitterApi } from './useTwitterApi';
 import {
@@ -50,7 +49,7 @@ export function Twitter({ session }: Props): JSX.Element {
 
         await session.listen(async (message) => {
           try {
-            const { secret } = await twitterApi.requestAttestation({ message });
+            const secret = await twitterApi.requestAttestation({ message });
             setSecret(secret);
             setStatus('confirming');
             setProcessing(false);
@@ -63,8 +62,7 @@ export function Twitter({ session }: Props): JSX.Element {
 
             setStatus('ready');
           } catch (exception) {
-            const { message } = exceptionToError(exception);
-            if (message.includes('closed') || message.includes('rejected')) {
+            if (exception instanceof Rejection) {
               setFlowError('closed');
             } else {
               console.error(exception);

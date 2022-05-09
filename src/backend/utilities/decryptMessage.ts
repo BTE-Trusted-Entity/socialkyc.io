@@ -14,7 +14,7 @@ export async function decryptMessageContent<Result>(
   request: Request,
   expectedType: MessageBodyType,
   rejectionType?: MessageBodyType,
-): Promise<Result | null> {
+): Promise<Result> {
   const { logger } = request;
   logger.debug('Message will be decrypted');
 
@@ -30,9 +30,9 @@ export async function decryptMessageContent<Result>(
   const messageBody = message.body;
   const { type } = messageBody;
 
-  if (type === rejectionType) {
+  if (type === rejectionType || type === MessageBodyType.REJECT) {
     logger.debug('Message contains rejection');
-    return null;
+    throw Boom.conflict('Message contains rejection');
   }
 
   if (type !== expectedType) {
@@ -43,9 +43,9 @@ export async function decryptMessageContent<Result>(
   return messageBody.content as Result;
 }
 
-export async function decryptRequestAttestationContent(
+export async function decryptRequestAttestation(
   request: Request,
-): Promise<IRequestAttestationContent | null> {
+): Promise<IRequestAttestationContent> {
   return decryptMessageContent<IRequestAttestationContent>(
     request,
     MessageBodyType.REQUEST_ATTESTATION,

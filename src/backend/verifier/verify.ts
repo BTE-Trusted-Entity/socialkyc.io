@@ -1,11 +1,10 @@
-import { StatusCodes } from 'http-status-codes';
 import {
   Request,
   ResponseObject,
   ResponseToolkit,
   ServerRoute,
 } from '@hapi/hapi';
-import { MessageBodyType, ICredential } from '@kiltprotocol/types';
+import { ICredential, MessageBodyType } from '@kiltprotocol/types';
 import { Credential } from '@kiltprotocol/core';
 import Boom from '@hapi/boom';
 
@@ -33,10 +32,6 @@ async function handler(
     request,
     MessageBodyType.SUBMIT_CREDENTIAL,
   );
-
-  if (!content) {
-    return h.response().code(StatusCodes.ACCEPTED);
-  }
 
   const session = getSession(request.payload as EncryptedMessageInput);
   if (!session.requestChallenge) {
