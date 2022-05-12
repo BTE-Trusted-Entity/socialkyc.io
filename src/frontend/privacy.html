@@ -953,6 +953,38 @@
               The server signs the stored Request for attestation object. Only the signature is then stored on the public KILT blockchain, but the signature itself does not contain any of the personal information, and this information is not recoverable from the signature. After that all the information stored about this user is immediately deleted from the server.
             </li>
           </ul>
+          
+          
+          
+          <p><u>When issuing a credential for a YoutTube channel:</u></p>
+
+          <ul>
+            <li>
+              SocialKYC asks the user to verify their YouTube account. The user 
+              does this by signing in with a YouTube account and channel, and authorizing 
+              us to request the name and ID of her channel from YouTube’s authentication service.</li>
+            <li>
+              The SocialKYC server requests the user’s channel info from YouTube, prepares a Request for 
+              attestation object for the user to sign and sends it to the user. This object contains the 
+              channel info properties but is not stored anywhere.
+            </li>
+            <li>
+              Our server receives the signed Request for attestation object from the user and temporarily stores 
+              it until the user confirmation, but no longer than 1 hour after the last user activity. The object 
+              contains the channel ID, channel name and the DID.
+            </li>
+            <li>
+              If the user is inactive for one hour, all their stored data, the
+              username, and the confirmation code are deleted.
+            </li>
+            <li>
+              The server signs the stored Request for attestation object. Only the signature is 
+              then stored on the public KILT blockchain, but the signature itself does not contain 
+              any of the personal information, and this information is not recoverable from the signature. 
+              After that all the information stored about this user is immediately deleted from the server.
+            </li>
+          </ul>
+          
         </section>
       </div>
     </main>
