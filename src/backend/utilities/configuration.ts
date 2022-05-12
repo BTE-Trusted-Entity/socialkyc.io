@@ -78,7 +78,14 @@ const twitch = {
 if (!twitch.clientId || !twitch.secret) {
   throw new ConfigurationError('No Twitch client credentials provided');
 }
+const instagram = {
+  clientId: env.INSTAGRAM_CLIENT_ID as string,
+  secret: env.SECRET_INSTAGRAM,
+};
 
+if (!instagram.clientId || !instagram.secret) {
+  throw new ConfigurationError('No Twitch client credentials provided');
+}
 const telegram = {
   token: env.SECRET_TELEGRAM as string,
 };
@@ -121,6 +128,7 @@ export const configuration = {
   discord,
   github,
   twitch,
+  instagram,
   telegram,
   youtube,
   lowBalanceAlertRecipients,

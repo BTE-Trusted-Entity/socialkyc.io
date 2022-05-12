@@ -11,6 +11,8 @@ export const paths = {
   githubAuth: '/github/:code/:secret',
   twitch: '/twitch',
   twitchAuth: '/twitch/:code/:secret',
+  instagram: '/instagram',
+  instagramAuth: '/instagram/:code/:secret',
   telegram: '/telegram',
   youtube: '/youtube',
   youtubeAuth: '/youtube/:code/:secret',
@@ -20,6 +22,7 @@ export const paths = {
     github: backendPaths.oauth.github,
     twitch: backendPaths.oauth.twitch,
     youtube: backendPaths.oauth.youtube,
+    instagram: backendPaths.oauth.instagram,
   },
 };
 

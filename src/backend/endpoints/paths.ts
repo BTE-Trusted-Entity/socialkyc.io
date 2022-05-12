@@ -62,11 +62,19 @@ export const paths = {
     attest: '/api/youtube/attest',
   },
 
+  instagram: {
+    authUrl: '/api/instagram/authUrl',
+    confirm: '/api/instagram/confirm',
+    quote: '/api/instagram/quote',
+    requestAttestation: '/api/instagram/request-attestation',
+    attest: '/api/instagram/attest',
+  },
   oauth: {
     discord: '/discord/auth',
     github: '/github/auth',
     twitch: '/twitch/auth',
     youtube: '/youtube/auth',
+    instagram: '/instagram/auth',
   },
 
   verifier: {

@@ -27,6 +27,9 @@ function getInitialEntry() {
     path: paths.window.youtube,
   });
 
+  const instagram = matchPath(window.location.pathname, {
+    path: paths.window.instagram,
+  });
   if (email) {
     const { secret } = email.params;
 
@@ -36,7 +39,7 @@ function getInitialEntry() {
     });
   }
 
-  if (discord || github || twitch || youtube) {
+  if (discord || github || twitch || youtube || instagram) {
     const searchParams = new URLSearchParams(window.location.search);
     const code = searchParams.get('code');
     const secret = searchParams.get('state');
@@ -60,6 +63,8 @@ function getInitialEntry() {
     }
     if (youtube) {
       path = paths.youtubeAuth;
+    if (instagram) {
+      path = paths.instagramAuth;
     }
 
     if (!path) {
