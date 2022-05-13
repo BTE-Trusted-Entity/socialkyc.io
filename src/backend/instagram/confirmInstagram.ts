@@ -1,10 +1,5 @@
 import { z } from 'zod';
-import {
-  Request,
-  ResponseToolkit,
-  ResponseObject,
-  ServerRoute,
-} from '@hapi/hapi';
+import { Request, ResponseToolkit, ServerRoute } from '@hapi/hapi';
 
 import got from 'got';
 
