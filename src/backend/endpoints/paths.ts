@@ -62,6 +62,12 @@ export const paths = {
     attest: '/api/linkedin/attest',
   },
 
+  steam: {
+    authUrl: '/api/steam/authUrl',
+    auth: '/steam/auth',
+    confirm: '/api/steam/confirm',
+  },
+
   oauth: {
     discord: '/discord/auth',
     github: '/github/auth',

@@ -96,6 +96,12 @@ if (!linkedIn.clientId || !linkedIn.secret) {
   throw new ConfigurationError('No LinkedIn client credentials provided');
 }
 
+const steamApiKey = env.API_KEY_STEAM;
+
+if (!steamApiKey) {
+  throw new ConfigurationError('No Steam API key');
+}
+
 const lowBalanceAlertRecipients = env.LOW_BALANCE_ALERT_RECIPIENTS;
 
 if (!lowBalanceAlertRecipients) {
@@ -124,4 +130,5 @@ export const configuration = {
   telegram,
   linkedIn,
   lowBalanceAlertRecipients,
+  steamApiKey,
 };

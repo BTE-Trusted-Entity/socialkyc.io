@@ -3,6 +3,8 @@ import { generatePath, matchPath, MemoryRouter } from 'react-router-dom';
 
 import { paths } from '../../paths';
 
+import { confirmSteam } from '../../../backend/steam/confirmSteamApi';
+
 import { Attester } from './Attester';
 
 function getConfirmation(message: string, callback: (ok: boolean) => void) {
@@ -26,6 +28,9 @@ function getInitialEntry() {
   const linkedIn = matchPath(window.location.pathname, {
     path: paths.window.linkedIn,
   });
+  const steam = matchPath(window.location.pathname, {
+    path: paths.window.steam,
+  });
 
   if (email) {
     const { secret } = email.params;
@@ -34,6 +39,26 @@ function getInitialEntry() {
     return generatePath(paths.emailConfirmation, {
       secret,
     });
+  }
+
+  if (steam) {
+    const params = Object.fromEntries(
+      new URLSearchParams(window.location.search),
+    ) as {
+      'openid.assoc_handle': string;
+      'openid.claimed_id': string;
+      'openid.identity': string;
+      'openid.mode': string;
+      'openid.ns': string;
+      'openid.op_endpoint': string;
+      'openid.response_nonce': string;
+      'openid.return_to': string;
+      'openid.sig': string;
+      'openid.signed': string;
+    };
+    confirmSteam(params);
+    // window.history.replaceState(null, '', '/');
+    // return generatePath(paths.steam, params);
   }
 
   if (discord || github || twitch || linkedIn) {

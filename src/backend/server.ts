@@ -79,6 +79,10 @@ import { about } from './endpoints/about';
 import { terms } from './endpoints/terms';
 import { privacy } from './endpoints/privacy';
 
+import { authUrlSteam } from './steam/authUrlSteam';
+import { authHtmlSteam } from './steam/authHtmlSteam';
+import { confirmSteam } from './steam/confirmSteam';
+
 const { isProduction } = configuration;
 
 const noWww = {
@@ -181,6 +185,10 @@ const logger = {
   server.route(quoteLinkedIn);
   server.route(requestAttestationLinkedIn);
   server.route(attestLinkedIn);
+
+  server.route(authHtmlSteam);
+  server.route(authUrlSteam);
+  server.route(confirmSteam);
 
   server.route(requestCredential);
   server.route(verify);

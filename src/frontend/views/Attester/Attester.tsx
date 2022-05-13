@@ -31,6 +31,7 @@ import { Github } from '../Github/Github';
 import { Twitch } from '../Twitch/Twitch';
 import { Telegram } from '../Telegram/Telegram';
 import { LinkedIn } from '../LinkedIn/LinkedIn';
+import { Steam } from '../Steam/Steam';
 import { Disconnect } from '../../components/Disconnect/Disconnect';
 import {
   extensionInput,
@@ -196,6 +197,9 @@ function GetCredentials() {
           <Link to={paths.linkedIn} className={styles.linkedIn}>
             LinkedIn Account
           </Link>
+        </li>
+        <li>
+          <Link to={paths.steam}>Steam</Link>
         </li>
       </ul>
     </Fragment>
@@ -459,6 +463,9 @@ export function Attester(): JSX.Element {
         </Route>
         <Route path={paths.linkedIn}>
           <LinkedIn session={session} />
+        </Route>
+        <Route path={paths.steam}>
+          <Steam />
         </Route>
         <Route>
           <Welcome />

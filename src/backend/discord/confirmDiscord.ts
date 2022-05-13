@@ -1,10 +1,5 @@
 import { z } from 'zod';
-import {
-  Request,
-  ResponseToolkit,
-  ResponseObject,
-  ServerRoute,
-} from '@hapi/hapi';
+import { Request, ResponseToolkit, ServerRoute } from '@hapi/hapi';
 
 import got from 'got';
 
@@ -38,10 +33,7 @@ export interface Output {
   id: string;
 }
 
-async function handler(
-  request: Request,
-  h: ResponseToolkit,
-): Promise<ResponseObject> {
+async function handler(request: Request, h: ResponseToolkit) {
   const { logger } = request;
   logger.debug('Discord authorization started');
 
