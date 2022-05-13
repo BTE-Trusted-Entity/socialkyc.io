@@ -935,6 +935,7 @@
               stored about this user is immediately deleted from the server.
             </li>
           </ul>
+          
           <p><u>When issuing a credential for Telegram username:</u></p>
 
           <ul>
@@ -953,6 +954,34 @@
               The server signs the stored Request for attestation object. Only the signature is then stored on the public KILT blockchain, but the signature itself does not contain any of the personal information, and this information is not recoverable from the signature. After that all the information stored about this user is immediately deleted from the server.
             </li>
           </ul>
+          
+          <p><u>When issuing a credential for a YoutTube channel:</u></p>
+
+          <ul>
+            <li>
+              SocialKYC asks the user to verify their YouTube account. The user 
+              does this by signing in with a YouTube account and channel, and authorizing 
+              us to request the name and ID of her channel from YouTube’s authentication service.
+            </li>
+            <li>
+              The SocialKYC server requests the user’s channel info from YouTube and temporarily stores it 
+              in the server memory until the user successfully went through the complete credential flow, but 
+              no longer than 1 hour after the last user activity. The stored channel info contains the channel ID, 
+              channel name and the DID. Our server prepares a Request for attestation object including the 
+              channel info properties for the user to sign and sends it to the user. 
+            </li>
+            <li>
+              Our server receives the signed Request for attestation object from the user and also signs it. 
+              Only the server’s signature is then stored on the public KILT blockchain, but the signature itself 
+              does not contain any of the personal information, and this information is not recoverable from the 
+              signature. After that all the information stored about this user is immediately deleted from the server.
+            </li>
+            <li>
+              If the user is inactive for one hour, all their stored data, the properties, and the confirmation 
+              code are deleted.
+            </li>
+          </ul>
+          
         </section>
       </div>
     </main>
