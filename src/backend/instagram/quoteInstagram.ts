@@ -56,7 +56,7 @@ async function handler(
 
 export const quoteInstagram: ServerRoute = {
   method: 'POST',
-  path: paths.twitch.quote,
+  path: paths.instagram.quote,
   handler,
   options: {
     validate: {

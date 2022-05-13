@@ -6,9 +6,9 @@ import { configuration } from '../utilities/configuration';
 
 import { instagramEndpoints } from './instagramEndpoints';
 
-export const twitchConnectionState = trackConnectionState(10 * 60 * 1000);
+export const instagramConnectionState = trackConnectionState(10 * 60 * 1000);
 
-export async function canAccessTwitch() {
+export async function canAccessInstagram() {
   try {
     await got
       .post(instagramEndpoints.token, {
@@ -18,21 +18,22 @@ export async function canAccessTwitch() {
         },
       })
       .json();
+    instagramConnectionState.on();
   } catch (error) {
-    if (error instanceof HTTPError && error.response.statusCode !== 403) {
-      twitchConnectionState.on();
+    if (error instanceof HTTPError && error.response.statusCode < 500) {
+      instagramConnectionState.on();
       return;
     }
-    twitchConnectionState.off();
-    logger.error(error, 'Error connecting to Twitch');
+    instagramConnectionState.off();
+    logger.error(error, 'Error connecting to Instagram');
     throw error;
   }
 }
 
-export function checkTwitchConnection() {
+export function checkInstagramConnection() {
   setInterval(async () => {
     try {
-      await canAccessTwitch();
+      await canAccessInstagram();
     } catch {}
   }, 5 * 60 * 1000);
 }

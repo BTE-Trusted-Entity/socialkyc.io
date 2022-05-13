@@ -13,10 +13,10 @@ export async function testInstagramCType(): Promise<void> {
       Username: {
         type: 'string',
       },
-      id: {
+      'User ID': {
         type: 'string',
       },
-      'Account type': {
+      'Account Type': {
         type: 'string',
       },
     },
@@ -50,16 +50,16 @@ export const instagramCType = CType.fromCType({
       Username: {
         type: 'string',
       },
-      id: {
+      'User ID': {
         type: 'string',
       },
-      'Account type': {
+      'Account Type': {
         type: 'string',
       },
     },
     type: 'object',
-    $id: 'kilt:ctype:0xb752d2117b686919bd15250e76ca6e9da3f00b8bfb4c428898844c1551790558',
+    $id: 'kilt:ctype:0xa3cc696621b9fef5fc94a61078ceecadd957f18634ccff05b9030f274e376459',
   },
   owner: null,
-  hash: '0xb752d2117b686919bd15250e76ca6e9da3f00b8bfb4c428898844c1551790558',
+  hash: '0xa3cc696621b9fef5fc94a61078ceecadd957f18634ccff05b9030f274e376459',
 });

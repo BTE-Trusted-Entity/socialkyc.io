@@ -53,6 +53,9 @@ import { confirmTwitch } from './twitch/confirmTwitch';
 import { authHtmlInstagram } from './instagram/authHtmlInstagram';
 import { authUrlInstagram } from './instagram/authUrlInstagram';
 import { confirmInstagram } from './instagram/confirmInstagram';
+import { quoteInstagram } from './instagram/quoteInstagram';
+import { requestAttestationInstagram } from './instagram/requestAttestationInstagram';
+import { attestInstagram } from './instagram/attestInstagram';
 
 import { quoteTwitch } from './twitch/quoteTwitch';
 import { requestAttestationTwitch } from './twitch/requestAttestationTwitch';
@@ -136,6 +139,7 @@ const logger = {
   await testYoutubeCType();
   await testInstagramCType();
 
+  await testLinkedInCType();
   server.logger.info('CTypes tested');
 
   await listenForTweets();
@@ -180,6 +184,9 @@ const logger = {
   server.route(authHtmlInstagram);
   server.route(authUrlInstagram);
   server.route(confirmInstagram);
+  server.route(quoteInstagram);
+  server.route(requestAttestationInstagram);
+  server.route(attestInstagram);
 
   server.route(authUrlTelegram);
   server.route(confirmTelegram);

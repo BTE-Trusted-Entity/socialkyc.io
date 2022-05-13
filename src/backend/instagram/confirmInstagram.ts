@@ -22,6 +22,7 @@ import { paths } from '../endpoints/paths';
 import { configuration } from '../utilities/configuration';
 
 import { instagramEndpoints } from './instagramEndpoints';
+import { instagramCType } from './instagramCType';
 
 const zodPayload = z.object({
   sessionId: z.string(),
@@ -74,16 +75,31 @@ async function handler(request: Request, h: ResponseToolkit) {
   };
   const url = new URL(`/${body.user_id}`, instagramEndpoints.profile);
   url.search = new URLSearchParams(searchParams).toString();
-  logger.debug(url);
+  logger.debug(url.toString());
   const profile = (await got(url).json()) as {
-    data: { id: string; username: string; account_type: string };
+    id: string;
+    username: string;
+    account_type: string;
   };
-
+  logger.debug(profile);
   logger.debug('Found Instagram profile, creating claim');
 
-  logger.debug('Twitch claim created');
+  const claimContents = {
+    Username: profile.username,
+    id: profile.id,
+    'Account type': profile.account_type,
+  };
+  const claim = Claim.fromCTypeAndClaimContents(
+    instagramCType,
+    claimContents,
+    session.did,
+  );
 
-  return h.response(profile.data as Output);
+  setSession({ ...session, claim, confirmed: true });
+
+  logger.debug('Instagram claim created');
+
+  return h.response(profile as Output);
 }
 
 export const confirmInstagram: ServerRoute = {
