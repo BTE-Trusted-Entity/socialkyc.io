@@ -81,8 +81,8 @@ async function handler(request: Request, h: ResponseToolkit) {
 
   const claimContents = {
     Username: profile.username,
-    id: profile.id,
-    'Account type': profile.account_type,
+    'User ID': profile.id,
+    'Account Type': profile.account_type,
   };
   const claim = Claim.fromCTypeAndClaimContents(
     instagramCType,
