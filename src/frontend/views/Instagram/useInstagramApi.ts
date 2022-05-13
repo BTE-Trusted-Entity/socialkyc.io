@@ -1,12 +1,11 @@
 import { useMemo } from 'react';
 
-import { quoteTwitch } from '../../../backend/twitch/quoteTwitchApi';
-import { requestAttestationTwitch } from '../../../backend/twitch/requestAttestationTwitchApi';
-import { attestTwitch } from '../../../backend/twitch/attestTwitchApi';
-
 import { bindToSession } from '../../utilities/bindToSession';
 import { authUrlInstagram } from '../../../backend/instagram/authUrlInstagramApi';
 import { confirmInstagram } from '../../../backend/instagram/confirmInstagramApi';
+import { quoteInstagram } from '../../../backend/instagram/quoteInstagramApi';
+import { requestAttestationInstagram } from '../../../backend/instagram/requestAttestationInstagramApi';
+import { attestInstagram } from '../../../backend/instagram/attestInstagramApi';
 
 export function useInstagramApi(sessionId: string) {
   return useMemo(() => {
@@ -14,9 +13,9 @@ export function useInstagramApi(sessionId: string) {
     return {
       authUrl: sessionBound(authUrlInstagram),
       confirm: sessionBound(confirmInstagram),
-      quote: sessionBound(quoteTwitch),
-      requestAttestation: sessionBound(requestAttestationTwitch),
-      attest: sessionBound(attestTwitch),
+      quote: sessionBound(quoteInstagram),
+      requestAttestation: sessionBound(requestAttestationInstagram),
+      attest: sessionBound(attestInstagram),
     };
   }, [sessionId]);
 }

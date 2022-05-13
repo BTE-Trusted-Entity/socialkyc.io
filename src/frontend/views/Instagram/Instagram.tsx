@@ -18,8 +18,9 @@ import {
 import { useInstagramApi } from './useInstagramApi';
 
 export interface InstagramProfile {
-  login: string;
   id: string;
+  username: string;
+  account_type: string;
 }
 
 interface Props {

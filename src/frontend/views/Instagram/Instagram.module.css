@@ -1,6 +1,6 @@
 .heading {
   composes: heading from '../../components/CredentialFlow/CredentialFlow.module.css';
-  background-image: url('../Attester/twitch.svg');
+  background-image: url('../Attester/instagram.svg');
 }
 
 .buttonsLine {

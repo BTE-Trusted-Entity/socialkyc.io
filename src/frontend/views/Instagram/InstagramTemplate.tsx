@@ -116,7 +116,10 @@ export function InstagramTemplate({
             <dd>{profile.id}</dd>
 
             <dt>Username:</dt>
-            <dd>{profile.login}</dd>
+            <dd>{profile.username}</dd>
+
+            <dt>Account Type:</dt>
+            <dd>{profile.account_type}</dd>
           </dl>
 
           <p>
