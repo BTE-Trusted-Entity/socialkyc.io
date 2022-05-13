@@ -32,8 +32,6 @@ export function Instagram({ session }: Props): JSX.Element {
     code?: string;
     secret?: string;
   }) || { code: undefined, secret: undefined };
-  console.log(code);
-
   const initialStatus = code && secret ? 'authorizing' : 'none';
 
   const [flowError, setFlowError] = useState<FlowError>();
