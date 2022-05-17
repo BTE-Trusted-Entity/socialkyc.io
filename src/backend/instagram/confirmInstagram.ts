@@ -62,7 +62,6 @@ async function handler(request: Request, h: ResponseToolkit) {
       },
     })
     .json()) as { access_token: string; user_id: string };
-  logger.debug(body);
   logger.debug('Access token granted, fetching instagram profile');
   const searchParams = {
     fields: 'id,username,account_type',
@@ -70,13 +69,11 @@ async function handler(request: Request, h: ResponseToolkit) {
   };
   const url = new URL(`/${body.user_id}`, instagramEndpoints.profile);
   url.search = new URLSearchParams(searchParams).toString();
-  logger.debug(url.toString());
   const profile = (await got(url).json()) as {
     id: string;
     username: string;
     account_type: string;
   };
-  logger.debug(profile);
   logger.debug('Found Instagram profile, creating claim');
 
   const claimContents = {
