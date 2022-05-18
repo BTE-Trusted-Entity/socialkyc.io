@@ -18,6 +18,7 @@ import {
   sessionMockReset,
   sessionMockSendPromise,
 } from '../../utilities/session.mock';
+import { ClosedRejection } from '../../utilities/session';
 
 import { useDiscordApi } from './useDiscordApi';
 import { Discord, DiscordProfile } from './Discord';
@@ -36,7 +37,7 @@ let mockDiscordApi: ReturnType<typeof useDiscordApi>;
 let authUrlPromise: TestPromise<string>;
 let confirmPromise: TestPromise<DiscordProfile>;
 let quotePromise: TestPromise<IEncryptedMessage>;
-let requestPromise: TestPromise<Record<string, never>>;
+let requestPromise: TestPromise<void>;
 let attestPromise: TestPromise<IEncryptedMessage>;
 
 async function signInWithDiscord() {
@@ -201,7 +202,7 @@ describe('Discord', () => {
     expectAttestationRequested();
 
     await act(async () => {
-      requestPromise.resolve({});
+      requestPromise.resolve();
     });
     expectIsNotProcessing(container);
     await expectAnchoringInProgress();
@@ -387,7 +388,7 @@ describe('Discord', () => {
     });
 
     await act(async () => {
-      requestPromise.reject(new Error('closed'));
+      requestPromise.reject(new ClosedRejection());
       await listenerPromise;
       sessionMockSendPromise.resolve(undefined);
     });
@@ -431,7 +432,7 @@ describe('Discord', () => {
     expectAttestationRequested();
 
     await act(async () => {
-      requestPromise.resolve({});
+      requestPromise.resolve();
     });
     expectIsNotProcessing(container);
     await expectAnchoringInProgress();

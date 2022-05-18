@@ -16,6 +16,7 @@ import {
   sessionMock,
   sessionMockReset,
 } from '../../utilities/session.mock';
+import { ClosedRejection } from '../../utilities/session';
 
 import { useTelegramApi } from './useTelegramApi';
 import { useAuthData } from './useAuthData';
@@ -31,7 +32,7 @@ let mockTelegramApi: ReturnType<typeof useTelegramApi>;
 let authUrlPromise: TestPromise<string>;
 let confirmPromise: TestPromise<TelegramProfile>;
 let quotePromise: TestPromise<IEncryptedMessage>;
-let requestPromise: TestPromise<Record<string, never>>;
+let requestPromise: TestPromise<void>;
 let attestPromise: TestPromise<IEncryptedMessage>;
 
 jest.mock('./useAuthData');
@@ -185,7 +186,7 @@ describe('Telegram', () => {
     expectAttestationRequested();
 
     await act(async () => {
-      requestPromise.resolve({});
+      requestPromise.resolve();
     });
     expectIsNotProcessing(container);
     await expectAnchoringInProgress();
@@ -341,7 +342,7 @@ describe('Telegram', () => {
     });
 
     await act(async () => {
-      requestPromise.reject(new Error('closed'));
+      requestPromise.reject(new ClosedRejection());
       await listenerPromise;
       sessionMockSendPromise.resolve(undefined);
     });
@@ -379,7 +380,7 @@ describe('Telegram', () => {
     expectAttestationRequested();
 
     await act(async () => {
-      requestPromise.resolve({});
+      requestPromise.resolve();
     });
     expectIsNotProcessing(container);
     await expectAnchoringInProgress();

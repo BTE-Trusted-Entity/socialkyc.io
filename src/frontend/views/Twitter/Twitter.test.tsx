@@ -16,6 +16,7 @@ import {
   sessionMockReset,
   sessionMockSendPromise,
 } from '../../utilities/session.mock';
+import { ClosedRejection } from '../../utilities/session';
 
 import { useTwitterApi } from './useTwitterApi';
 import { Twitter } from './Twitter';
@@ -23,7 +24,7 @@ import { Twitter } from './Twitter';
 jest.mock('./useTwitterApi');
 let mockTwitterApi: ReturnType<typeof useTwitterApi>;
 let quotePromise: TestPromise<IEncryptedMessage>;
-let requestPromise: TestPromise<{ secret: string }>;
+let requestPromise: TestPromise<string>;
 let confirmPromise: TestPromise<undefined>;
 let attestPromise: TestPromise<IEncryptedMessage>;
 
@@ -144,7 +145,7 @@ describe('Twitter', () => {
     expectAttestationRequested();
 
     await act(async () => {
-      requestPromise.resolve({ secret: 'SECRET' });
+      requestPromise.resolve('SECRET');
     });
     expectIsNotProcessing(container);
 
@@ -260,7 +261,7 @@ describe('Twitter', () => {
     });
 
     await act(async () => {
-      requestPromise.reject(new Error('closed'));
+      requestPromise.reject(new ClosedRejection());
       await listenerPromise;
       sessionMockSendPromise.resolve(undefined);
     });
@@ -307,7 +308,7 @@ describe('Twitter', () => {
     expectAttestationRequested();
 
     await act(async () => {
-      requestPromise.resolve({ secret: 'SECRET' });
+      requestPromise.resolve('SECRET');
     });
     expectIsNotProcessing(container);
     await expectSecretInMessage();
@@ -338,7 +339,7 @@ describe('Twitter', () => {
     expectAttestationRequested();
 
     await act(async () => {
-      requestPromise.resolve({ secret: 'SECRET' });
+      requestPromise.resolve('SECRET');
     });
     expectIsNotProcessing(container);
     await expectSecretInMessage();

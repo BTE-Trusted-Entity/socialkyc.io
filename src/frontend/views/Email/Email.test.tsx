@@ -18,6 +18,8 @@ import {
   sessionMockReset,
   sessionMockSendPromise,
 } from '../../utilities/session.mock';
+import { ClosedRejection } from '../../utilities/session';
+import { InvalidEmail } from '../../../backend/email/requestAttestationEmailApi';
 
 import { useEmailApi } from './useEmailApi';
 import { Email } from './Email';
@@ -234,7 +236,7 @@ describe('Email', () => {
     });
 
     await act(async () => {
-      requestPromise.reject(new Error('closed'));
+      requestPromise.reject(new ClosedRejection());
       await listenerPromise;
       sessionMockSendPromise.resolve(undefined);
     });
@@ -267,7 +269,7 @@ describe('Email', () => {
     });
 
     await act(async () => {
-      requestPromise.reject(new Error('400: send email failed'));
+      requestPromise.reject(new InvalidEmail());
       await listenerPromise;
       sessionMockSendPromise.resolve(undefined);
     });

@@ -18,9 +18,13 @@ import { detect } from 'detect-browser';
 
 import * as styles from './Attester.module.css';
 
-import { apiWindow, getSession, Session } from '../../utilities/session';
-
-import { exceptionToError } from '../../utilities/exceptionToError';
+import {
+  apiWindow,
+  ClosedRejection,
+  getSession,
+  Session,
+  UnauthorizedRejection,
+} from '../../utilities/session';
 import { DetailedMessage } from '../../components/DetailedMessage/DetailedMessage';
 import { Spinner } from '../../components/Spinner/Spinner';
 import { Email } from '../Email/Email';
@@ -247,11 +251,9 @@ function Connect({ setSession }: { setSession: (s: Session) => void }) {
           extensionOutput.postMessage(extension);
         };
       } catch (exception) {
-        const { message } = exceptionToError(exception);
-        // TODO: need to conform to the spec
-        if (message.includes('closed')) {
+        if (exception instanceof ClosedRejection) {
           setError('closed');
-        } else if (message.includes('Not authorized')) {
+        } else if (exception instanceof UnauthorizedRejection) {
           setError('rejected');
         } else {
           setError('unknown');

@@ -15,5 +15,4 @@ export async function checkSession(
   input: CheckSessionInput,
 ): Promise<CheckSessionOutput> {
   await ky.post(paths.session, { json: input });
-  return undefined;
 }

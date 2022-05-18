@@ -1,16 +1,14 @@
-import { useState, useEffect, useCallback, FormEvent } from 'react';
+import { FormEvent, useCallback, useEffect, useState } from 'react';
 
 import { useRouteMatch } from 'react-router-dom';
 
 import { IEncryptedMessage } from '@kiltprotocol/types';
 
-import { Session } from '../../utilities/session';
+import { Rejection, Session } from '../../utilities/session';
 
 import { paths } from '../../paths';
 
-import { exceptionToError } from '../../utilities/exceptionToError';
-
-import { AttestationStatus, GithubTemplate, FlowError } from './GithubTemplate';
+import { AttestationStatus, FlowError, GithubTemplate } from './GithubTemplate';
 import { useGithubApi } from './useGithubApi';
 
 export interface GithubProfile {
@@ -89,8 +87,7 @@ export function Github({ session }: Props): JSX.Element {
             setBackupMessage(await githubApi.attest({}));
             setStatus('ready');
           } catch (exception) {
-            const { message } = exceptionToError(exception);
-            if (message.includes('closed') || message.includes('rejected')) {
+            if (exception instanceof Rejection) {
               setFlowError('closed');
             } else {
               console.error(exception);
@@ -121,8 +118,7 @@ export function Github({ session }: Props): JSX.Element {
       }
       await session.send(backupMessage);
     } catch (exception) {
-      const { message } = exceptionToError(exception);
-      if (message.includes('closed')) {
+      if (exception instanceof Rejection) {
         return; // don’t care that the user has closed the dialog
       }
       setFlowError('unknown');
