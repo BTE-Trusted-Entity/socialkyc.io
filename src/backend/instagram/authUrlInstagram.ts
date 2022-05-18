@@ -30,7 +30,7 @@ async function handler(request: Request): Promise<string> {
   const searchParams = {
     client_id: configuration.instagram.clientId,
     redirect_uri: instagramEndpoints.redirectUri,
-    scope: 'user_profile,user_media',
+    scope: 'user_profile',
     response_type: 'code',
     state: secret,
   };
