@@ -67,7 +67,7 @@ async function handler(request: Request, h: ResponseToolkit) {
     fields: 'id,username,account_type',
     access_token: body.access_token,
   };
-  const url = new URL(`/${body.user_id}`, instagramEndpoints.profile);
+  const url = new URL(body.user_id, instagramEndpoints.profile);
   url.search = new URLSearchParams(searchParams).toString();
   const profile = (await got(url).json()) as {
     id: string;
