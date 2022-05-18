@@ -8,29 +8,25 @@ import { instagramEndpoints } from './instagramEndpoints';
 
 export const instagramConnectionState = trackConnectionState(10 * 60 * 1000);
 
-const isInvalidCode = (body: string) => {
-  return JSON.parse(body).error_message === 'Invalid authorization code';
+const isInvalidCode = (error: HTTPError) => {
+  const errorMessage = JSON.parse(error.response.body as string).error_message;
+  return errorMessage === 'Invalid authorization code';
 };
 
 export async function canAccessInstagram() {
   try {
-    await got
-      .post(instagramEndpoints.token, {
-        form: {
-          client_id: configuration.instagram.clientId,
-          client_secret: configuration.instagram.secret,
-          code: 'code',
-          grant_type: 'authorization_code',
-          redirect_uri: instagramEndpoints.redirectUri,
-        },
-      })
-      .json();
+    await got.post(instagramEndpoints.token, {
+      form: {
+        client_id: configuration.instagram.clientId,
+        client_secret: configuration.instagram.secret,
+        code: 'code',
+        grant_type: 'authorization_code',
+        redirect_uri: instagramEndpoints.redirectUri,
+      },
+    });
     instagramConnectionState.on();
   } catch (error) {
-    if (
-      error instanceof HTTPError &&
-      isInvalidCode(error.response.body as string)
-    ) {
+    if (isInvalidCode(error as HTTPError)) {
       instagramConnectionState.on();
       return;
     }

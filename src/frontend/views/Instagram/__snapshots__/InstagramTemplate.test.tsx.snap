@@ -174,7 +174,7 @@ exports[`InstagramTemplate should match snapshot with flowerror=unauthorized 1`]
       <p
         class="message"
       >
-        There was an error authorizing your instagram account.
+        There was an error authorizing your Instagram account.
       </p>
       <p>
         Click “Try Again” or reload the page or restart your browser.
@@ -347,7 +347,7 @@ exports[`InstagramTemplate should match snapshot with status=authorizing 1`] = `
         Authorizing
       </p>
       <p>
-        Please wait, accessing instagram account details.
+        Please wait, accessing Instagram account details.
       </p>
     </section>
     <a
@@ -397,7 +397,7 @@ exports[`InstagramTemplate should match snapshot with status=none 1`] = `
         Generating link
       </p>
       <p>
-        Please wait, generating instagram authorization link.
+        Please wait, generating Instagram authorization link.
       </p>
     </section>
     <a

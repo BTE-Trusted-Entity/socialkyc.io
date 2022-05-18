@@ -243,7 +243,7 @@ describe('Instagram', () => {
 
     expect(
       await screen.findByText(
-        'There was an error authorizing your instagram account.',
+        'There was an error authorizing your Instagram account.',
       ),
     ).toBeInTheDocument();
 
