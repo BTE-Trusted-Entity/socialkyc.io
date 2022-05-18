@@ -11,14 +11,13 @@ import Boom from '@hapi/boom';
 
 import { Claim } from '@kiltprotocol/core';
 
-import { getSessionWithDid, setSession } from '../utilities/sessionStorage';
+import { getSession, setSession } from '../utilities/sessionStorage';
 import { paths } from '../endpoints/paths';
 import { configuration } from '../utilities/configuration';
 
 import { telegramCType } from './telegramCType';
 
 const zodPayload = z.object({
-  sessionId: z.string(),
   json: z.string(),
 });
 
@@ -68,8 +67,8 @@ async function handler(
   const { logger } = request;
   logger.debug('Telegram authorization started');
 
-  const { json, sessionId } = request.payload as Input;
-  const session = getSessionWithDid({ sessionId });
+  const { json } = request.payload as Input;
+  const session = getSession(request.headers);
 
   logger.debug('Parsing Telegram profile');
 

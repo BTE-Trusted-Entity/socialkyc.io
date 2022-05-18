@@ -10,13 +10,12 @@ import { IEncryptedMessage, MessageBodyType } from '@kiltprotocol/types';
 
 import { encryptMessageBody } from '../utilities/encryptMessage';
 import { paths } from '../endpoints/paths';
-import { getSessionWithDid } from '../utilities/sessionStorage';
+import { getSession } from '../utilities/sessionStorage';
 
 import { twitterCType } from './twitterCType';
 
 const zodPayload = z.object({
   username: z.string(),
-  sessionId: z.string(),
 });
 
 export type Input = z.infer<typeof zodPayload>;
@@ -30,11 +29,11 @@ async function handler(
   const { logger } = request;
   logger.debug('Twitter quote started');
 
-  const payload = request.payload as Input;
-  const { did, encryptionKeyId } = getSessionWithDid(payload);
+  const { username } = request.payload as Input;
+  const { did, encryptionKeyId } = getSession(request.headers);
 
   const claimContents = {
-    Twitter: payload.username.trim(),
+    Twitter: username.trim(),
   };
   const claim = Claim.fromCTypeAndClaimContents(
     twitterCType,

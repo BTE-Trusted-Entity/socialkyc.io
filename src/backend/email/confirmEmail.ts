@@ -9,8 +9,8 @@ import { z } from 'zod';
 
 import {
   deleteSecret,
-  getSession,
   getSessionBySecret,
+  getSession,
   setSession,
 } from '../utilities/sessionStorage';
 import { paths } from '../endpoints/paths';
@@ -19,7 +19,6 @@ import { emailCType } from './emailCType';
 
 const zodPayload = z.object({
   secret: z.string(),
-  sessionId: z.string(),
 });
 
 export type Input = z.infer<typeof zodPayload>;
@@ -33,7 +32,7 @@ async function handler(
   const { logger } = request;
   logger.debug('Session data migration started');
 
-  const { secret, sessionId } = request.payload as Input;
+  const { secret } = request.payload as Input;
 
   // This is the initial session in the first tab the user has open
   const firstSession = getSessionBySecret(secret);
@@ -46,7 +45,7 @@ async function handler(
   }
 
   // Clicking the confirmation link in the email opens a new tab with a new session
-  const currentSession = getSession({ sessionId });
+  const currentSession = getSession(request.headers);
 
   // carry over the request and attestation promise to the current session and clean up the initial one
   setSession({

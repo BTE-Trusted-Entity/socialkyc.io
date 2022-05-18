@@ -16,7 +16,6 @@ import { configuration } from '../utilities/configuration';
 import {
   getSecretForSession,
   getSession,
-  PayloadWithSession,
   setSession,
 } from '../utilities/sessionStorage';
 
@@ -106,7 +105,7 @@ async function handler(
     );
   }
 
-  const session = getSession(request.payload as PayloadWithSession);
+  const session = getSession(request.headers);
   delete session.attestationPromise;
 
   const { requestForAttestation } = await decryptRequestAttestation(request);

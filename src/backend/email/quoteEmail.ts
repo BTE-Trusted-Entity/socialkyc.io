@@ -9,14 +9,13 @@ import { Claim } from '@kiltprotocol/core';
 import { IEncryptedMessage, MessageBodyType } from '@kiltprotocol/types';
 
 import { encryptMessageBody } from '../utilities/encryptMessage';
-import { getSessionWithDid } from '../utilities/sessionStorage';
+import { getSession } from '../utilities/sessionStorage';
 import { paths } from '../endpoints/paths';
 
 import { emailCType } from './emailCType';
 
 const zodPayload = z.object({
   email: z.string(),
-  sessionId: z.string(),
 });
 
 export type Input = z.infer<typeof zodPayload>;
@@ -30,8 +29,8 @@ async function handler(
   const { logger } = request;
   logger.debug('Email quote started');
 
-  const { email, sessionId } = request.payload as Input;
-  const { did, encryptionKeyId } = getSessionWithDid({ sessionId });
+  const { email } = request.payload as Input;
+  const { did, encryptionKeyId } = getSession(request.headers);
 
   const claimContents = {
     Email: email.trim(),

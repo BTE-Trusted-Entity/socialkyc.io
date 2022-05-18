@@ -1,8 +1,8 @@
 import { z } from 'zod';
 import {
   Request,
-  ResponseToolkit,
   ResponseObject,
+  ResponseToolkit,
   ServerRoute,
 } from '@hapi/hapi';
 
@@ -15,7 +15,7 @@ import { Claim } from '@kiltprotocol/core';
 import {
   deleteSecret,
   getSessionBySecret,
-  getSessionWithDid,
+  getSession,
   setSession,
 } from '../utilities/sessionStorage';
 import { paths } from '../endpoints/paths';
@@ -25,7 +25,6 @@ import { githubEndpoints } from './githubEndpoints';
 import { githubCType } from './githubCType';
 
 const zodPayload = z.object({
-  sessionId: z.string(),
   code: z.string(),
   secret: z.string(),
 });
@@ -44,7 +43,7 @@ async function handler(
   const { logger } = request;
   logger.debug('Github authorization started');
 
-  const { secret, sessionId, code } = request.payload as Input;
+  const { secret, code } = request.payload as Input;
 
   // This is the initial session in the first tab the user has open
   const firstSession = getSessionBySecret(secret);
@@ -54,7 +53,7 @@ async function handler(
   logger.debug('Found session with secret');
   deleteSecret(secret);
 
-  const session = getSessionWithDid({ sessionId });
+  const session = getSession(request.headers);
 
   logger.debug('Exchanging code for access token');
 

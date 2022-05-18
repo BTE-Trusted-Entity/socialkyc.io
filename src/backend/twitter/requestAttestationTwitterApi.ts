@@ -1,4 +1,4 @@
-import ky from 'ky';
+import { KyInstance } from 'ky/distribution/types/ky';
 
 import { EncryptedMessageInput } from '../utilities/validateEncryptedMessage';
 import { paths } from '../endpoints/paths';
@@ -7,11 +7,8 @@ import { maybeRejected } from '../../frontend/utilities/maybeRejected';
 import { Output } from './requestAttestationTwitter';
 
 export async function requestAttestationTwitter(
-  input: EncryptedMessageInput,
+  json: EncryptedMessageInput,
+  ky: KyInstance,
 ): Promise<Output> {
-  return maybeRejected(
-    ky.post(paths.twitter.requestAttestation, {
-      json: input,
-    }),
-  );
+  return maybeRejected(ky.post(paths.twitter.requestAttestation, { json }));
 }

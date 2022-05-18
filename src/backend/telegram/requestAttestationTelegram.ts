@@ -10,11 +10,7 @@ import { RequestForAttestationUtils } from '@kiltprotocol/core';
 
 import Boom from '@hapi/boom';
 
-import {
-  getSession,
-  PayloadWithSession,
-  setSession,
-} from '../utilities/sessionStorage';
+import { getSession, setSession } from '../utilities/sessionStorage';
 import { validateEncryptedMessage } from '../utilities/validateEncryptedMessage';
 import { decryptRequestAttestation } from '../utilities/decryptMessage';
 import { paths } from '../endpoints/paths';
@@ -28,7 +24,7 @@ async function handler(
   const { logger } = request;
   logger.debug('Telegram request attestation started');
 
-  const session = getSession(request.payload as PayloadWithSession);
+  const session = getSession(request.headers);
   if (!session.confirmed) {
     throw Boom.badRequest('Telegram claim has not been confirmed');
   }

@@ -3,7 +3,6 @@ import { Request, ServerRoute } from '@hapi/hapi';
 import {
   getSecretForSession,
   getSession,
-  PayloadWithSession,
   setSession,
 } from '../utilities/sessionStorage';
 import { validateEncryptedMessage } from '../utilities/validateEncryptedMessage';
@@ -19,7 +18,7 @@ async function handler(request: Request): Promise<string> {
   const { logger } = request;
   logger.debug('Twitter request attestation started');
 
-  const session = getSession(request.payload as PayloadWithSession);
+  const session = getSession(request.headers);
   delete session.attestationPromise;
 
   const { requestForAttestation } = await decryptRequestAttestation(request);

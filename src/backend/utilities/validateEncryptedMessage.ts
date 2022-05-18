@@ -1,7 +1,6 @@
 import { z } from 'zod';
 
 const zodPayload = z.object({
-  sessionId: z.string(),
   message: z.object({
     receiverKeyId: z.string(),
     senderKeyId: z.string(),

@@ -1,21 +1,12 @@
 import { Request, ServerRoute } from '@hapi/hapi';
-import { z } from 'zod';
 
 import { configuration } from '../utilities/configuration';
-import {
-  getSecretForSession,
-  getSession,
-  PayloadWithSession,
-} from '../utilities/sessionStorage';
+import { getSecretForSession, getSession } from '../utilities/sessionStorage';
 import { paths } from '../endpoints/paths';
 
 import { instagramEndpoints } from './instagramEndpoints';
 
-const zodPayload = z.object({
-  sessionId: z.string(),
-});
-
-export type Input = z.infer<typeof zodPayload>;
+export type Input = Record<string, never>;
 
 export type Output = string;
 
@@ -23,7 +14,7 @@ async function handler(request: Request): Promise<string> {
   const { logger } = request;
   logger.debug('Instagram auth started');
 
-  const session = getSession(request.payload as PayloadWithSession);
+  const session = getSession(request.headers);
 
   const secret = getSecretForSession(session.sessionId);
 
@@ -44,9 +35,4 @@ export const authUrlInstagram: ServerRoute = {
   method: 'POST',
   path: paths.instagram.authUrl,
   handler,
-  options: {
-    validate: {
-      payload: async (payload) => zodPayload.parse(payload),
-    },
-  },
 };
