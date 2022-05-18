@@ -83,7 +83,7 @@ export function InstagramTemplate({
           icon="spinner"
           heading="Attestation process:"
           message="Generating link"
-          details="Please wait, generating instagram authorization link."
+          details="Please wait, generating Instagram authorization link."
         />
       )}
 
@@ -105,7 +105,7 @@ export function InstagramTemplate({
           icon="spinner"
           heading="Attestation process:"
           message="Authorizing"
-          details="Please wait, accessing instagram account details."
+          details="Please wait, accessing Instagram account details."
         />
       )}
 
@@ -153,7 +153,7 @@ export function InstagramTemplate({
         <DetailedMessage
           icon="exclamation"
           heading="Authorization error:"
-          message="There was an error authorizing your instagram account."
+          message="There was an error authorizing your Instagram account."
           details="Click “Try Again” or reload the page or restart your browser."
         />
       )}
