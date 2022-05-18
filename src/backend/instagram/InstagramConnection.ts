@@ -15,12 +15,15 @@ export async function canAccessInstagram() {
         form: {
           client_id: configuration.instagram.clientId,
           client_secret: configuration.instagram.secret,
+          code: 'code',
+          grant_type: 'authorization_code',
+          redirect_uri: instagramEndpoints.redirectUri,
         },
       })
       .json();
     instagramConnectionState.on();
   } catch (error) {
-    if (error instanceof HTTPError && error.response.statusCode < 500) {
+    if (error instanceof HTTPError && error.response.statusCode === 400) {
       instagramConnectionState.on();
       return;
     }
