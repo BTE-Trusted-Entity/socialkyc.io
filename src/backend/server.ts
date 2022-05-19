@@ -139,7 +139,6 @@ const logger = {
   await testYoutubeCType();
   await testInstagramCType();
 
-  await testLinkedInCType();
   server.logger.info('CTypes tested');
 
   await listenForTweets();
