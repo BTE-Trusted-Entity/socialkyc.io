@@ -55,8 +55,8 @@
     "zod": "^3.16.0"
   },
   "devDependencies": {
-    "@babel/core": "^7.17.12",
-    "@babel/preset-env": "^7.17.12",
+    "@babel/core": "^7.18.0",
+    "@babel/preset-env": "^7.18.0",
     "@jest/globals": "^28.1.0",
     "@parcel/optimizer-data-url": "^2.5.0",
     "@parcel/transformer-inline-string": "^2.5.0",
