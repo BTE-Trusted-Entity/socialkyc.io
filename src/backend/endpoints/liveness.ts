@@ -32,11 +32,6 @@ import {
   checkTelegramConnection,
   telegramConnectionState,
 } from '../telegram/telegramConnection';
-import {
-  canAccessLinkedIn,
-  checkLinkedInConnection,
-  linkedInConnectionState,
-} from '../linkedIn/linkedInConnection';
 
 import { paths } from './paths';
 
@@ -61,9 +56,6 @@ export async function testLiveness() {
 
   await canAccessTelegram();
   checkTelegramConnection();
-
-  await canAccessLinkedIn();
-  checkLinkedInConnection();
 }
 
 function handler() {
@@ -74,7 +66,6 @@ function handler() {
   const githubOk = !githubConnectionState.isOffForTooLong();
   const twitchOk = !twitchConnectionState.isOffForTooLong();
   const telegramOk = !telegramConnectionState.isOffForTooLong();
-  const linkedInOk = !linkedInConnectionState.isOffForTooLong();
 
   return (
     kiltOk &&
@@ -83,8 +74,7 @@ function handler() {
     discordOk &&
     githubOk &&
     twitchOk &&
-    telegramOk &&
-    linkedInOk
+    telegramOk
   );
 }
 

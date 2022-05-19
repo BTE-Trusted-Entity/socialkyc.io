@@ -10,7 +10,6 @@ import { testDiscordCType } from './discord/discordCType';
 import { testGithubCType } from './github/githubCType';
 import { testTwitchCType } from './twitch/twitchCType';
 import { testTelegramCType } from './telegram/telegramCType';
-import { testLinkedInCType } from './linkedIn/linkedInCType';
 import { configuration } from './utilities/configuration';
 import { configureAuthentication } from './utilities/configureAuthentication';
 import { configureDevErrors } from './utilities/configureDevErrors';
@@ -57,13 +56,6 @@ import { confirmTelegram } from './telegram/confirmTelegram';
 import { quoteTelegram } from './telegram/quoteTelegram';
 import { requestAttestationTelegram } from './telegram/requestAttestationTelegram';
 import { attestTelegram } from './telegram/attestTelegram';
-
-import { authHtmlLinkedIn } from './linkedIn/authHtmlLinkedIn';
-import { authUrlLinkedIn } from './linkedIn/authUrlLinkedIn';
-import { confirmLinkedIn } from './linkedIn/confirmLinkedIn';
-import { quoteLinkedIn } from './linkedIn/quoteLinkedIn';
-import { requestAttestationLinkedIn } from './linkedIn/requestAttestationLinkedIn';
-import { attestLinkedIn } from './linkedIn/attestLinkedIn';
 
 import { requestCredential } from './verifier/requestCredential';
 import { verify } from './verifier/verify';
@@ -127,7 +119,6 @@ const logger = {
   await testGithubCType();
   await testTwitchCType();
   await testTelegramCType();
-  await testLinkedInCType();
   server.logger.info('CTypes tested');
 
   await listenForTweets();
@@ -174,13 +165,6 @@ const logger = {
   server.route(quoteTelegram);
   server.route(requestAttestationTelegram);
   server.route(attestTelegram);
-
-  server.route(authHtmlLinkedIn);
-  server.route(authUrlLinkedIn);
-  server.route(confirmLinkedIn);
-  server.route(quoteLinkedIn);
-  server.route(requestAttestationLinkedIn);
-  server.route(attestLinkedIn);
 
   server.route(requestCredential);
   server.route(verify);
