@@ -16,7 +16,7 @@ import {
   setSession,
 } from '../utilities/sessionStorage';
 import { validateEncryptedMessage } from '../utilities/validateEncryptedMessage';
-import { decryptRequestAttestationContent } from '../utilities/decryptMessage';
+import { decryptRequestAttestation } from '../utilities/decryptMessage';
 import { paths } from '../endpoints/paths';
 
 export type Output = Record<string, never>;
@@ -28,7 +28,7 @@ async function handler(
   const { logger } = request;
   logger.debug('Instagram request attestation started');
 
-  const content = await decryptRequestAttestationContent(request);
+  const content = await decryptRequestAttestation(request);
   if (!content) {
     return h.response().code(StatusCodes.ACCEPTED);
   }
