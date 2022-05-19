@@ -25,5 +25,4 @@ export const redirectedPaths = [
   paths.discordAuth,
   paths.githubAuth,
   paths.twitchAuth,
-  paths.linkedInAuth,
 ];
