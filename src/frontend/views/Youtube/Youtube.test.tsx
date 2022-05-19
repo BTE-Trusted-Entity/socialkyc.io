@@ -18,6 +18,7 @@ import {
   sessionMockReset,
   sessionMockSendPromise,
 } from '../../utilities/session.mock';
+import { ClosedRejection } from '../../utilities/session';
 
 import { useYoutubeApi } from './useYoutubeApi';
 import { Youtube, YoutubeChannel } from './Youtube';
@@ -35,7 +36,7 @@ let mockYoutubeApi: ReturnType<typeof useYoutubeApi>;
 let authUrlPromise: TestPromise<string>;
 let confirmPromise: TestPromise<YoutubeChannel>;
 let quotePromise: TestPromise<IEncryptedMessage>;
-let requestPromise: TestPromise<Record<string, never>>;
+let requestPromise: TestPromise<void>;
 let attestPromise: TestPromise<IEncryptedMessage>;
 
 async function signInWithYoutube() {
@@ -86,7 +87,7 @@ function expectAuthUrlCalled() {
   expect(mockYoutubeApi.authUrl).toHaveBeenCalledWith({});
 }
 
-function expectconfirmCalledWith(routeParams: {
+function expectConfirmCalledWith(routeParams: {
   secret: string;
   code: string;
 }) {
@@ -190,7 +191,7 @@ describe('Youtube', () => {
     );
 
     expectIsNotProcessing(container);
-    expectconfirmCalledWith({ secret, code });
+    expectConfirmCalledWith({ secret, code });
 
     await act(async () => {
       confirmPromise.resolve(channelMock);
@@ -207,7 +208,7 @@ describe('Youtube', () => {
     expectAttestationRequested();
 
     await act(async () => {
-      requestPromise.resolve({});
+      requestPromise.resolve();
     });
     expectIsNotProcessing(container);
     await expectAnchoringInProgress();
@@ -239,7 +240,7 @@ describe('Youtube', () => {
 
     expectIsNotProcessing(container);
 
-    expectconfirmCalledWith({ secret, code });
+    expectConfirmCalledWith({ secret, code });
 
     await act(async () => {
       confirmPromise.reject(new Error('authorization'));
@@ -270,7 +271,7 @@ describe('Youtube', () => {
 
     expectIsNotProcessing(container);
 
-    expectconfirmCalledWith({ secret, code });
+    expectConfirmCalledWith({ secret, code });
 
     await act(async () => {
       confirmPromise.reject(new Error('No channels'));
@@ -300,7 +301,7 @@ describe('Youtube', () => {
     );
 
     expectIsNotProcessing(container);
-    expectconfirmCalledWith({ secret, code });
+    expectConfirmCalledWith({ secret, code });
 
     await act(async () => {
       confirmPromise.resolve(channelMock);
@@ -333,7 +334,7 @@ describe('Youtube', () => {
     );
 
     expectIsNotProcessing(container);
-    expectconfirmCalledWith({ secret, code });
+    expectConfirmCalledWith({ secret, code });
 
     await act(async () => {
       confirmPromise.resolve(channelMock);
@@ -367,7 +368,7 @@ describe('Youtube', () => {
     );
 
     expectIsNotProcessing(container);
-    expectconfirmCalledWith({ secret, code });
+    expectConfirmCalledWith({ secret, code });
 
     await act(async () => {
       confirmPromise.resolve(channelMock);
@@ -405,7 +406,7 @@ describe('Youtube', () => {
     );
 
     expectIsNotProcessing(container);
-    expectconfirmCalledWith({ secret, code });
+    expectConfirmCalledWith({ secret, code });
 
     await act(async () => {
       confirmPromise.resolve(channelMock);
@@ -424,7 +425,7 @@ describe('Youtube', () => {
     });
 
     await act(async () => {
-      requestPromise.reject(new Error('closed'));
+      requestPromise.reject(new ClosedRejection());
       await listenerPromise;
       sessionMockSendPromise.resolve(undefined);
     });
@@ -450,7 +451,7 @@ describe('Youtube', () => {
     );
 
     expectIsNotProcessing(container);
-    expectconfirmCalledWith({ secret, code });
+    expectConfirmCalledWith({ secret, code });
 
     await act(async () => {
       confirmPromise.resolve(channelMock);
@@ -468,7 +469,7 @@ describe('Youtube', () => {
     expectAttestationRequested();
 
     await act(async () => {
-      requestPromise.resolve({});
+      requestPromise.resolve();
     });
     expectIsNotProcessing(container);
     await expectAnchoringInProgress();
