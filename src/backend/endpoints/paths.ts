@@ -54,19 +54,10 @@ export const paths = {
     attest: '/api/telegram/attest',
   },
 
-  linkedIn: {
-    authUrl: '/api/linkedin/authUrl',
-    confirm: '/api/linkedin/confirm',
-    quote: '/api/linkedin/quote',
-    requestAttestation: '/api/linkedin/request-attestation',
-    attest: '/api/linkedin/attest',
-  },
-
   oauth: {
     discord: '/discord/auth',
     github: '/github/auth',
     twitch: '/twitch/auth',
-    linkedIn: '/linkedin/auth',
   },
 
   verifier: {

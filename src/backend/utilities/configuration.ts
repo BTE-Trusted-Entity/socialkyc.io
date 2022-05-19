@@ -87,15 +87,6 @@ if (!telegram.token) {
   throw new ConfigurationError('No Telegram token provided');
 }
 
-const linkedIn = {
-  clientId: env.CLIENT_ID_LINKEDIN as string,
-  secret: env.SECRET_LINKEDIN,
-};
-
-if (!linkedIn.clientId || !linkedIn.secret) {
-  throw new ConfigurationError('No LinkedIn client credentials provided');
-}
-
 const lowBalanceAlertRecipients = env.LOW_BALANCE_ALERT_RECIPIENTS;
 
 if (!lowBalanceAlertRecipients) {
@@ -122,6 +113,5 @@ export const configuration = {
   github,
   twitch,
   telegram,
-  linkedIn,
   lowBalanceAlertRecipients,
 };
