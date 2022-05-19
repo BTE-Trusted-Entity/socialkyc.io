@@ -31,6 +31,8 @@ const cTypes: Record<string, string> = {
     'Telegram',
   '0x329a2a5861ea63c250763e5e4c4d4a18fe4470a31e541365c7fb831e5432b940':
     'Youtube',
+  '0xa3cc696621b9fef5fc94a61078ceecadd957f18634ccff05b9030f274e376459':
+    'Instagram',
 };
 
 function handleBeforeUnload(event: Event) {
