@@ -8,11 +8,13 @@ import { instagramEndpoints } from './instagramEndpoints';
 
 export const instagramConnectionState = trackConnectionState(10 * 60 * 1000);
 
-const isInvalidCode = (error: HTTPError) => {
-  const errorMessage = JSON.parse(error.response.body as string).error_message;
-  return errorMessage === 'Invalid authorization code';
-};
-
+function isInvalidCode(error: unknown) {
+  return (
+    error instanceof HTTPError &&
+    JSON.parse(error.response.body as string).error_message ===
+      'Invalid authorization code'
+  );
+}
 export async function canAccessInstagram() {
   try {
     await got.post(instagramEndpoints.token, {
@@ -26,7 +28,7 @@ export async function canAccessInstagram() {
     });
     instagramConnectionState.on();
   } catch (error) {
-    if (isInvalidCode(error as HTTPError)) {
+    if (isInvalidCode(error)) {
       instagramConnectionState.on();
       return;
     }
