@@ -26,6 +26,11 @@ import {
   checkTwitchConnection,
   twitchConnectionState,
 } from '../twitch/twitchConnection';
+import {
+  canAccessYoutube,
+  checkYoutubeConnection,
+  youtubeConnectionState,
+} from '../youtube/youtubeConnection';
 import { reportBalance } from '../utilities/reportBalance';
 import {
   canAccessTelegram,
@@ -56,6 +61,9 @@ export async function testLiveness() {
 
   await canAccessTelegram();
   checkTelegramConnection();
+
+  await canAccessYoutube();
+  checkYoutubeConnection();
 }
 
 function handler() {
@@ -66,6 +74,7 @@ function handler() {
   const githubOk = !githubConnectionState.isOffForTooLong();
   const twitchOk = !twitchConnectionState.isOffForTooLong();
   const telegramOk = !telegramConnectionState.isOffForTooLong();
+  const youtubeOk = !youtubeConnectionState.isOffForTooLong();
 
   return (
     kiltOk &&
@@ -74,7 +83,8 @@ function handler() {
     discordOk &&
     githubOk &&
     twitchOk &&
-    telegramOk
+    telegramOk &&
+    youtubeOk
   );
 }
 

@@ -29,6 +29,8 @@ const cTypes: Record<string, string> = {
     'Twitch',
   '0xcef8f3fe5aa7379faea95327942fd77287e1c144e3f53243e55705f11e890a4c':
     'Telegram',
+  '0x329a2a5861ea63c250763e5e4c4d4a18fe4470a31e541365c7fb831e5432b940':
+    'Youtube',
 };
 
 function handleBeforeUnload(event: Event) {

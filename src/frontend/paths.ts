@@ -12,11 +12,14 @@ export const paths = {
   twitch: '/twitch',
   twitchAuth: '/twitch/:code/:secret',
   telegram: '/telegram',
+  youtube: '/youtube',
+  youtubeAuth: '/youtube/:code/:secret',
   window: {
     email: backendPaths.email.confirmationHtml.replace('{secret}', ':secret'),
     discord: backendPaths.oauth.discord,
     github: backendPaths.oauth.github,
     twitch: backendPaths.oauth.twitch,
+    youtube: backendPaths.oauth.youtube,
   },
 };
 
@@ -25,4 +28,5 @@ export const redirectedPaths = [
   paths.discordAuth,
   paths.githubAuth,
   paths.twitchAuth,
+  paths.youtubeAuth,
 ];

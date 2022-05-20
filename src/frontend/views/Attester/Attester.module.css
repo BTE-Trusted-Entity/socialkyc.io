@@ -62,6 +62,12 @@
   --credential-logo: url('/src/frontend/views/Attester/telegram.svg');
 }
 
+.youtube {
+  composes: credential;
+
+  --credential-logo: url('/src/frontend/views/Attester/youtube_beta.svg');
+}
+
 .buttonPrimary {
   composes: buttonPrimary from '../../components/Button/Button.module.css';
   margin: 2.5rem auto;

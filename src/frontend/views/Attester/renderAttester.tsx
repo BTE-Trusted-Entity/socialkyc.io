@@ -23,6 +23,9 @@ function getInitialEntry() {
   const twitch = matchPath(window.location.pathname, {
     path: paths.window.twitch,
   });
+  const youtube = matchPath(window.location.pathname, {
+    path: paths.window.youtube,
+  });
 
   if (email) {
     const { secret } = email.params;
@@ -33,7 +36,7 @@ function getInitialEntry() {
     });
   }
 
-  if (discord || github || twitch) {
+  if (discord || github || twitch || youtube) {
     const searchParams = new URLSearchParams(window.location.search);
     const code = searchParams.get('code');
     const secret = searchParams.get('state');
@@ -54,6 +57,9 @@ function getInitialEntry() {
     }
     if (twitch) {
       path = paths.twitchAuth;
+    }
+    if (youtube) {
+      path = paths.youtubeAuth;
     }
 
     if (!path) {

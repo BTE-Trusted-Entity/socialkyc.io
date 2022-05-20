@@ -34,6 +34,7 @@ import { Discord } from '../Discord/Discord';
 import { Github } from '../Github/Github';
 import { Twitch } from '../Twitch/Twitch';
 import { Telegram } from '../Telegram/Telegram';
+import { Youtube } from '../Youtube/Youtube';
 import { Disconnect } from '../../components/Disconnect/Disconnect';
 import {
   extensionInput,
@@ -193,6 +194,11 @@ function GetCredentials() {
         <li>
           <Link to={paths.telegram} className={styles.telegram}>
             Telegram Account
+          </Link>
+        </li>
+        <li>
+          <Link to={paths.youtube} className={styles.youtube}>
+            YouTube Channel
           </Link>
         </li>
       </ul>
@@ -431,6 +437,9 @@ export function Attester(): JSX.Element {
         </Route>
         <Route path={paths.telegram}>
           <Telegram session={session} />
+        </Route>
+        <Route path={paths.youtube}>
+          <Youtube session={session} />
         </Route>
         <Route>
           <Welcome />

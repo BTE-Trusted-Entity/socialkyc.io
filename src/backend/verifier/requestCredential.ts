@@ -17,6 +17,7 @@ import { discordCType } from '../discord/discordCType';
 import { githubCType } from '../github/githubCType';
 import { twitchCType } from '../twitch/twitchCType';
 import { telegramCType } from '../telegram/telegramCType';
+import { youtubeCType } from '../youtube/youtubeCType';
 import { encryptMessageBody } from '../utilities/encryptMessage';
 import { paths } from '../endpoints/paths';
 import { getSessionWithDid, setSession } from '../utilities/sessionStorage';
@@ -37,6 +38,7 @@ const cTypes: Record<string, CType['hash']> = {
   github: githubCType.hash,
   twitch: twitchCType.hash,
   telegram: telegramCType.hash,
+  youtube: youtubeCType.hash,
 };
 
 function getCTypeHash(cType: string) {
