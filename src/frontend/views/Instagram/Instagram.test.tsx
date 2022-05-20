@@ -18,6 +18,7 @@ import {
   sessionMockReset,
   sessionMockSendPromise,
 } from '../../utilities/session.mock';
+import { ClosedRejection } from '../../utilities/session';
 
 import { useInstagramApi } from './useInstagramApi';
 import { Instagram, InstagramProfile } from './Instagram';
@@ -36,7 +37,7 @@ let mockInstagramApi: ReturnType<typeof useInstagramApi>;
 let authUrlPromise: TestPromise<string>;
 let confirmPromise: TestPromise<InstagramProfile>;
 let quotePromise: TestPromise<IEncryptedMessage>;
-let requestPromise: TestPromise<Record<string, never>>;
+let requestPromise: TestPromise<void>;
 let attestPromise: TestPromise<IEncryptedMessage>;
 
 async function signInWithInstagram() {
@@ -203,7 +204,7 @@ describe('Instagram', () => {
     expectAttestationRequested();
 
     await act(async () => {
-      requestPromise.resolve({});
+      requestPromise.resolve();
     });
     expectIsNotProcessing(container);
     await expectAnchoringInProgress();
@@ -389,7 +390,7 @@ describe('Instagram', () => {
     });
 
     await act(async () => {
-      requestPromise.reject(new Error('closed'));
+      requestPromise.reject(new ClosedRejection());
       await listenerPromise;
       sessionMockSendPromise.resolve(undefined);
     });
@@ -433,7 +434,7 @@ describe('Instagram', () => {
     expectAttestationRequested();
 
     await act(async () => {
-      requestPromise.resolve({});
+      requestPromise.resolve();
     });
     expectIsNotProcessing(container);
     await expectAnchoringInProgress();
