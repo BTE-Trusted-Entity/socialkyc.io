@@ -65,7 +65,7 @@
 .instagram {
   composes: credential;
 
-  --credential-logo: url('/src/frontend/views/Attester/instagram.svg');
+  --credential-logo: url('/src/frontend/views/Attester/instagram_beta.svg');
 }
 
 .youtube {
