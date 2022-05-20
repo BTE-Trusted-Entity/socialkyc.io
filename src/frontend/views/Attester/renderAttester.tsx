@@ -30,6 +30,7 @@ function getInitialEntry() {
   const instagram = matchPath(window.location.pathname, {
     path: paths.window.instagram,
   });
+
   if (email) {
     const { secret } = email.params;
 
@@ -63,6 +64,7 @@ function getInitialEntry() {
     }
     if (youtube) {
       path = paths.youtubeAuth;
+    }
     if (instagram) {
       path = paths.instagramAuth;
     }

@@ -31,6 +31,7 @@ import {
   checkYoutubeConnection,
   youtubeConnectionState,
 } from '../youtube/youtubeConnection';
+import {
   canAccessInstagram,
   checkInstagramConnection,
   instagramConnectionState,
