@@ -32,4 +32,5 @@ export const redirectedPaths = [
   paths.githubAuth,
   paths.twitchAuth,
   paths.youtubeAuth,
+  paths.instagramAuth,
 ];
