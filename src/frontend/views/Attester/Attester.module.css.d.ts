@@ -9,6 +9,7 @@ export const github: string;
 export const twitch: string;
 export const telegram: string;
 export const youtube: string;
+export const instagram: string;
 export const buttonPrimary: string;
 export const buttonLink: string;
 export const install: string;

@@ -62,6 +62,12 @@
   --credential-logo: url('/src/frontend/views/Attester/telegram.svg');
 }
 
+.instagram {
+  composes: credential;
+
+  --credential-logo: url('/src/frontend/views/Attester/instagram_beta.svg');
+}
+
 .youtube {
   composes: credential;
 
