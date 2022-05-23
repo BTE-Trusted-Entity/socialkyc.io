@@ -1,7 +1,6 @@
 // expect cannot be imported because of https://github.com/testing-library/jest-dom/issues/426
 import { afterEach, beforeEach, describe, it, jest } from '@jest/globals';
 import userEvent from '@testing-library/user-event';
-import { generatePath, MemoryRouter } from 'react-router-dom';
 import { IEncryptedMessage } from '@kiltprotocol/types';
 
 import {
@@ -12,7 +11,6 @@ import {
   TestPromise,
 } from '../../../testing/testing';
 import '../../components/useCopyButton/useCopyButton.mock';
-import { paths } from '../../paths';
 import {
   sessionMock,
   sessionMockReset,
@@ -20,14 +18,17 @@ import {
 } from '../../utilities/session.mock';
 import { ClosedRejection } from '../../utilities/session';
 import { InvalidEmail } from '../../../backend/email/requestAttestationEmailApi';
+import { useValuesFromRedirectUri } from '../../utilities/useValuesFromRedirectUri';
 
 import { useEmailApi } from './useEmailApi';
 import { Email } from './Email';
 
+jest.mock('../../utilities/useValuesFromRedirectUri');
+
 jest.mock('./useEmailApi');
 let mockEmailApi: ReturnType<typeof useEmailApi>;
 let quotePromise: TestPromise<IEncryptedMessage>;
-let requestPromise: TestPromise<string>;
+let requestPromise: TestPromise<void>;
 let confirmPromise: TestPromise<undefined>;
 let attestPromise: TestPromise<IEncryptedMessage>;
 
@@ -96,6 +97,8 @@ async function respondWithQuote() {
 
 describe('Email', () => {
   beforeEach(() => {
+    jest.mocked(useValuesFromRedirectUri).mockReturnValue({});
+
     quotePromise = makeTestPromise();
     requestPromise = makeTestPromise();
     confirmPromise = makeTestPromise();
@@ -132,10 +135,11 @@ describe('Email', () => {
     const listenerPromise = callSessionListenerWith({ signed: 'quote' });
     expect(mockEmailApi.requestAttestation).toHaveBeenCalledWith({
       message: { signed: 'quote' },
+      wallet: 'purse',
     });
 
     await act(async () => {
-      requestPromise.resolve('PASS');
+      requestPromise.resolve();
       await listenerPromise;
       sessionMockSendPromise.resolve(undefined);
     });
@@ -203,6 +207,7 @@ describe('Email', () => {
     const listenerPromise = callSessionListenerWith({ error: 'unknown' });
     expect(mockEmailApi.requestAttestation).toHaveBeenCalledWith({
       message: { error: 'unknown' },
+      wallet: 'purse',
     });
 
     await act(async () => {
@@ -233,6 +238,7 @@ describe('Email', () => {
     const listenerPromise = callSessionListenerWith({ popup: 'closed' });
     expect(mockEmailApi.requestAttestation).toHaveBeenCalledWith({
       message: { popup: 'closed' },
+      wallet: 'purse',
     });
 
     await act(async () => {
@@ -266,6 +272,7 @@ describe('Email', () => {
     const listenerPromise = callSessionListenerWith({ message: 'quote' });
     expect(mockEmailApi.requestAttestation).toHaveBeenCalledWith({
       message: { message: 'quote' },
+      wallet: 'purse',
     });
 
     await act(async () => {
@@ -285,13 +292,9 @@ describe('Email', () => {
 
   it('should finish the happy path after confirmation', async () => {
     const secret = 'SECRET';
-    const { container } = render(
-      <MemoryRouter
-        initialEntries={[generatePath(paths.emailConfirmation, { secret })]}
-      >
-        <Email session={sessionMock} />
-      </MemoryRouter>,
-    );
+    jest.mocked(useValuesFromRedirectUri).mockReturnValue({ secret });
+
+    const { container } = render(<Email session={sessionMock} />);
 
     expectIsNotProcessing(container);
     expectConfirmCalledWith(secret);
@@ -317,13 +320,9 @@ describe('Email', () => {
     jest.useFakeTimers();
 
     const secret = 'SECRET';
-    const { container } = render(
-      <MemoryRouter
-        initialEntries={[generatePath(paths.emailConfirmation, { secret })]}
-      >
-        <Email session={sessionMock} />
-      </MemoryRouter>,
-    );
+    jest.mocked(useValuesFromRedirectUri).mockReturnValue({ secret });
+
+    const { container } = render(<Email session={sessionMock} />);
 
     expectIsNotProcessing(container);
     expectConfirmCalledWith(secret);
@@ -344,13 +343,9 @@ describe('Email', () => {
     jest.useFakeTimers();
 
     const secret = 'SECRET';
-    const { container } = render(
-      <MemoryRouter
-        initialEntries={[generatePath(paths.emailConfirmation, { secret })]}
-      >
-        <Email session={sessionMock} />
-      </MemoryRouter>,
-    );
+    jest.mocked(useValuesFromRedirectUri).mockReturnValue({ secret });
+
+    const { container } = render(<Email session={sessionMock} />);
 
     expectIsNotProcessing(container);
     expectConfirmCalledWith(secret);

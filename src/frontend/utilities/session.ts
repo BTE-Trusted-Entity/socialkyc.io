@@ -44,15 +44,19 @@ export class UnauthorizedRejection extends Rejection {}
 export type Session = PubSubSession & {
   sessionId: string;
   name: string;
+  wallet: string;
 };
 
 export async function getSession(
   provider: InjectedWindowProvider,
+  wallet: string,
 ): Promise<Session> {
   if (!provider) {
     throw new Error('No provider');
   }
   try {
+    window.sessionStorage.setItem('wallet', wallet);
+
     const { dAppEncryptionKeyId, challenge, sessionId } =
       await getSessionValues();
     const dAppName = 'SocialKYC';
@@ -75,7 +79,7 @@ export async function getSession(
 
     const { name } = provider;
 
-    return { ...session, sessionId, name };
+    return { ...session, sessionId, name, wallet };
   } catch (exception) {
     const { message } = exceptionToError(exception);
     if (message.includes('closed')) {

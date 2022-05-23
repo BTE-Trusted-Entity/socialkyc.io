@@ -2,6 +2,6 @@ import { paths } from '../endpoints/paths';
 import { getVariantRoute } from '../utilities/htmlVariants';
 
 export const authHtmlDiscord = getVariantRoute(
-  paths.oauth.discord,
+  paths.redirect.discord,
   'index.html',
 );

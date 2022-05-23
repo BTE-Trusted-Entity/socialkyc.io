@@ -11,6 +11,7 @@ import {
 } from '@hapi/hapi';
 import Boom from '@hapi/boom';
 import { RateLimiterMemory } from 'rate-limiter-flexible';
+import { z } from 'zod';
 
 import { configuration } from '../utilities/configuration';
 import {
@@ -20,7 +21,10 @@ import {
 } from '../utilities/sessionStorage';
 
 import { decryptRequestAttestation } from '../utilities/decryptMessage';
-import { validateEncryptedMessage } from '../utilities/validateEncryptedMessage';
+import {
+  EncryptedMessageInput,
+  validateEncryptedMessage,
+} from '../utilities/validateEncryptedMessage';
 import { exceptionToError } from '../../frontend/utilities/exceptionToError';
 import { exitOnError } from '../utilities/exitOnError';
 import { paths } from '../endpoints/paths';
@@ -87,6 +91,12 @@ The SocialKYC identity verification service is brought to you by B.T.E. BOTLabs 
   sesConnectionState.on();
 }
 
+const zodPayload = z.object({
+  wallet: z.string(),
+});
+
+export type Input = EncryptedMessageInput & z.infer<typeof zodPayload>;
+
 export type Output = void;
 
 async function handler(
@@ -112,13 +122,16 @@ async function handler(
   setSession({ ...session, requestForAttestation, confirmed: false });
   logger.debug('Email request attestation cached');
 
-  const secret = getSecretForSession(session.sessionId);
-  const path = paths.email.confirmationHtml.replace('{secret}', secret);
-  const url = `${configuration.baseUri}${path}`;
+  const { wallet } = request.payload as Input;
+  const { sessionId } = session;
+  const secret = getSecretForSession(sessionId);
+
+  const url = new URL(paths.redirect.email, configuration.baseUri);
+  url.search = new URLSearchParams({ state: secret, wallet }).toString();
 
   try {
     const email = requestForAttestation.claim.contents.Email as string;
-    await send(url, email);
+    await send(url.toString(), email);
     logger.debug('Email request attestation message sent');
 
     return h.response().code(StatusCodes.NO_CONTENT);
@@ -136,7 +149,8 @@ export const requestAttestationEmail: ServerRoute = {
   handler,
   options: {
     validate: {
-      payload: validateEncryptedMessage,
+      payload: async (payload) =>
+        zodPayload.parse(payload) && validateEncryptedMessage(payload),
     },
   },
 };

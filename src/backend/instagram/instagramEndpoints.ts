@@ -6,5 +6,5 @@ export const instagramEndpoints = {
   token: 'https://api.instagram.com/oauth/access_token',
   profile: 'https://graph.instagram.com/me',
 
-  redirectUri: `${configuration.baseUri}${paths.oauth.instagram}`,
+  redirectUri: `${configuration.baseUri}${paths.redirect.instagram}`,
 };

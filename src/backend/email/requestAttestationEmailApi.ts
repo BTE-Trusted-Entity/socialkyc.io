@@ -1,17 +1,16 @@
 import { KyInstance } from 'ky/distribution/types/ky';
 import { StatusCodes } from 'http-status-codes';
 
-import { EncryptedMessageInput } from '../utilities/validateEncryptedMessage';
 import { paths } from '../endpoints/paths';
 import { maybeRejected } from '../../frontend/utilities/maybeRejected';
 import { isHttpStatusCode } from '../../frontend/utilities/isHttpStatusCode';
 
-import { Output } from './requestAttestationEmail';
+import { Input, Output } from './requestAttestationEmail';
 
 export class InvalidEmail extends Error {}
 
 export async function requestAttestationEmail(
-  json: EncryptedMessageInput,
+  json: Input,
   ky: KyInstance,
 ): Promise<Output> {
   try {

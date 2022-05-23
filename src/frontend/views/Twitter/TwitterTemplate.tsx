@@ -176,12 +176,7 @@ export function TwitterTemplate({
                 )}
               </p>
               <p className={flowStyles.ctaLine}>
-                <a
-                  className={flowStyles.ctaLink}
-                  href="https://twitter.com/"
-                  target="_blank"
-                  rel="noreferrer"
-                >
+                <a className={flowStyles.ctaLink} href="https://twitter.com/">
                   Go to Twitter
                 </a>
               </p>

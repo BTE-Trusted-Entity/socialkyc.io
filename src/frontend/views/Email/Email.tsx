@@ -1,11 +1,9 @@
 import { FormEvent, useCallback, useEffect, useState } from 'react';
-import { useRouteMatch } from 'react-router-dom';
 import { IEncryptedMessage } from '@kiltprotocol/types';
 
 import { Rejection, Session } from '../../utilities/session';
+import { useValuesFromRedirectUri } from '../../utilities/useValuesFromRedirectUri';
 import { InvalidEmail } from '../../../backend/email/requestAttestationEmailApi';
-
-import { paths } from '../../paths';
 
 import { useEmailApi } from './useEmailApi';
 import { AttestationStatus, EmailTemplate, FlowError } from './EmailTemplate';
@@ -17,9 +15,7 @@ interface Props {
 export function Email({ session }: Props): JSX.Element {
   const [inputError, setInputError] = useState<string>();
 
-  const secret = (
-    useRouteMatch(paths.emailConfirmation)?.params as { secret?: string }
-  )?.secret;
+  const { secret } = useValuesFromRedirectUri(true);
 
   const initialStatus = secret ? 'confirming' : 'none';
 
@@ -65,7 +61,8 @@ export function Email({ session }: Props): JSX.Element {
       try {
         await session.listen(async (message) => {
           try {
-            await emailApi.requestAttestation({ message });
+            const { wallet } = session;
+            await emailApi.requestAttestation({ message, wallet });
             setStatus('requested');
           } catch (exception) {
             if (exception instanceof Rejection) {

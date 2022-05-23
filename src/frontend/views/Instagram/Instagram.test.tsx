@@ -1,7 +1,6 @@
 // expect cannot be imported because of https://github.com/testing-library/jest-dom/issues/426
 import { afterEach, beforeEach, describe, it, jest } from '@jest/globals';
 import userEvent from '@testing-library/user-event';
-import { generatePath, MemoryRouter } from 'react-router-dom';
 import { IEncryptedMessage } from '@kiltprotocol/types';
 
 import {
@@ -12,13 +11,13 @@ import {
   TestPromise,
 } from '../../../testing/testing';
 import '../../components/useCopyButton/useCopyButton.mock';
-import { paths } from '../../paths';
 import {
   sessionMock,
   sessionMockReset,
   sessionMockSendPromise,
 } from '../../utilities/session.mock';
 import { ClosedRejection } from '../../utilities/session';
+import { useValuesFromRedirectUri } from '../../utilities/useValuesFromRedirectUri';
 
 import { useInstagramApi } from './useInstagramApi';
 import { Instagram, InstagramProfile } from './Instagram';
@@ -31,6 +30,8 @@ const profileMock: InstagramProfile = {
 
 const secret = 'SECRET';
 const code = 'CODE';
+
+jest.mock('../../utilities/useValuesFromRedirectUri');
 
 jest.mock('./useInstagramApi');
 let mockInstagramApi: ReturnType<typeof useInstagramApi>;
@@ -122,6 +123,8 @@ async function respondWithQuote() {
 
 describe('Instagram', () => {
   beforeEach(() => {
+    jest.mocked(useValuesFromRedirectUri).mockReturnValue({});
+
     authUrlPromise = makeTestPromise();
     confirmPromise = makeTestPromise();
     quotePromise = makeTestPromise();
@@ -178,13 +181,9 @@ describe('Instagram', () => {
   });
 
   it('should finish the happy path after authorization', async () => {
-    const { container } = render(
-      <MemoryRouter
-        initialEntries={[generatePath(paths.instagramAuth, { secret, code })]}
-      >
-        <Instagram session={sessionMock} />
-      </MemoryRouter>,
-    );
+    jest.mocked(useValuesFromRedirectUri).mockReturnValue({ secret, code });
+
+    const { container } = render(<Instagram session={sessionMock} />);
 
     expectIsNotProcessing(container);
     expectConfirmCalledWith({ secret, code });
@@ -226,13 +225,9 @@ describe('Instagram', () => {
   });
 
   it('should show authorization error', async () => {
-    const { container } = render(
-      <MemoryRouter
-        initialEntries={[generatePath(paths.instagramAuth, { secret, code })]}
-      >
-        <Instagram session={sessionMock} />
-      </MemoryRouter>,
-    );
+    jest.mocked(useValuesFromRedirectUri).mockReturnValue({ secret, code });
+
+    const { container } = render(<Instagram session={sessionMock} />);
 
     expectIsNotProcessing(container);
 
@@ -257,13 +252,9 @@ describe('Instagram', () => {
   });
 
   it('should show error when quote fails', async () => {
-    const { container } = render(
-      <MemoryRouter
-        initialEntries={[generatePath(paths.instagramAuth, { secret, code })]}
-      >
-        <Instagram session={sessionMock} />
-      </MemoryRouter>,
-    );
+    jest.mocked(useValuesFromRedirectUri).mockReturnValue({ secret, code });
+
+    const { container } = render(<Instagram session={sessionMock} />);
 
     expectIsNotProcessing(container);
     expectConfirmCalledWith({ secret, code });
@@ -290,13 +281,9 @@ describe('Instagram', () => {
 
   // eslint-disable-next-line jest/expect-expect
   it('should show an error when the wallet communication fails', async () => {
-    const { container } = render(
-      <MemoryRouter
-        initialEntries={[generatePath(paths.instagramAuth, { secret, code })]}
-      >
-        <Instagram session={sessionMock} />
-      </MemoryRouter>,
-    );
+    jest.mocked(useValuesFromRedirectUri).mockReturnValue({ secret, code });
+
+    const { container } = render(<Instagram session={sessionMock} />);
 
     expectIsNotProcessing(container);
     expectConfirmCalledWith({ secret, code });
@@ -324,13 +311,9 @@ describe('Instagram', () => {
 
   // eslint-disable-next-line jest/expect-expect
   it('should show an error when there’s an error in Sporran', async () => {
-    const { container } = render(
-      <MemoryRouter
-        initialEntries={[generatePath(paths.instagramAuth, { secret, code })]}
-      >
-        <Instagram session={sessionMock} />
-      </MemoryRouter>,
-    );
+    jest.mocked(useValuesFromRedirectUri).mockReturnValue({ secret, code });
+
+    const { container } = render(<Instagram session={sessionMock} />);
 
     expectIsNotProcessing(container);
     expectConfirmCalledWith({ secret, code });
@@ -362,13 +345,9 @@ describe('Instagram', () => {
   });
 
   it('should advice when the popup is closed', async () => {
-    const { container } = render(
-      <MemoryRouter
-        initialEntries={[generatePath(paths.instagramAuth, { secret, code })]}
-      >
-        <Instagram session={sessionMock} />
-      </MemoryRouter>,
-    );
+    jest.mocked(useValuesFromRedirectUri).mockReturnValue({ secret, code });
+
+    const { container } = render(<Instagram session={sessionMock} />);
 
     expectIsNotProcessing(container);
     expectConfirmCalledWith({ secret, code });
@@ -407,13 +386,9 @@ describe('Instagram', () => {
   });
 
   it('should advice about the slow attestation', async () => {
-    const { container } = render(
-      <MemoryRouter
-        initialEntries={[generatePath(paths.instagramAuth, { secret, code })]}
-      >
-        <Instagram session={sessionMock} />
-      </MemoryRouter>,
-    );
+    jest.mocked(useValuesFromRedirectUri).mockReturnValue({ secret, code });
+
+    const { container } = render(<Instagram session={sessionMock} />);
 
     expectIsNotProcessing(container);
     expectConfirmCalledWith({ secret, code });

@@ -18,9 +18,9 @@ import { configureDevErrors } from './utilities/configureDevErrors';
 import { manager, server } from './utilities/manager';
 import { exitOnError } from './utilities/exitOnError';
 
-import { confirmationHtml } from './endpoints/confirmationHtml';
 import { wellKnownDidConfig } from './didConfiguration/wellKnownDidConfig';
 
+import { authHtmlEmail } from './email/authHtmlEmail';
 import { quoteEmail } from './email/quoteEmail';
 import { confirmEmail } from './email/confirmEmail';
 import { requestAttestationEmail } from './email/requestAttestationEmail';
@@ -146,11 +146,11 @@ const logger = {
   await listenForTweets();
   server.logger.info('Twitter connection initialized');
 
-  server.route(confirmationHtml);
   server.route(wellKnownDidConfig);
 
   server.route(session);
 
+  server.route(authHtmlEmail);
   server.route(quoteEmail);
   server.route(confirmEmail);
   server.route(requestAttestationEmail);

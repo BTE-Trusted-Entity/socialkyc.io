@@ -1,19 +1,16 @@
 import { FormEvent, useCallback, useEffect, useState } from 'react';
 
-import { useRouteMatch } from 'react-router-dom';
-
 import { IEncryptedMessage } from '@kiltprotocol/types';
 
 import { Rejection, Session } from '../../utilities/session';
-
-import { paths } from '../../paths';
+import { useValuesFromRedirectUri } from '../../utilities/useValuesFromRedirectUri';
 
 import { exceptionToError } from '../../utilities/exceptionToError';
 
 import {
   AttestationStatus,
-  YoutubeTemplate,
   FlowError,
+  YoutubeTemplate,
 } from './YoutubeTemplate';
 import { useYoutubeApi } from './useYoutubeApi';
 
@@ -27,11 +24,7 @@ interface Props {
 }
 
 export function Youtube({ session }: Props): JSX.Element {
-  const { code, secret } = (useRouteMatch(paths.youtubeAuth)?.params as {
-    code?: string;
-    secret?: string;
-  }) || { code: undefined, secret: undefined };
-
+  const { code, secret } = useValuesFromRedirectUri();
   const initialStatus = code && secret ? 'authorizing' : 'none';
 
   const [flowError, setFlowError] = useState<FlowError>();

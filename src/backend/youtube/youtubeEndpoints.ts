@@ -7,5 +7,5 @@ export const youtubeEndpoints = {
   channel: 'https://www.googleapis.com/youtube/v3/channels',
   revoke: 'https://oauth2.googleapis.com/revoke',
 
-  redirectUri: `${configuration.baseUri}${paths.oauth.youtube}`,
+  redirectUri: `${configuration.baseUri}${paths.redirect.youtube}`,
 };
