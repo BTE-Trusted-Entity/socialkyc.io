@@ -9,6 +9,8 @@ import {
 import { randomAsNumber } from '@polkadot/util-crypto';
 import { Attestation } from '@kiltprotocol/core';
 
+import { sessionHeader } from '../endpoints/sessionHeader';
+
 export interface BasicSession {
   sessionId: string;
   did?: IDidDetails['did'];
@@ -42,11 +44,11 @@ function getSessionById(sessionId: string): BasicSession {
 }
 
 export function getBasicSession(headers: Record<string, string>): BasicSession {
-  if (!('authorization' in headers)) {
-    throw Boom.forbidden(`Required header Authorization is missing`);
+  if (!(sessionHeader in headers)) {
+    throw Boom.forbidden(`Required header ${sessionHeader} is missing`);
   }
 
-  const sessionId = headers.authorization;
+  const sessionId = headers[sessionHeader];
   return getSessionById(sessionId);
 }
 
