@@ -6,7 +6,9 @@ import { paths } from '../endpoints/paths';
 import { Output } from './verify';
 
 export async function verifyCredential(
-  input: EncryptedMessageInput,
+  json: EncryptedMessageInput,
+  sessionId: string,
 ): Promise<Output> {
-  return ky.post(paths.verifier.verify, { json: input }).json();
+  const headers = { Authorization: sessionId };
+  return ky.post(paths.verifier.verify, { json, headers }).json();
 }

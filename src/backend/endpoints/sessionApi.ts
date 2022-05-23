@@ -12,7 +12,9 @@ export async function getSessionValues(): Promise<GetSessionOutput> {
 }
 
 export async function checkSession(
-  input: CheckSessionInput,
+  json: CheckSessionInput,
+  sessionId: string,
 ): Promise<CheckSessionOutput> {
-  await ky.post(paths.session, { json: input });
+  const headers = { Authorization: sessionId };
+  await ky.post(paths.session, { json, headers });
 }

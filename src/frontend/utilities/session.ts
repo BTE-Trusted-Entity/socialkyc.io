@@ -64,12 +64,14 @@ export async function getSession(
     );
 
     const { encryptionKeyId, encryptedChallenge, nonce } = session;
-    await checkSession({
-      encryptionKeyId,
-      encryptedChallenge,
-      nonce,
+    await checkSession(
+      {
+        encryptionKeyId,
+        encryptedChallenge,
+        nonce,
+      },
       sessionId,
-    });
+    );
 
     const { name } = provider;
 

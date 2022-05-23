@@ -57,10 +57,10 @@ async function handleSubmit(event: Event) {
 
     await session.listen(async (message) => {
       try {
-        const { credential, isAttested } = await verifyCredential({
-          message,
+        const { credential, isAttested } = await verifyCredential(
+          { message },
           sessionId,
-        });
+        );
 
         cType.textContent =
           cTypes[credential.attestation.cTypeHash] || 'Unknown';
@@ -103,10 +103,10 @@ async function handleSubmit(event: Event) {
         window.removeEventListener('beforeunload', handleBeforeUnload);
       }
     });
-    const message = await requestCredential({
+    const message = await requestCredential(
+      { cType: requestedCType },
       sessionId,
-      cType: requestedCType,
-    });
+    );
 
     await session.send(message);
   } catch (error) {

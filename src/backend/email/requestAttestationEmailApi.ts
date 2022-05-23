@@ -1,4 +1,4 @@
-import ky from 'ky';
+import { KyInstance } from 'ky/distribution/types/ky';
 import { StatusCodes } from 'http-status-codes';
 
 import { EncryptedMessageInput } from '../utilities/validateEncryptedMessage';
@@ -11,14 +11,11 @@ import { Output } from './requestAttestationEmail';
 export class InvalidEmail extends Error {}
 
 export async function requestAttestationEmail(
-  input: EncryptedMessageInput,
+  json: EncryptedMessageInput,
+  ky: KyInstance,
 ): Promise<Output> {
   try {
-    await maybeRejected(
-      ky.post(paths.email.requestAttestation, {
-        json: input,
-      }),
-    );
+    await maybeRejected(ky.post(paths.email.requestAttestation, { json }));
   } catch (exception) {
     if (isHttpStatusCode(exception, StatusCodes.BAD_REQUEST)) {
       throw new InvalidEmail('Invalid email syntax');

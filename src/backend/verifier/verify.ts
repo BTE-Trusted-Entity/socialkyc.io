@@ -9,10 +9,7 @@ import { Credential } from '@kiltprotocol/core';
 import Boom from '@hapi/boom';
 
 import { decryptMessageContent } from '../utilities/decryptMessage';
-import {
-  EncryptedMessageInput,
-  validateEncryptedMessage,
-} from '../utilities/validateEncryptedMessage';
+import { validateEncryptedMessage } from '../utilities/validateEncryptedMessage';
 import { paths } from '../endpoints/paths';
 import { getSession } from '../utilities/sessionStorage';
 
@@ -33,7 +30,7 @@ async function handler(
     MessageBodyType.SUBMIT_CREDENTIAL,
   );
 
-  const session = getSession(request.payload as EncryptedMessageInput);
+  const session = getSession(request.headers);
   if (!session.requestChallenge) {
     throw Boom.forbidden('No request challenge');
   }

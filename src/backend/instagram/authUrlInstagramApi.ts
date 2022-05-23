@@ -1,9 +1,12 @@
-import ky from 'ky';
+import { KyInstance } from 'ky/distribution/types/ky';
 
 import { paths } from '../endpoints/paths';
 
 import { Input, Output } from './authUrlInstagram';
 
-export async function authUrlInstagram(input: Input): Promise<Output> {
-  return ky.post(paths.instagram.authUrl, { json: input }).text();
+export async function authUrlInstagram(
+  json: Input,
+  ky: KyInstance,
+): Promise<Output> {
+  return ky.post(paths.instagram.authUrl, { json }).text();
 }

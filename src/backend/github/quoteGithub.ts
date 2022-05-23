@@ -5,23 +5,15 @@ import {
   ServerRoute,
 } from '@hapi/hapi';
 import Boom from '@hapi/boom';
-import { z } from 'zod';
 import { IEncryptedMessage, MessageBodyType } from '@kiltprotocol/types';
 
 import { encryptMessageBody } from '../utilities/encryptMessage';
-import {
-  getSessionWithDid,
-  PayloadWithSession,
-} from '../utilities/sessionStorage';
+import { getSession } from '../utilities/sessionStorage';
 import { paths } from '../endpoints/paths';
 
 import { githubCType } from './githubCType';
 
-const zodPayload = z.object({
-  sessionId: z.string(),
-});
-
-export type Input = z.infer<typeof zodPayload>;
+export type Input = Record<string, never>;
 
 export type Output = IEncryptedMessage;
 
@@ -32,10 +24,7 @@ async function handler(
   const { logger } = request;
   logger.debug('Github quote started');
 
-  const { sessionId } = request.payload as PayloadWithSession;
-  const { encryptionKeyId, claim, confirmed } = getSessionWithDid({
-    sessionId,
-  });
+  const { encryptionKeyId, claim, confirmed } = getSession(request.headers);
 
   if (!claim || !confirmed) {
     throw Boom.notFound('Confirmed claim not found');
@@ -58,9 +47,4 @@ export const quoteGithub: ServerRoute = {
   method: 'POST',
   path: paths.github.quote,
   handler,
-  options: {
-    validate: {
-      payload: async (payload) => zodPayload.parse(payload),
-    },
-  },
 };

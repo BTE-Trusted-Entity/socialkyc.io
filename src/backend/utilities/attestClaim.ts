@@ -10,12 +10,7 @@ import { Attestation } from '@kiltprotocol/core';
 import { configuration } from './configuration';
 import { batchSignAndSubmitAttestation } from './batchSignAndSubmitAttestation';
 import { encryptMessageBody } from './encryptMessage';
-import {
-  getSessionWithDid,
-  Session,
-  SessionWithDid,
-  setSession,
-} from './sessionStorage';
+import { BasicSession, Session, setSession } from './sessionStorage';
 
 export async function attestClaim(
   requestForAttestation: IRequestForAttestation,
@@ -39,10 +34,10 @@ export async function attestClaim(
 }
 
 export async function startAttestation(
-  session: Session,
+  session: BasicSession,
   logger: Logger,
 ): Promise<Attestation> {
-  const { requestForAttestation, confirmed } = getSessionWithDid(session);
+  const { requestForAttestation, confirmed } = session;
   if (!requestForAttestation || !confirmed) {
     throw Boom.notFound('Confirmed requestForAttestation not found');
   }
@@ -56,7 +51,7 @@ export async function startAttestation(
 }
 
 export async function getAttestationMessage(
-  session: SessionWithDid,
+  session: Session,
   logger: Logger,
 ): Promise<IEncryptedMessage> {
   const attestation = session.attestationPromise

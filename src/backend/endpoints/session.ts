@@ -16,7 +16,7 @@ import { randomAsHex } from '@polkadot/util-crypto';
 import { fullDidPromise } from '../utilities/fullDid';
 import { encryptionKeystore } from '../utilities/keystores';
 import { keypairsPromise } from '../utilities/keypairs';
-import { getSession, setSession } from '../utilities/sessionStorage';
+import { getBasicSession, setSession } from '../utilities/sessionStorage';
 
 import { paths } from './paths';
 
@@ -24,7 +24,6 @@ const zodPayload = z.object({
   encryptionKeyId: z.string(),
   encryptedChallenge: z.string(),
   nonce: z.string(),
-  sessionId: z.string(),
 });
 
 export interface GetSessionOutput {
@@ -46,7 +45,7 @@ async function handler(
 
   const payload = request.payload as CheckSessionInput;
   const { encryptionKeyId, encryptedChallenge, nonce } = payload;
-  const session = getSession(payload);
+  const session = getBasicSession(request.headers);
 
   const encryptionKey = await DidResolver.resolveKey(encryptionKeyId);
   if (!encryptionKey) {

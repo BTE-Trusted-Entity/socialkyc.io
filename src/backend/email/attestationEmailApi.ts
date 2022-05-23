@@ -1,17 +1,13 @@
-import ky, { Options } from 'ky';
+import { KyInstance } from 'ky/distribution/types/ky';
 
 import { paths } from '../endpoints/paths';
+import { pollingOptions } from '../../frontend/utilities/pollingOptions';
 
 import { Input, Output } from './attestationEmail';
 
-const options: Partial<Options> = {
-  timeout: false,
-  retry: {
-    limit: 10,
-    methods: ['post'],
-  },
-};
-
-export async function attestEmail(input: Input): Promise<Output> {
-  return ky.post(paths.email.attest, { json: input, ...options }).json();
+export async function attestEmail(
+  json: Input,
+  ky: KyInstance,
+): Promise<Output> {
+  return ky.post(paths.email.attest, { json, ...pollingOptions }).json();
 }

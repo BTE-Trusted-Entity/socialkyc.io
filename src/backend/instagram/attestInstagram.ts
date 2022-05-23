@@ -5,21 +5,12 @@ import {
   ResponseToolkit,
   ServerRoute,
 } from '@hapi/hapi';
-import { z } from 'zod';
 
-import {
-  getSessionWithDid,
-  PayloadWithSession,
-  setSession,
-} from '../utilities/sessionStorage';
+import { getSession, setSession } from '../utilities/sessionStorage';
 import { getAttestationMessage } from '../utilities/attestClaim';
 import { paths } from '../endpoints/paths';
 
-const zodPayload = z.object({
-  sessionId: z.string(),
-});
-
-export type Input = z.infer<typeof zodPayload>;
+export type Input = Record<string, never>;
 
 export type Output = IEncryptedMessage;
 
@@ -29,7 +20,7 @@ async function handler(
 ): Promise<ResponseObject> {
   const { logger } = request;
 
-  const session = getSessionWithDid(request.payload as PayloadWithSession);
+  const session = getSession(request.headers);
 
   const response = await getAttestationMessage(session, logger);
   logger.debug('Instagram attestation completed');
@@ -46,9 +37,4 @@ export const attestInstagram: ServerRoute = {
   method: 'POST',
   path: paths.instagram.attest,
   handler,
-  options: {
-    validate: {
-      payload: async (payload) => zodPayload.parse(payload),
-    },
-  },
 };
