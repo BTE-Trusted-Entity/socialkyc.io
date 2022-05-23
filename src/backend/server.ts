@@ -87,6 +87,7 @@ import { home } from './endpoints/home';
 import { about } from './endpoints/about';
 import { terms } from './endpoints/terms';
 import { privacy } from './endpoints/privacy';
+import { sessionHeader } from './endpoints/sessionHeader';
 
 const { isProduction } = configuration;
 
@@ -110,6 +111,7 @@ const logger = {
           'req.headers.authorization',
           'req.headers["x-forwarded-for"]',
           'req.headers["x-real-ip"]',
+          `req.headers["${sessionHeader}"]`,
         ]
       : { paths: ['req', 'res'], remove: true },
   },
