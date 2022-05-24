@@ -49,5 +49,6 @@ jobs:
         ECR_REGISTRY: ${{ steps.login-ecr.outputs.registry }}
         ECR_REPOSITORY: socialkyc
         IMAGE_TAG: ${{ github.sha }}
+        KUBECTL_VERSION: "v1.23.6"
       with:
         args: rollout restart deployment social-kyc-dev -n social-kyc
