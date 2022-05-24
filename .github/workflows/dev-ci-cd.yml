@@ -50,5 +50,6 @@ jobs:
         ECR_REPOSITORY: socialkyc
         IMAGE_TAG: ${{ github.sha }}
         KUBECTL_VERSION: "v1.23.6"
+        IAM_VERSION: "0.5.7"
       with:
         args: rollout restart deployment social-kyc-dev -n social-kyc
