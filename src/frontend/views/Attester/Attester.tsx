@@ -40,7 +40,6 @@ import {
   extensionInput,
   extensionOutput,
 } from '../../utilities/broadcastChannels';
-import { Instagram } from '../Instagram/Instagram';
 
 interface HasExtension {
   data?: {
@@ -200,9 +199,6 @@ function GetCredentials() {
         <li>
           <Link to={paths.youtube} className={styles.youtube}>
             YouTube Channel
-          </Link>
-          <Link to={paths.instagram} className={styles.instagram}>
-            Instagram Account
           </Link>
         </li>
       </ul>
@@ -444,9 +440,6 @@ export function Attester(): JSX.Element {
         </Route>
         <Route path={paths.youtube}>
           <Youtube session={session} />
-        </Route>
-        <Route path={paths.instagram}>
-          <Instagram session={session} />
         </Route>
         <Route>
           <Welcome />
