@@ -2,8 +2,8 @@ import { FormEvent, useCallback, useEffect, useState } from 'react';
 import { useRouteMatch } from 'react-router-dom';
 import { IEncryptedMessage } from '@kiltprotocol/types';
 
-import { Session } from '../../utilities/session';
-import { exceptionToError } from '../../utilities/exceptionToError';
+import { Rejection, Session } from '../../utilities/session';
+import { InvalidEmail } from '../../../backend/email/requestAttestationEmailApi';
 
 import { paths } from '../../paths';
 
@@ -68,10 +68,9 @@ export function Email({ session }: Props): JSX.Element {
             await emailApi.requestAttestation({ message });
             setStatus('requested');
           } catch (exception) {
-            const { message } = exceptionToError(exception);
-            if (message.includes('closed') || message.includes('rejected')) {
+            if (exception instanceof Rejection) {
               setFlowError('closed');
-            } else if (message.includes('400')) {
+            } else if (exception instanceof InvalidEmail) {
               setInputError('Incorrect email format, please review.');
             } else {
               console.error(exception);
@@ -102,8 +101,7 @@ export function Email({ session }: Props): JSX.Element {
       }
       await session.send(backupMessage);
     } catch (exception) {
-      const { message } = exceptionToError(exception);
-      if (message.includes('closed')) {
+      if (exception instanceof Rejection) {
         return; // don’t care that the user has closed the dialog
       }
       setFlowError('unknown');

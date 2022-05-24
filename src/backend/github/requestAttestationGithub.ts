@@ -10,16 +10,12 @@ import { RequestForAttestationUtils } from '@kiltprotocol/core';
 
 import Boom from '@hapi/boom';
 
-import {
-  getSession,
-  PayloadWithSession,
-  setSession,
-} from '../utilities/sessionStorage';
+import { getSession, setSession } from '../utilities/sessionStorage';
 import { validateEncryptedMessage } from '../utilities/validateEncryptedMessage';
-import { decryptRequestAttestationContent } from '../utilities/decryptMessage';
+import { decryptRequestAttestation } from '../utilities/decryptMessage';
 import { paths } from '../endpoints/paths';
 
-export type Output = Record<string, never>;
+export type Output = void;
 
 async function handler(
   request: Request,
@@ -28,19 +24,12 @@ async function handler(
   const { logger } = request;
   logger.debug('Github request attestation started');
 
-  const content = await decryptRequestAttestationContent(request);
-  if (!content) {
-    return h.response().code(StatusCodes.ACCEPTED);
-  }
-
-  const { requestForAttestation } = content;
-
-  const session = getSession(request.payload as PayloadWithSession);
-
+  const session = getSession(request.headers);
   if (!session.confirmed) {
     throw Boom.badRequest('Github Claim has not been confirmed');
   }
 
+  const { requestForAttestation } = await decryptRequestAttestation(request);
   if (session.claim?.cTypeHash !== requestForAttestation.claim.cTypeHash) {
     throw Boom.badRequest(
       'Github request CType does not match confirmed claim cType',
@@ -51,14 +40,11 @@ async function handler(
   requestForAttestation.claim = session.claim;
 
   RequestForAttestationUtils.errorCheck(requestForAttestation);
-
   logger.debug('Github request attestation verified');
 
   setSession({ ...session, requestForAttestation });
 
-  logger.debug('Github request attestation cached');
-
-  return h.response({}).code(StatusCodes.OK);
+  return h.response().code(StatusCodes.NO_CONTENT);
 }
 
 export const requestAttestationGithub: ServerRoute = {

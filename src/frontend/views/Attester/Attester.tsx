@@ -18,22 +18,29 @@ import { detect } from 'detect-browser';
 
 import * as styles from './Attester.module.css';
 
-import { apiWindow, getSession, Session } from '../../utilities/session';
-
-import { exceptionToError } from '../../utilities/exceptionToError';
+import {
+  apiWindow,
+  ClosedRejection,
+  getSession,
+  Session,
+  UnauthorizedRejection,
+} from '../../utilities/session';
 import { DetailedMessage } from '../../components/DetailedMessage/DetailedMessage';
 import { Spinner } from '../../components/Spinner/Spinner';
 import { Email } from '../Email/Email';
 import { Twitter } from '../Twitter/Twitter';
-import { paths } from '../../paths';
+import { paths, redirectedPaths } from '../../paths';
 import { Discord } from '../Discord/Discord';
 import { Github } from '../Github/Github';
 import { Twitch } from '../Twitch/Twitch';
+import { Telegram } from '../Telegram/Telegram';
+import { Youtube } from '../Youtube/Youtube';
 import { Disconnect } from '../../components/Disconnect/Disconnect';
 import {
   extensionInput,
   extensionOutput,
 } from '../../utilities/broadcastChannels';
+import { Instagram } from '../Instagram/Instagram';
 
 interface HasExtension {
   data?: {
@@ -74,9 +81,9 @@ function Welcome() {
       <h1 className={styles.heading}>Your Identity, back in your hands!</h1>
 
       <p>
-        Create your decentralized social credentials here. Your personal data
-        will be anchored on the KILT blockchain and only you will decide who can
-        access it.
+        Create your decentralized social credentials here. You decide who has
+        access to your data and only the validity of your credential is anchored
+        on the blockchain.
       </p>
       <p>
         SocialKYC does not store, share or sell any of your data. The service
@@ -185,6 +192,19 @@ function GetCredentials() {
             Twitch Account
           </Link>
         </li>
+        <li>
+          <Link to={paths.telegram} className={styles.telegram}>
+            Telegram Account
+          </Link>
+        </li>
+        <li>
+          <Link to={paths.youtube} className={styles.youtube}>
+            YouTube Channel
+          </Link>
+          <Link to={paths.instagram} className={styles.instagram}>
+            Instagram Account
+          </Link>
+        </li>
       </ul>
     </Fragment>
   );
@@ -197,12 +217,12 @@ function Connect({ setSession }: { setSession: (s: Session) => void }) {
   const { kilt } = apiWindow;
   const extensions = useMemo(() => Object.keys(kilt), [kilt]);
 
-  const [extension, setExtension] = useState<string>('');
+  const [extension, setExtension] = useState<string>(extensions[0]);
 
-  const isEmailConfirmation = useRouteMatch(paths.emailConfirmation);
+  const isRedirected = useRouteMatch(redirectedPaths);
 
   useEffect(() => {
-    if (isEmailConfirmation) {
+    if (isRedirected) {
       extensionInput.postMessage('GET_BROADCASTED_EXTENSION');
 
       extensionOutput.onmessage = ({ data: extension }) => {
@@ -210,20 +230,10 @@ function Connect({ setSession }: { setSession: (s: Session) => void }) {
       };
     }
 
-    if (!isEmailConfirmation) {
-      if (extensions.length === 1) {
-        setExtension(extensions[0]);
-        return;
-      }
-      for (const extension of extensions) {
-        if (extension === 'sporran') {
-          setExtension(extension);
-          return;
-        }
-      }
-      setExtension(extensions[0]);
+    if (!isRedirected && extensions.includes('sporran')) {
+      setExtension('sporran');
     }
-  }, [isEmailConfirmation, extensions]);
+  }, [isRedirected, extensions]);
 
   const handleInput = useCallback((event: FormEvent<HTMLSelectElement>) => {
     setExtension((event.target as HTMLSelectElement).value);
@@ -245,11 +255,9 @@ function Connect({ setSession }: { setSession: (s: Session) => void }) {
           extensionOutput.postMessage(extension);
         };
       } catch (exception) {
-        const { message } = exceptionToError(exception);
-        // TODO: need to conform to the spec
-        if (message.includes('closed')) {
+        if (exception instanceof ClosedRejection) {
           setError('closed');
-        } else if (message.includes('Not authorized')) {
+        } else if (exception instanceof UnauthorizedRejection) {
           setError('rejected');
         } else {
           setError('unknown');
@@ -261,10 +269,6 @@ function Connect({ setSession }: { setSession: (s: Session) => void }) {
     [extension, setSession, kilt],
   );
 
-  if (!extension) {
-    return null;
-  }
-
   return (
     <form onSubmit={handleConnect} className={styles.connectContainer}>
       <div
@@ -272,13 +276,13 @@ function Connect({ setSession }: { setSession: (s: Session) => void }) {
           [styles.processing]: processing,
         })}
       >
-        {!error && isEmailConfirmation && (
+        {!error && isRedirected && (
           <p className={styles.authorize}>
             Please authorize access to your wallet.
           </p>
         )}
 
-        {!error && !isEmailConfirmation && (
+        {!error && !isRedirected && (
           <div>
             <label className={styles.extension}>
               First select your wallet
@@ -403,14 +407,7 @@ export function Attester(): JSX.Element {
     return (
       <Fragment>
         <Switch>
-          <Route
-            path={[
-              paths.emailConfirmation,
-              paths.discordAuth,
-              paths.githubAuth,
-              paths.twitchAuth,
-            ]}
-          >
+          <Route path={redirectedPaths}>
             <AlmostThere />
           </Route>
           <Route>
@@ -441,6 +438,15 @@ export function Attester(): JSX.Element {
         </Route>
         <Route path={paths.twitch}>
           <Twitch session={session} />
+        </Route>
+        <Route path={paths.telegram}>
+          <Telegram session={session} />
+        </Route>
+        <Route path={paths.youtube}>
+          <Youtube session={session} />
+        </Route>
+        <Route path={paths.instagram}>
+          <Instagram session={session} />
         </Route>
         <Route>
           <Welcome />

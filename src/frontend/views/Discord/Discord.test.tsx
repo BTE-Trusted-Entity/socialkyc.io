@@ -1,28 +1,27 @@
 // expect cannot be imported because of https://github.com/testing-library/jest-dom/issues/426
 import { afterEach, beforeEach, describe, it, jest } from '@jest/globals';
 import userEvent from '@testing-library/user-event';
-import { MemoryRouter } from 'react-router-dom';
+import { generatePath, MemoryRouter } from 'react-router-dom';
 import { IEncryptedMessage } from '@kiltprotocol/types';
 
-import { act, render, screen } from '../../../testing/testing';
+import {
+  act,
+  makeTestPromise,
+  render,
+  screen,
+  TestPromise,
+} from '../../../testing/testing';
 import '../../components/useCopyButton/useCopyButton.mock';
 import { paths } from '../../paths';
-import { Session } from '../../utilities/session';
-import { makeControlledPromise } from '../../../backend/utilities/makeControlledPromise';
+import {
+  sessionMock,
+  sessionMockReset,
+  sessionMockSendPromise,
+} from '../../utilities/session.mock';
+import { ClosedRejection } from '../../utilities/session';
 
 import { useDiscordApi } from './useDiscordApi';
 import { Discord, DiscordProfile } from './Discord';
-
-const sessionMock: Session = {
-  encryptionKeyId: 'encryptionKeyId',
-  encryptedChallenge: 'encryptedChallenge',
-  nonce: 'nonce',
-  send: jest.fn(),
-  close: jest.fn(),
-  listen: jest.fn(),
-  sessionId: 'foo',
-  name: 'foo bar',
-};
 
 const profileMock: DiscordProfile = {
   username: 'TestUser',
@@ -33,15 +32,13 @@ const profileMock: DiscordProfile = {
 const secret = 'SECRET';
 const code = 'CODE';
 
-jest.mock('./useDiscordApi', () => ({ useDiscordApi: jest.fn() }));
-const mockDiscordApi: ReturnType<typeof useDiscordApi> = {
-  authUrl: jest.fn(),
-  confirm: jest.fn(),
-  quote: jest.fn(),
-  requestAttestation: jest.fn(),
-  attest: jest.fn(),
-};
-jest.mocked(useDiscordApi).mockReturnValue(mockDiscordApi);
+jest.mock('./useDiscordApi');
+let mockDiscordApi: ReturnType<typeof useDiscordApi>;
+let authUrlPromise: TestPromise<string>;
+let confirmPromise: TestPromise<DiscordProfile>;
+let quotePromise: TestPromise<IEncryptedMessage>;
+let requestPromise: TestPromise<void>;
+let attestPromise: TestPromise<IEncryptedMessage>;
 
 async function signInWithDiscord() {
   const signInLink = await screen.findByRole('link', {
@@ -84,7 +81,7 @@ function expectAuthUrlCalled() {
   expect(mockDiscordApi.authUrl).toHaveBeenCalledWith({});
 }
 
-function expectconfirmCalledWith(routeParams: {
+function expectConfirmCalledWith(routeParams: {
   secret: string;
   code: string;
 }) {
@@ -113,68 +110,41 @@ function expectAttestationRequested() {
   });
 }
 
-async function expectStartOver() {
+function expectStartOver() {
   expect(mockDiscordApi.authUrl).toHaveBeenCalled();
 }
 
+async function respondWithQuote() {
+  await act(async () => {
+    quotePromise.resolve({ quote: '' } as unknown as IEncryptedMessage);
+  });
+}
+
 describe('Discord', () => {
-  let authUrlPromise = makeControlledPromise<string>();
-  let confirmPromise = makeControlledPromise<DiscordProfile>();
-  let quotePromise = makeControlledPromise<IEncryptedMessage>();
-  let sendPromise = makeControlledPromise<void>();
-  let requestPromise = makeControlledPromise<Record<string, never>>();
-  let attestPromise = makeControlledPromise<IEncryptedMessage>();
-
   beforeEach(() => {
+    authUrlPromise = makeTestPromise();
+    confirmPromise = makeTestPromise();
+    quotePromise = makeTestPromise();
+    requestPromise = makeTestPromise();
+    attestPromise = makeTestPromise();
+
+    mockDiscordApi = {
+      authUrl: authUrlPromise.jestFn,
+      confirm: confirmPromise.jestFn,
+      quote: quotePromise.jestFn,
+      requestAttestation: requestPromise.jestFn,
+      attest: attestPromise.jestFn,
+    };
+    jest.mocked(useDiscordApi).mockReturnValue(mockDiscordApi);
+
+    sessionMockReset();
+
     jest.spyOn(console, 'error').mockImplementation(() => undefined);
-
-    authUrlPromise = makeControlledPromise<string>();
-    jest
-      .mocked(mockDiscordApi.authUrl)
-      .mockReset()
-      .mockReturnValue(authUrlPromise.promise);
-
-    confirmPromise = makeControlledPromise<DiscordProfile>();
-    jest
-      .mocked(mockDiscordApi.confirm)
-      .mockReset()
-      .mockReturnValue(confirmPromise.promise);
-
-    quotePromise = makeControlledPromise<IEncryptedMessage>();
-    jest
-      .mocked(mockDiscordApi.quote)
-      .mockReset()
-      .mockReturnValue(quotePromise.promise);
-
-    sendPromise = makeControlledPromise<void>();
-    jest
-      .mocked(sessionMock.send)
-      .mockReset()
-      .mockReturnValue(sendPromise.promise);
-    jest.mocked(sessionMock.listen).mockReset();
-
-    requestPromise = makeControlledPromise<Record<string, never>>();
-    jest
-      .mocked(mockDiscordApi.requestAttestation)
-      .mockReset()
-      .mockReturnValue(requestPromise.promise);
-
-    attestPromise = makeControlledPromise<IEncryptedMessage>();
-    jest
-      .mocked(mockDiscordApi.attest)
-      .mockReset()
-      .mockReturnValue(attestPromise.promise);
   });
 
   afterEach(() => {
     jest.mocked(console.error).mockRestore();
   });
-
-  async function respondWithQuote() {
-    await act(async () => {
-      quotePromise.resolve({ quote: '' } as unknown as IEncryptedMessage);
-    });
-  }
 
   it('should go through the happy path until redirected to Discord', async () => {
     render(<Discord session={sessionMock} />);
@@ -208,16 +178,14 @@ describe('Discord', () => {
   it('should finish the happy path after authorization', async () => {
     const { container } = render(
       <MemoryRouter
-        initialEntries={[
-          paths.discordAuth.replace(':secret', secret).replace(':code', code),
-        ]}
+        initialEntries={[generatePath(paths.discordAuth, { secret, code })]}
       >
         <Discord session={sessionMock} />
       </MemoryRouter>,
     );
 
     expectIsNotProcessing(container);
-    expectconfirmCalledWith({ secret, code });
+    expectConfirmCalledWith({ secret, code });
 
     await act(async () => {
       confirmPromise.resolve(profileMock);
@@ -234,7 +202,7 @@ describe('Discord', () => {
     expectAttestationRequested();
 
     await act(async () => {
-      requestPromise.resolve({});
+      requestPromise.resolve();
     });
     expectIsNotProcessing(container);
     await expectAnchoringInProgress();
@@ -246,7 +214,7 @@ describe('Discord', () => {
 
     await act(async () => {
       await listenerPromise;
-      sendPromise.resolve(undefined);
+      sessionMockSendPromise.resolve(undefined);
     });
 
     await userEvent.click(
@@ -258,9 +226,7 @@ describe('Discord', () => {
   it('should show authorization error', async () => {
     const { container } = render(
       <MemoryRouter
-        initialEntries={[
-          paths.discordAuth.replace(':secret', secret).replace(':code', code),
-        ]}
+        initialEntries={[generatePath(paths.discordAuth, { secret, code })]}
       >
         <Discord session={sessionMock} />
       </MemoryRouter>,
@@ -268,7 +234,7 @@ describe('Discord', () => {
 
     expectIsNotProcessing(container);
 
-    expectconfirmCalledWith({ secret, code });
+    expectConfirmCalledWith({ secret, code });
 
     await act(async () => {
       confirmPromise.reject(new Error('authorization'));
@@ -291,16 +257,14 @@ describe('Discord', () => {
   it('should show error when quote fails', async () => {
     const { container } = render(
       <MemoryRouter
-        initialEntries={[
-          paths.discordAuth.replace(':secret', secret).replace(':code', code),
-        ]}
+        initialEntries={[generatePath(paths.discordAuth, { secret, code })]}
       >
         <Discord session={sessionMock} />
       </MemoryRouter>,
     );
 
     expectIsNotProcessing(container);
-    expectconfirmCalledWith({ secret, code });
+    expectConfirmCalledWith({ secret, code });
 
     await act(async () => {
       confirmPromise.resolve(profileMock);
@@ -326,16 +290,14 @@ describe('Discord', () => {
   it('should show an error when the wallet communication fails', async () => {
     const { container } = render(
       <MemoryRouter
-        initialEntries={[
-          paths.discordAuth.replace(':secret', secret).replace(':code', code),
-        ]}
+        initialEntries={[generatePath(paths.discordAuth, { secret, code })]}
       >
         <Discord session={sessionMock} />
       </MemoryRouter>,
     );
 
     expectIsNotProcessing(container);
-    expectconfirmCalledWith({ secret, code });
+    expectConfirmCalledWith({ secret, code });
 
     await act(async () => {
       confirmPromise.resolve(profileMock);
@@ -348,7 +310,7 @@ describe('Discord', () => {
     await respondWithQuote();
     expectQuoteIsSent();
     await act(async () => {
-      sendPromise.reject(new Error('closed'));
+      sessionMockSendPromise.reject(new Error('closed'));
     });
 
     expectIsNotProcessing(container);
@@ -362,16 +324,14 @@ describe('Discord', () => {
   it('should show an error when there’s an error in Sporran', async () => {
     const { container } = render(
       <MemoryRouter
-        initialEntries={[
-          paths.discordAuth.replace(':secret', secret).replace(':code', code),
-        ]}
+        initialEntries={[generatePath(paths.discordAuth, { secret, code })]}
       >
         <Discord session={sessionMock} />
       </MemoryRouter>,
     );
 
     expectIsNotProcessing(container);
-    expectconfirmCalledWith({ secret, code });
+    expectConfirmCalledWith({ secret, code });
 
     await act(async () => {
       confirmPromise.resolve(profileMock);
@@ -389,7 +349,7 @@ describe('Discord', () => {
     await act(async () => {
       requestPromise.reject(new Error('unknown'));
       await listenerPromise;
-      sendPromise.resolve(undefined);
+      sessionMockSendPromise.resolve(undefined);
     });
 
     expectIsNotProcessing(container);
@@ -402,16 +362,14 @@ describe('Discord', () => {
   it('should advice when the popup is closed', async () => {
     const { container } = render(
       <MemoryRouter
-        initialEntries={[
-          paths.discordAuth.replace(':secret', secret).replace(':code', code),
-        ]}
+        initialEntries={[generatePath(paths.discordAuth, { secret, code })]}
       >
         <Discord session={sessionMock} />
       </MemoryRouter>,
     );
 
     expectIsNotProcessing(container);
-    expectconfirmCalledWith({ secret, code });
+    expectConfirmCalledWith({ secret, code });
 
     await act(async () => {
       confirmPromise.resolve(profileMock);
@@ -430,9 +388,9 @@ describe('Discord', () => {
     });
 
     await act(async () => {
-      requestPromise.reject(new Error('closed'));
+      requestPromise.reject(new ClosedRejection());
       await listenerPromise;
-      sendPromise.resolve(undefined);
+      sessionMockSendPromise.resolve(undefined);
     });
 
     expectIsNotProcessing(container);
@@ -449,16 +407,14 @@ describe('Discord', () => {
   it('should advice about the slow attestation', async () => {
     const { container } = render(
       <MemoryRouter
-        initialEntries={[
-          paths.discordAuth.replace(':secret', secret).replace(':code', code),
-        ]}
+        initialEntries={[generatePath(paths.discordAuth, { secret, code })]}
       >
         <Discord session={sessionMock} />
       </MemoryRouter>,
     );
 
     expectIsNotProcessing(container);
-    expectconfirmCalledWith({ secret, code });
+    expectConfirmCalledWith({ secret, code });
 
     await act(async () => {
       confirmPromise.resolve(profileMock);
@@ -476,7 +432,7 @@ describe('Discord', () => {
     expectAttestationRequested();
 
     await act(async () => {
-      requestPromise.resolve({});
+      requestPromise.resolve();
     });
     expectIsNotProcessing(container);
     await expectAnchoringInProgress();

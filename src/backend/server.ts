@@ -9,7 +9,9 @@ import { testDomainLinkageCType } from './didConfiguration/domainLinkageCType';
 import { testDiscordCType } from './discord/discordCType';
 import { testGithubCType } from './github/githubCType';
 import { testTwitchCType } from './twitch/twitchCType';
-
+import { testTelegramCType } from './telegram/telegramCType';
+import { testYoutubeCType } from './youtube/youtubeCType';
+import { testInstagramCType } from './instagram/instagramCType';
 import { configuration } from './utilities/configuration';
 import { configureAuthentication } from './utilities/configureAuthentication';
 import { configureDevErrors } from './utilities/configureDevErrors';
@@ -21,7 +23,7 @@ import { wellKnownDidConfig } from './didConfiguration/wellKnownDidConfig';
 
 import { quoteEmail } from './email/quoteEmail';
 import { confirmEmail } from './email/confirmEmail';
-import { request } from './email/sendEmail';
+import { requestAttestationEmail } from './email/requestAttestationEmail';
 import { attestationEmail } from './email/attestationEmail';
 
 import { listenForTweets } from './twitter/tweets';
@@ -47,9 +49,30 @@ import { attestGithub } from './github/attestGithub';
 import { authUrlTwitch } from './twitch/authUrlTwitch';
 import { authHtmlTwitch } from './twitch/authHtmlTwitch';
 import { confirmTwitch } from './twitch/confirmTwitch';
+
+import { authHtmlInstagram } from './instagram/authHtmlInstagram';
+import { authUrlInstagram } from './instagram/authUrlInstagram';
+import { confirmInstagram } from './instagram/confirmInstagram';
+import { quoteInstagram } from './instagram/quoteInstagram';
+import { requestAttestationInstagram } from './instagram/requestAttestationInstagram';
+import { attestInstagram } from './instagram/attestInstagram';
+
 import { quoteTwitch } from './twitch/quoteTwitch';
 import { requestAttestationTwitch } from './twitch/requestAttestationTwitch';
 import { attestTwitch } from './twitch/attestTwitch';
+
+import { authUrlTelegram } from './telegram/authUrlTelegram';
+import { confirmTelegram } from './telegram/confirmTelegram';
+import { quoteTelegram } from './telegram/quoteTelegram';
+import { requestAttestationTelegram } from './telegram/requestAttestationTelegram';
+import { attestTelegram } from './telegram/attestTelegram';
+
+import { authUrlYoutube } from './youtube/authUrlYoutube';
+import { authHtmlYoutube } from './youtube/authHtmlYoutube';
+import { confirmYoutube } from './youtube/confirmYoutube';
+import { quoteYoutube } from './youtube/quoteYoutube';
+import { requestAttestationYoutube } from './youtube/requestAttestationYoutube';
+import { attestYoutube } from './youtube/attestYoutube';
 
 import { requestCredential } from './verifier/requestCredential';
 import { verify } from './verifier/verify';
@@ -64,6 +87,7 @@ import { home } from './endpoints/home';
 import { about } from './endpoints/about';
 import { terms } from './endpoints/terms';
 import { privacy } from './endpoints/privacy';
+import { sessionHeader } from './endpoints/sessionHeader';
 
 const { isProduction } = configuration;
 
@@ -87,6 +111,7 @@ const logger = {
           'req.headers.authorization',
           'req.headers["x-forwarded-for"]',
           'req.headers["x-real-ip"]',
+          `req.headers["${sessionHeader}"]`,
         ]
       : { paths: ['req', 'res'], remove: true },
   },
@@ -112,6 +137,10 @@ const logger = {
   await testDiscordCType();
   await testGithubCType();
   await testTwitchCType();
+  await testTelegramCType();
+  await testYoutubeCType();
+  await testInstagramCType();
+
   server.logger.info('CTypes tested');
 
   await listenForTweets();
@@ -124,7 +153,7 @@ const logger = {
 
   server.route(quoteEmail);
   server.route(confirmEmail);
-  server.route(request);
+  server.route(requestAttestationEmail);
   server.route(attestationEmail);
 
   server.route(quoteTwitter);
@@ -152,6 +181,26 @@ const logger = {
   server.route(quoteTwitch);
   server.route(requestAttestationTwitch);
   server.route(attestTwitch);
+
+  server.route(authHtmlInstagram);
+  server.route(authUrlInstagram);
+  server.route(confirmInstagram);
+  server.route(quoteInstagram);
+  server.route(requestAttestationInstagram);
+  server.route(attestInstagram);
+
+  server.route(authUrlTelegram);
+  server.route(confirmTelegram);
+  server.route(quoteTelegram);
+  server.route(requestAttestationTelegram);
+  server.route(attestTelegram);
+
+  server.route(authHtmlYoutube);
+  server.route(authUrlYoutube);
+  server.route(confirmYoutube);
+  server.route(quoteYoutube);
+  server.route(requestAttestationYoutube);
+  server.route(attestYoutube);
 
   server.route(requestCredential);
   server.route(verify);

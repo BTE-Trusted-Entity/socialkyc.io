@@ -1,17 +1,13 @@
-import ky, { Options } from 'ky';
+import { KyInstance } from 'ky/distribution/types/ky';
 
 import { paths } from '../endpoints/paths';
+import { pollingOptions } from '../../frontend/utilities/pollingOptions';
 
 import { Input, Output } from './confirmTwitter';
 
-const options: Partial<Options> = {
-  timeout: false,
-  retry: {
-    limit: 10,
-    methods: ['post'],
-  },
-};
-
-export async function confirmTwitter(input: Input): Promise<Output> {
-  return ky.post(paths.twitter.confirm, { json: input, ...options }).json();
+export async function confirmTwitter(
+  json: Input,
+  ky: KyInstance,
+): Promise<Output> {
+  return ky.post(paths.twitter.confirm, { json, ...pollingOptions }).json();
 }

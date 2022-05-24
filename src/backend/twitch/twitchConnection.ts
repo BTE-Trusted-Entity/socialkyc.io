@@ -1,4 +1,4 @@
-import got, { HTTPError } from 'got';
+import got from 'got';
 
 import { trackConnectionState } from '../utilities/trackConnectionState';
 import { logger } from '../utilities/logger';
@@ -13,16 +13,13 @@ export async function canAccessTwitch() {
     await got
       .post(twitchEndpoints.token, {
         form: {
+          grant_type: 'client_credentials',
           client_id: configuration.twitch.clientId,
           client_secret: configuration.twitch.secret,
         },
       })
       .json();
   } catch (error) {
-    if (error instanceof HTTPError && error.response.statusCode !== 403) {
-      twitchConnectionState.on();
-      return;
-    }
     twitchConnectionState.off();
     logger.error(error, 'Error connecting to Twitch');
     throw error;

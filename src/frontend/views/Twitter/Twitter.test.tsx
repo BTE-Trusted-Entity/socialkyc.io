@@ -3,33 +3,30 @@ import { afterEach, beforeEach, describe, it, jest } from '@jest/globals';
 import userEvent from '@testing-library/user-event';
 import { IEncryptedMessage } from '@kiltprotocol/types';
 
-import { act, render, screen } from '../../../testing/testing';
+import {
+  act,
+  makeTestPromise,
+  render,
+  screen,
+  TestPromise,
+} from '../../../testing/testing';
 import '../../components/useCopyButton/useCopyButton.mock';
-import { Session } from '../../utilities/session';
-import { makeControlledPromise } from '../../../backend/utilities/makeControlledPromise';
+import {
+  sessionMock,
+  sessionMockReset,
+  sessionMockSendPromise,
+} from '../../utilities/session.mock';
+import { ClosedRejection } from '../../utilities/session';
 
 import { useTwitterApi } from './useTwitterApi';
 import { Twitter } from './Twitter';
 
-const sessionMock: Session = {
-  encryptionKeyId: 'encryptionKeyId',
-  encryptedChallenge: 'encryptedChallenge',
-  nonce: 'nonce',
-  send: jest.fn(),
-  close: jest.fn(),
-  listen: jest.fn(),
-  sessionId: 'foo',
-  name: 'foo bar',
-};
-
-jest.mock('./useTwitterApi', () => ({ useTwitterApi: jest.fn() }));
-const mockTwitterApi: ReturnType<typeof useTwitterApi> = {
-  quote: jest.fn(),
-  requestAttestation: jest.fn(),
-  attest: jest.fn(),
-  confirm: jest.fn(),
-};
-jest.mocked(useTwitterApi).mockReturnValue(mockTwitterApi);
+jest.mock('./useTwitterApi');
+let mockTwitterApi: ReturnType<typeof useTwitterApi>;
+let quotePromise: TestPromise<IEncryptedMessage>;
+let requestPromise: TestPromise<string>;
+let confirmPromise: TestPromise<undefined>;
+let attestPromise: TestPromise<IEncryptedMessage>;
 
 async function enterTwitter() {
   const input = await screen.findByLabelText('Your Twitter handle');
@@ -97,63 +94,41 @@ function expectAttestationRequested() {
   });
 }
 
+async function respondWithQuote() {
+  await act(async () => {
+    quotePromise.resolve({ quote: '' } as unknown as IEncryptedMessage);
+  });
+}
+
+async function confirmOwnership() {
+  await act(async () => {
+    confirmPromise.resolve(undefined);
+  });
+}
+
 describe('Twitter', () => {
-  let quotePromise = makeControlledPromise<IEncryptedMessage>();
-  let sendPromise = makeControlledPromise<void>();
-  let requestPromise = makeControlledPromise<{ secret: string }>();
-  let confirmPromise = makeControlledPromise<undefined>();
-  let attestPromise = makeControlledPromise<IEncryptedMessage>();
-
   beforeEach(() => {
+    quotePromise = makeTestPromise();
+    requestPromise = makeTestPromise();
+    confirmPromise = makeTestPromise();
+    attestPromise = makeTestPromise();
+
+    mockTwitterApi = {
+      quote: quotePromise.jestFn,
+      requestAttestation: requestPromise.jestFn,
+      attest: attestPromise.jestFn,
+      confirm: confirmPromise.jestFn,
+    };
+    jest.mocked(useTwitterApi).mockReturnValue(mockTwitterApi);
+
+    sessionMockReset();
+
     jest.spyOn(console, 'error').mockImplementation(() => undefined);
-
-    sendPromise = makeControlledPromise<void>();
-    jest
-      .mocked(sessionMock.send)
-      .mockReset()
-      .mockReturnValue(sendPromise.promise);
-    jest.mocked(sessionMock.listen).mockReset();
-
-    quotePromise = makeControlledPromise<IEncryptedMessage>();
-    jest
-      .mocked(mockTwitterApi.quote)
-      .mockReset()
-      .mockReturnValue(quotePromise.promise);
-
-    requestPromise = makeControlledPromise<{ secret: string }>();
-    jest
-      .mocked(mockTwitterApi.requestAttestation)
-      .mockReset()
-      .mockReturnValue(requestPromise.promise);
-
-    confirmPromise = makeControlledPromise<undefined>();
-    jest
-      .mocked(mockTwitterApi.confirm)
-      .mockReset()
-      .mockReturnValue(confirmPromise.promise);
-
-    attestPromise = makeControlledPromise<IEncryptedMessage>();
-    jest
-      .mocked(mockTwitterApi.attest)
-      .mockReset()
-      .mockReturnValue(attestPromise.promise);
   });
 
   afterEach(() => {
     jest.mocked(console.error).mockRestore();
   });
-
-  async function respondWithQuote() {
-    await act(async () => {
-      quotePromise.resolve({ quote: '' } as unknown as IEncryptedMessage);
-    });
-  }
-
-  async function confirmOwnership() {
-    await act(async () => {
-      confirmPromise.resolve(undefined);
-    });
-  }
 
   it('should go through the happy path', async () => {
     const { container } = render(<Twitter session={sessionMock} />);
@@ -170,7 +145,7 @@ describe('Twitter', () => {
     expectAttestationRequested();
 
     await act(async () => {
-      requestPromise.resolve({ secret: 'SECRET' });
+      requestPromise.resolve('SECRET');
     });
     expectIsNotProcessing(container);
 
@@ -185,7 +160,7 @@ describe('Twitter', () => {
 
     await act(async () => {
       await listenerPromise;
-      sendPromise.resolve(undefined);
+      sessionMockSendPromise.resolve(undefined);
     });
 
     await userEvent.click(
@@ -228,7 +203,7 @@ describe('Twitter', () => {
     expectQuoteIsSent();
 
     await act(async () => {
-      sendPromise.reject(new Error('closed'));
+      sessionMockSendPromise.reject(new Error('closed'));
     });
 
     expectIsNotProcessing(container);
@@ -258,7 +233,7 @@ describe('Twitter', () => {
     await act(async () => {
       requestPromise.reject(new Error('unknown'));
       await listenerPromise;
-      sendPromise.resolve(undefined);
+      sessionMockSendPromise.resolve(undefined);
     });
 
     expectIsNotProcessing(container);
@@ -286,9 +261,9 @@ describe('Twitter', () => {
     });
 
     await act(async () => {
-      requestPromise.reject(new Error('closed'));
+      requestPromise.reject(new ClosedRejection());
       await listenerPromise;
-      sendPromise.resolve(undefined);
+      sessionMockSendPromise.resolve(undefined);
     });
 
     expectIsNotProcessing(container);
@@ -333,7 +308,7 @@ describe('Twitter', () => {
     expectAttestationRequested();
 
     await act(async () => {
-      requestPromise.resolve({ secret: 'SECRET' });
+      requestPromise.resolve('SECRET');
     });
     expectIsNotProcessing(container);
     await expectSecretInMessage();
@@ -364,7 +339,7 @@ describe('Twitter', () => {
     expectAttestationRequested();
 
     await act(async () => {
-      requestPromise.resolve({ secret: 'SECRET' });
+      requestPromise.resolve('SECRET');
     });
     expectIsNotProcessing(container);
     await expectSecretInMessage();

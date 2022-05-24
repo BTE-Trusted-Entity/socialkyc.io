@@ -55,7 +55,7 @@
       <h2>What is SocialKYC</h2>
 
       <p>SocialKYC allows you to create, manage and use social credentials. Social credentials are credentials for your
-        social accounts (such as LinkedIn, Twitter, TikTok, Discord, GitHub, Twitch, etc.), email addresses or phone numbers as
+        social accounts (such as Twitter, TikTok, Discord, GitHub, Twitch, etc.), email addresses or phone numbers as
         they become available over time in SocialKYC.</p>
 
       <p>A credential of your social identity is issued after you have proved control of the respective social account,
@@ -94,7 +94,7 @@
 
       <p>The wallet allows you to create digital identities for which SocialKYC attests verifiable credentials; this
         attestation is done automatically by the Software. You can choose between a set of credentials to be attested.
-        Currently, we are supporting attestations for email addresses as well as Twitter, Discord, GitHub and Twitch accounts;
+        Currently, we are supporting attestations for email addresses as well as Twitter, Discord, GitHub, Twitch, Telegram and YouTube accounts;
         credentials for further digital identities are planned to be released over time.</p>
 
       <p>To start the attestation process you first need to agree to the terms of a specific attestation (e.g. costs and
@@ -120,6 +120,10 @@
         </li>
         <li>For your Twitch account, you click onto the button to sign into Twitch and in a new tab you log in to the account you want to have attested. Then, you grant us a one-time permission to fetch your Twitch user ID and username. We show you the fetched data and after you clicked to confirm this data, SocialKYC creates the credential with this data and anchors it to the blockchain.
         </li>
+        <li>For your Telegram account, you click onto the button to sign into Telegram and in a new tab you log in to the account you want to have attested. Then, you grant us a one-time permission to fetch your Telegram user ID and first name, optionally the username and last name if available. We show you the fetched data and after you click to confirm this data, SocialKYC creates the credential with this data and anchors it to the blockchain.
+        </li>
+         <li>For your YouTube account, you click onto the button to sign into YouTube and in a new tab you log in to the Google account that owns/manages the YouTube channel you want to have attested. If there are multiple channels owned/managed by this account, on a second login screen you will select the specific channel you want to have attested. Then, you grant us a one-time permission to fetch your YouTube channel ID and channel name. We show you the fetched data and after you clicked to confirm this data, SocialKYC creates the credential with this data and anchors it to the blockchain.
+        </li>
       </ul>
 
       <p>Once a credential is verified an attestation hash is anchored to the KILT blockchain.</p>
@@ -130,7 +134,8 @@
 
       <p>By using this service for one or more of your social channels, you confirm that both this channel and this
         address via which you apply for the credential actually only belong to you, i.e. that your identity is linked to
-        both and that no other identity is linked to them.</p>
+        both and that no other identity is linked to them or in case of a credential for a YoutTube brand channel that you are the owner of that Youtube 
+        brand channel or have been delegated access to that YouTube brand channel and act in accordance with the owner(s) of that channel.</p>
 
       <p>Furthermore, you confirm that the use of the service and the further disposal of the credential does not
         violate the rights of third parties.</p>
@@ -255,6 +260,7 @@
       <li class="navItem"><a href="./about.html">About Us &amp; Imprint</a></li>
       <li class="navItem"><a>Terms of Use</a></li>
       <li class="navItem"><a href="./privacy.html">Privacy Policy</a></li>
+      <li class="navItem"><a href="https://github.com/BTE-Trusted-Entity/socialkyc.io/" target="_blank" rel="noreferrer">GitHub</a></li>
       <li class="navItem"><a href="https://support.kilt.io/" rel="noreferrer" target="_blank">Tech Support</a>
       </li>
     </ul>

@@ -6,14 +6,16 @@ import {
   GetSessionOutput,
 } from './session';
 import { paths } from './paths';
+import { sessionHeader } from './sessionHeader';
 
 export async function getSessionValues(): Promise<GetSessionOutput> {
   return ky.get(paths.session).json();
 }
 
 export async function checkSession(
-  input: CheckSessionInput,
+  json: CheckSessionInput,
+  sessionId: string,
 ): Promise<CheckSessionOutput> {
-  await ky.post(paths.session, { json: input });
-  return undefined;
+  const headers = { [sessionHeader]: sessionId };
+  await ky.post(paths.session, { json, headers });
 }

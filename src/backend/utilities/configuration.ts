@@ -79,6 +79,32 @@ if (!twitch.clientId || !twitch.secret) {
   throw new ConfigurationError('No Twitch client credentials provided');
 }
 
+const instagram = {
+  clientId: env.INSTAGRAM_CLIENT_ID as string,
+  secret: env.SECRET_INSTAGRAM,
+};
+
+if (!instagram.clientId || !instagram.secret) {
+  throw new ConfigurationError('No Instagram client credentials provided');
+}
+
+const telegram = {
+  token: env.SECRET_TELEGRAM as string,
+};
+
+if (!telegram.token) {
+  throw new ConfigurationError('No Telegram token provided');
+}
+
+const youtube = {
+  clientId: env.YOUTUBE_CLIENT_ID as string,
+  clientSecret: env.SECRET_YOUTUBE_CLIENT,
+};
+
+if (!youtube.clientId || !youtube.clientSecret) {
+  throw new ConfigurationError('No youtube client credentials provided');
+}
+
 const lowBalanceAlertRecipients = env.LOW_BALANCE_ALERT_RECIPIENTS;
 
 if (!lowBalanceAlertRecipients) {
@@ -104,5 +130,8 @@ export const configuration = {
   discord,
   github,
   twitch,
+  instagram,
+  telegram,
+  youtube,
   lowBalanceAlertRecipients,
 };

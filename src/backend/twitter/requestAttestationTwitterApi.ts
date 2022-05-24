@@ -1,25 +1,14 @@
-import ky from 'ky';
-import { StatusCodes } from 'http-status-codes';
+import { KyInstance } from 'ky/distribution/types/ky';
 
 import { EncryptedMessageInput } from '../utilities/validateEncryptedMessage';
 import { paths } from '../endpoints/paths';
+import { maybeRejected } from '../../frontend/utilities/maybeRejected';
 
 import { Output } from './requestAttestationTwitter';
 
 export async function requestAttestationTwitter(
-  input: EncryptedMessageInput,
+  json: EncryptedMessageInput,
+  ky: KyInstance,
 ): Promise<Output> {
-  const result = await ky.post(paths.twitter.requestAttestation, {
-    json: input,
-  });
-
-  if (result.status === StatusCodes.ACCEPTED) {
-    throw new Error('Terms rejected');
-  }
-
-  if (result.status !== StatusCodes.OK) {
-    throw new Error('Not attested');
-  }
-
-  return result.json();
+  return maybeRejected(ky.post(paths.twitter.requestAttestation, { json }));
 }

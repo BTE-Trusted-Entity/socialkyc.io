@@ -6,15 +6,9 @@ import { quoteGithub } from '../../../backend/github/quoteGithubApi';
 import { requestAttestationGithub } from '../../../backend/github/requestAttestationGithubApi';
 import { attestGithub } from '../../../backend/github/attestGithubApi';
 
-import { bindToSession, SessionBound } from '../../utilities/bindToSession';
+import { bindToSession } from '../../utilities/bindToSession';
 
-export function useGithubApi(sessionId: string): {
-  authUrl: SessionBound<typeof authUrlGithub>;
-  confirm: SessionBound<typeof confirmGithub>;
-  quote: SessionBound<typeof quoteGithub>;
-  requestAttestation: SessionBound<typeof requestAttestationGithub>;
-  attest: SessionBound<typeof attestGithub>;
-} {
+export function useGithubApi(sessionId: string) {
   return useMemo(() => {
     const sessionBound = bindToSession(sessionId);
     return {

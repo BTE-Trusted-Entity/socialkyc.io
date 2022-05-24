@@ -16,11 +16,10 @@ import { configuration } from '../utilities/configuration';
 import {
   getSecretForSession,
   getSession,
-  PayloadWithSession,
   setSession,
 } from '../utilities/sessionStorage';
 
-import { decryptRequestAttestationContent } from '../utilities/decryptMessage';
+import { decryptRequestAttestation } from '../utilities/decryptMessage';
 import { validateEncryptedMessage } from '../utilities/validateEncryptedMessage';
 import { exceptionToError } from '../../frontend/utilities/exceptionToError';
 import { exitOnError } from '../utilities/exitOnError';
@@ -88,7 +87,7 @@ The SocialKYC identity verification service is brought to you by B.T.E. BOTLabs 
   sesConnectionState.on();
 }
 
-export type Output = string;
+export type Output = void;
 
 async function handler(
   request: Request,
@@ -106,15 +105,10 @@ async function handler(
     );
   }
 
-  const content = await decryptRequestAttestationContent(request);
-  if (!content) {
-    return h.response().code(StatusCodes.ACCEPTED);
-  }
-
-  const { requestForAttestation } = content;
-
-  const session = getSession(request.payload as PayloadWithSession);
+  const session = getSession(request.headers);
   delete session.attestationPromise;
+
+  const { requestForAttestation } = await decryptRequestAttestation(request);
   setSession({ ...session, requestForAttestation, confirmed: false });
   logger.debug('Email request attestation cached');
 
@@ -123,10 +117,11 @@ async function handler(
   const url = `${configuration.baseUri}${path}`;
 
   try {
-    await send(url, requestForAttestation.claim.contents.Email as string);
+    const email = requestForAttestation.claim.contents.Email as string;
+    await send(url, email);
     logger.debug('Email request attestation message sent');
 
-    return requestForAttestation.claim.contents['Email'] as string as Output;
+    return h.response().code(StatusCodes.NO_CONTENT);
   } catch (exception) {
     throw Boom.boomify(exceptionToError(exception), {
       statusCode: 400,
@@ -135,7 +130,7 @@ async function handler(
   }
 }
 
-export const request: ServerRoute = {
+export const requestAttestationEmail: ServerRoute = {
   method: 'POST',
   path: paths.email.requestAttestation,
   handler,

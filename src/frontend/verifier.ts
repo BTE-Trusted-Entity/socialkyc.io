@@ -27,6 +27,12 @@ const cTypes: Record<string, string> = {
     'GitHub',
   '0x568ec5ffd7771c4677a5470771adcdea1ea4d6b566f060dc419ff133a0089d80':
     'Twitch',
+  '0xcef8f3fe5aa7379faea95327942fd77287e1c144e3f53243e55705f11e890a4c':
+    'Telegram',
+  '0x329a2a5861ea63c250763e5e4c4d4a18fe4470a31e541365c7fb831e5432b940':
+    'Youtube',
+  '0xa3cc696621b9fef5fc94a61078ceecadd957f18634ccff05b9030f274e376459':
+    'Instagram',
 };
 
 function handleBeforeUnload(event: Event) {
@@ -51,10 +57,10 @@ async function handleSubmit(event: Event) {
 
     await session.listen(async (message) => {
       try {
-        const { credential, isAttested } = await verifyCredential({
-          message,
+        const { credential, isAttested } = await verifyCredential(
+          { message },
           sessionId,
-        });
+        );
 
         cType.textContent =
           cTypes[credential.attestation.cTypeHash] || 'Unknown';
@@ -97,10 +103,10 @@ async function handleSubmit(event: Event) {
         window.removeEventListener('beforeunload', handleBeforeUnload);
       }
     });
-    const message = await requestCredential({
+    const message = await requestCredential(
+      { cType: requestedCType },
       sessionId,
-      cType: requestedCType,
-    });
+    );
 
     await session.send(message);
   } catch (error) {

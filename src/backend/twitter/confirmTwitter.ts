@@ -5,23 +5,14 @@ import {
   ServerRoute,
 } from '@hapi/hapi';
 import Boom from '@hapi/boom';
-import { z } from 'zod';
 
-import {
-  getSession,
-  PayloadWithSession,
-  setSession,
-} from '../utilities/sessionStorage';
+import { getSession, setSession } from '../utilities/sessionStorage';
 
 import { paths } from '../endpoints/paths';
 
 import { tweetsListeners } from './tweets';
 
-const zodPayload = z.object({
-  sessionId: z.string(),
-});
-
-export type Input = z.infer<typeof zodPayload>;
+export type Input = Record<string, never>;
 
 export type Output = undefined;
 
@@ -32,7 +23,7 @@ async function handler(
   const { logger } = request;
   logger.debug('Twitter confirmation started');
 
-  const session = getSession(request.payload as PayloadWithSession);
+  const session = getSession(request.headers);
 
   const { requestForAttestation } = session;
   if (!requestForAttestation) {
@@ -59,9 +50,4 @@ export const confirmTwitter: ServerRoute = {
   method: 'POST',
   path: paths.twitter.confirm,
   handler,
-  options: {
-    validate: {
-      payload: async (payload) => zodPayload.parse(payload),
-    },
-  },
 };

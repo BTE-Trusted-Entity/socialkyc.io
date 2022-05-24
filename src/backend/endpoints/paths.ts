@@ -46,10 +46,35 @@ export const paths = {
     attest: '/api/twitch/attest',
   },
 
+  telegram: {
+    authUrl: '/api/telegram/authUrl',
+    confirm: '/api/telegram/confirm',
+    quote: '/api/telegram/quote',
+    requestAttestation: '/api/telegram/request-attestation',
+    attest: '/api/telegram/attest',
+  },
+
+  youtube: {
+    authUrl: '/api/youtube/authUrl',
+    confirm: '/api/youtube/confirm',
+    quote: '/api/youtube/quote',
+    requestAttestation: '/api/youtube/request-attestation',
+    attest: '/api/youtube/attest',
+  },
+
+  instagram: {
+    authUrl: '/api/instagram/authUrl',
+    confirm: '/api/instagram/confirm',
+    quote: '/api/instagram/quote',
+    requestAttestation: '/api/instagram/request-attestation',
+    attest: '/api/instagram/attest',
+  },
   oauth: {
     discord: '/discord/auth',
     github: '/github/auth',
     twitch: '/twitch/auth',
+    youtube: '/youtube/auth',
+    instagram: '/instagram/auth',
   },
 
   verifier: {

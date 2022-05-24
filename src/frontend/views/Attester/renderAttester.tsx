@@ -1,4 +1,4 @@
-import { render } from 'react-dom';
+import { createRoot } from 'react-dom/client';
 import { generatePath, matchPath, MemoryRouter } from 'react-router-dom';
 
 import { paths } from '../../paths';
@@ -23,6 +23,13 @@ function getInitialEntry() {
   const twitch = matchPath(window.location.pathname, {
     path: paths.window.twitch,
   });
+  const youtube = matchPath(window.location.pathname, {
+    path: paths.window.youtube,
+  });
+
+  const instagram = matchPath(window.location.pathname, {
+    path: paths.window.instagram,
+  });
 
   if (email) {
     const { secret } = email.params;
@@ -33,7 +40,7 @@ function getInitialEntry() {
     });
   }
 
-  if (discord || github || twitch) {
+  if (discord || github || twitch || youtube || instagram) {
     const searchParams = new URLSearchParams(window.location.search);
     const code = searchParams.get('code');
     const secret = searchParams.get('state');
@@ -54,6 +61,12 @@ function getInitialEntry() {
     }
     if (twitch) {
       path = paths.twitchAuth;
+    }
+    if (youtube) {
+      path = paths.youtubeAuth;
+    }
+    if (instagram) {
+      path = paths.instagramAuth;
     }
 
     if (!path) {
@@ -76,14 +89,14 @@ function renderAttester() {
     return;
   }
 
-  render(
+  const root = createRoot(container);
+  root.render(
     <MemoryRouter
       initialEntries={[getInitialEntry()]}
       getUserConfirmation={getConfirmation}
     >
       <Attester />
     </MemoryRouter>,
-    container,
   );
 }
 

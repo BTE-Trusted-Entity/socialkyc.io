@@ -4,22 +4,13 @@ import {
   ResponseToolkit,
   ServerRoute,
 } from '@hapi/hapi';
-import { z } from 'zod';
 import { IEncryptedMessage } from '@kiltprotocol/types';
 
-import {
-  getSessionWithDid,
-  PayloadWithSession,
-  setSession,
-} from '../utilities/sessionStorage';
+import { getSession, setSession } from '../utilities/sessionStorage';
 import { getAttestationMessage } from '../utilities/attestClaim';
 import { paths } from '../endpoints/paths';
 
-const zodPayload = z.object({
-  sessionId: z.string(),
-});
-
-export type Input = z.infer<typeof zodPayload>;
+export type Input = Record<string, never>;
 
 export type Output = IEncryptedMessage;
 
@@ -30,7 +21,7 @@ async function handler(
   const { logger } = request;
   logger.debug('Twitter attestation started');
 
-  const session = getSessionWithDid(request.payload as PayloadWithSession);
+  const session = getSession(request.headers);
 
   const response = await getAttestationMessage(session, logger);
   delete session.requestForAttestation;
@@ -44,9 +35,4 @@ export const attestationTwitter: ServerRoute = {
   method: 'POST',
   path: paths.twitter.attest,
   handler,
-  options: {
-    validate: {
-      payload: async (payload) => zodPayload.parse(payload),
-    },
-  },
 };

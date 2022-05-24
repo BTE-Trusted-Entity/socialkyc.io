@@ -1,19 +1,15 @@
-import { StatusCodes } from 'http-status-codes';
 import {
   Request,
   ResponseObject,
   ResponseToolkit,
   ServerRoute,
 } from '@hapi/hapi';
-import { MessageBodyType, ICredential } from '@kiltprotocol/types';
+import { ICredential, MessageBodyType } from '@kiltprotocol/types';
 import { Credential } from '@kiltprotocol/core';
 import Boom from '@hapi/boom';
 
 import { decryptMessageContent } from '../utilities/decryptMessage';
-import {
-  EncryptedMessageInput,
-  validateEncryptedMessage,
-} from '../utilities/validateEncryptedMessage';
+import { validateEncryptedMessage } from '../utilities/validateEncryptedMessage';
 import { paths } from '../endpoints/paths';
 import { getSession } from '../utilities/sessionStorage';
 
@@ -34,11 +30,7 @@ async function handler(
     MessageBodyType.SUBMIT_CREDENTIAL,
   );
 
-  if (!content) {
-    return h.response().code(StatusCodes.ACCEPTED);
-  }
-
-  const session = getSession(request.payload as EncryptedMessageInput);
+  const session = getSession(request.headers);
   if (!session.requestChallenge) {
     throw Boom.forbidden('No request challenge');
   }
