@@ -8792,10 +8792,10 @@ hapi-gate@^2.1.0:
   resolved "https://registry.yarnpkg.com/hapi-gate/-/hapi-gate-2.1.0.tgz#503211813c9e4491bace3f09e96d43e3bdea8d52"
   integrity sha512-GFQixKhAkaduwLHSya3DaZw2MhPYhywqVB5qXZ10AEPtctEtI1qQk1sywTFjnM+rNS1mFZ1DZhbi+krItQIzQw==
 
-hapi-pino@^9.3.0:
-  version "9.3.0"
-  resolved "https://registry.yarnpkg.com/hapi-pino/-/hapi-pino-9.3.0.tgz#afa30345aaac1f567f7622b410ab419d951a2af9"
-  integrity sha512-xek6P+nPGQmbzgzhe2SbPjHkdmFTXzrtMrhD6u7bV/LGIcA/xahDfYK/3TkifDtijCFMLO8vAAxwEqHvSPQDSQ==
+hapi-pino@^9.4.0:
+  version "9.4.0"
+  resolved "https://registry.yarnpkg.com/hapi-pino/-/hapi-pino-9.4.0.tgz#4fa400ffd8cdf8777176d5cf2f3e6e0e11688c63"
+  integrity sha512-QGxTgsAOw2siV8/vspYmFc19/lCeoPe/LLafSJ6NiUQNPTQmo6/PbiEtKVHjL1Mw1REokQCDZUOuOA80einRKQ==
   dependencies:
     "@hapi/hoek" "^9.2.1"
     "@types/hapi__hapi" "^20.0.10"
