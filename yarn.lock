@@ -1902,12 +1902,12 @@
     "@hapi/hoek" "9.x.x"
     "@hapi/validate" "1.x.x"
 
-"@hapi/hoek@10.x.x":
+"@hapi/hoek@10.x.x", "@hapi/hoek@^10.0.0":
   version "10.0.0"
   resolved "https://registry.yarnpkg.com/@hapi/hoek/-/hoek-10.0.0.tgz#b17be58febab7dbc60cde5f522da197ccde12713"
   integrity sha512-CeNFz1JcLZ5xE8Vc9aau37cgHw9bxXqSDK/D55GF2GAOv0n0XjyyjSodHtKahB7A1tV3FlgCpijp3zkSITmBdA==
 
-"@hapi/hoek@9.x.x", "@hapi/hoek@^9.0.0", "@hapi/hoek@^9.0.2", "@hapi/hoek@^9.0.4", "@hapi/hoek@^9.2.1":
+"@hapi/hoek@9.x.x", "@hapi/hoek@^9.0.0", "@hapi/hoek@^9.0.2", "@hapi/hoek@^9.0.4":
   version "9.2.1"
   resolved "https://registry.yarnpkg.com/@hapi/hoek/-/hoek-9.2.1.tgz#9551142a1980503752536b5050fd99f4a7f13b17"
   integrity sha512-gfta+H8aziZsm8pZa0vj04KO6biEiisppNgA1kbJvFrrWu9Vm7eaUEy76DIxsuTaWvti5fkJVhllWc6ZTE+Mdw==
@@ -8792,12 +8792,12 @@ hapi-gate@^2.1.0:
   resolved "https://registry.yarnpkg.com/hapi-gate/-/hapi-gate-2.1.0.tgz#503211813c9e4491bace3f09e96d43e3bdea8d52"
   integrity sha512-GFQixKhAkaduwLHSya3DaZw2MhPYhywqVB5qXZ10AEPtctEtI1qQk1sywTFjnM+rNS1mFZ1DZhbi+krItQIzQw==
 
-hapi-pino@^9.3.0:
-  version "9.3.0"
-  resolved "https://registry.yarnpkg.com/hapi-pino/-/hapi-pino-9.3.0.tgz#afa30345aaac1f567f7622b410ab419d951a2af9"
-  integrity sha512-xek6P+nPGQmbzgzhe2SbPjHkdmFTXzrtMrhD6u7bV/LGIcA/xahDfYK/3TkifDtijCFMLO8vAAxwEqHvSPQDSQ==
+hapi-pino@^10.0.0:
+  version "10.0.0"
+  resolved "https://registry.yarnpkg.com/hapi-pino/-/hapi-pino-10.0.0.tgz#7061b710032481b9a634a4870e2eb36c7324d48d"
+  integrity sha512-8oF+Vkccr5x5/G6arqMuVO/eaE/i0hCgR/HbW3ZVwhTUiN+CJSS+MaauMfAK0iaDuK0bF9mcW4FEPc5pF6HLyg==
   dependencies:
-    "@hapi/hoek" "^9.2.1"
+    "@hapi/hoek" "^10.0.0"
     "@types/hapi__hapi" "^20.0.10"
     abstract-logging "^2.0.1"
     get-caller-file "^2.0.5"
