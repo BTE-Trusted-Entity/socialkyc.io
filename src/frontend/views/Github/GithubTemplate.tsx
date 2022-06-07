@@ -41,6 +41,7 @@ interface Props {
   flowError?: FlowError;
   profile?: GithubProfile;
 }
+
 export function GithubTemplate({
   status,
   processing,
@@ -89,12 +90,7 @@ export function GithubTemplate({
 
       {status === 'urlReady' && (
         <p className={styles.buttonsLine}>
-          <a
-            className={styles.ctaButton}
-            href={authUrl}
-            target="_blank"
-            rel="noreferrer"
-          >
+          <a className={styles.ctaButton} href={authUrl}>
             Sign in with GitHub
           </a>
         </p>

@@ -1,8 +1,6 @@
-import { ServerRoute, Request } from '@hapi/hapi';
+import { Request, ServerRoute } from '@hapi/hapi';
 
 import { z } from 'zod';
-
-import { emailCType } from '../email/emailCType';
 
 import { getSessionBySecret, setSession } from '../utilities/sessionStorage';
 import { startAttestation } from '../utilities/attestClaim';
@@ -11,20 +9,20 @@ import { exceptionToError } from '../../frontend/utilities/exceptionToError';
 
 import { getHtmlVariant } from '../utilities/htmlVariants';
 
-import { paths } from './paths';
+import { paths } from '../endpoints/paths';
+
+import { emailCType } from './emailCType';
 
 const zodParams = z.object({
-  secret: z.string(),
+  state: z.string(),
 });
-
-type Params = z.infer<typeof zodParams>;
 
 async function handler(request: Request): Promise<string> {
   const { logger } = request;
 
-  const { secret } = request.params as Params;
-
   try {
+    const secret = zodParams.parse(request.query).state;
+
     const session = getSessionBySecret(secret);
     const { requestForAttestation } = session;
     if (!requestForAttestation) {
@@ -34,9 +32,10 @@ async function handler(request: Request): Promise<string> {
       throw new Error('requestForAttestation cType mismatch');
     }
 
-    setSession({ ...session, confirmed: true });
+    const confirmedSession = { ...session, confirmed: true };
+    setSession(confirmedSession);
 
-    const attestationPromise = startAttestation(session, logger);
+    const attestationPromise = startAttestation(confirmedSession, logger);
     attestationPromise.catch((error) => logger.error(error));
 
     logger.debug('Email attestation started');
@@ -50,8 +49,8 @@ async function handler(request: Request): Promise<string> {
   }
 }
 
-export const confirmationHtml: ServerRoute = {
+export const authHtmlEmail: ServerRoute = {
   method: 'GET',
-  path: paths.email.confirmationHtml,
+  path: paths.redirect.email,
   handler,
 };

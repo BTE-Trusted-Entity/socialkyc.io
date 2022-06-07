@@ -541,8 +541,6 @@ exports[`YoutubeTemplate should match snapshot with status=urlReady 1`] = `
     >
       <a
         class="ctaButton"
-        rel="noreferrer"
-        target="_blank"
       >
         Sign in with YouTube
       </a>

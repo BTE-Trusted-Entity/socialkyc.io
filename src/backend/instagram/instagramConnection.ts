@@ -15,6 +15,7 @@ function isInvalidCode(error: unknown) {
       'Invalid authorization code'
   );
 }
+
 export async function canAccessInstagram() {
   try {
     await got.post(instagramEndpoints.token, {

@@ -12,7 +12,6 @@ export const paths = {
     confirm: '/api/email/confirm',
     requestAttestation: '/api/email/request-attestation',
     attest: '/api/email/attest',
-    confirmationHtml: '/email/confirmation/{secret}',
   },
 
   twitter: {
@@ -69,7 +68,9 @@ export const paths = {
     requestAttestation: '/api/instagram/request-attestation',
     attest: '/api/instagram/attest',
   },
-  oauth: {
+
+  redirect: {
+    email: '/email/auth',
     discord: '/discord/auth',
     github: '/github/auth',
     twitch: '/twitch/auth',

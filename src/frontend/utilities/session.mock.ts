@@ -19,6 +19,7 @@ export const sessionMock: Session = {
   }),
   sessionId: 'foo',
   name: 'foo bar',
+  wallet: 'purse',
 };
 
 export let sessionMockSendPromise = makeControlledPromise<void>();

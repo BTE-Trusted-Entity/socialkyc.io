@@ -6,5 +6,5 @@ export const githubEndpoints = {
   token: 'https://github.com/login/oauth/access_token',
   profile: 'https://api.github.com/user',
 
-  redirectUri: `${configuration.baseUri}${paths.oauth.github}`,
+  redirectUri: `${configuration.baseUri}${paths.redirect.github}`,
 };

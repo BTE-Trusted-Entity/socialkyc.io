@@ -52,7 +52,7 @@ async function handleSubmit(event: Event) {
   const requestedCType = target.elements.ctype.value;
 
   try {
-    const session = await getSession(apiWindow.kilt.sporran);
+    const session = await getSession(apiWindow.kilt.sporran, 'sporran');
     const { sessionId } = session;
 
     await session.listen(async (message) => {

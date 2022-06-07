@@ -8,15 +8,17 @@ interface Callable {
   (...args: any[]): any;
 }
 
-export function bindToSession<CallbackType extends Callable>(
+export function bindToSession(
   sessionId: string,
-): (
+): <CallbackType extends Callable>(
   callback: CallbackType,
 ) => (input: Parameters<CallbackType>[0]) => ReturnType<CallbackType> {
   const headers = { [sessionHeader]: sessionId };
   const boundKy = ky.create({ headers });
 
-  return function bindCallbackToSession(callback: CallbackType) {
+  return function bindCallbackToSession<CallbackType extends Callable>(
+    callback: CallbackType,
+  ) {
     return function boundToSessionCallback(input: Parameters<CallbackType>[0]) {
       return callback(input, boundKy);
     };

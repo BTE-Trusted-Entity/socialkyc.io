@@ -6,13 +6,7 @@ import {
   useMemo,
   useState,
 } from 'react';
-import {
-  Link,
-  Route,
-  Switch,
-  useHistory,
-  useRouteMatch,
-} from 'react-router-dom';
+import { Link, Route, Switch, useHistory, useLocation } from 'react-router-dom';
 import cx from 'classnames';
 import { detect } from 'detect-browser';
 
@@ -25,21 +19,21 @@ import {
   Session,
   UnauthorizedRejection,
 } from '../../utilities/session';
+import {
+  redirectedPaths,
+  useValuesFromRedirectUri,
+} from '../../utilities/useValuesFromRedirectUri';
+import { paths } from '../../paths';
 import { DetailedMessage } from '../../components/DetailedMessage/DetailedMessage';
 import { Spinner } from '../../components/Spinner/Spinner';
 import { Email } from '../Email/Email';
 import { Twitter } from '../Twitter/Twitter';
-import { paths, redirectedPaths } from '../../paths';
 import { Discord } from '../Discord/Discord';
 import { Github } from '../Github/Github';
 import { Twitch } from '../Twitch/Twitch';
 import { Telegram } from '../Telegram/Telegram';
 import { Youtube } from '../Youtube/Youtube';
 import { Disconnect } from '../../components/Disconnect/Disconnect';
-import {
-  extensionInput,
-  extensionOutput,
-} from '../../utilities/broadcastChannels';
 
 interface HasExtension {
   data?: {
@@ -215,21 +209,23 @@ function Connect({ setSession }: { setSession: (s: Session) => void }) {
 
   const [extension, setExtension] = useState<string>(extensions[0]);
 
-  const isRedirected = useRouteMatch(redirectedPaths);
+  const { search } = useLocation();
+  const { secret } = useValuesFromRedirectUri();
+  const isRedirected = Boolean(secret);
 
   useEffect(() => {
-    if (isRedirected) {
-      extensionInput.postMessage('GET_BROADCASTED_EXTENSION');
+    const wallet =
+      new URLSearchParams(search).get('wallet') ||
+      window.sessionStorage.getItem('wallet');
 
-      extensionOutput.onmessage = ({ data: extension }) => {
-        setExtension(extension);
-      };
+    if (wallet && extensions.includes(wallet)) {
+      setExtension(wallet);
     }
 
-    if (!isRedirected && extensions.includes('sporran')) {
+    if (!wallet && extensions.includes('sporran')) {
       setExtension('sporran');
     }
-  }, [isRedirected, extensions]);
+  }, [extensions, search]);
 
   const handleInput = useCallback((event: FormEvent<HTMLSelectElement>) => {
     setExtension((event.target as HTMLSelectElement).value);
@@ -245,11 +241,7 @@ function Connect({ setSession }: { setSession: (s: Session) => void }) {
         setProcessing(true);
         setError(undefined);
 
-        setSession(await getSession(kilt[extension]));
-
-        extensionInput.onmessage = () => {
-          extensionOutput.postMessage(extension);
-        };
+        setSession(await getSession(kilt[extension], extension));
       } catch (exception) {
         if (exception instanceof ClosedRejection) {
           setError('closed');

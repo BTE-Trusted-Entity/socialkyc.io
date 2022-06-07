@@ -7,5 +7,5 @@ export const twitchEndpoints = {
   profile: 'https://api.twitch.tv/helix/users',
   revoke: 'https://id.twitch.tv/oauth2/revoke',
 
-  redirectUri: `${configuration.baseUri}${paths.oauth.twitch}`,
+  redirectUri: `${configuration.baseUri}${paths.redirect.twitch}`,
 };
