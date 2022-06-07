@@ -4482,10 +4482,10 @@
   resolved "https://registry.yarnpkg.com/@types/hapi__catbox/-/hapi__catbox-10.2.4.tgz#4d0531a6c2d0e45024f724020d536041ef8ffe30"
   integrity sha512-A6ivRrXD5glmnJna1UAGw87QNZRp/vdFO9U4GS+WhOMWzHnw+oTGkMvg0g6y1930CbeheGOCm7A1qHsqH7AXqg==
 
-"@types/hapi__hapi@*", "@types/hapi__hapi@^20.0.10":
-  version "20.0.10"
-  resolved "https://registry.yarnpkg.com/@types/hapi__hapi/-/hapi__hapi-20.0.10.tgz#890d8d5c3b12337ba6e4ea9e33d8aec5d62bbc25"
-  integrity sha512-Nt/SY/20/JAlHhbgH616j0g18vsANR9OWoyMdQcytlW6o7TBN+wRgf0MB8AgzjYpuzQam5oTiqyED9WwHmQKYQ==
+"@types/hapi__hapi@*", "@types/hapi__hapi@^20.0.10", "@types/hapi__hapi@^20.0.12":
+  version "20.0.12"
+  resolved "https://registry.yarnpkg.com/@types/hapi__hapi/-/hapi__hapi-20.0.12.tgz#f88bdfac7f05406d32f2453fbea8ee915fdc89c5"
+  integrity sha512-B+0fceCzFvbIOVv5YWOZzbHtEff8BLlGH3etrkcOedyj7F0unC5FjzFfaaO5gwlhJDdX0cmmMeRg2pwRdMa2CQ==
   dependencies:
     "@hapi/boom" "^9.0.0"
     "@hapi/iron" "^6.0.0"
