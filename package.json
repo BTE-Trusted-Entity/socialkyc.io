@@ -80,7 +80,7 @@
     "@types/hapi__inert": "^5.2.3",
     "@types/jest": "^27.5.1",
     "@types/lodash-es": "^4.17.6",
-    "@types/react": "^18.0.9",
+    "@types/react": "^18.0.12",
     "@types/react-dom": "^18.0.5",
     "@types/react-router-dom": "^5.3.3",
     "@typescript-eslint/eslint-plugin": "^5.26.0",
