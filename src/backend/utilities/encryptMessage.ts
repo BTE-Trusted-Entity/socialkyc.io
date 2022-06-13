@@ -13,12 +13,7 @@ export async function encryptMessage(
   message: Message,
   encryptionKeyId: DidPublicKey['id'],
 ): Promise<IEncryptedMessage> {
-  const { fullDid } = await fullDidPromise;
-
-  const encryptionKey = fullDid.encryptionKey;
-  if (!encryptionKey) {
-    throw new Error('Own encryption key does not exist');
-  }
+  const { fullDid, encryptionKey } = await fullDidPromise;
 
   return message.encrypt(
     encryptionKey.id,
