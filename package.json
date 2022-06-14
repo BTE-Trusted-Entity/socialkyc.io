@@ -102,7 +102,7 @@
     "react-router": "^5.3.3",
     "stylelint": "^14.9.1",
     "stylelint-config-css-modules": "^4.1.0",
-    "stylelint-config-standard": "^25.0.0",
+    "stylelint-config-standard": "^26.0.0",
     "supervisor": "^0.12.0",
     "ts-jest": "^28.0.4",
     "typed-css-modules": "^0.7.2",
