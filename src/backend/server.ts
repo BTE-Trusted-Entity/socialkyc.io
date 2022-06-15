@@ -29,7 +29,7 @@ import { attestationEmail } from './email/attestationEmail';
 import { listenForTweets } from './twitter/tweets';
 import { quoteTwitter } from './twitter/quoteTwitter';
 import { confirmTwitter } from './twitter/confirmTwitter';
-import { requestTwitter } from './twitter/requestAttestationTwitter';
+import { requestAttestationTwitter } from './twitter/requestAttestationTwitter';
 import { attestationTwitter } from './twitter/attestationTwitter';
 
 import { authUrlDiscord } from './discord/authUrlDiscord';
@@ -158,7 +158,7 @@ const logger = {
 
   server.route(quoteTwitter);
   server.route(confirmTwitter);
-  server.route(requestTwitter);
+  server.route(requestAttestationTwitter);
   server.route(attestationTwitter);
 
   server.route(authHtmlDiscord);

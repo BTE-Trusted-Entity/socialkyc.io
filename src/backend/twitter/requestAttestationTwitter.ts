@@ -36,7 +36,7 @@ async function handler(request: Request): Promise<string> {
   return secret as Output;
 }
 
-export const requestTwitter: ServerRoute = {
+export const requestAttestationTwitter: ServerRoute = {
   method: 'POST',
   path: paths.twitter.requestAttestation,
   handler,
