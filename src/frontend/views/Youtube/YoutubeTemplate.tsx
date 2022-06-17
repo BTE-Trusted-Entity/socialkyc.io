@@ -94,7 +94,7 @@ export function YoutubeTemplate({
       {status === 'urlReady' && (
         <p className={styles.buttonsLine}>
           <a className={styles.ctaButton} href={authUrl}>
-            Sign in with YouTube
+            Start Credential process
           </a>
         </p>
       )}
