@@ -542,7 +542,7 @@ exports[`YoutubeTemplate should match snapshot with status=urlReady 1`] = `
       <a
         class="ctaButton"
       >
-        Sign in with YouTube
+        Start Credential process
       </a>
     </p>
     <a

@@ -42,7 +42,7 @@ let attestPromise: TestPromise<IEncryptedMessage>;
 
 async function signInWithYoutube() {
   const signInLink = await screen.findByRole('link', {
-    name: 'Sign in with YouTube',
+    name: 'Start Credential process',
   });
   await userEvent.click(signInLink);
 }
@@ -165,7 +165,9 @@ describe('Youtube', () => {
     });
 
     await signInWithYoutube();
-    expect(await screen.findByText('Sign in with YouTube')).toBeInTheDocument();
+    expect(
+      await screen.findByText('Start Credential process'),
+    ).toBeInTheDocument();
   });
 
   it('should show an error when authUrl fails', async () => {
