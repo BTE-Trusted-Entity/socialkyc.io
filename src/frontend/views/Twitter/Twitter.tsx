@@ -12,18 +12,23 @@ import {
 
 const confirmingTimeout = 5 * 60 * 1000;
 
+export interface TwitterProfile {
+  handle: string;
+}
+
 interface Props {
   session: Session;
 }
 
 export function Twitter({ session }: Props): JSX.Element {
-  const [processing, setProcessing] = useState(false);
-  const [status, setStatus] = useState<AttestationStatus>('none');
   const [flowError, setFlowError] = useState<FlowError>();
+  const [status, setStatus] = useState<AttestationStatus>('none');
+  const [processing, setProcessing] = useState(false);
   const [inputError, setInputError] = useState<string>();
 
   const [secret, setSecret] = useState('');
 
+  const [profile, setProfile] = useState<TwitterProfile>();
   const [backupMessage, setBackupMessage] = useState<IEncryptedMessage>();
 
   const twitterApi = useTwitterApi(session.sessionId);
@@ -126,6 +131,7 @@ export function Twitter({ session }: Props): JSX.Element {
       handleBackup={handleBackup}
       handleSubmit={handleSubmit}
       handleTryAgainClick={handleTryAgainClick}
+      profile={profile}
     />
   );
 }

@@ -2,6 +2,7 @@ import { Meta } from '@storybook/react';
 import { action } from '@storybook/addon-actions';
 
 import { TwitterTemplate } from './TwitterTemplate';
+import { TwitterProfile } from './Twitter';
 
 export default {
   title: 'Views/Twitter',
@@ -13,6 +14,10 @@ const actions = {
   handleBackup: action('backup'),
   handleTryAgainClick: action('tryAgain'),
   setInputError: action('setInputError'),
+};
+
+const profileMock: TwitterProfile = {
+  handle: 'TestUserHandle',
 };
 
 export function Start(): JSX.Element {
@@ -29,6 +34,17 @@ export function Confirming(): JSX.Element {
       status="confirming"
       secret="0123456789"
       processing={false}
+      {...actions}
+    />
+  );
+}
+
+export function Authorized(): JSX.Element {
+  return (
+    <TwitterTemplate
+      status="authorized"
+      processing={false}
+      profile={profileMock}
       {...actions}
     />
   );

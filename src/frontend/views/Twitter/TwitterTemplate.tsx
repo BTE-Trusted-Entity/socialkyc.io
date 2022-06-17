@@ -25,10 +25,13 @@ import { LinkBack } from '../../components/LinkBack/LinkBack';
 import { usePreventNavigation } from '../../utilities/usePreventNavigation';
 import { useCopyButton } from '../../components/useCopyButton/useCopyButton';
 
+import { TwitterProfile } from './Twitter';
+
 export type AttestationStatus =
   | 'none'
   | 'requested'
   | 'confirming'
+  | 'authorized'
   | 'unconfirmed'
   | 'attesting'
   | 'ready'
@@ -46,6 +49,7 @@ interface Props {
   inputError?: string;
   flowError?: FlowError;
   secret?: string;
+  profile?: TwitterProfile;
 }
 
 export function TwitterTemplate({
@@ -58,6 +62,7 @@ export function TwitterTemplate({
   inputError,
   flowError,
   secret,
+  profile,
 }: Props): JSX.Element {
   const [twitterHandle, setTwitterHandle] = useState('');
 
@@ -182,6 +187,23 @@ export function TwitterTemplate({
               </p>
             </div>
           </Fragment>
+        )}
+
+        {status === 'authorized' && profile && (
+          <form onSubmit={handleSubmit}>
+            <dl className={styles.profile}>
+              <dt>Twitter handle:</dt>
+              <dd>{profile.handle}</dd>
+            </dl>
+
+            <p>
+              Validity: one year (<ExpiryDate />)
+            </p>
+
+            {flowError === 'closed' && <SigningErrorClosed />}
+
+            <button className={flowStyles.ctaButton}>Continue in Wallet</button>
+          </form>
         )}
 
         {status === 'unconfirmed' && (
