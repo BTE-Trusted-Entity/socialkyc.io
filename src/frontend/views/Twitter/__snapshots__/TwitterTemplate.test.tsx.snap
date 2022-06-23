@@ -265,6 +265,8 @@ exports[`TwitterTemplate should match snapshot with status=confirming 1`] = `
           <a
             class="ctaLink"
             href="https://twitter.com/"
+            rel="noreferrer"
+            target="_blank"
           >
             Go to Twitter
           </a>
