@@ -47,8 +47,6 @@ async function handler(
   const { encryptionKeyUri, encryptedChallenge, nonce } = payload;
   const session = getBasicSession(request.headers);
 
-  console.log('key uri: ', encryptionKeyUri);
-
   const encryptionKey = await DidResolver.resolveKey(
     encryptionKeyUri as DidResourceUri,
   );
