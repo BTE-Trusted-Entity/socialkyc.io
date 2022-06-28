@@ -1,4 +1,4 @@
-import { DidPublicKey, IEncryptedMessage } from '@kiltprotocol/types';
+import { DidResourceUri, IEncryptedMessage } from '@kiltprotocol/types';
 
 import {
   checkSession,
@@ -13,7 +13,8 @@ interface PubSubSession {
   ) => Promise<void>;
   close: () => Promise<void>;
   send: (message: IEncryptedMessage) => Promise<void>;
-  encryptionKeyId: DidPublicKey['id'];
+  // TODO: Update to encryptionKeyUri after PubSubSession is updated in Sporran
+  encryptionKeyId: DidResourceUri;
   encryptedChallenge: string;
   nonce: string;
 }
@@ -21,7 +22,7 @@ interface PubSubSession {
 interface InjectedWindowProvider {
   startSession: (
     dAppName: string,
-    dAppEncryptionKeyId: DidPublicKey['id'],
+    dAppEncryptionKeyUri: DidResourceUri,
     challenge: string,
   ) => Promise<PubSubSession>;
   name: string;
@@ -57,20 +58,24 @@ export async function getSession(
   try {
     window.sessionStorage.setItem('wallet', wallet);
 
-    const { dAppEncryptionKeyId, challenge, sessionId } =
+    const { dAppEncryptionKeyUri, challenge, sessionId } =
       await getSessionValues();
     const dAppName = 'SocialKYC';
 
     const session = await provider.startSession(
       dAppName,
-      dAppEncryptionKeyId,
+      dAppEncryptionKeyUri,
       challenge,
     );
 
-    const { encryptionKeyId, encryptedChallenge, nonce } = session;
+    const {
+      encryptionKeyId: encryptionKeyUri,
+      encryptedChallenge,
+      nonce,
+    } = session;
     await checkSession(
       {
-        encryptionKeyId,
+        encryptionKeyUri,
         encryptedChallenge,
         nonce,
       },

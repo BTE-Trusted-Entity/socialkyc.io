@@ -3,6 +3,7 @@ import path from 'node:path';
 
 import dotenv from 'dotenv';
 import pino from 'pino';
+import { DidUri } from '@kiltprotocol/types';
 
 dotenv.config();
 
@@ -34,9 +35,9 @@ if (!baseUri) {
   throw new ConfigurationError('No base URI provided');
 }
 
-const did = env.DID || 'pending';
+const didUri = env.DID as DidUri;
 const storeDidAndCTypes = env.STORE_DID_AND_CTYPES === 'true';
-if (did === 'pending' && !storeDidAndCTypes) {
+if (!didUri && !storeDidAndCTypes) {
   throw new ConfigurationError('Neither DID nor STORE_DID_AND_CTYPES provided');
 }
 
@@ -122,7 +123,7 @@ export const configuration = {
   isProduction: env.NODE_ENV === 'production',
   baseUri,
   distFolder: path.join(cwd(), 'dist', 'frontend'),
-  did,
+  didUri,
   backupPhrase,
   twitterSecretBearerToken,
   httpAuthPassword,

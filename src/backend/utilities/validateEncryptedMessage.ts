@@ -1,9 +1,10 @@
+import { DidResourceUri } from '@kiltprotocol/types';
 import { z } from 'zod';
 
 const zodPayload = z.object({
   message: z.object({
-    receiverKeyId: z.string(),
-    senderKeyId: z.string(),
+    receiverKeyUri: z.custom<DidResourceUri>(),
+    senderKeyUri: z.custom<DidResourceUri>(),
     ciphertext: z.string(),
     nonce: z.string(),
     receivedAt: z.number().optional(),

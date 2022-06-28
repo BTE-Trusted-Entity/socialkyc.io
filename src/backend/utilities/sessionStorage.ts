@@ -13,8 +13,8 @@ import { sessionHeader } from '../endpoints/sessionHeader';
 
 export interface BasicSession {
   sessionId: string;
-  did?: IDidDetails['did'];
-  encryptionKeyId?: DidPublicKey['id'];
+  did?: IDidDetails['uri'];
+  encryptionKeyUri?: DidPublicKey['uri'];
   didChallenge?: string;
   didConfirmed?: boolean;
   claim?: IClaim;
@@ -25,8 +25,8 @@ export interface BasicSession {
 }
 
 export type Session = BasicSession & {
-  did: IDidDetails['did'];
-  encryptionKeyId: DidPublicKey['id'];
+  did: IDidDetails['uri'];
+  encryptionKeyUri: DidPublicKey['uri'];
 };
 
 export interface PayloadWithSession {
@@ -55,12 +55,12 @@ export function getBasicSession(headers: Record<string, string>): BasicSession {
 export function getSession(headers: Record<string, string>): Session {
   const session = getBasicSession(headers);
 
-  const { did, didConfirmed, encryptionKeyId } = session;
-  if (!did || !didConfirmed || !encryptionKeyId) {
+  const { did, didConfirmed, encryptionKeyUri } = session;
+  if (!did || !didConfirmed || !encryptionKeyUri) {
     throw Boom.forbidden('Unconfirmed DID');
   }
 
-  return { ...session, did, encryptionKeyId };
+  return { ...session, did, encryptionKeyUri };
 }
 
 export function setSession(session: BasicSession): void {

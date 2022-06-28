@@ -17,14 +17,14 @@ import { fromCredential } from './domainLinkageCredential';
 
 async function attestDomainLinkage() {
   const claimContents = {
-    id: configuration.did,
+    id: configuration.didUri,
     origin: configuration.baseUri,
   };
 
   const claim = Claim.fromCTypeAndClaimContents(
     domainLinkageCType,
     claimContents,
-    configuration.did,
+    configuration.didUri,
   );
 
   const requestForAttestation = RequestForAttestation.fromClaim(claim);
@@ -36,7 +36,7 @@ async function attestDomainLinkage() {
     throw new Error('The attestation key is not defined?!?');
   }
 
-  const { signature, keyId } = await fullDid.signPayload(
+  const { signature, keyUri } = await fullDid.signPayload(
     Crypto.coToUInt8(requestForAttestation.rootHash),
     assertionKeystore,
     attestationKey.id,
@@ -44,12 +44,12 @@ async function attestDomainLinkage() {
 
   const selfSignedRequest = await requestForAttestation.addSignature(
     signature,
-    keyId,
+    keyUri,
   );
 
   const attestation = Attestation.fromRequestAndDid(
     selfSignedRequest,
-    configuration.did,
+    configuration.didUri,
   );
 
   return Credential.fromRequestAndAttestation(selfSignedRequest, attestation);
