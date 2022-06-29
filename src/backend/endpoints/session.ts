@@ -23,11 +23,7 @@ import { isDidResourceUri } from '../utilities/isDidResourceUri';
 import { paths } from './paths';
 
 const zodPayload = z.object({
-  encryptionKeyUri: z
-    .string()
-    .refine<DidResourceUri>((arg): arg is DidResourceUri =>
-      isDidResourceUri(arg),
-    ),
+  encryptionKeyUri: z.string().refine<DidResourceUri>(isDidResourceUri),
   encryptedChallenge: z.string(),
   nonce: z.string(),
 });

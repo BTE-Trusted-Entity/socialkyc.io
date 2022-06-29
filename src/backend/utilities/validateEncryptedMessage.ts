@@ -5,16 +5,8 @@ import { isDidResourceUri } from './isDidResourceUri';
 
 const zodPayload = z.object({
   message: z.object({
-    receiverKeyUri: z
-      .string()
-      .refine<DidResourceUri>((arg): arg is DidResourceUri =>
-        isDidResourceUri(arg),
-      ),
-    senderKeyUri: z
-      .string()
-      .refine<DidResourceUri>((arg): arg is DidResourceUri =>
-        isDidResourceUri(arg),
-      ),
+    receiverKeyUri: z.string().refine<DidResourceUri>(isDidResourceUri),
+    senderKeyUri: z.string().refine<DidResourceUri>(isDidResourceUri),
     ciphertext: z.string(),
     nonce: z.string(),
     receivedAt: z.number().optional(),
