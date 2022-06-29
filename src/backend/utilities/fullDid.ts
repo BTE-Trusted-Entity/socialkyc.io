@@ -6,7 +6,7 @@ import {
 } from '@kiltprotocol/did';
 import {
   DidKey,
-  IDidDetails,
+  DidUri,
   KeyRelationship,
   KeyringPair,
   NewDidVerificationKey,
@@ -34,7 +34,7 @@ function getDidKeyFromKeypair(keypair: KeyringPair): NewDidVerificationKey {
   };
 }
 
-export async function createFullDid(): Promise<IDidDetails['uri']> {
+export async function createFullDid(): Promise<DidUri> {
   const { api } = await BlockchainApiConnection.getConnectionOrConnect();
 
   const keypairs = await keypairsPromise;

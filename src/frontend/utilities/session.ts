@@ -13,7 +13,7 @@ interface PubSubSession {
   ) => Promise<void>;
   close: () => Promise<void>;
   send: (message: IEncryptedMessage) => Promise<void>;
-  // TODO: Update to encryptionKeyUri after PubSubSession is updated in Sporran
+  // TODO: Update to encryptionKeyUri after PubSubSession is updated in the specification and in Sporran
   encryptionKeyId: DidResourceUri;
   encryptedChallenge: string;
   nonce: string;

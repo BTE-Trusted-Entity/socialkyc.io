@@ -1,9 +1,9 @@
 import NodeCache from 'node-cache';
 import Boom from '@hapi/boom';
 import {
-  DidPublicKey,
+  DidResourceUri,
+  DidUri,
   IClaim,
-  IDidDetails,
   IRequestForAttestation,
 } from '@kiltprotocol/types';
 import { randomAsNumber } from '@polkadot/util-crypto';
@@ -13,8 +13,8 @@ import { sessionHeader } from '../endpoints/sessionHeader';
 
 export interface BasicSession {
   sessionId: string;
-  did?: IDidDetails['uri'];
-  encryptionKeyUri?: DidPublicKey['uri'];
+  did?: DidUri;
+  encryptionKeyUri?: DidResourceUri;
   didChallenge?: string;
   didConfirmed?: boolean;
   claim?: IClaim;
@@ -25,8 +25,8 @@ export interface BasicSession {
 }
 
 export type Session = BasicSession & {
-  did: IDidDetails['uri'];
-  encryptionKeyUri: DidPublicKey['uri'];
+  did: DidUri;
+  encryptionKeyUri: DidResourceUri;
 };
 
 export interface PayloadWithSession {
