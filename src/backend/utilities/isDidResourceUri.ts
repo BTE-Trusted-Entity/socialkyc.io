@@ -1,9 +1,9 @@
-import { parseDidUri } from '@kiltprotocol/did/lib/cjs/Did.utils';
+import { Utils } from '@kiltprotocol/did';
 import { DidResourceUri } from '@kiltprotocol/types';
 
 export function isDidResourceUri(input: string): input is DidResourceUri {
   try {
-    return Boolean(parseDidUri(input as DidResourceUri).fragment);
+    return Boolean(Utils.parseDidUri(input as DidResourceUri).fragment);
   } catch {
     return false;
   }
