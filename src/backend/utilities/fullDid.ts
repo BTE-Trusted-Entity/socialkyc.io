@@ -1,13 +1,12 @@
 import { Keypair } from '@polkadot/util-crypto/types';
 import {
   DidResolver,
-  DidUtils,
   FullDidCreationBuilder,
   FullDidDetails,
 } from '@kiltprotocol/did';
 import {
   DidKey,
-  IDidDetails,
+  DidUri,
   KeyRelationship,
   KeyringPair,
   NewDidVerificationKey,
@@ -35,7 +34,7 @@ function getDidKeyFromKeypair(keypair: KeyringPair): NewDidVerificationKey {
   };
 }
 
-export async function createFullDid(): Promise<IDidDetails['did']> {
+export async function createFullDid(): Promise<DidUri> {
   const { api } = await BlockchainApiConnection.getConnectionOrConnect();
 
   const keypairs = await keypairsPromise;
@@ -46,7 +45,7 @@ export async function createFullDid(): Promise<IDidDetails['did']> {
     .setAttestationKey(assertionKey)
     .addEncryptionKey(keypairs.keyAgreement);
 
-  const fullDidDetails = await builder.consumeWithHandler(
+  const fullDidDetails = await builder.buildAndSubmit(
     authenticationKeystore,
     keypairs.identity.address,
     async (extrinsic) => {
@@ -56,11 +55,11 @@ export async function createFullDid(): Promise<IDidDetails['did']> {
     },
   );
 
-  const { did } = fullDidDetails;
+  const { uri } = fullDidDetails;
 
-  logger.warn(did, 'This is your generated DID:');
+  logger.warn(uri, 'This is your generated DID:');
 
-  return did;
+  return uri;
 }
 
 async function compareKeys(
@@ -101,7 +100,7 @@ export const fullDidPromise = (async () => {
 
   if (configuration.storeDidAndCTypes) {
     if (
-      configuration.did !== 'pending' &&
+      configuration.did &&
       (await DidResolver.resolveDoc(configuration.did))
     ) {
       logger.info('DID is already on the blockchain');
@@ -111,8 +110,7 @@ export const fullDidPromise = (async () => {
     }
   }
 
-  const { identifier } = DidUtils.parseDidUri(configuration.did);
-  const fullDid = await FullDidDetails.fromChainInfo(identifier);
+  const fullDid = await FullDidDetails.fromChainInfo(configuration.did);
   if (!fullDid) {
     throw new Error(`Could not resolve the own DID ${configuration.did}`);
   }

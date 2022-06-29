@@ -58,7 +58,7 @@ export function fromCredential(input: ICredential): DomainLinkageCredential {
   const proof = {
     type: KILT_SELF_SIGNED_PROOF_TYPE,
     proofPurpose: 'assertionMethod',
-    verificationMethod: claimerSignature.keyId,
+    verificationMethod: claimerSignature.keyUri,
     signature: claimerSignature.signature,
     challenge: claimerSignature.challenge,
   };

@@ -58,7 +58,7 @@ export async function getAttestationMessage(
     ? await session.attestationPromise
     : await startAttestation(session, logger);
 
-  return encryptMessageBody(session.encryptionKeyId, {
+  return encryptMessageBody(session.encryptionKeyUri, {
     content: { attestation },
     type: MessageBodyType.SUBMIT_ATTESTATION,
   });

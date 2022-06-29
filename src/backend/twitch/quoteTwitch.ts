@@ -24,13 +24,13 @@ async function handler(
   const { logger } = request;
   logger.debug('Twitch quote started');
 
-  const { encryptionKeyId, claim, confirmed } = getSession(request.headers);
+  const { encryptionKeyUri, claim, confirmed } = getSession(request.headers);
 
   if (!claim || !confirmed) {
     throw Boom.notFound('Confirmed claim not found');
   }
 
-  const output = await encryptMessageBody(encryptionKeyId, {
+  const output = await encryptMessageBody(encryptionKeyUri, {
     content: {
       claim,
       legitimations: [],

@@ -30,7 +30,7 @@ async function handler(
   logger.debug('Email quote started');
 
   const { email } = request.payload as Input;
-  const { did, encryptionKeyId } = getSession(request.headers);
+  const { did, encryptionKeyUri } = getSession(request.headers);
 
   const claimContents = {
     Email: email.trim(),
@@ -38,7 +38,7 @@ async function handler(
   const claim = Claim.fromCTypeAndClaimContents(emailCType, claimContents, did);
   logger.debug('Email quote created');
 
-  const output = await encryptMessageBody(encryptionKeyId, {
+  const output = await encryptMessageBody(encryptionKeyUri, {
     content: {
       claim,
       legitimations: [],

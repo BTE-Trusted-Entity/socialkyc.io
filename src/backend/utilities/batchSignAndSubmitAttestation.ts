@@ -82,7 +82,7 @@ async function createPendingTransaction() {
 
   const authorized = await new DidBatchBuilder(api, fullDid)
     .addMultipleExtrinsics(extrinsics)
-    .consume(assertionKeystore, identity.address);
+    .build(assertionKeystore, identity.address);
 
   logger.debug('Submitting transaction');
   await runTransactionWithTimeout(

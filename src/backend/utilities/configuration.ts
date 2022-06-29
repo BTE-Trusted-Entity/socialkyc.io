@@ -3,6 +3,7 @@ import path from 'node:path';
 
 import dotenv from 'dotenv';
 import pino from 'pino';
+import { DidUri } from '@kiltprotocol/types';
 
 dotenv.config();
 
@@ -34,9 +35,10 @@ if (!baseUri) {
   throw new ConfigurationError('No base URI provided');
 }
 
-const did = env.DID || 'pending';
+// TODO: Better handling of undefined did
+const did = env.DID as DidUri;
 const storeDidAndCTypes = env.STORE_DID_AND_CTYPES === 'true';
-if (did === 'pending' && !storeDidAndCTypes) {
+if (!did && !storeDidAndCTypes) {
   throw new ConfigurationError('Neither DID nor STORE_DID_AND_CTYPES provided');
 }
 

@@ -1,5 +1,5 @@
-@import url('../components/Theme/Theme.module.css');
-@import url('../components/Typography/Typography.module.css');
+@import '../components/Theme/Theme.module.css';
+@import '../components/Typography/Typography.module.css';
 
 html,
 body {
