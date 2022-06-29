@@ -77,7 +77,7 @@ async function handler(
   setSession({
     ...session,
     did: encryptionKey.controller,
-    encryptionKeyUri: encryptionKeyUri,
+    encryptionKeyUri,
     didConfirmed: true,
   });
 

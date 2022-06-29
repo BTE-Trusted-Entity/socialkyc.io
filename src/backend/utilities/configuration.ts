@@ -35,6 +35,7 @@ if (!baseUri) {
   throw new ConfigurationError('No base URI provided');
 }
 
+// TODO: Better handling of undefined did
 const did = env.DID as DidUri;
 const storeDidAndCTypes = env.STORE_DID_AND_CTYPES === 'true';
 if (!did && !storeDidAndCTypes) {
