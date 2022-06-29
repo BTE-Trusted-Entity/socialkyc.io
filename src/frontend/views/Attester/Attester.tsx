@@ -35,6 +35,7 @@ import { Telegram } from '../Telegram/Telegram';
 import { Youtube } from '../Youtube/Youtube';
 import { Disconnect } from '../../components/Disconnect/Disconnect';
 import { Instagram } from '../Instagram/Instagram';
+import { useTrackUserData } from '../../utilities/useTrackUserData';
 
 interface HasExtension {
   data?: {
@@ -375,6 +376,7 @@ function useLogoNavigation() {
 }
 
 export function Attester(): JSX.Element {
+  useTrackUserData();
   useLogoNavigation();
 
   const { data } = useHasExtension();
