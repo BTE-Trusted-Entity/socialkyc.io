@@ -17,7 +17,7 @@ export async function attestClaim(
 ): Promise<Attestation> {
   const attestation = Attestation.fromRequestAndDid(
     requestForAttestation,
-    configuration.didUri,
+    configuration.did,
   );
 
   try {

@@ -17,14 +17,14 @@ import { fromCredential } from './domainLinkageCredential';
 
 async function attestDomainLinkage() {
   const claimContents = {
-    id: configuration.didUri,
+    id: configuration.did,
     origin: configuration.baseUri,
   };
 
   const claim = Claim.fromCTypeAndClaimContents(
     domainLinkageCType,
     claimContents,
-    configuration.didUri,
+    configuration.did,
   );
 
   const requestForAttestation = RequestForAttestation.fromClaim(claim);
@@ -49,7 +49,7 @@ async function attestDomainLinkage() {
 
   const attestation = Attestation.fromRequestAndDid(
     selfSignedRequest,
-    configuration.didUri,
+    configuration.did,
   );
 
   return Credential.fromRequestAndAttestation(selfSignedRequest, attestation);

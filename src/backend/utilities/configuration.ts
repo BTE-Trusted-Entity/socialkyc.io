@@ -35,9 +35,9 @@ if (!baseUri) {
   throw new ConfigurationError('No base URI provided');
 }
 
-const didUri = env.DID as DidUri;
+const did = env.DID as DidUri;
 const storeDidAndCTypes = env.STORE_DID_AND_CTYPES === 'true';
-if (!didUri && !storeDidAndCTypes) {
+if (!did && !storeDidAndCTypes) {
   throw new ConfigurationError('Neither DID nor STORE_DID_AND_CTYPES provided');
 }
 
@@ -123,7 +123,7 @@ export const configuration = {
   isProduction: env.NODE_ENV === 'production',
   baseUri,
   distFolder: path.join(cwd(), 'dist', 'frontend'),
-  didUri,
+  did,
   backupPhrase,
   twitterSecretBearerToken,
   httpAuthPassword,

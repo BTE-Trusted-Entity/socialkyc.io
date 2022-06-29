@@ -100,19 +100,19 @@ export const fullDidPromise = (async () => {
 
   if (configuration.storeDidAndCTypes) {
     if (
-      configuration.didUri &&
-      (await DidResolver.resolveDoc(configuration.didUri))
+      configuration.did &&
+      (await DidResolver.resolveDoc(configuration.did))
     ) {
       logger.info('DID is already on the blockchain');
     } else {
       logger.warn('Storing DID on the blockchain');
-      configuration.didUri = await createFullDid();
+      configuration.did = await createFullDid();
     }
   }
 
-  const fullDid = await FullDidDetails.fromChainInfo(configuration.didUri);
+  const fullDid = await FullDidDetails.fromChainInfo(configuration.did);
   if (!fullDid) {
-    throw new Error(`Could not resolve the own DID ${configuration.didUri}`);
+    throw new Error(`Could not resolve the own DID ${configuration.did}`);
   }
 
   await compareAllKeys(fullDid);

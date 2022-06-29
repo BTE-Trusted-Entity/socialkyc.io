@@ -29,11 +29,7 @@ export async function encryptMessageBody(
   encryptionKeyUri: DidResourceUri,
   messageBody: MessageBody,
 ): Promise<IEncryptedMessage> {
-  const { did: receiverDidUri } = Utils.parseDidUri(encryptionKeyUri);
-  const message = new Message(
-    messageBody,
-    configuration.didUri,
-    receiverDidUri,
-  );
+  const { did } = Utils.parseDidUri(encryptionKeyUri);
+  const message = new Message(messageBody, configuration.did, did);
   return encryptMessage(message, encryptionKeyUri);
 }
