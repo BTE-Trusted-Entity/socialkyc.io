@@ -18,10 +18,16 @@ import { encryptionKeystore } from '../utilities/keystores';
 import { keypairsPromise } from '../utilities/keypairs';
 import { getBasicSession, setSession } from '../utilities/sessionStorage';
 
+import { isDidResourceUri } from '../utilities/isDidResourceUri';
+
 import { paths } from './paths';
 
 const zodPayload = z.object({
-  encryptionKeyUri: z.custom<DidResourceUri>(),
+  encryptionKeyUri: z
+    .string()
+    .refine<DidResourceUri>((arg): arg is DidResourceUri =>
+      isDidResourceUri(arg),
+    ),
   encryptedChallenge: z.string(),
   nonce: z.string(),
 });
@@ -47,9 +53,7 @@ async function handler(
   const { encryptionKeyUri, encryptedChallenge, nonce } = payload;
   const session = getBasicSession(request.headers);
 
-  const encryptionKey = await DidResolver.resolveKey(
-    encryptionKeyUri as DidResourceUri,
-  );
+  const encryptionKey = await DidResolver.resolveKey(encryptionKeyUri);
 
   if (!encryptionKey) {
     throw Boom.forbidden(`Could not resolve the DID key ${encryptionKeyUri}`);
@@ -77,7 +81,7 @@ async function handler(
   setSession({
     ...session,
     did: encryptionKey.controller,
-    encryptionKeyUri: encryptionKeyUri as DidResourceUri,
+    encryptionKeyUri: encryptionKeyUri,
     didConfirmed: true,
   });
 
