@@ -100,7 +100,7 @@ export const fullDidPromise = (async () => {
 
   if (configuration.storeDidAndCTypes) {
     if (
-      configuration.did &&
+      configuration.did !== 'pending' &&
       (await DidResolver.resolveDoc(configuration.did))
     ) {
       logger.info('DID is already on the blockchain');
@@ -108,6 +108,10 @@ export const fullDidPromise = (async () => {
       logger.warn('Storing DID on the blockchain');
       configuration.did = await createFullDid();
     }
+  }
+
+  if (configuration.did === 'pending') {
+    throw new Error('Own DID not found');
   }
 
   const fullDid = await FullDidDetails.fromChainInfo(configuration.did);

@@ -30,6 +30,11 @@ export async function encryptMessageBody(
   messageBody: MessageBody,
 ): Promise<IEncryptedMessage> {
   const { did } = Utils.parseDidUri(encryptionKeyUri);
+
+  if (configuration.did === 'pending') {
+    throw new Error('Own DID not found');
+  }
+
   const message = new Message(messageBody, configuration.did, did);
   return encryptMessage(message, encryptionKeyUri);
 }

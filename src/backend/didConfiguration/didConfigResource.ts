@@ -21,6 +21,10 @@ async function attestDomainLinkage() {
     origin: configuration.baseUri,
   };
 
+  if (configuration.did === 'pending') {
+    throw new Error('Own DID not found');
+  }
+
   const claim = Claim.fromCTypeAndClaimContents(
     domainLinkageCType,
     claimContents,
