@@ -48,6 +48,11 @@ export type Session = PubSubSession & {
   wallet: string;
 };
 
+type CompatibleMessage = IEncryptedMessage & {
+  receiverKeyId?: IEncryptedMessage['receiverKeyUri'];
+  senderKeyId?: IEncryptedMessage['senderKeyUri'];
+};
+
 export async function getSession(
   provider: InjectedWindowProvider,
   wallet: string,
@@ -82,9 +87,26 @@ export async function getSession(
       sessionId,
     );
 
+    async function send(message: CompatibleMessage): Promise<void> {
+      message.receiverKeyId = message.receiverKeyUri;
+      message.senderKeyId = message.senderKeyUri;
+      return session.send(message);
+    }
+
+    async function listen(
+      callback: (message: CompatibleMessage) => Promise<void>,
+    ) {
+      return session.listen(async (message: CompatibleMessage) => {
+        message.senderKeyUri = message.senderKeyUri || message.senderKeyId;
+        message.receiverKeyUri =
+          message.receiverKeyUri || message.receiverKeyId;
+        return callback(message);
+      });
+    }
+
     const { name } = provider;
 
-    return { ...session, sessionId, name, wallet };
+    return { ...session, send, listen, sessionId, name, wallet };
   } catch (exception) {
     const { message } = exceptionToError(exception);
     if (message.includes('closed')) {
