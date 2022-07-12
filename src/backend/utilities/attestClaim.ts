@@ -15,6 +15,10 @@ import { BasicSession, Session, setSession } from './sessionStorage';
 export async function attestClaim(
   requestForAttestation: IRequestForAttestation,
 ): Promise<Attestation> {
+  if (configuration.did === 'pending') {
+    throw new Error('Own DID not found');
+  }
+
   const attestation = Attestation.fromRequestAndDid(
     requestForAttestation,
     configuration.did,
