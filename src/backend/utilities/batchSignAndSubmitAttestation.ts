@@ -54,18 +54,17 @@ async function createPendingTransaction() {
     logger.debug('Current transaction succeeded');
   } catch (error) {
     logger.error(error);
-
-    for (const attestation of currentAttestations) {
-      // it happens that despite the error the attestation has gone through
-      const failed = !(await Attestation.query(attestation.claimHash));
-      if (failed) {
-        // reschedule the failed attestations in the next batch
-        pendingAttestations.unshift(attestation);
-      }
-    }
-    // TODO: when dependencies versions issue is resolved, optimize the code above using
-    // api.query.attestation.attestations.multi<Option<Codec>>(hashes)
   }
+
+  for (const attestation of currentAttestations) {
+    const failed = !(await Attestation.query(attestation.claimHash));
+    if (failed) {
+      // reschedule the failed attestations in the next batch
+      pendingAttestations.unshift(attestation);
+    }
+  }
+  // TODO: when dependencies versions issue is resolved, optimize the code above using
+  // api.query.attestation.attestations.multi<Option<Codec>>(hashes)
 
   if (syncExitAfterUpdatingReferences()) {
     logger.debug('No next transaction scheduled');
@@ -82,7 +81,7 @@ async function createPendingTransaction() {
 
   const authorized = await new DidBatchBuilder(api, fullDid)
     .addMultipleExtrinsics(extrinsics)
-    .build(assertionKeystore, identity.address);
+    .build(assertionKeystore, identity.address, { atomic: false });
 
   logger.debug('Submitting transaction');
   await runTransactionWithTimeout(
