@@ -102,12 +102,22 @@ async function createPendingTransaction() {
   logger.debug('Transaction submitted');
 }
 
-export async function batchSignAndSubmitAttestation(attestation: Attestation) {
-  // prevent two identical attestations from going into the same batch
-  const alreadyAdded = pendingAttestations.some(
+function alreadyAddedTo(
+  list: AttemptedAttestation[],
+  attestation: Attestation,
+) {
+  return list.some(
     ({ attestation: { claimHash } }) => claimHash === attestation.claimHash,
   );
-  if (!alreadyAdded) {
+}
+
+export async function batchSignAndSubmitAttestation(attestation: Attestation) {
+  // prevent two identical attestations from going into the same batch
+  if (alreadyAddedTo(currentAttestations, attestation)) {
+    return currentTransaction;
+  }
+
+  if (!alreadyAddedTo(pendingAttestations, attestation)) {
     pendingAttestations.push({ attestation, failures: 0 });
   }
 
