@@ -23,12 +23,19 @@ export async function attestClaim(
     requestForAttestation,
     configuration.did,
   );
+  const { claimHash } = attestation;
+
+  const alreadyAttested = Boolean(await Attestation.query(claimHash));
+  if (alreadyAttested) {
+    // We see some attestations extrinsic failing as already attested, check for it early
+    return attestation;
+  }
 
   try {
     await batchSignAndSubmitAttestation(attestation);
   } catch (exception) {
     // It happens that despite the error the attestation has gone through, do not fail then
-    const attested = Boolean(await Attestation.query(attestation.claimHash));
+    const attested = Boolean(await Attestation.query(claimHash));
     if (!attested) {
       throw exception;
     }
