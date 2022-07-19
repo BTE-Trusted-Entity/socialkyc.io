@@ -12,6 +12,7 @@
     "lint-css": "stylelint --fix \"src/**/*.css\"",
     "css": "tcm --namedExports --pattern 'src/frontend/**/*.module.css' && eslint --fix --config ./.eslintrc.json \"src/**/*.css.d.ts\"",
     "test": "tsc --noEmit && LC_ALL=en_US.UTF-8 jest",
+    "test:unit": "LC_ALL=en_US.UTF-8 jest -c jest.backend.config.js --forceExit",
     "storybook": "start-storybook --port 6007 --modern",
     "dev": "yarn parcel watch",
     "build": "yarn parcel build",
@@ -105,6 +106,7 @@
     "stylelint-config-standard": "^26.0.0",
     "supervisor": "^0.12.0",
     "ts-jest": "^28.0.5",
+    "ts-jest-resolver": "^2.0.0",
     "typed-css-modules": "^0.7.2",
     "typescript": "^4.7.4"
   },
