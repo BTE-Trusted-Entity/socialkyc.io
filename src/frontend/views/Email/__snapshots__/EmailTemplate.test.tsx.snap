@@ -20,26 +20,55 @@ exports[`EmailTemplate should match snapshot with flowError=closed 1`] = `
         type="button"
       />
     </div>
-    <section
-      class="container"
-    >
-      <div
-        class="spinner"
+    <form>
+      <label>
+        Your email address
+        <input
+          class="formInput"
+          maxlength="100"
+          name="email"
+          required=""
+          type="email"
+          value=""
+        />
+      </label>
+      <output
+        class="inputError"
+        hidden=""
       />
-      <h2
-        class="heading"
-      >
-        Attestation process:
-      </h2>
-      <p
-        class="message"
-      >
-        Email sent
-      </p>
       <p>
-        Email sent to . Please check your inbox and spam folder and click the link.
+        Validity: one year (
+        1/3/2023
+        )
       </p>
-    </section>
+      <section
+        class="container"
+      >
+        <div
+          class="exclamation"
+        />
+        <h2
+          class="heading"
+        >
+          Signing error:
+        </h2>
+        <p
+          class="message"
+        >
+          Your wallet was closed before the request was signed.
+        </p>
+        <p>
+          Click “Continue in Wallet” to try again.
+        </p>
+      </section>
+      <button
+        class="ctaButton"
+        disabled=""
+        type="submit"
+      >
+        Continue in wallet
+      </button>
+    </form>
     <a
       class="link"
       href="/"
@@ -314,12 +343,6 @@ exports[`EmailTemplate should match snapshot with status=requested 1`] = `
         Email sent to . Please check your inbox and spam folder and click the link.
       </p>
     </section>
-    <a
-      class="link"
-      href="/"
-    >
-      Back to list
-    </a>
   </section>
 </div>
 `;

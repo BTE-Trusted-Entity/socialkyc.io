@@ -81,6 +81,7 @@ export function EmailTemplate({
     [],
   );
 
+  // TODO: include status 'requested'
   const preventNavigation = usePreventNavigation(
     processing || ['confirming', 'attesting'].includes(status),
   );
@@ -189,7 +190,7 @@ export function EmailTemplate({
         </button>
       )}
 
-      <LinkBack />
+      {status !== 'requested' && <LinkBack />}
     </section>
   );
 }
