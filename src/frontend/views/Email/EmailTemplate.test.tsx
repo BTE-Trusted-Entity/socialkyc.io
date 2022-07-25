@@ -48,7 +48,7 @@ describe('EmailTemplate', () => {
   it('should match snapshot with flowError=closed', async () => {
     const { container } = render(
       <EmailTemplate
-        status="requested"
+        status="none"
         flowError="closed"
         processing={false}
         {...actions}
