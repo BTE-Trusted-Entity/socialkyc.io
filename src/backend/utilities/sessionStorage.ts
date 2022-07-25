@@ -18,6 +18,7 @@ export interface BasicSession {
   didChallenge?: string;
   didConfirmed?: boolean;
   claim?: IClaim;
+  secret?: string;
   confirmed?: boolean;
   requestForAttestation?: IRequestForAttestation;
   attestationPromise?: Promise<Attestation>;
@@ -74,12 +75,23 @@ export function getSessionBySecret(secret: string): BasicSession {
   if (!sessionId) {
     throw Boom.forbidden(`Not found session for secret ${secret}`);
   }
-  return getSessionById(sessionId);
+
+  const session = getSessionById(sessionId);
+  const expired = secret !== session.secret;
+  if (expired) {
+    throw Boom.forbidden(`Not found session for secret ${secret}`);
+  }
+
+  return session;
 }
 
 export function getSecretForSession(sessionId: string): string {
   const secret = String(randomAsNumber()); // only numbers to avoid 0xDEADDAD etc
+
+  const session = getSessionById(sessionId);
+  setSession({ ...session, secret });
   secrets.set(secret, sessionId);
+
   return secret;
 }
 
