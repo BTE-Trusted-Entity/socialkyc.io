@@ -51,20 +51,19 @@ function useHasExtension(): HasExtension {
     const intervalId = setInterval(() => {
       if (Object.entries(kilt).length > 0) {
         setHasExtension(true);
+        // bc there is no path back to `false`, you may as well clear the interval timer here
       }
     }, 100);
 
     const timeoutId = setTimeout(() => {
-      if (hasExtension === undefined) {
-        setHasExtension(false);
-      }
+      setHasExtension((state) => (state === undefined ? false : state)); // using the transition function form of the setter avoids dependency on state (could also be state => state ?? false btw)
     }, 500);
 
     return () => {
       clearInterval(intervalId);
-      clearInterval(timeoutId);
+      clearInterval(timeoutId); // maybe this even works, but just for clarity, use clearTimeout
     };
-  }, [hasExtension, kilt]);
+  }, [kilt]); // this hook sets state but also re-executes on state changes, so it will frequently trigger itself. Remove dependency on hasExtension to avoid.
 
   return typeof hasExtension === 'boolean' ? { data: { hasExtension } } : {};
 }
@@ -211,7 +210,7 @@ function Connect({ setSession }: { setSession: (s: Session) => void }) {
   const [error, setError] = useState<'closed' | 'rejected' | 'unknown'>();
 
   const { kilt } = apiWindow;
-  const extensions = useMemo(() => Object.keys(kilt), [kilt]);
+  const extensions = useMemo(() => Object.keys(kilt), [kilt]); // Will probably not actually re-evaluate when there is a new entry on the kilt object, because its identity persists.
 
   const [extension, setExtension] = useState<string>(extensions[0]);
 
@@ -270,7 +269,8 @@ function Connect({ setSession }: { setSession: (s: Session) => void }) {
           [styles.processing]: processing,
         })}
       >
-        {!error && isRedirected && (
+        { // I was expecting to see this branch rendered when opening the confirmation link in the email, but it rendered the branch below (extension picker) instead
+        !error && isRedirected && (
           <p className={styles.authorize}>
             Please authorize access to your wallet.
           </p>
@@ -287,7 +287,8 @@ function Connect({ setSession }: { setSession: (s: Session) => void }) {
                 value={extension}
                 autoFocus
               >
-                {extensions.map((extension) => (
+                { // careful, variable shadowing! I'm surprised eslint doesn't complain
+                extensions.map((extension) => (
                   <option
                     value={extension}
                     label={kilt[extension].name}
