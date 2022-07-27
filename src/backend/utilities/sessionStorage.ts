@@ -25,10 +25,10 @@ export interface BasicSession {
   requestChallenge?: string;
 }
 
-export type Session = BasicSession & {
-  did: DidUri;
-  encryptionKeyUri: DidResourceUri;
-};
+// not sure if you picked the current solution bc it is more readable, but this is how you normally make optional properties required:
+// (on first glance it actually looked like you extended the interface)
+export type Session = BasicSession &
+  Required<Pick<BasicSession, 'did' | 'encryptionKeyUri'>>;
 
 export interface PayloadWithSession {
   sessionId: string;
@@ -37,11 +37,12 @@ export interface PayloadWithSession {
 const sessionStorage = new NodeCache({ stdTTL: 60 * 60, useClones: false });
 
 function getSessionById(sessionId: string): BasicSession {
-  const session = sessionStorage.get(sessionId);
+  const session = sessionStorage.get<BasicSession>(sessionId);
   if (!session) {
     throw Boom.forbidden(`Unknown or expired session ${sessionId}`);
   }
-  return session as BasicSession;
+  // this is what the generic typing of the get method is for
+  return session;
 }
 
 export function getBasicSession(headers: Record<string, string>): BasicSession {
@@ -61,7 +62,7 @@ export function getSession(headers: Record<string, string>): Session {
     throw Boom.forbidden('Unconfirmed DID');
   }
 
-  return { ...session, did, encryptionKeyUri };
+  return { ...session, did, encryptionKeyUri }; // you are not changing anything on the session, so why would you desctructure and reassemble it ?
 }
 
 export function setSession(session: BasicSession): void {
@@ -71,7 +72,8 @@ export function setSession(session: BasicSession): void {
 const secrets = new NodeCache({ stdTTL: 5 * 60 });
 
 export function getSessionBySecret(secret: string): BasicSession {
-  const sessionId: string | undefined = secrets.get(secret);
+  // same as above
+  const sessionId = secrets.get<string>(secret);
   if (!sessionId) {
     throw Boom.forbidden(`Not found session for secret ${secret}`);
   }
