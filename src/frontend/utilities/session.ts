@@ -63,10 +63,12 @@ export async function getSession(
   try {
     window.sessionStorage.setItem('wallet', wallet);
 
+    // GET request to backend /api/session, creating session in backend
     const { dAppEncryptionKeyUri, challenge, sessionId } =
       await getSessionValues();
     const dAppName = 'SocialKYC';
 
+    // starting session with sporran extension
     const session = await provider.startSession(
       dAppName,
       dAppEncryptionKeyUri,
@@ -78,6 +80,7 @@ export async function getSession(
       encryptedChallenge,
       nonce,
     } = session;
+    // POST /api/session, setting backend session to 'confirmed' and populating did info if everything checks out
     await checkSession(
       {
         encryptionKeyUri,

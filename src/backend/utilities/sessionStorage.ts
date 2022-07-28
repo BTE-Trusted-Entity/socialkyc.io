@@ -54,6 +54,7 @@ export function getBasicSession(headers: Record<string, string>): BasicSession {
   return getSessionById(sessionId);
 }
 
+/** difference to basic session: did is known and confirmed, encryption key available */
 export function getSession(headers: Record<string, string>): Session {
   const session = getBasicSession(headers);
 

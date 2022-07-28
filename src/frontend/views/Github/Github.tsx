@@ -39,6 +39,7 @@ export function Github({ session }: Props): JSX.Element {
     }
     (async () => {
       try {
+        // step 1): POST to /api/github/authUrl to get OAuth url including a secret, which creates a new secret in the backend (and sets session.secret). Will be exposed as a clickable link in the UI. 
         const url = await githubApi.authUrl({});
         setAuthUrl(url);
         setStatus('urlReady');
@@ -56,6 +57,8 @@ export function Github({ session }: Props): JSX.Element {
     }
     (async () => {
       try {
+        // step 2): User clicked link and completed OAuth, being redirected back to SPA. Redirect link contains 'code' & 'secret'. We are in a new session now!
+        // POST request to /api/github/confirm with { code, secret } results in backend fetching user data (stored in 'claim' on the new session) and setting 'confirmed' to true. The 'secret' is deleted from the backend. Returns profile info for display in frontend.
         setProfile(await githubApi.confirm({ code, secret }));
         setStatus('authorized');
       } catch {
@@ -73,10 +76,12 @@ export function Github({ session }: Props): JSX.Element {
       try {
         await session.listen(async (message) => {
           try {
+            // step 4): if sporran answers with a request for attestation, POST it to /api/github/request-attestation. After checking that the claim in request == claim in the quote, this sets 'requestForAttestation' on the session. 
             await githubApi.requestAttestation({ message });
             setStatus('attesting');
             setProcessing(false);
 
+            // step 5): after request is accepted above, we trigger attestation by POST to /api/github/attest, which sets 'attestationPromise' on the session, and after resolution, deletes 'claim', 'requestForAttestation', and 'confirmed'. The HTTP response after resolution contains a submit-attestation message.
             setBackupMessage(await githubApi.attest({}));
             setStatus('ready');
           } catch (exception) {
@@ -90,8 +95,10 @@ export function Github({ session }: Props): JSX.Element {
           }
         });
 
+        // step 3): after user clicked 'Continue in Wallet', we POST to /api/github/quote (empty body & no parameters) to request a quote from the backend to forward to sporran. The claim to populate the quote is recovered from the session.
         const message = await githubApi.quote({});
 
+        // quote message is pushed to sporran.
         await session.send(message);
       } catch (error) {
         console.error(error);

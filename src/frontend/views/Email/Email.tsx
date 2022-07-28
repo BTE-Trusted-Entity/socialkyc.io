@@ -30,6 +30,7 @@ export function Email({ session }: Props): JSX.Element {
       return;
     }
     (async () => {
+      // step 3): we clicked on redirect link (we have the secret in query params), we now send secret to backend
       try {
         await emailApi.confirm({ secret });
         setStatus('attesting');
@@ -38,6 +39,7 @@ export function Email({ session }: Props): JSX.Element {
         setFlowError('expired');
         return;
       }
+      // step 4): everything is done but we are polling an endpoint for a finalization confirmation in order to inform the user
       try {
         setBackupMessage(await emailApi.attest({}));
         setStatus('ready'); // isn't that 'done' at this point? ready sounds like we are at the very beginning
@@ -60,6 +62,7 @@ export function Email({ session }: Props): JSX.Element {
 
       try {
         await session.listen(async (message) => {
+          // step 2): if sporran replies with request for attestation, forward it to backend
           try {
             const { wallet } = session;
             await emailApi.requestAttestation({ message, wallet });
@@ -77,8 +80,10 @@ export function Email({ session }: Props): JSX.Element {
           }
         });
 
+        // step 1): prepares quote and packs into encrypted message for sporran
         const message = await emailApi.quote({ email: emailInput });
 
+        // sends quote message to sporran
         await session.send(message);
       } catch (error) {
         console.error(error);

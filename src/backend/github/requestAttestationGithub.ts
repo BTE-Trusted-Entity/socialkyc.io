@@ -36,9 +36,9 @@ async function handler(
     );
   }
 
-  session.claim.owner = requestForAttestation.claim.owner;
-  requestForAttestation.claim = session.claim;
-
+  session.claim.owner = requestForAttestation.claim.owner; // we don't care really which DID makes the request
+  requestForAttestation.claim = session.claim; // overwrite with the data we got from github
+  // if an extension modified the claim contents we sent in the quote, the rootHash will be invalidated by overwriting with the claim from the session and the check below fails.
   RequestForAttestationUtils.errorCheck(requestForAttestation);
   logger.debug('Github request attestation verified');
 
