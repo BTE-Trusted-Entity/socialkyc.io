@@ -33,7 +33,7 @@ async function handler(
   const { did, encryptionKeyUri } = getSession(request.headers);
 
   const claimContents = {
-    Email: email.trim(),
+    Email: email.trim(), // I think validating the general form of the address here (or just in the frontend) would be nice for the user flow, rn you can easily request an attestation for a bogus email
   };
   const claim = Claim.fromCTypeAndClaimContents(emailCType, claimContents, did);
   logger.debug('Email quote created');

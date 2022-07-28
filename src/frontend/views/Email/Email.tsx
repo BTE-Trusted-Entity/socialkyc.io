@@ -40,7 +40,7 @@ export function Email({ session }: Props): JSX.Element {
       }
       try {
         setBackupMessage(await emailApi.attest({}));
-        setStatus('ready');
+        setStatus('ready'); // isn't that 'done' at this point? ready sounds like we are at the very beginning
       } catch {
         setStatus('error');
         setFlowError('unknown');
@@ -68,7 +68,7 @@ export function Email({ session }: Props): JSX.Element {
             if (exception instanceof Rejection) {
               setFlowError('closed');
             } else if (exception instanceof InvalidEmail) {
-              setInputError('Incorrect email format, please review.');
+              setInputError('Incorrect email format, please review.'); // not sure why, but this never appears even on invalid email addresses.
             } else {
               console.error(exception);
               setFlowError('unknown');

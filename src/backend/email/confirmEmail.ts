@@ -62,7 +62,7 @@ async function handler(
 
   logger.debug('Session data migration complete');
 
-  return h.response(<Output>undefined);
+  return h.response(<Output>undefined); // never seen that syntax before, why do we need that?
 }
 
 export const confirmEmail: ServerRoute = {
