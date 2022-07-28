@@ -31,7 +31,7 @@ async function handler(request: Request): Promise<string> {
 }
 
 export const authUrlgithub: ServerRoute = {
-  method: 'POST',
+  method: 'POST', // why is that a POST if it has no parameters / body and is used to get a URL ?
   path: paths.github.authUrl,
   handler,
 };

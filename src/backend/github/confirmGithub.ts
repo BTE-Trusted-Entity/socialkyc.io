@@ -46,7 +46,7 @@ async function handler(
   const { secret, code } = request.payload as Input;
 
   // This is the initial session in the first tab the user has open
-  const firstSession = getSessionBySecret(secret);
+  const firstSession = getSessionBySecret(secret); // that is never used, why do we require the old session?
   if (!firstSession) {
     throw Boom.notFound('No session found for secret');
   }
