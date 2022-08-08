@@ -52,7 +52,7 @@
     "react-dom": "^18.2.0",
     "react-router-dom": "^5.3.3",
     "twitter-api-v2": "^1.12.3",
-    "zod": "^3.17.3"
+    "zod": "^3.17.10"
   },
   "devDependencies": {
     "@babel/core": "^7.18.10",
