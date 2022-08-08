@@ -50,7 +50,7 @@ async function handler(request: Request): Promise<string> {
 }
 
 export const authHtmlEmail: ServerRoute = {
-  method: 'GET',
+  method: 'GET', // state changes & other side effects is usually a no-no on GET requests, but we want clicking on the email link to have a direct effect
   path: paths.redirect.email,
   handler,
 };
