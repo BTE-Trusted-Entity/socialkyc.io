@@ -41,6 +41,8 @@ if (did === 'pending' && !storeDidAndCTypes) {
   throw new ConfigurationError('Neither DID nor STORE_DID_AND_CTYPES provided');
 }
 
+const maintenanceMode = env.MAINTENANCE === 'true';
+
 const backupPhrase = env.SECRET_BACKUP_PHRASE;
 if (!backupPhrase) {
   throw new ConfigurationError('No backup phrase provided');
@@ -121,6 +123,7 @@ export const configuration = {
   port: env.PORT || 3000,
   blockchainEndpoint,
   isProduction: env.NODE_ENV === 'production',
+  maintenanceMode,
   baseUri,
   distFolder: path.join(cwd(), 'dist', 'frontend'),
   did,

@@ -69,6 +69,29 @@ function useHasExtension(): HasExtension {
   return typeof hasExtension === 'boolean' ? { data: { hasExtension } } : {};
 }
 
+function Maintenance() {
+  return (
+    <Fragment>
+      <h1 className={styles.heading}>
+        SocialKYC is currently under maintenance!
+      </h1>
+
+      <p>For more information please check our status page:</p>
+
+      <div className={styles.buttonsLine}>
+        <a
+          className={styles.ctaButton}
+          href="https://status.kilt.io/"
+          target="_blank"
+          rel="noreferrer"
+        >
+          Open status page
+        </a>
+      </div>
+    </Fragment>
+  );
+}
+
 function Welcome() {
   return (
     <Fragment>
@@ -382,6 +405,11 @@ export function Attester(): JSX.Element {
   const [session, setSession] = useState<Session>();
 
   const clearSession = useCallback(() => setSession(undefined), []);
+  const maintenanceMode = true;
+
+  if (maintenanceMode) {
+    return <Maintenance />;
+  }
 
   if (!data) {
     return <Spinner />;
