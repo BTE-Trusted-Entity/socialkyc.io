@@ -1,7 +1,8 @@
 import { ServerRoute } from '@hapi/hapi';
 
-import { paths } from './paths';
 import { configuration } from '../utilities/configuration';
+
+import { paths } from './paths';
 
 const { maintenanceMode } = configuration;
 
