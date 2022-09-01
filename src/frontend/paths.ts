@@ -9,4 +9,6 @@ export const paths = {
   github: '/github',
   twitch: '/twitch',
   youtube: '/youtube',
+
+  maintenance: '/maintenance',
 };

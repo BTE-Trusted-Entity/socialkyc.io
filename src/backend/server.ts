@@ -82,6 +82,7 @@ import { session } from './endpoints/session';
 import { staticFiles } from './endpoints/staticFiles';
 
 import { liveness, testLiveness } from './endpoints/liveness';
+import { maintenance } from './endpoints/maintenance';
 import { notFoundHandler } from './endpoints/notFoundHandler';
 import { home } from './endpoints/home';
 import { about } from './endpoints/about';
@@ -89,7 +90,7 @@ import { terms } from './endpoints/terms';
 import { privacy } from './endpoints/privacy';
 import { sessionHeader } from './endpoints/sessionHeader';
 
-const { isProduction } = configuration;
+const { isProduction, maintenanceMode } = configuration;
 
 const noWww = {
   plugin: gate,
@@ -121,6 +122,7 @@ const logger = {
   await server.register(noWww);
   await server.register(inert);
   await server.register(logger);
+
   await configureAuthentication(server);
   await configureDevErrors(server);
   server.logger.info('Server configured');
@@ -128,82 +130,87 @@ const logger = {
   await testLiveness();
   server.logger.info('Liveness tests passed');
 
-  await fullDidPromise;
-  server.logger.info('Blockchain connection initialized');
-
-  await testDomainLinkageCType();
-  await testEmailCType();
-  await testTwitterCType();
-  await testDiscordCType();
-  await testGithubCType();
-  await testTwitchCType();
-  await testTelegramCType();
-  await testYoutubeCType();
-  await testInstagramCType();
-
-  server.logger.info('CTypes tested');
-
-  await listenForTweets();
-  server.logger.info('Twitter connection initialized');
-
-  server.route(wellKnownDidConfig);
-
   server.route(session);
+  server.route(maintenance);
 
-  server.route(authHtmlEmail);
-  server.route(quoteEmail);
-  server.route(confirmEmail);
-  server.route(requestAttestationEmail);
-  server.route(attestationEmail);
+  if (maintenanceMode) {
+    server.logger.info('Maintenance mode');
+  } else {
+    await fullDidPromise;
+    server.logger.info('Blockchain connection initialized');
 
-  server.route(quoteTwitter);
-  server.route(confirmTwitter);
-  server.route(requestTwitter);
-  server.route(attestationTwitter);
+    await testDomainLinkageCType();
+    await testEmailCType();
+    await testTwitterCType();
+    await testDiscordCType();
+    await testGithubCType();
+    await testTwitchCType();
+    await testTelegramCType();
+    await testYoutubeCType();
+    await testInstagramCType();
 
-  server.route(authHtmlDiscord);
-  server.route(authUrlDiscord);
-  server.route(confirmDiscord);
-  server.route(quoteDiscord);
-  server.route(requestAttestationDiscord);
-  server.route(attestDiscord);
+    server.logger.info('CTypes tested');
 
-  server.route(authHtmlGithub);
-  server.route(authUrlgithub);
-  server.route(confirmGithub);
-  server.route(quoteGithub);
-  server.route(requestAttestationGithub);
-  server.route(attestGithub);
+    await listenForTweets();
+    server.logger.info('Twitter connection initialized');
 
-  server.route(authHtmlTwitch);
-  server.route(authUrlTwitch);
-  server.route(confirmTwitch);
-  server.route(quoteTwitch);
-  server.route(requestAttestationTwitch);
-  server.route(attestTwitch);
+    server.route(wellKnownDidConfig);
 
-  server.route(authHtmlInstagram);
-  server.route(authUrlInstagram);
-  server.route(confirmInstagram);
-  server.route(quoteInstagram);
-  server.route(requestAttestationInstagram);
-  server.route(attestInstagram);
+    server.route(authHtmlEmail);
+    server.route(quoteEmail);
+    server.route(confirmEmail);
+    server.route(requestAttestationEmail);
+    server.route(attestationEmail);
 
-  server.route(authUrlTelegram);
-  server.route(confirmTelegram);
-  server.route(quoteTelegram);
-  server.route(requestAttestationTelegram);
-  server.route(attestTelegram);
+    server.route(quoteTwitter);
+    server.route(confirmTwitter);
+    server.route(requestTwitter);
+    server.route(attestationTwitter);
 
-  server.route(authHtmlYoutube);
-  server.route(authUrlYoutube);
-  server.route(confirmYoutube);
-  server.route(quoteYoutube);
-  server.route(requestAttestationYoutube);
-  server.route(attestYoutube);
+    server.route(authHtmlDiscord);
+    server.route(authUrlDiscord);
+    server.route(confirmDiscord);
+    server.route(quoteDiscord);
+    server.route(requestAttestationDiscord);
+    server.route(attestDiscord);
 
-  server.route(requestCredential);
-  server.route(verify);
+    server.route(authHtmlGithub);
+    server.route(authUrlgithub);
+    server.route(confirmGithub);
+    server.route(quoteGithub);
+    server.route(requestAttestationGithub);
+    server.route(attestGithub);
+
+    server.route(authHtmlTwitch);
+    server.route(authUrlTwitch);
+    server.route(confirmTwitch);
+    server.route(quoteTwitch);
+    server.route(requestAttestationTwitch);
+    server.route(attestTwitch);
+
+    server.route(authHtmlInstagram);
+    server.route(authUrlInstagram);
+    server.route(confirmInstagram);
+    server.route(quoteInstagram);
+    server.route(requestAttestationInstagram);
+    server.route(attestInstagram);
+
+    server.route(authUrlTelegram);
+    server.route(confirmTelegram);
+    server.route(quoteTelegram);
+    server.route(requestAttestationTelegram);
+    server.route(attestTelegram);
+
+    server.route(authHtmlYoutube);
+    server.route(authUrlYoutube);
+    server.route(confirmYoutube);
+    server.route(quoteYoutube);
+    server.route(requestAttestationYoutube);
+    server.route(attestYoutube);
+
+    server.route(requestCredential);
+    server.route(verify);
+  }
 
   server.route(home);
   server.route(about);

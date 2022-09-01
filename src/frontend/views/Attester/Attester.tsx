@@ -9,6 +9,7 @@ import {
 import { Link, Route, Switch, useHistory, useLocation } from 'react-router-dom';
 import cx from 'classnames';
 import { detect } from 'detect-browser';
+import ky from 'ky';
 
 import * as styles from './Attester.module.css';
 
@@ -40,6 +41,10 @@ interface HasExtension {
   data?: {
     hasExtension: boolean;
   };
+}
+
+async function queryMaintenanceEndpoint() {
+  return await ky.get(paths.maintenance).json();
 }
 
 function useHasExtension(): HasExtension {
@@ -403,9 +408,16 @@ export function Attester(): JSX.Element {
   const { data } = useHasExtension();
 
   const [session, setSession] = useState<Session>();
-
   const clearSession = useCallback(() => setSession(undefined), []);
-  const maintenanceMode = true;
+
+  const [maintenanceMode, setMaintenanceMode] = useState(false);
+  useEffect(() => {
+    const query = async () => {
+      const result = Boolean(await queryMaintenanceEndpoint());
+      setMaintenanceMode(result);
+    };
+    query();
+  }, []);
 
   if (maintenanceMode) {
     return <Maintenance />;
