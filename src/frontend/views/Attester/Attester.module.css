@@ -18,7 +18,8 @@
   height: 2.5rem;
   line-height: 2.5rem;
   padding-left: 3.25rem;
-  background: var(--credential-logo) no-repeat left top 40%/2.375rem,
+  background:
+    var(--credential-logo) no-repeat left top 40%/2.375rem,
     url('chevron-right.svg') no-repeat left 2.5rem top 45%/0.875rem;
   text-decoration: none;
   color: inherit;
@@ -97,7 +98,8 @@
 .install {
   margin-top: 2rem;
   padding-top: 4rem;
-  background: url('../../images/exclamation.svg') no-repeat top,
+  background:
+    url('../../images/exclamation.svg') no-repeat top,
     url('../../components/Branding/sporran-logo.svg') no-repeat bottom;
   padding-bottom: 7rem;
   text-align: center;
