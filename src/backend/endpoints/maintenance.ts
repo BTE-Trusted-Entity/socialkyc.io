@@ -6,13 +6,11 @@ import { paths } from './paths';
 
 const { maintenanceMode } = configuration;
 
-function handler() {
-  return maintenanceMode;
-}
-
 export const maintenance: ServerRoute = {
   method: 'GET',
   path: paths.maintenance,
-  handler,
+  handler: () => {
+    return maintenanceMode;
+  },
   options: { auth: false },
 };

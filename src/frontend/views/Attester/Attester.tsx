@@ -410,11 +410,15 @@ export function Attester(): JSX.Element {
   const [session, setSession] = useState<Session>();
   const clearSession = useCallback(() => setSession(undefined), []);
 
-  const [maintenanceMode, setMaintenanceMode] = useState(false);
+  const [maintenanceMode, setMaintenanceMode] = useState(true);
   useEffect(() => {
     const query = async () => {
-      const result = Boolean(await queryMaintenanceEndpoint());
-      setMaintenanceMode(result);
+      try {
+        const response = await queryMaintenanceEndpoint();
+        setMaintenanceMode(Boolean(response));
+      } catch (exception) {
+        console.error(exception);
+      }
     };
     query();
   }, []);
