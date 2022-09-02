@@ -88,6 +88,7 @@ import { about } from './endpoints/about';
 import { terms } from './endpoints/terms';
 import { privacy } from './endpoints/privacy';
 import { sessionHeader } from './endpoints/sessionHeader';
+import { metrics } from './endpoints/metrics';
 
 const { isProduction } = configuration;
 
@@ -213,6 +214,7 @@ const logger = {
   server.route(staticFiles);
 
   server.route(liveness);
+  server.route(metrics);
 
   server.ext('onPreResponse', notFoundHandler);
   server.logger.info('Routes configured');
