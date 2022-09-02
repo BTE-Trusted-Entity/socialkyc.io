@@ -21,7 +21,7 @@ export const attestFail = new Counter({
 export const attestDurationSeconds = new Histogram({
   name: 'attestation_duration_s',
   help: 'Duration of attestations in s',
-  buckets: [0.1, 0.2, 0.5, 1, 3, 4, 5], // buckets for response time
+  buckets: [10, 15, 20, 30, 40, 50, 60, 90, 120], // buckets for response time
 });
 
 async function handler(

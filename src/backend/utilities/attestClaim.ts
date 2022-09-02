@@ -7,15 +7,16 @@ import {
 } from '@kiltprotocol/types';
 import { Attestation } from '@kiltprotocol/core';
 
-import { configuration } from './configuration';
-import { batchSignAndSubmitAttestation } from './batchSignAndSubmitAttestation';
-import { encryptMessageBody } from './encryptMessage';
-import { BasicSession, Session, setSession } from './sessionStorage';
 import {
   attestSuccess,
   attestFail,
   attestDurationSeconds,
 } from '../endpoints/metrics';
+
+import { configuration } from './configuration';
+import { batchSignAndSubmitAttestation } from './batchSignAndSubmitAttestation';
+import { encryptMessageBody } from './encryptMessage';
+import { BasicSession, Session, setSession } from './sessionStorage';
 
 export async function attestClaim(
   requestForAttestation: IRequestForAttestation,
@@ -28,7 +29,7 @@ export async function attestClaim(
     requestForAttestation,
     configuration.did,
   );
-  const { claimHash } = attestation;
+  const { claimHash, cTypeHash } = attestation;
 
   const alreadyAttested = Boolean(await Attestation.query(claimHash));
   if (alreadyAttested) {
@@ -38,19 +39,17 @@ export async function attestClaim(
 
   try {
     const end = attestDurationSeconds.startTimer();
-
     await batchSignAndSubmitAttestation(attestation);
-    const attestTime = end();
-    attestDurationSeconds.observe(attestTime);
-    attestSuccess.labels({ credential_type: 'unknown' }).inc();
+    end();
+    attestSuccess.labels({ credential_type: cTypeHash }).inc();
   } catch (exception) {
     // It happens that despite the error the attestation has gone through, do not fail then
     const attested = Boolean(await Attestation.query(claimHash));
-    attestSuccess.labels({ credential_type: 'unknown' }).inc();
     if (!attested) {
-      attestFail.labels({ credential_type: 'unknown' }).inc();
+      attestFail.labels({ credential_type: cTypeHash }).inc();
       throw exception;
     }
+    attestSuccess.labels({ credential_type: cTypeHash }).inc();
   }
 
   return attestation;
