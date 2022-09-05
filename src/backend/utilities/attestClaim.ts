@@ -7,6 +7,12 @@ import {
 } from '@kiltprotocol/types';
 import { Attestation } from '@kiltprotocol/core';
 
+import {
+  attestSuccess,
+  attestFail,
+  attestDurationSeconds,
+} from '../endpoints/metrics';
+
 import { configuration } from './configuration';
 import { batchSignAndSubmitAttestation } from './batchSignAndSubmitAttestation';
 import { encryptMessageBody } from './encryptMessage';
@@ -23,7 +29,7 @@ export async function attestClaim(
     requestForAttestation,
     configuration.did,
   );
-  const { claimHash } = attestation;
+  const { claimHash, cTypeHash } = attestation;
 
   const alreadyAttested = Boolean(await Attestation.query(claimHash));
   if (alreadyAttested) {
@@ -31,15 +37,22 @@ export async function attestClaim(
     return attestation;
   }
 
+  const endTimer = attestDurationSeconds.startTimer();
+
   try {
     await batchSignAndSubmitAttestation(attestation);
   } catch (exception) {
     // It happens that despite the error the attestation has gone through, do not fail then
     const attested = Boolean(await Attestation.query(claimHash));
     if (!attested) {
+      attestFail.labels({ credential_type: cTypeHash }).inc();
       throw exception;
     }
+  } finally {
+    endTimer();
   }
+
+  attestSuccess.labels({ credential_type: cTypeHash }).inc();
 
   return attestation;
 }
