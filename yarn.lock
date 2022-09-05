@@ -11741,11 +11741,6 @@ on-exit-leak-free@^0.2.0:
   resolved "https://registry.yarnpkg.com/on-exit-leak-free/-/on-exit-leak-free-0.2.0.tgz#b39c9e3bf7690d890f4861558b0d7b90a442d209"
   integrity sha512-dqaz3u44QbRXQooZLTUKU41ZrzYrcvLISVgbrzbyCMxpmSLJvZ3ZamIJIZ29P6OhZIkNIQKosdeM6t1LYbA9hg==
 
-on-exit-leak-free@^1.0.0:
-  version "1.0.0"
-  resolved "https://registry.yarnpkg.com/on-exit-leak-free/-/on-exit-leak-free-1.0.0.tgz#4a2accb382278a266848bb1a21439e5fc3cd9881"
-  integrity sha512-Ve8ubhrXRdnuCJ5bQSQpP3uaV43K1PMcOfSRC1pqHgRZommXCgsXwh08jVC5NpjwScE23BPDwDvVg4cov3mwjw==
-
 on-exit-leak-free@^2.1.0:
   version "2.1.0"
   resolved "https://registry.yarnpkg.com/on-exit-leak-free/-/on-exit-leak-free-2.1.0.tgz#5c703c968f7e7f851885f6459bf8a8a57edc9cc4"
@@ -12220,10 +12215,10 @@ pino-abstract-transport@v0.5.0:
     duplexify "^4.1.2"
     split2 "^4.0.0"
 
-pino-pretty@^8.1.0:
-  version "8.1.0"
-  resolved "https://registry.yarnpkg.com/pino-pretty/-/pino-pretty-8.1.0.tgz#1dda4ca71701dfeaf1f72057da1b5b718a0d0f04"
-  integrity sha512-oKfI8qKXR2a3haHs/X8iB6QSnWLqoOGAjwxIAXem4+XOGIGNw7IKpozId1uE7j89Rj46HIfWnGbAgmQmr8+yRw==
+pino-pretty@^9.1.0:
+  version "9.1.0"
+  resolved "https://registry.yarnpkg.com/pino-pretty/-/pino-pretty-9.1.0.tgz#162f525944d7eede154db8055cb0ab5e00bde0c4"
+  integrity sha512-IM6NY9LLo/dVgY7/prJhCh4rAJukafdt0ibxeNOWc2fxKMyTk90SOB9Ao2HfbtShT9QPeP0ePpJktksMhSQMYA==
   dependencies:
     colorette "^2.0.7"
     dateformat "^4.6.3"
@@ -12232,7 +12227,7 @@ pino-pretty@^8.1.0:
     help-me "^4.0.1"
     joycon "^3.1.1"
     minimist "^1.2.6"
-    on-exit-leak-free "^1.0.0"
+    on-exit-leak-free "^2.1.0"
     pino-abstract-transport "^1.0.0"
     pump "^3.0.0"
     readable-stream "^4.0.0"
