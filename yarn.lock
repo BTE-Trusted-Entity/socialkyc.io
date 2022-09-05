@@ -10675,10 +10675,10 @@ known-css-properties@^0.25.0:
   resolved "https://registry.yarnpkg.com/known-css-properties/-/known-css-properties-0.25.0.tgz#6ebc4d4b412f602e5cfbeb4086bd544e34c0a776"
   integrity sha512-b0/9J1O9Jcyik1GC6KC42hJ41jKwdO/Mq8Mdo5sYN+IuRTXs2YFHZC3kZSx6ueusqa95x3wLYe/ytKjbAfGixA==
 
-ky@^0.31.1:
-  version "0.31.1"
-  resolved "https://registry.yarnpkg.com/ky/-/ky-0.31.1.tgz#7b789b4b2a02a94b8c8fe69f2e20f1f085ff7006"
-  integrity sha512-wha6TXwen/+4aeHGn8oyHWTQdukT/JZew4mmu2KiCFKn1NHCXiWpeBhGDVFiIX9FN7wsfSkV0C8yZ6YRKE/w4Q==
+ky@^0.31.3:
+  version "0.31.3"
+  resolved "https://registry.yarnpkg.com/ky/-/ky-0.31.3.tgz#f00e72b9c0467ab19b0b20f15daf7dff09f67dde"
+  integrity sha512-YDDQKG0Lt4PFSPZGJI8WKAm5y+1ebbeA306am+4nT7riX13wjNVD5sR/QOKtgsaQaARwrdUHlv0M9kJ1qv+Jug==
 
 lazy-universal-dotenv@^3.0.1:
   version "3.0.1"
