@@ -127,101 +127,106 @@ const logger = {
   await configureDevErrors(server);
   server.logger.info('Server configured');
 
-  await testLiveness();
-  server.logger.info('Liveness tests passed');
-
-  server.route(session);
-  server.route(maintenance);
-
-  if (maintenanceMode) {
-    server.logger.info('Maintenance mode');
-  } else {
-    await fullDidPromise;
-    server.logger.info('Blockchain connection initialized');
-
-    await testDomainLinkageCType();
-    await testEmailCType();
-    await testTwitterCType();
-    await testDiscordCType();
-    await testGithubCType();
-    await testTwitchCType();
-    await testTelegramCType();
-    await testYoutubeCType();
-    await testInstagramCType();
-
-    server.logger.info('CTypes tested');
-
-    await listenForTweets();
-    server.logger.info('Twitter connection initialized');
-
-    server.route(wellKnownDidConfig);
-
-    server.route(authHtmlEmail);
-    server.route(quoteEmail);
-    server.route(confirmEmail);
-    server.route(requestAttestationEmail);
-    server.route(attestationEmail);
-
-    server.route(quoteTwitter);
-    server.route(confirmTwitter);
-    server.route(requestTwitter);
-    server.route(attestationTwitter);
-
-    server.route(authHtmlDiscord);
-    server.route(authUrlDiscord);
-    server.route(confirmDiscord);
-    server.route(quoteDiscord);
-    server.route(requestAttestationDiscord);
-    server.route(attestDiscord);
-
-    server.route(authHtmlGithub);
-    server.route(authUrlgithub);
-    server.route(confirmGithub);
-    server.route(quoteGithub);
-    server.route(requestAttestationGithub);
-    server.route(attestGithub);
-
-    server.route(authHtmlTwitch);
-    server.route(authUrlTwitch);
-    server.route(confirmTwitch);
-    server.route(quoteTwitch);
-    server.route(requestAttestationTwitch);
-    server.route(attestTwitch);
-
-    server.route(authHtmlInstagram);
-    server.route(authUrlInstagram);
-    server.route(confirmInstagram);
-    server.route(quoteInstagram);
-    server.route(requestAttestationInstagram);
-    server.route(attestInstagram);
-
-    server.route(authUrlTelegram);
-    server.route(confirmTelegram);
-    server.route(quoteTelegram);
-    server.route(requestAttestationTelegram);
-    server.route(attestTelegram);
-
-    server.route(authHtmlYoutube);
-    server.route(authUrlYoutube);
-    server.route(confirmYoutube);
-    server.route(quoteYoutube);
-    server.route(requestAttestationYoutube);
-    server.route(attestYoutube);
-
-    server.route(requestCredential);
-    server.route(verify);
-  }
-
-  server.route(home);
   server.route(about);
   server.route(terms);
   server.route(privacy);
+
+  server.ext('onPreResponse', notFoundHandler);
+
+  if (maintenanceMode) {
+    server.logger.info('Maintenance mode');
+    server.route(maintenance);
+    server.route(staticFiles);
+    await manager.start();
+    return;
+  }
+
+  await testLiveness();
+  server.logger.info('Liveness tests passed');
+
+  await fullDidPromise;
+  server.logger.info('Blockchain connection initialized');
+
+  await testDomainLinkageCType();
+  await testEmailCType();
+  await testTwitterCType();
+  await testDiscordCType();
+  await testGithubCType();
+  await testTwitchCType();
+  await testTelegramCType();
+  await testYoutubeCType();
+  await testInstagramCType();
+
+  server.logger.info('CTypes tested');
+
+  await listenForTweets();
+  server.logger.info('Twitter connection initialized');
+
+  server.route(wellKnownDidConfig);
+
+  server.route(session);
+
+  server.route(authHtmlEmail);
+  server.route(quoteEmail);
+  server.route(confirmEmail);
+  server.route(requestAttestationEmail);
+  server.route(attestationEmail);
+
+  server.route(quoteTwitter);
+  server.route(confirmTwitter);
+  server.route(requestTwitter);
+  server.route(attestationTwitter);
+
+  server.route(authHtmlDiscord);
+  server.route(authUrlDiscord);
+  server.route(confirmDiscord);
+  server.route(quoteDiscord);
+  server.route(requestAttestationDiscord);
+  server.route(attestDiscord);
+
+  server.route(authHtmlGithub);
+  server.route(authUrlgithub);
+  server.route(confirmGithub);
+  server.route(quoteGithub);
+  server.route(requestAttestationGithub);
+  server.route(attestGithub);
+
+  server.route(authHtmlTwitch);
+  server.route(authUrlTwitch);
+  server.route(confirmTwitch);
+  server.route(quoteTwitch);
+  server.route(requestAttestationTwitch);
+  server.route(attestTwitch);
+
+  server.route(authHtmlInstagram);
+  server.route(authUrlInstagram);
+  server.route(confirmInstagram);
+  server.route(quoteInstagram);
+  server.route(requestAttestationInstagram);
+  server.route(attestInstagram);
+
+  server.route(authUrlTelegram);
+  server.route(confirmTelegram);
+  server.route(quoteTelegram);
+  server.route(requestAttestationTelegram);
+  server.route(attestTelegram);
+
+  server.route(authHtmlYoutube);
+  server.route(authUrlYoutube);
+  server.route(confirmYoutube);
+  server.route(quoteYoutube);
+  server.route(requestAttestationYoutube);
+  server.route(attestYoutube);
+
+  server.route(requestCredential);
+  server.route(verify);
+
+  server.route(home);
 
   server.route(staticFiles);
 
   server.route(liveness);
 
-  server.ext('onPreResponse', notFoundHandler);
   server.logger.info('Routes configured');
 
   await manager.start();

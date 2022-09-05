@@ -1,16 +1,5 @@
-import { ServerRoute } from '@hapi/hapi';
-
-import { configuration } from '../utilities/configuration';
+import { getVariantRoute } from '../utilities/htmlVariants';
 
 import { paths } from './paths';
 
-const { maintenanceMode } = configuration;
-
-export const maintenance: ServerRoute = {
-  method: 'GET',
-  path: paths.maintenance,
-  handler: () => {
-    return maintenanceMode;
-  },
-  options: { auth: false },
-};
+export const maintenance = getVariantRoute(paths.home, 'maintenance.html');
