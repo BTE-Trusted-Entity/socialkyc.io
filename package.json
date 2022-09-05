@@ -20,10 +20,10 @@
   },
   "dependencies": {
     "@aws-sdk/client-ses": "^3.145.0",
-    "@hapi/basic": "^6.0.0",
+    "@hapi/basic": "^7.0.0",
     "@hapi/boom": "^10.0.0",
     "@hapi/hapi": "^20.2.2",
-    "@hapi/inert": "^6.0.5",
+    "@hapi/inert": "^7.0.0",
     "@kiltprotocol/chain-helpers": "0.28.1",
     "@kiltprotocol/core": "0.28.1",
     "@kiltprotocol/did": "0.28.1",
