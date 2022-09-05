@@ -9,7 +9,7 @@ import {
 import { Link, Route, Switch, useHistory, useLocation } from 'react-router-dom';
 import cx from 'classnames';
 import { detect } from 'detect-browser';
-import ky from 'ky';
+// import ky from 'ky';
 
 import * as styles from './Attester.module.css';
 
@@ -43,9 +43,9 @@ interface HasExtension {
   };
 }
 
-async function queryMaintenanceEndpoint() {
-  return await ky.get(paths.maintenance).json();
-}
+// async function queryMaintenanceEndpoint() {
+//   return await ky.get(paths.maintenance).json();
+// }
 
 function useHasExtension(): HasExtension {
   const [hasExtension, setHasExtension] = useState<boolean>();
@@ -74,28 +74,28 @@ function useHasExtension(): HasExtension {
   return typeof hasExtension === 'boolean' ? { data: { hasExtension } } : {};
 }
 
-function Maintenance() {
-  return (
-    <Fragment>
-      <h1 className={styles.heading}>
-        SocialKYC is currently under maintenance!
-      </h1>
+// function Maintenance() {
+//   return (
+//     <Fragment>
+//       <h1 className={styles.heading}>
+//         SocialKYC is currently under maintenance!
+//       </h1>
 
-      <p>For more information please check our status page:</p>
+//       <p>For more information please check our status page:</p>
 
-      <div className={styles.buttonsLine}>
-        <a
-          className={styles.ctaButton}
-          href="https://status.kilt.io/"
-          target="_blank"
-          rel="noreferrer"
-        >
-          Open status page
-        </a>
-      </div>
-    </Fragment>
-  );
-}
+//       <div className={styles.buttonsLine}>
+//         <a
+//           className={styles.ctaButton}
+//           href="https://status.kilt.io/"
+//           target="_blank"
+//           rel="noreferrer"
+//         >
+//           Open status page
+//         </a>
+//       </div>
+//     </Fragment>
+//   );
+// }
 
 function Welcome() {
   return (
@@ -410,22 +410,22 @@ export function Attester(): JSX.Element {
   const [session, setSession] = useState<Session>();
   const clearSession = useCallback(() => setSession(undefined), []);
 
-  const [maintenanceMode, setMaintenanceMode] = useState(true);
-  useEffect(() => {
-    const query = async () => {
-      try {
-        const response = await queryMaintenanceEndpoint();
-        setMaintenanceMode(Boolean(response));
-      } catch (exception) {
-        console.error(exception);
-      }
-    };
-    query();
-  }, []);
+  // const [maintenanceMode, setMaintenanceMode] = useState(true);
+  // useEffect(() => {
+  //   const query = async () => {
+  //     try {
+  //       const response = await queryMaintenanceEndpoint();
+  //       setMaintenanceMode(Boolean(response));
+  //     } catch (exception) {
+  //       console.error(exception);
+  //     }
+  //   };
+  //   query();
+  // }, []);
 
-  if (maintenanceMode) {
-    return <Maintenance />;
-  }
+  // if (maintenanceMode) {
+  //   return <Maintenance />;
+  // }
 
   if (!data) {
     return <Spinner />;
