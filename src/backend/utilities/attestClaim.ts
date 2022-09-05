@@ -37,11 +37,10 @@ export async function attestClaim(
     return attestation;
   }
 
+  const endTimer = attestDurationSeconds.startTimer();
+
   try {
-    const end = attestDurationSeconds.startTimer();
     await batchSignAndSubmitAttestation(attestation);
-    end();
-    attestSuccess.labels({ credential_type: cTypeHash }).inc();
   } catch (exception) {
     // It happens that despite the error the attestation has gone through, do not fail then
     const attested = Boolean(await Attestation.query(claimHash));
@@ -49,8 +48,11 @@ export async function attestClaim(
       attestFail.labels({ credential_type: cTypeHash }).inc();
       throw exception;
     }
-    attestSuccess.labels({ credential_type: cTypeHash }).inc();
+  } finally {
+    endTimer();
   }
+
+  attestSuccess.labels({ credential_type: cTypeHash }).inc();
 
   return attestation;
 }
