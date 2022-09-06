@@ -12,8 +12,6 @@ export const youtube: string;
 export const instagram: string;
 export const buttonPrimary: string;
 export const buttonLink: string;
-export const buttonsLine: string;
-export const ctaButton: string;
 export const install: string;
 export const unsupported: string;
 export const textLink: string;

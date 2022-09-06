@@ -149,6 +149,38 @@ p {
   font-weight: normal;
 }
 
+.heading {
+  font-weight: normal;
+  font-size: 1rem;
+  margin: 0;
+}
+
+.buttonsLine {
+  text-align: center;
+}
+
+.ctaButton {
+  border: none;
+  cursor: pointer;
+  font-family: inherit;
+  height: 2rem;
+  padding: 0 3rem;
+  align-self: center;
+  display: inline-flex;
+  justify-content: center;
+  align-items: center;
+  border-radius: 1rem;
+  font-size: 0.875rem;
+  text-transform: uppercase;
+  color: var(--color-white);
+  background-color: var(--color-magenta);
+  box-shadow: 2px 2px 3px 1px rgb(var(--color-black-rgb) / 15%),
+    -2px -2px 3px 1px rgb(var(--color-white-rgb) / 30%);
+  text-decoration: none;
+  display: inline-flex;
+  margin: 0.2rem auto;
+}
+
 @media screen and (min-width: 950px) {
   .rightHeadline {
     font-size: 0.6rem;
