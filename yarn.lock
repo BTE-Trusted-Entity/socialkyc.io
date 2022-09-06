@@ -8957,10 +8957,10 @@ hapi-gate@^2.1.0:
   resolved "https://registry.yarnpkg.com/hapi-gate/-/hapi-gate-2.1.0.tgz#503211813c9e4491bace3f09e96d43e3bdea8d52"
   integrity sha512-GFQixKhAkaduwLHSya3DaZw2MhPYhywqVB5qXZ10AEPtctEtI1qQk1sywTFjnM+rNS1mFZ1DZhbi+krItQIzQw==
 
-hapi-pino@^10.0.0:
-  version "10.0.0"
-  resolved "https://registry.yarnpkg.com/hapi-pino/-/hapi-pino-10.0.0.tgz#7061b710032481b9a634a4870e2eb36c7324d48d"
-  integrity sha512-8oF+Vkccr5x5/G6arqMuVO/eaE/i0hCgR/HbW3ZVwhTUiN+CJSS+MaauMfAK0iaDuK0bF9mcW4FEPc5pF6HLyg==
+hapi-pino@^10.2.0:
+  version "10.2.0"
+  resolved "https://registry.yarnpkg.com/hapi-pino/-/hapi-pino-10.2.0.tgz#7f88dbce751f73e762bd3c53de8c59b2179bdfda"
+  integrity sha512-1sryQ0k3Zl6TqNfRem4rVIUq0dRovmZO/wvMR32DHyLUfRyjAf+P99ke8lmpi7vjtgH6TEmLF19nByqn5/XCQg==
   dependencies:
     "@hapi/hoek" "^10.0.0"
     "@types/hapi__hapi" "^20.0.10"
