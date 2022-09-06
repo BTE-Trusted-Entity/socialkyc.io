@@ -230,8 +230,6 @@ const logger = {
 
   server.route(staticFiles);
 
-  server.route(liveness);
-
   server.logger.info('Routes configured');
 
   await manager.start();
