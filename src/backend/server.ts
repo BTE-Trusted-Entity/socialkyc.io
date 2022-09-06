@@ -222,9 +222,6 @@ const logger = {
   server.route(verify);
 
   server.route(home);
-  server.route(about);
-  server.route(terms);
-  server.route(privacy);
 
   server.route(liveness);
 
