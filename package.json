@@ -123,7 +123,8 @@
         "src/frontend/privacy.html",
         "src/frontend/verifier.html",
         "src/frontend/sign.html",
-        "src/frontend/404.html"
+        "src/frontend/404.html",
+        "src/frontend/maintenance.html"
       ],
       "distDir": "dist/frontend"
     },

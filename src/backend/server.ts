@@ -82,6 +82,7 @@ import { session } from './endpoints/session';
 import { staticFiles } from './endpoints/staticFiles';
 
 import { liveness, testLiveness } from './endpoints/liveness';
+import { maintenance } from './endpoints/maintenance';
 import { notFoundHandler } from './endpoints/notFoundHandler';
 import { home } from './endpoints/home';
 import { about } from './endpoints/about';
@@ -90,7 +91,7 @@ import { privacy } from './endpoints/privacy';
 import { sessionHeader } from './endpoints/sessionHeader';
 import { metrics } from './endpoints/metrics';
 
-const { isProduction } = configuration;
+const { isProduction, maintenanceMode } = configuration;
 
 const noWww = {
   plugin: gate,
@@ -122,9 +123,24 @@ const logger = {
   await server.register(noWww);
   await server.register(inert);
   await server.register(logger);
+
   await configureAuthentication(server);
   await configureDevErrors(server);
   server.logger.info('Server configured');
+
+  server.route(about);
+  server.route(terms);
+  server.route(privacy);
+
+  server.ext('onPreResponse', notFoundHandler);
+
+  if (maintenanceMode) {
+    server.logger.info('Maintenance mode');
+    server.route(maintenance);
+    server.route(staticFiles);
+    await manager.start();
+    return;
+  }
 
   await testLiveness();
   server.logger.info('Liveness tests passed');
@@ -207,16 +223,12 @@ const logger = {
   server.route(verify);
 
   server.route(home);
-  server.route(about);
-  server.route(terms);
-  server.route(privacy);
-
-  server.route(staticFiles);
 
   server.route(liveness);
   server.route(metrics);
 
-  server.ext('onPreResponse', notFoundHandler);
+  server.route(staticFiles);
+
   server.logger.info('Routes configured');
 
   await manager.start();

@@ -380,7 +380,6 @@ export function Attester(): JSX.Element {
   const { data } = useHasExtension();
 
   const [session, setSession] = useState<Session>();
-
   const clearSession = useCallback(() => setSession(undefined), []);
 
   if (!data) {
