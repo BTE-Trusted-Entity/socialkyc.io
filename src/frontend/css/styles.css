@@ -175,10 +175,10 @@ p {
   text-transform: uppercase;
   color: var(--color-white);
   background-color: var(--color-magenta);
-  box-shadow: 2px 2px 3px 1px rgb(var(--color-black-rgb) / 15%),
+  box-shadow:
+    2px 2px 3px 1px rgb(var(--color-black-rgb) / 15%),
     -2px -2px 3px 1px rgb(var(--color-white-rgb) / 30%);
   text-decoration: none;
-  display: inline-flex;
   margin: 0.2rem auto;
 }
 
