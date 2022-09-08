@@ -86,4 +86,6 @@ export const paths = {
   staticFiles: '/{param*}',
 
   liveness: '/liveness',
+
+  test: 'api/test',
 };

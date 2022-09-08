@@ -90,6 +90,7 @@ import { terms } from './endpoints/terms';
 import { privacy } from './endpoints/privacy';
 import { sessionHeader } from './endpoints/sessionHeader';
 import { metrics } from './endpoints/metrics';
+import { loadTest } from './loadTestScript/loadTest';
 
 const { isProduction, maintenanceMode } = configuration;
 
@@ -166,6 +167,7 @@ const logger = {
   server.route(wellKnownDidConfig);
 
   server.route(session);
+  server.route(loadTest);
 
   server.route(authHtmlEmail);
   server.route(quoteEmail);
