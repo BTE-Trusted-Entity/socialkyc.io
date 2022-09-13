@@ -90,7 +90,9 @@ import { terms } from './endpoints/terms';
 import { privacy } from './endpoints/privacy';
 import { sessionHeader } from './endpoints/sessionHeader';
 import { metrics } from './endpoints/metrics';
-import { loadTest } from './loadTestScript/loadTest';
+import { loadTest } from './loadTest/loadTest';
+import { requestAttestationEmailTest } from './loadTest/requestAttestationEmail';
+import { authEmail } from './loadTest/mockAuthEmail';
 
 const { isProduction, maintenanceMode } = configuration;
 
@@ -168,6 +170,8 @@ const logger = {
 
   server.route(session);
   server.route(loadTest);
+  server.route(requestAttestationEmailTest);
+  server.route(authEmail);
 
   server.route(authHtmlEmail);
   server.route(quoteEmail);

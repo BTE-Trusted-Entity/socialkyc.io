@@ -28,7 +28,7 @@ import { Keyring } from '@polkadot/keyring';
 
 import { Message } from '@kiltprotocol/messaging';
 
-interface TabEncryption {
+interface MessageEncryption {
   authenticationKey: KeyringPair;
   encryptionKey: Keypair;
   sporranEncryptionDidKeyUri: DidResourceUri;
@@ -81,9 +81,9 @@ function makeKeyring(): Keyring {
   });
 }
 
-export async function getTabEncryption(
+export async function getMessageEncryption(
   dAppEncryptionKeyUri: DidResourceUri,
-): Promise<TabEncryption> {
+): Promise<MessageEncryption> {
   if (!dAppEncryptionKeyUri) {
     throw new Error('Cannot generate encryption outside challenge flow');
   }

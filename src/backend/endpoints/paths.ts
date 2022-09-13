@@ -87,5 +87,9 @@ export const paths = {
 
   liveness: '/liveness',
 
-  test: 'api/test',
+  test: {
+    loadTest: '/api/test',
+    requestAttestation: '/api/test/request-attestation',
+    redirect: '/api/test/redirect',
+  },
 };
