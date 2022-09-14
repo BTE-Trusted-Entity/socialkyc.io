@@ -89,7 +89,6 @@ export const paths = {
 
   test: {
     loadTest: '/api/test',
-    requestAttestation: '/api/test/request-attestation',
-    redirect: '/api/test/redirect',
+    secret: '/api/test/secret',
   },
 };

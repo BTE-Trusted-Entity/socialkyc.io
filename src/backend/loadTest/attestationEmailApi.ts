@@ -14,7 +14,7 @@ const gotInstance = got.extend({
   },
 });
 
-export async function attestEmail(
+export async function attestEmailApi(
   json: Input,
   sessionId: string,
 ): Promise<Output> {

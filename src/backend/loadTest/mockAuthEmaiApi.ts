@@ -1,7 +1,10 @@
 import got from 'got';
 
-import { Output } from './mockAuthEmail';
+import { paths } from '../endpoints/paths';
+import { configuration } from '../utilities/configuration';
 
-export async function mockAuthEmailApi(url: string): Promise<Output> {
-  return got.get(url).json();
+export async function authEmailApi(state: string): Promise<string> {
+  return got(`${configuration.baseUri}${paths.redirect.email}`, {
+    searchParams: { state },
+  }).text();
 }

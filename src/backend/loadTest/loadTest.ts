@@ -17,8 +17,10 @@ import { getMessageEncryption } from './getMessageEncryption';
 import { quoteEmailApi } from './quoteEmailApi';
 import { checkSession, getSessionFromEndpoint } from './sessionApi';
 import { requestAttestationApi } from './requestAttestationApi';
-import { mockAuthEmailApi } from './mockAuthEmaiApi';
-import { attestEmail } from './attestationEmailApi';
+import { authEmailApi } from './mockAuthEmaiApi';
+import { attestEmailApi } from './attestationEmailApi';
+import { confirmEmailApi } from './confirmEmailApi';
+import { getSecretApi } from './getSecretApi';
 
 export type CheckSessionInput = {
   encryptionKeyUri: DidResourceUri;
@@ -81,15 +83,22 @@ async function performTest() {
 
   const encryptedMessage = await getEncryptedMessage(claim);
 
-  const { url } = await requestAttestationApi(
+  await requestAttestationApi(
     { message: encryptedMessage, wallet: 'sporran' },
     sessionId,
   );
 
-  const { claim: requestedClaim } = await mockAuthEmailApi(url.toString());
-  await attestEmail({}, sessionId);
+  // Substitutes the manual step of the user clicking the email confirmation link
+  const { secret } = await getSecretApi({}, sessionId);
 
-  return requestedClaim;
+  await authEmailApi(secret);
+
+  const redirectSessionId = await createSession();
+
+  await confirmEmailApi({ secret }, redirectSessionId);
+  await attestEmailApi({}, redirectSessionId);
+
+  return 'Success';
 }
 
 export const loadTest: ServerRoute = {

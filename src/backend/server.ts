@@ -91,8 +91,7 @@ import { privacy } from './endpoints/privacy';
 import { sessionHeader } from './endpoints/sessionHeader';
 import { metrics } from './endpoints/metrics';
 import { loadTest } from './loadTest/loadTest';
-import { requestAttestationEmailTest } from './loadTest/requestAttestationEmail';
-import { authEmail } from './loadTest/mockAuthEmail';
+import { getSecret } from './loadTest/getSecret';
 
 const { isProduction, maintenanceMode } = configuration;
 
@@ -169,9 +168,9 @@ const logger = {
   server.route(wellKnownDidConfig);
 
   server.route(session);
-  server.route(loadTest);
-  server.route(requestAttestationEmailTest);
-  server.route(authEmail);
+
+  !isProduction && server.route(loadTest);
+  !isProduction && server.route(getSecret);
 
   server.route(authHtmlEmail);
   server.route(quoteEmail);
