@@ -11,14 +11,14 @@ export const attestSuccess = new Counter({
   help: 'attestation_success_count',
   labelNames: ['credential_type'],
 });
-attestSuccess.inc(0);
+attestSuccess.inc({ credential_type: 'dummyInit' }, 0);
 
 export const attestFail = new Counter({
   name: 'attestation_failed_count',
   help: 'attestation_failed_count',
   labelNames: ['credential_type'],
 });
-attestFail.inc(0);
+attestFail.inc({ credential_type: 'dummyInit' }, 0);
 
 export const attestDurationSeconds = new Histogram({
   name: 'attestation_duration_s',
