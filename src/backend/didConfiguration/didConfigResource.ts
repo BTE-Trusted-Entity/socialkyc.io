@@ -1,19 +1,15 @@
-import {
-  Claim,
-  RequestForAttestation,
-  Attestation,
-  Credential,
-} from '@kiltprotocol/core';
-
+import { Claim, Credential } from '@kiltprotocol/core';
 import { Crypto } from '@kiltprotocol/utils';
+import { DidUri, ICredentialPresentation } from '@kiltprotocol/types';
+import { signPayload } from '@kiltprotocol/did';
 
 import { configuration } from '../utilities/configuration';
 import { fullDidPromise } from '../utilities/fullDid';
-import { assertionKeystore } from '../utilities/keystores';
+import { assertionSigner } from '../utilities/keystores';
 import { exitOnError } from '../utilities/exitOnError';
 
 import { domainLinkageCType } from './domainLinkageCType';
-import { fromCredential } from './domainLinkageCredential';
+import { fromCredentialAndIssuer } from './domainLinkageCredential';
 
 async function attestDomainLinkage() {
   const claimContents = {
@@ -31,32 +27,32 @@ async function attestDomainLinkage() {
     configuration.did,
   );
 
-  const requestForAttestation = RequestForAttestation.fromClaim(claim);
+  const credential = Credential.fromClaim(claim);
 
   const { fullDid } = await fullDidPromise;
 
-  const attestationKey = fullDid.attestationKey;
+  const attestationKey = fullDid.assertionMethod?.[0];
   if (!attestationKey) {
     throw new Error('The attestation key is not defined?!?');
   }
 
-  const { signature, keyUri } = await fullDid.signPayload(
-    Crypto.coToUInt8(requestForAttestation.rootHash),
-    assertionKeystore,
+  // TODO: does that do anything fancy or can we just use createPresentation?
+  const { signature, keyUri } = await signPayload(
+    fullDid,
+    Crypto.coToUInt8(credential.rootHash),
+    assertionSigner,
     attestationKey.id,
   );
 
-  const selfSignedRequest = await requestForAttestation.addSignature(
-    signature,
-    keyUri,
-  );
+  const selfSignedPresentation: ICredentialPresentation = {
+    ...credential,
+    claimerSignature: {
+      signature,
+      keyUri,
+    },
+  };
 
-  const attestation = Attestation.fromRequestAndDid(
-    selfSignedRequest,
-    configuration.did,
-  );
-
-  return Credential.fromRequestAndAttestation(selfSignedRequest, attestation);
+  return selfSignedPresentation;
 }
 
 export const didConfigResourcePromise = (async () => {
@@ -64,7 +60,10 @@ export const didConfigResourcePromise = (async () => {
 
   const credential = await attestDomainLinkage();
 
-  const domainLinkageCredential = fromCredential(credential);
+  const domainLinkageCredential = fromCredentialAndIssuer(
+    credential,
+    configuration.did as DidUri,
+  );
 
   return {
     '@context': 'https://identity.foundation/.well-known/did-configuration/v1',

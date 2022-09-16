@@ -1,4 +1,9 @@
-import { ICredential, DidSignature, IClaimContents } from '@kiltprotocol/types';
+import {
+  DidSignature,
+  IClaimContents,
+  DidUri,
+  ICredentialPresentation,
+} from '@kiltprotocol/types';
 import {
   VerifiableCredential,
   Proof,
@@ -36,12 +41,14 @@ interface DomainLinkageCredential
   proof: Proof;
 }
 
-export function fromCredential(input: ICredential): DomainLinkageCredential {
+export function fromCredentialAndIssuer(
+  input: ICredentialPresentation,
+  issuer: DidUri,
+): DomainLinkageCredential {
   const credentialSubject = {
-    ...input.request.claim.contents,
-    rootHash: input.request.rootHash,
+    ...input.claim.contents,
+    rootHash: input.rootHash,
   };
-  const issuer = input.attestation.owner;
 
   // add current date bc we have no issuance date on credential
   // TODO: could we get this from block time or something?
@@ -50,7 +57,7 @@ export function fromCredential(input: ICredential): DomainLinkageCredential {
     Date.now() + 1000 * 60 * 60 * 24 * 365 * 5,
   ).toISOString(); // 5 years
 
-  const claimerSignature = input.request.claimerSignature as DidSignature & {
+  const claimerSignature = input.claimerSignature as DidSignature & {
     challenge: string;
   };
 
