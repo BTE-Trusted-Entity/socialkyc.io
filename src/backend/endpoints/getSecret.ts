@@ -19,7 +19,7 @@ async function handler(
   logger.debug('Fetching secret for session ID');
   const { sessionId } = getSession(request.headers);
 
-  const secret = await getSecretForSession(sessionId);
+  const secret = getSecretForSession(sessionId);
 
   return h.response({ secret } as Output);
 }

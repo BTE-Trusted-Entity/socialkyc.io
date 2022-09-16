@@ -5,6 +5,7 @@ import {
   ServerRoute,
 } from '@hapi/hapi';
 import Boom from '@hapi/boom';
+import { CType } from '@kiltprotocol/core';
 
 import { getSession, setSession } from '../utilities/sessionStorage';
 
@@ -32,7 +33,7 @@ async function handler(
   if (!claim) {
     throw Boom.notFound('Claim not found');
   }
-  if (claim.cTypeHash !== twitterCType.hash) {
+  if (CType.hashToId(claim.cTypeHash) !== twitterCType.$id) {
     throw Boom.notFound('Claim cType mismatch');
   }
 

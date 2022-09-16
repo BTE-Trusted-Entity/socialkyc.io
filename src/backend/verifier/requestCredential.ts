@@ -9,7 +9,7 @@ import { z } from 'zod';
 
 import { randomAsHex } from '@polkadot/util-crypto';
 import { CType } from '@kiltprotocol/core';
-import { IEncryptedMessage, MessageBodyType } from '@kiltprotocol/types';
+import { ICType, IEncryptedMessage } from '@kiltprotocol/types';
 
 import { emailCType } from '../email/emailCType';
 import { twitterCType } from '../twitter/twitterCType';
@@ -30,21 +30,21 @@ export type Input = z.infer<typeof zodPayload>;
 
 export type Output = IEncryptedMessage;
 
-const cTypes: Record<string, CType['hash']> = {
-  email: emailCType.hash,
-  twitter: twitterCType.hash,
-  discord: discordCType.hash,
-  github: githubCType.hash,
-  twitch: twitchCType.hash,
-  telegram: telegramCType.hash,
-  youtube: youtubeCType.hash,
+const cTypes: Record<string, ICType['$id']> = {
+  email: emailCType.$id,
+  twitter: twitterCType.$id,
+  discord: discordCType.$id,
+  github: githubCType.$id,
+  twitch: twitchCType.$id,
+  telegram: telegramCType.$id,
+  youtube: youtubeCType.$id,
 };
 
 function getCTypeHash(cType: string) {
-  const cTypeHash = cTypes[cType];
+  const cTypeId = cTypes[cType];
 
-  if (cTypeHash) {
-    return cTypeHash;
+  if (cTypeId) {
+    return CType.idToHash(cTypeId);
   }
   throw Boom.badRequest(`Verification not offered for ${cType} CType`);
 }
@@ -70,7 +70,7 @@ async function handler(
       cTypes: [{ cTypeHash }],
       challenge,
     },
-    type: MessageBodyType.REQUEST_CREDENTIAL,
+    type: 'request-credential',
   });
 
   logger.debug('Request credential completed');

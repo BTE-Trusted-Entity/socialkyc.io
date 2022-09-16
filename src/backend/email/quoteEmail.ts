@@ -6,7 +6,7 @@ import {
 } from '@hapi/hapi';
 import Boom from '@hapi/boom';
 
-import { IEncryptedMessage, MessageBodyType } from '@kiltprotocol/types';
+import { IEncryptedMessage } from '@kiltprotocol/types';
 
 import { encryptMessageBody } from '../utilities/encryptMessage';
 import { getSession } from '../utilities/sessionStorage';
@@ -37,7 +37,7 @@ async function handler(
       legitimations: [],
       cTypes: [emailCType],
     },
-    type: MessageBodyType.SUBMIT_TERMS,
+    type: 'submit-terms',
   });
 
   logger.debug('Email quote completed');

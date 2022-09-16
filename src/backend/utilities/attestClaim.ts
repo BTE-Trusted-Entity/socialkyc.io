@@ -1,11 +1,12 @@
 import Boom from '@hapi/boom';
 import { Logger } from 'pino';
 import {
+  IAttestation,
+  ICredential,
   IEncryptedMessage,
-  IRequestForAttestation,
-  MessageBodyType,
 } from '@kiltprotocol/types';
 import { Attestation } from '@kiltprotocol/core';
+import { ConfigService } from '@kiltprotocol/config';
 
 import {
   attestSuccess,
@@ -19,19 +20,22 @@ import { encryptMessageBody } from './encryptMessage';
 import { BasicSession, Session, setSession } from './sessionStorage';
 
 export async function attestClaim(
-  requestForAttestation: IRequestForAttestation,
-): Promise<Attestation> {
+  requestForAttestation: ICredential,
+): Promise<IAttestation> {
   if (configuration.did === 'pending') {
     throw new Error('Own DID not found');
   }
 
-  const attestation = Attestation.fromRequestAndDid(
+  const attestation = Attestation.fromCredentialAndDid(
     requestForAttestation,
     configuration.did,
   );
   const { claimHash, cTypeHash } = attestation;
 
-  const alreadyAttested = Boolean(await Attestation.query(claimHash));
+  const api = ConfigService.get('api');
+
+  const alreadyAttested = (await api.query.attestation.attestations(claimHash))
+    .isSome;
   if (alreadyAttested) {
     // We see some attestations extrinsic failing as already attested, check for it early
     return attestation;
@@ -43,7 +47,8 @@ export async function attestClaim(
     await batchSignAndSubmitAttestation(attestation);
   } catch (exception) {
     // It happens that despite the error the attestation has gone through, do not fail then
-    const attested = Boolean(await Attestation.query(claimHash));
+    const attested = (await api.query.attestation.attestations(claimHash))
+      .isSome;
     if (!attested) {
       attestFail.labels({ credential_type: cTypeHash }).inc();
       throw exception;
@@ -60,13 +65,13 @@ export async function attestClaim(
 export async function startAttestation(
   session: BasicSession,
   logger: Logger,
-): Promise<Attestation> {
-  const { requestForAttestation, confirmed } = session;
-  if (!requestForAttestation || !confirmed) {
+): Promise<IAttestation> {
+  const { credential, confirmed } = session;
+  if (!credential || !confirmed) {
     throw Boom.notFound('Confirmed requestForAttestation not found');
   }
 
-  const attestationPromise = attestClaim(requestForAttestation);
+  const attestationPromise = attestClaim(credential);
   attestationPromise.catch((error) => logger.error(error));
 
   setSession({ ...session, attestationPromise });
@@ -84,6 +89,6 @@ export async function getAttestationMessage(
 
   return encryptMessageBody(session.encryptionKeyUri, {
     content: { attestation },
-    type: MessageBodyType.SUBMIT_ATTESTATION,
+    type: 'submit-attestation',
   });
 }

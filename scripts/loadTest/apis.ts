@@ -40,6 +40,33 @@ export async function getSecretApi(
     .json();
 }
 
+export async function sendEmailApi(
+  json: {
+    email: string;
+    wallet: string;
+  },
+  sessionId: string,
+): Promise<string> {
+  return api
+    .post('api/email/send', {
+      json,
+      headers: { [sessionHeader]: sessionId },
+    })
+    .text();
+}
+
+export async function confirmEmailApi(
+  json: { secret: string },
+  sessionId: string,
+): Promise<void> {
+  return api
+    .post('api/email/confirm', {
+      json,
+      headers: { [sessionHeader]: sessionId },
+    })
+    .json();
+}
+
 export async function quoteEmailApi(
   json: {
     email: string;
@@ -54,12 +81,6 @@ export async function quoteEmailApi(
     .json();
 }
 
-export async function authEmailApi(state: string): Promise<string> {
-  return api('email/auth', {
-    searchParams: { state },
-  }).text();
-}
-
 export async function requestAttestationApi(
   json: {
     message: IEncryptedMessage;
@@ -69,18 +90,6 @@ export async function requestAttestationApi(
 ): Promise<void> {
   return api
     .post('api/email/request-attestation', {
-      json,
-      headers: { [sessionHeader]: sessionId },
-    })
-    .json();
-}
-
-export async function confirmEmailApi(
-  json: { secret: string },
-  sessionId: string,
-): Promise<void> {
-  return api
-    .post('api/email/confirm', {
       json,
       headers: { [sessionHeader]: sessionId },
     })

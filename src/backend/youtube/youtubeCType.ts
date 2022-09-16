@@ -1,26 +1,24 @@
-import { CType, CTypeUtils } from '@kiltprotocol/core';
+import { CType } from '@kiltprotocol/core';
+import { ConfigService } from '@kiltprotocol/config';
+import { ICType } from '@kiltprotocol/types';
 
 import { signAndSubmit } from '../utilities/signAndSubmit';
 import { logger } from '../utilities/logger';
 import { configuration } from '../utilities/configuration';
+import { cTypeIsStored } from '../utilities/cTypeIsStored';
 
 /** Run this function once to store the CType */
 export async function testYoutubeCType(): Promise<void> {
-  const draft = CType.fromSchema({
-    $schema: 'http://kilt-protocol.org/draft-01/ctype#',
-    title: 'YoutubeChannel',
-    properties: {
-      'Channel Name': {
-        type: 'string',
-      },
-      'Channel ID': {
-        type: 'string',
-      },
+  const draft = CType.fromProperties('YoutubeChannel', {
+    'Channel Name': {
+      type: 'string',
     },
-    type: 'object',
+    'Channel ID': {
+      type: 'string',
+    },
   });
 
-  if (await CTypeUtils.verifyStored(draft)) {
+  if (await cTypeIsStored(draft)) {
     if (configuration.storeDidAndCTypes) {
       logger.info('Youtube CType is already on the blockchain');
     }
@@ -33,28 +31,25 @@ export async function testYoutubeCType(): Promise<void> {
 
   logger.warn('Storing Youtube CType on the blockchain');
 
-  const tx = await draft.getStoreTx();
+  const api = ConfigService.get('api');
+  const tx = api.tx.ctype.add(CType.toChain(draft));
   await signAndSubmit(tx);
 
-  logger.warn(draft, 'Pass this object to CType.fromCType');
+  logger.warn(draft, 'YouTube CType');
 }
 
 // This object was logged by testYoutubeCType()
-export const youtubeCType = CType.fromCType({
-  schema: {
-    $schema: 'http://kilt-protocol.org/draft-01/ctype#',
-    title: 'YoutubeChannel',
-    properties: {
-      'Channel Name': {
-        type: 'string',
-      },
-      'Channel ID': {
-        type: 'string',
-      },
+export const youtubeCType: ICType = {
+  $schema: 'http://kilt-protocol.org/draft-01/ctype#',
+  title: 'YoutubeChannel',
+  properties: {
+    'Channel Name': {
+      type: 'string',
     },
-    type: 'object',
-    $id: 'kilt:ctype:0x329a2a5861ea63c250763e5e4c4d4a18fe4470a31e541365c7fb831e5432b940',
+    'Channel ID': {
+      type: 'string',
+    },
   },
-  owner: null,
-  hash: '0x329a2a5861ea63c250763e5e4c4d4a18fe4470a31e541365c7fb831e5432b940',
-});
+  type: 'object',
+  $id: 'kilt:ctype:0x329a2a5861ea63c250763e5e4c4d4a18fe4470a31e541365c7fb831e5432b940',
+};
