@@ -8,8 +8,10 @@ import Boom from '@hapi/boom';
 import { z } from 'zod';
 
 import { randomAsHex } from '@polkadot/util-crypto';
-import { CType } from '@kiltprotocol/core';
-import { IEncryptedMessage, MessageBodyType } from '@kiltprotocol/types';
+import {
+  ICType,
+  IEncryptedMessage,
+} from '@kiltprotocol/types';
 
 import { emailCType } from '../email/emailCType';
 import { twitterCType } from '../twitter/twitterCType';
@@ -30,7 +32,7 @@ export type Input = z.infer<typeof zodPayload>;
 
 export type Output = IEncryptedMessage;
 
-const cTypes: Record<string, CType['hash']> = {
+const cTypes: Record<string, ICType['hash']> = {
   email: emailCType.hash,
   twitter: twitterCType.hash,
   discord: discordCType.hash,
@@ -70,7 +72,7 @@ async function handler(
       cTypes: [{ cTypeHash }],
       challenge,
     },
-    type: MessageBodyType.REQUEST_CREDENTIAL,
+    type: 'request-credential',
   });
 
   logger.debug('Request credential completed');
