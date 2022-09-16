@@ -1,11 +1,12 @@
 import { jest } from '@jest/globals';
+import { DidResourceUri } from '@kiltprotocol/types';
 
 import { makeControlledPromise } from '../../backend/utilities/makeControlledPromise';
 
 import { Session } from './session';
 
 export const sessionMock: Session = {
-  encryptionKeyId: 'did:kilt:some_identifier#some_id',
+  encryptionKeyId: 'did:kilt:some_identifier#some_id' as DidResourceUri,
   encryptedChallenge: 'encryptedChallenge',
   nonce: 'nonce',
   send: jest.fn(async () => {
