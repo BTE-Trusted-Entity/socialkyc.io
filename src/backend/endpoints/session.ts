@@ -8,13 +8,13 @@ import Boom from '@hapi/boom';
 import { z } from 'zod';
 import { StatusCodes } from 'http-status-codes';
 
-import { DidResolver } from '@kiltprotocol/did';
+import { resolveKey } from '@kiltprotocol/did';
 import { Crypto } from '@kiltprotocol/utils';
 import { DidResourceUri } from '@kiltprotocol/types';
 import { randomAsHex } from '@polkadot/util-crypto';
 
 import { fullDidPromise } from '../utilities/fullDid';
-import { encryptionKeystore } from '../utilities/keystores';
+import { encryptCallback } from '../utilities/keystores';
 import { keypairsPromise } from '../utilities/keypairs';
 import { getBasicSession, setSession } from '../utilities/sessionStorage';
 
@@ -49,7 +49,7 @@ async function handler(
   const { encryptionKeyUri, encryptedChallenge, nonce } = payload;
   const session = getBasicSession(request.headers);
 
-  const encryptionKey = await DidResolver.resolveKey(encryptionKeyUri);
+  const encryptionKey = await resolveKey(encryptionKeyUri);
 
   if (!encryptionKey) {
     throw Boom.forbidden(`Could not resolve the DID key ${encryptionKeyUri}`);
@@ -58,7 +58,7 @@ async function handler(
 
   const { keyAgreement } = await keypairsPromise;
 
-  const { data } = await encryptionKeystore.decrypt({
+  const { data } = await encryptCallback({
     data: Crypto.coToUInt8(encryptedChallenge),
     nonce: Crypto.coToUInt8(nonce),
     publicKey: keyAgreement.publicKey,
@@ -105,7 +105,7 @@ export const session: ServerRoute[] = [
     path,
     handler: async () => {
       const { fullDid, encryptionKey } = await fullDidPromise;
-      const dAppEncryptionKeyUri = fullDid.assembleKeyUri(encryptionKey.id);
+      const dAppEncryptionKeyUri: DidResourceUri = `${fullDid.uri}${encryptionKey.id}`;
       return {
         dAppEncryptionKeyUri,
         ...startSession(),
