@@ -94,7 +94,8 @@ export function YoutubeTemplate({
       {status === 'urlReady' && (
         <p className={styles.buttonsLine}>
           <a className={styles.ctaButton} href={authUrl}>
-            Start Credential process
+            Sign in with
+            <span className={styles.youtubeBrandLogo}></span>
           </a>
         </p>
       )}
@@ -179,7 +180,8 @@ export function YoutubeTemplate({
               target="_blank"
               rel="noreferrer"
             >
-              Open YouTube
+              Open
+              <span className={styles.youtubeBrandLogo}></span>
             </a>
           </p>
         </Fragment>

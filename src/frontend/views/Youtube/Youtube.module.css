@@ -13,6 +13,14 @@
   margin: 0;
 }
 
+.youtubeBrandLogo {
+  width: 5rem;
+  height: 2rem;
+  margin: 0rem 0.8rem;
+  background: no-repeat center/100%;
+  background-image: url('./youtube_brand.svg');
+}
+
 .channel {
   display: grid;
   grid-template-areas: 'key value' 'key value';
