@@ -1,4 +1,6 @@
-import { CType, CTypeUtils } from '@kiltprotocol/core';
+import { CType } from '@kiltprotocol/core';
+import { ICType } from '@kiltprotocol/types';
+import { ConfigService } from '@kiltprotocol/config';
 
 import { signAndSubmit } from '../utilities/signAndSubmit';
 import { logger } from '../utilities/logger';
@@ -17,7 +19,7 @@ export async function testEmailCType(): Promise<void> {
     type: 'object',
   });
 
-  if (await CTypeUtils.verifyStored(draft)) {
+  if (await CType.verifyStored(draft)) {
     if (configuration.storeDidAndCTypes) {
       logger.info('Email CType is already on the blockchain');
     }
@@ -30,14 +32,15 @@ export async function testEmailCType(): Promise<void> {
 
   logger.warn('Storing Email CType on the blockchain');
 
-  const tx = await draft.getStoreTx();
+  const api = ConfigService.get('api');
+  const tx = api.tx.ctype.add(CType.toChain(draft));
   await signAndSubmit(tx);
 
-  logger.warn(draft, 'Pass this object to CType.fromCType');
+  logger.warn(draft, 'Email CType');
 }
 
 // This object was logged by storeEmailCType()
-export const emailCType = CType.fromCType({
+export const emailCType: ICType = {
   schema: {
     $schema: 'http://kilt-protocol.org/draft-01/ctype#',
     title: 'Email',
@@ -51,4 +54,4 @@ export const emailCType = CType.fromCType({
   },
   owner: null,
   hash: '0x3291bb126e33b4862d421bfaa1d2f272e6cdfc4f96658988fbcffea8914bd9ac',
-});
+};

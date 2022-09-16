@@ -1,4 +1,6 @@
-import { CType, CTypeUtils } from '@kiltprotocol/core';
+import { CType } from '@kiltprotocol/core';
+import { ConfigService } from '@kiltprotocol/config';
+import { ICType } from '@kiltprotocol/types';
 
 import { signAndSubmit } from '../utilities/signAndSubmit';
 import { logger } from '../utilities/logger';
@@ -17,7 +19,7 @@ export async function testTwitterCType(): Promise<void> {
     type: 'object',
   });
 
-  if (await CTypeUtils.verifyStored(draft)) {
+  if (await CType.verifyStored(draft)) {
     if (configuration.storeDidAndCTypes) {
       logger.info('Twitter CType is already on the blockchain');
     }
@@ -30,14 +32,15 @@ export async function testTwitterCType(): Promise<void> {
 
   logger.warn('Storing Twitter CType on the blockchain');
 
-  const tx = await draft.getStoreTx();
+  const api = ConfigService.get('api');
+  const tx = api.tx.ctype.add(CType.toChain(draft));
   await signAndSubmit(tx);
 
   logger.warn(draft, 'Pass this object to CType.fromCType');
 }
 
 // This object was logged by storeTwitterCType()
-export const twitterCType = CType.fromCType({
+export const twitterCType: ICType = {
   schema: {
     $schema: 'http://kilt-protocol.org/draft-01/ctype#',
     title: 'Twitter',
@@ -51,4 +54,4 @@ export const twitterCType = CType.fromCType({
   },
   owner: null,
   hash: '0x47d04c42bdf7fdd3fc5a194bcaa367b2f4766a6b16ae3df628927656d818f420',
-});
+};

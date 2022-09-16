@@ -1,4 +1,6 @@
-import { CType, CTypeUtils } from '@kiltprotocol/core';
+import { CType } from '@kiltprotocol/core';
+import { ConfigService } from '@kiltprotocol/config';
+import { ICType } from '@kiltprotocol/types';
 
 import { signAndSubmit } from '../utilities/signAndSubmit';
 import { logger } from '../utilities/logger';
@@ -20,7 +22,7 @@ export async function testTwitchCType(): Promise<void> {
     type: 'object',
   });
 
-  if (await CTypeUtils.verifyStored(draft)) {
+  if (await CType.verifyStored(draft)) {
     if (configuration.storeDidAndCTypes) {
       logger.info('Twitch CType is already on the blockchain');
     }
@@ -33,14 +35,15 @@ export async function testTwitchCType(): Promise<void> {
 
   logger.warn('Storing Twitch CType on the blockchain');
 
-  const tx = await draft.getStoreTx();
+  const api = ConfigService.get('api');
+  const tx = api.tx.ctype.add(CType.toChain(draft));
   await signAndSubmit(tx);
 
   logger.warn(draft, 'Pass this object to CType.fromCType');
 }
 
 // This object was logged by storeTwitchCType()
-export const twitchCType = CType.fromCType({
+export const twitchCType: ICType = {
   schema: {
     $schema: 'http://kilt-protocol.org/draft-01/ctype#',
     title: 'Twitch',
@@ -57,4 +60,4 @@ export const twitchCType = CType.fromCType({
   },
   owner: null,
   hash: '0x568ec5ffd7771c4677a5470771adcdea1ea4d6b566f060dc419ff133a0089d80',
-});
+};

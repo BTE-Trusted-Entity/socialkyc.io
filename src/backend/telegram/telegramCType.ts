@@ -1,4 +1,6 @@
-import { CType, CTypeUtils } from '@kiltprotocol/core';
+import { CType } from '@kiltprotocol/core';
+import { ConfigService } from '@kiltprotocol/config';
+import { ICType } from '@kiltprotocol/types';
 
 import { signAndSubmit } from '../utilities/signAndSubmit';
 import { logger } from '../utilities/logger';
@@ -26,7 +28,7 @@ export async function testTelegramCType(): Promise<void> {
     type: 'object',
   });
 
-  if (await CTypeUtils.verifyStored(draft)) {
+  if (await CType.verifyStored(draft)) {
     if (configuration.storeDidAndCTypes) {
       logger.info('Telegram CType is already on the blockchain');
     }
@@ -39,14 +41,15 @@ export async function testTelegramCType(): Promise<void> {
 
   logger.warn('Storing Telegram CType on the blockchain');
 
-  const tx = await draft.getStoreTx();
+  const api = ConfigService.get('api');
+  const tx = api.tx.ctype.add(CType.toChain(draft));
   await signAndSubmit(tx);
 
   logger.warn(draft, 'Pass this object to CType.fromCType');
 }
 
 // This object was logged by storeTelegramCType()
-export const telegramCType = CType.fromCType({
+export const telegramCType: ICType = {
   schema: {
     $schema: 'http://kilt-protocol.org/draft-01/ctype#',
     title: 'Telegram',
@@ -69,4 +72,4 @@ export const telegramCType = CType.fromCType({
   },
   owner: null,
   hash: '0xcef8f3fe5aa7379faea95327942fd77287e1c144e3f53243e55705f11e890a4c',
-});
+};

@@ -12,6 +12,7 @@ import {
 import Boom from '@hapi/boom';
 import { RateLimiterMemory } from 'rate-limiter-flexible';
 import { z } from 'zod';
+import { Credential } from '@kiltprotocol/core';
 
 import { configuration } from '../utilities/configuration';
 import {
@@ -31,6 +32,7 @@ import { paths } from '../endpoints/paths';
 
 import { sesClient } from './sesClient';
 import { sesConnectionState } from './sesConnection';
+import { emailCType } from './emailCType';
 
 const rateLimiter = new RateLimiterMemory({
   duration: 1 * 60,
@@ -118,8 +120,13 @@ async function handler(
   const session = getSession(request.headers);
   delete session.attestationPromise;
 
-  const { requestForAttestation } = await decryptRequestAttestation(request);
-  setSession({ ...session, requestForAttestation, confirmed: false });
+  const { credential } = await decryptRequestAttestation(request);
+  await Credential.verifyCredential(credential, { ctype: emailCType });
+  setSession({
+    ...session,
+    requestForAttestation: credential,
+    confirmed: false,
+  });
   logger.debug('Email request attestation cached');
 
   const { wallet } = request.payload as Input;
@@ -130,7 +137,7 @@ async function handler(
   url.search = new URLSearchParams({ state: secret, wallet }).toString();
 
   try {
-    const email = requestForAttestation.claim.contents.Email as string;
+    const email = credential.claim.contents.Email as string;
     await send(url.toString(), email);
     logger.debug('Email request attestation message sent');
 

@@ -6,7 +6,7 @@ import {
 } from '@hapi/hapi';
 import { z } from 'zod';
 import { Claim } from '@kiltprotocol/core';
-import { IEncryptedMessage, MessageBodyType } from '@kiltprotocol/types';
+import { IEncryptedMessage } from '@kiltprotocol/types';
 
 import { encryptMessageBody } from '../utilities/encryptMessage';
 import { paths } from '../endpoints/paths';
@@ -48,7 +48,7 @@ async function handler(
       legitimations: [],
       cTypes: [twitterCType],
     },
-    type: MessageBodyType.SUBMIT_TERMS,
+    type: 'submit-terms',
   });
 
   logger.debug('Twitter quote completed');
