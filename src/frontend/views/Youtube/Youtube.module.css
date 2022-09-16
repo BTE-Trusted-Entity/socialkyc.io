@@ -14,11 +14,12 @@
 }
 
 .youtubeBrandLogo {
-  width: 5rem;
-  height: 2rem;
+  width: 4rem;
+  height: 1.6rem;
   margin: 0rem 0.8rem;
   background: no-repeat center/100%;
   background-image: url('./youtube_brand.svg');
+  /* background-image: url('./yt_mini.svg'); */
 }
 
 .channel {

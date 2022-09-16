@@ -92,12 +92,15 @@ export function YoutubeTemplate({
       )}
 
       {status === 'urlReady' && (
-        <p className={styles.buttonsLine}>
-          <a className={styles.ctaButton} href={authUrl}>
-            Sign in with
-            <span className={styles.youtubeBrandLogo}></span>
-          </a>
-        </p>
+        <div>
+          <p>Sign-in with:</p>
+          <p className={styles.buttonsLine}>
+            <a className={styles.ctaButton} href={authUrl}>
+              <span className={styles.youtubeBrandLogo}></span>
+              {/* Sign in with Youtube */}
+            </a>
+          </p>
+        </div>
       )}
 
       {status === 'authorizing' && (
@@ -180,8 +183,8 @@ export function YoutubeTemplate({
               target="_blank"
               rel="noreferrer"
             >
-              Open
               <span className={styles.youtubeBrandLogo}></span>
+              {/* Open Youtube */}
             </a>
           </p>
         </Fragment>
