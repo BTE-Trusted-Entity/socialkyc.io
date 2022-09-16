@@ -62,19 +62,20 @@ async function createPendingTransaction() {
     logger.error(error);
   }
 
-  for (const { attestation, failures } of currentAttestations) {
-    const attested = (await api.query.attestation.attestations(attestation.claimHash)).isSome;
+  const attestedAll = await api.query.attestation.attestations.multi(
+    currentAttestations.map(({ attestation }) => attestation.claimHash),
+  );
+  attestedAll.forEach(({ isSome: attested }, index) => {
+    const { failures, attestation } = currentAttestations[index];
     const failedTooManyTimes = failures >= MAXIMUM_FAILURES;
     if (attested || failedTooManyTimes) {
-      continue;
+      return;
     }
     pendingAttestations.unshift({
       attestation,
       failures: failures + 1,
     });
-  }
-  // TODO: when dependencies versions issue is resolved, optimize the code above using
-  // api.query.attestation.attestations.multi<Option<Codec>>(hashes)
+  });
 
   if (syncExitAfterUpdatingReferences()) {
     logger.debug('No next transaction scheduled');
