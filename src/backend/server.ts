@@ -11,7 +11,6 @@ import { testGithubCType } from './github/githubCType';
 import { testTwitchCType } from './twitch/twitchCType';
 import { testTelegramCType } from './telegram/telegramCType';
 import { testYoutubeCType } from './youtube/youtubeCType';
-import { testInstagramCType } from './instagram/instagramCType';
 import { configuration } from './utilities/configuration';
 import { configureAuthentication } from './utilities/configureAuthentication';
 import { configureDevErrors } from './utilities/configureDevErrors';
@@ -49,13 +48,6 @@ import { attestGithub } from './github/attestGithub';
 import { authUrlTwitch } from './twitch/authUrlTwitch';
 import { authHtmlTwitch } from './twitch/authHtmlTwitch';
 import { confirmTwitch } from './twitch/confirmTwitch';
-
-import { authHtmlInstagram } from './instagram/authHtmlInstagram';
-import { authUrlInstagram } from './instagram/authUrlInstagram';
-import { confirmInstagram } from './instagram/confirmInstagram';
-import { quoteInstagram } from './instagram/quoteInstagram';
-import { requestAttestationInstagram } from './instagram/requestAttestationInstagram';
-import { attestInstagram } from './instagram/attestInstagram';
 
 import { quoteTwitch } from './twitch/quoteTwitch';
 import { requestAttestationTwitch } from './twitch/requestAttestationTwitch';
@@ -156,7 +148,6 @@ const logger = {
   await testTwitchCType();
   await testTelegramCType();
   await testYoutubeCType();
-  await testInstagramCType();
 
   server.logger.info('CTypes tested');
 
@@ -198,13 +189,6 @@ const logger = {
   server.route(quoteTwitch);
   server.route(requestAttestationTwitch);
   server.route(attestTwitch);
-
-  server.route(authHtmlInstagram);
-  server.route(authUrlInstagram);
-  server.route(confirmInstagram);
-  server.route(quoteInstagram);
-  server.route(requestAttestationInstagram);
-  server.route(attestInstagram);
 
   server.route(authUrlTelegram);
   server.route(confirmTelegram);

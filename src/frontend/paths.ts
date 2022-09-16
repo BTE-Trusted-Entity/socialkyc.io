@@ -5,7 +5,6 @@ export const paths = {
 
   email: '/email',
   discord: '/discord',
-  instagram: '/instagram',
   github: '/github',
   twitch: '/twitch',
   youtube: '/youtube',
