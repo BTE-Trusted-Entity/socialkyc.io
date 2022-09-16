@@ -1,5 +1,5 @@
 import { Keyring } from '@polkadot/keyring';
-import { KeyringPair, EncryptionKeyType } from '@kiltprotocol/types';
+import { KiltKeyringPair, NewDidEncryptionKey } from '@kiltprotocol/types';
 import {
   blake2AsU8a,
   ed25519PairFromSeed,
@@ -8,6 +8,7 @@ import {
   mnemonicToMiniSecret,
   naclBoxPairFromSecret,
 } from '@polkadot/util-crypto';
+import { Keypair } from '@polkadot/util-crypto/types';
 
 import { initKilt } from './initKilt';
 import { configuration } from './configuration';
@@ -22,8 +23,10 @@ function makeKeyring(): Keyring {
   });
 }
 
-export function getKeypairByBackupPhrase(backupPhrase: string): KeyringPair {
-  return makeKeyring().addFromUri(backupPhrase);
+export function getKeypairByBackupPhrase(
+  backupPhrase: string,
+): KiltKeyringPair {
+  return makeKeyring().addFromUri(backupPhrase) as KiltKeyringPair;
 }
 
 export const keypairsPromise = (async () => {
@@ -38,9 +41,9 @@ export const keypairsPromise = (async () => {
   const edKeypair = ed25519PairFromSeed(mnemonicToMiniSecret(backupPhrase));
   const { path } = keyExtractPath('//did//keyAgreement//0');
   const { secretKey } = keyFromPath(edKeypair, path, 'ed25519');
-  const keyAgreement = {
+  const keyAgreement: NewDidEncryptionKey & Keypair = {
     ...naclBoxPairFromSecret(blake2AsU8a(secretKey)),
-    type: EncryptionKeyType.X25519,
+    type: 'x25519',
   };
 
   return {

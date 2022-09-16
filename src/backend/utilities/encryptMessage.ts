@@ -1,26 +1,28 @@
 import {
   DidResourceUri,
   IEncryptedMessage,
+  IMessage,
   MessageBody,
 } from '@kiltprotocol/types';
-import { Message } from '@kiltprotocol/messaging';
+import * as Message from '@kiltprotocol/messaging';
 
 import { Utils } from '@kiltprotocol/did';
 
 import { fullDidPromise } from './fullDid';
-import { encryptionKeystore } from './keystores';
+import { encryptCallback } from './keystores';
 import { configuration } from './configuration';
 
 export async function encryptMessage(
-  message: Message,
+  message: IMessage,
   encryptionKeyUri: DidResourceUri,
 ): Promise<IEncryptedMessage> {
   const { fullDid, encryptionKey } = await fullDidPromise;
 
-  return message.encrypt(
+  return Message.encrypt(
+    message,
     encryptionKey.id,
     fullDid,
-    encryptionKeystore,
+    encryptCallback,
     encryptionKeyUri,
   );
 }
@@ -35,6 +37,6 @@ export async function encryptMessageBody(
     throw new Error('Own DID not found');
   }
 
-  const message = new Message(messageBody, configuration.did, did);
+  const message = Message.fromBody(messageBody, configuration.did, did);
   return encryptMessage(message, encryptionKeyUri);
 }

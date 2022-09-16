@@ -3,11 +3,11 @@ import Boom from '@hapi/boom';
 import {
   DidResourceUri,
   DidUri,
+  IAttestation,
   IClaim,
-  IRequestForAttestation,
+  ICredential,
 } from '@kiltprotocol/types';
 import { randomAsNumber } from '@polkadot/util-crypto';
-import { Attestation } from '@kiltprotocol/core';
 
 import { sessionHeader } from '../endpoints/sessionHeader';
 
@@ -20,8 +20,8 @@ export interface BasicSession {
   claim?: IClaim;
   secret?: string;
   confirmed?: boolean;
-  requestForAttestation?: IRequestForAttestation;
-  attestationPromise?: Promise<Attestation>;
+  requestForAttestation?: ICredential;
+  attestationPromise?: Promise<IAttestation>;
   requestChallenge?: string;
 }
 

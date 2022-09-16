@@ -1,21 +1,19 @@
-import { Attestation } from '@kiltprotocol/core';
-import {
-  BlockchainApiConnection,
-  BlockchainUtils,
-} from '@kiltprotocol/chain-helpers';
-import { DidBatchBuilder } from '@kiltprotocol/did';
+import { Blockchain } from '@kiltprotocol/chain-helpers';
+import { authorizeBatch } from '@kiltprotocol/did';
+import { ConfigService } from '@kiltprotocol/config';
+import { IAttestation } from '@kiltprotocol/types';
 
 import { logger } from './logger';
 import { fullDidPromise } from './fullDid';
 import { keypairsPromise } from './keypairs';
-import { assertionKeystore } from './keystores';
+import { assertionSigner } from './keystores';
 import { signAndSubmit } from './signAndSubmit';
 
 const TRANSACTION_TIMEOUT = 5 * 60 * 1000;
 const MAXIMUM_FAILURES = 3;
 
 interface AttemptedAttestation {
-  attestation: Attestation;
+  attestation: IAttestation;
   failures: number;
 }
 
@@ -55,6 +53,8 @@ async function runTransactionWithTimeout<Result>(transaction: Promise<Result>) {
 }
 
 async function createPendingTransaction() {
+  const api = ConfigService.get('api');
+
   try {
     await currentTransaction;
     logger.debug('Current transaction succeeded');
@@ -63,7 +63,7 @@ async function createPendingTransaction() {
   }
 
   for (const { attestation, failures } of currentAttestations) {
-    const attested = Boolean(await Attestation.query(attestation.claimHash));
+    const attested = (await api.query.attestation.attestations(attestation.claimHash)).isSome;
     const failedTooManyTimes = failures >= MAXIMUM_FAILURES;
     if (attested || failedTooManyTimes) {
       continue;
@@ -82,21 +82,26 @@ async function createPendingTransaction() {
   }
   logger.debug('Scheduling next transaction');
 
-  const extrinsics = await Promise.all(
-    currentAttestations.map(({ attestation }) => attestation.getStoreTx()),
+  const extrinsics = currentAttestations.map(
+    ({ attestation: { cTypeHash, claimHash } }) =>
+      api.tx.attestation.add(claimHash, cTypeHash, null),
   );
-  const { api } = await BlockchainApiConnection.getConnectionOrConnect();
+
   const { fullDid } = await fullDidPromise;
   const { identity } = await keypairsPromise;
 
-  const authorized = await new DidBatchBuilder(api, fullDid)
-    .addMultipleExtrinsics(extrinsics)
-    .build(assertionKeystore, identity.address, { atomic: false });
+  const authorized = await authorizeBatch({
+    did: fullDid,
+    extrinsics,
+    sign: assertionSigner,
+    submitter: identity.address,
+    batchFunction: api.tx.utility.batchAll,
+  });
 
   logger.debug('Submitting transaction');
   await runTransactionWithTimeout(
-    BlockchainUtils.signAndSubmitTx(authorized, identity, {
-      resolveOn: BlockchainUtils.IS_FINALIZED,
+    Blockchain.signAndSubmitTx(authorized, identity, {
+      resolveOn: Blockchain.IS_FINALIZED,
     }),
   );
   logger.debug('Transaction submitted');
@@ -104,14 +109,14 @@ async function createPendingTransaction() {
 
 function alreadyAddedTo(
   list: AttemptedAttestation[],
-  attestation: Attestation,
+  attestation: IAttestation,
 ) {
   return list.some(
     ({ attestation: { claimHash } }) => claimHash === attestation.claimHash,
   );
 }
 
-export async function batchSignAndSubmitAttestation(attestation: Attestation) {
+export async function batchSignAndSubmitAttestation(attestation: IAttestation) {
   // prevent two identical attestations from going into the same batch
   if (alreadyAddedTo(currentAttestations, attestation)) {
     return currentTransaction;
@@ -129,7 +134,12 @@ export async function batchSignAndSubmitAttestation(attestation: Attestation) {
   logger.debug('Started immediate attestation');
   pendingTransaction = runTransactionWithTimeout(
     (async () => {
-      const transaction = await attestation.getStoreTx();
+      const api = ConfigService.get('api');
+      const transaction = api.tx.attestation.add(
+        attestation.claimHash,
+        attestation.cTypeHash,
+        null,
+      );
       await signAndSubmit(transaction);
     })(),
   );
