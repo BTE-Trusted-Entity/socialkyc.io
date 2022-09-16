@@ -31,6 +31,7 @@
     "@kiltprotocol/types": "0.30.0-6",
     "@kiltprotocol/utils": "0.30.0-6",
     "@kiltprotocol/vc-export": "0.30.0-6",
+    "@kiltprotocol/config": "0.30.0-6",
     "@polkadot/keyring": "^10.1.7",
     "@polkadot/util": "^10.1.7",
     "@polkadot/util-crypto": "^10.1.7",
