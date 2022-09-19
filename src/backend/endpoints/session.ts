@@ -14,7 +14,7 @@ import { DidResourceUri } from '@kiltprotocol/types';
 import { randomAsHex } from '@polkadot/util-crypto';
 
 import { fullDidPromise } from '../utilities/fullDid';
-import { encryptCallback } from '../utilities/keystores';
+import { decryptCallback } from '../utilities/keystores';
 import { keypairsPromise } from '../utilities/keypairs';
 import { getBasicSession, setSession } from '../utilities/sessionStorage';
 
@@ -58,7 +58,7 @@ async function handler(
 
   const { keyAgreement } = await keypairsPromise;
 
-  const { data } = await encryptCallback({
+  const { data } = await decryptCallback({
     data: Crypto.coToUInt8(encryptedChallenge),
     nonce: Crypto.coToUInt8(nonce),
     publicKey: keyAgreement.publicKey,
