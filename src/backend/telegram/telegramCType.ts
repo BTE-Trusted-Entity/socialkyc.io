@@ -45,7 +45,7 @@ export async function testTelegramCType(): Promise<void> {
   const tx = api.tx.ctype.add(CType.toChain(draft));
   await signAndSubmit(tx);
 
-  logger.warn(draft, 'Pass this object to CType.fromCType');
+  logger.warn(draft, 'Telegram CType');
 }
 
 // This object was logged by storeTelegramCType()

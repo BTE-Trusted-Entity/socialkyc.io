@@ -39,7 +39,7 @@ export async function testYoutubeCType(): Promise<void> {
   const tx = api.tx.ctype.add(CType.toChain(draft));
   await signAndSubmit(tx);
 
-  logger.warn(draft, 'Pass this object to CType.fromCType');
+  logger.warn(draft, 'YouTube CType');
 }
 
 // This object was logged by testYoutubeCType()

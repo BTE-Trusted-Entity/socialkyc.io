@@ -36,7 +36,7 @@ export async function testTwitterCType(): Promise<void> {
   const tx = api.tx.ctype.add(CType.toChain(draft));
   await signAndSubmit(tx);
 
-  logger.warn(draft, 'Pass this object to CType.fromCType');
+  logger.warn(draft, 'Twitter CType');
 }
 
 // This object was logged by storeTwitterCType()
