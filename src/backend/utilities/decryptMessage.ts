@@ -46,13 +46,9 @@ export async function decryptMessageContent<Result>(
 export async function decryptRequestAttestation(
   request: Request,
 ): Promise<IRequestAttestationContent> {
-  const {credential,
-    // @ts-expect-error Support for the old message type, where the credential prop was called requestForAttestation
-    requestForAttestation,
-    ...rest } = await decryptMessageContent<IRequestAttestationContent>(
+  return decryptMessageContent<IRequestAttestationContent>(
     request,
     'request-attestation',
     'reject-terms',
   );
-  return {...rest, credential: credential ?? requestForAttestation}
 }

@@ -42,12 +42,7 @@ async function handler(
   }
   const challenge = session.requestChallenge;
 
-  const {
-    // @ts-expect-error The old message format had an AttestedClaim, consisting of a request and attestation prop
-    request: requestForAttestation,
-    ...presentationProps
-  } = content[0];
-  const presentation: ICredentialPresentation = requestForAttestation ?? presentationProps
+  const presentation = content[0];
   logger.debug('Verification credential constructed');
 
   let attestation: IAttestation | undefined;
