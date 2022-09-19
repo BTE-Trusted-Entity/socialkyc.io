@@ -48,7 +48,7 @@ export async function decryptRequestAttestation(
 ): Promise<IRequestAttestationContent> {
   return decryptMessageContent<IRequestAttestationContent>(
     request,
-    'submit-credential',
+    'request-attestation',
     'reject-terms',
   );
 }
