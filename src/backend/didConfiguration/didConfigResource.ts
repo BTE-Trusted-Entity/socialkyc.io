@@ -1,7 +1,5 @@
 import { Claim, Credential } from '@kiltprotocol/core';
-import { Crypto } from '@kiltprotocol/utils';
 import { DidUri, ICredentialPresentation } from '@kiltprotocol/types';
-import { signPayload } from '@kiltprotocol/did';
 
 import { configuration } from '../utilities/configuration';
 import { fullDidPromise } from '../utilities/fullDid';
@@ -11,7 +9,7 @@ import { exitOnError } from '../utilities/exitOnError';
 import { domainLinkageCType } from './domainLinkageCType';
 import { fromCredentialAndIssuer } from './domainLinkageCredential';
 
-async function attestDomainLinkage() {
+async function attestDomainLinkage(): Promise<ICredentialPresentation> {
   const claimContents = {
     id: configuration.did,
     origin: configuration.baseUri,
@@ -36,23 +34,12 @@ async function attestDomainLinkage() {
     throw new Error('The attestation key is not defined?!?');
   }
 
-  // TODO: does that do anything fancy or can we just use createPresentation?
-  const { signature, keyUri } = await signPayload(
-    fullDid,
-    Crypto.coToUInt8(credential.rootHash),
-    assertionSigner,
-    attestationKey.id,
-  );
-
-  const selfSignedPresentation: ICredentialPresentation = {
-    ...credential,
-    claimerSignature: {
-      signature,
-      keyUri,
-    },
-  };
-
-  return selfSignedPresentation;
+  return Credential.createPresentation({
+    credential,
+    // the domain linkage credential is special in that it is signed with the assertionMethod key
+    signCallback: assertionSigner,
+    claimerDid: fullDid,
+  });
 }
 
 export const didConfigResourcePromise = (async () => {
