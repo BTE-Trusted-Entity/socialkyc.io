@@ -25,7 +25,8 @@ export async function testDiscordCType(): Promise<void> {
     type: 'object',
   });
 
-  if (await CType.verifyStored(draft)) {
+  const api = ConfigService.get('api');
+  if ((await api.query.ctype.ctypes(draft.hash)).isSome) {
     if (configuration.storeDidAndCTypes) {
       logger.info('Discord CType is already on the blockchain');
     }
@@ -38,7 +39,6 @@ export async function testDiscordCType(): Promise<void> {
 
   logger.warn('Storing Discord CType on the blockchain');
 
-  const api = ConfigService.get('api');
   const tx = api.tx.ctype.add(CType.toChain(draft));
   await signAndSubmit(tx);
 

@@ -1,5 +1,5 @@
 import { Claim, Credential } from '@kiltprotocol/core';
-import { DidUri, ICredentialPresentation } from '@kiltprotocol/types';
+import { ICredentialPresentation } from '@kiltprotocol/types';
 
 import { configuration } from '../utilities/configuration';
 import { fullDidPromise } from '../utilities/fullDid';

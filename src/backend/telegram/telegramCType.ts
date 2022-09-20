@@ -28,7 +28,8 @@ export async function testTelegramCType(): Promise<void> {
     type: 'object',
   });
 
-  if (await CType.verifyStored(draft)) {
+  const api = ConfigService.get('api');
+  if ((await api.query.ctype.ctypes(draft.hash)).isSome) {
     if (configuration.storeDidAndCTypes) {
       logger.info('Telegram CType is already on the blockchain');
     }
@@ -41,7 +42,6 @@ export async function testTelegramCType(): Promise<void> {
 
   logger.warn('Storing Telegram CType on the blockchain');
 
-  const api = ConfigService.get('api');
   const tx = api.tx.ctype.add(CType.toChain(draft));
   await signAndSubmit(tx);
 

@@ -22,7 +22,8 @@ export async function testDomainLinkageCType(): Promise<void> {
     type: 'object',
   });
 
-  if (await CType.verifyStored(draft)) {
+  const api = ConfigService.get('api');
+  if ((await api.query.ctype.ctypes(draft.hash)).isSome) {
     if (configuration.storeDidAndCTypes) {
       logger.info('Domain Linkage CType is already on the blockchain');
     }
@@ -35,7 +36,6 @@ export async function testDomainLinkageCType(): Promise<void> {
 
   logger.warn('Storing Domain Linkage CType on the blockchain');
 
-  const api = ConfigService.get('api');
   const tx = api.tx.ctype.add(CType.toChain(draft));
   await signAndSubmit(tx);
 

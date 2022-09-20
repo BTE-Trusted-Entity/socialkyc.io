@@ -22,7 +22,8 @@ export async function testTwitchCType(): Promise<void> {
     type: 'object',
   });
 
-  if (await CType.verifyStored(draft)) {
+  const api = ConfigService.get('api');
+  if ((await api.query.ctype.ctypes(draft.hash)).isSome) {
     if (configuration.storeDidAndCTypes) {
       logger.info('Twitch CType is already on the blockchain');
     }
@@ -35,7 +36,6 @@ export async function testTwitchCType(): Promise<void> {
 
   logger.warn('Storing Twitch CType on the blockchain');
 
-  const api = ConfigService.get('api');
   const tx = api.tx.ctype.add(CType.toChain(draft));
   await signAndSubmit(tx);
 

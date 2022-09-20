@@ -19,7 +19,8 @@ export async function testTwitterCType(): Promise<void> {
     type: 'object',
   });
 
-  if (await CType.verifyStored(draft)) {
+  const api = ConfigService.get('api');
+  if ((await api.query.ctype.ctypes(draft.hash)).isSome) {
     if (configuration.storeDidAndCTypes) {
       logger.info('Twitter CType is already on the blockchain');
     }
@@ -32,7 +33,6 @@ export async function testTwitterCType(): Promise<void> {
 
   logger.warn('Storing Twitter CType on the blockchain');
 
-  const api = ConfigService.get('api');
   const tx = api.tx.ctype.add(CType.toChain(draft));
   await signAndSubmit(tx);
 

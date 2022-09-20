@@ -22,7 +22,8 @@ export async function testYoutubeCType(): Promise<void> {
     type: 'object',
   });
 
-  if (await CType.verifyStored(draft)) {
+  const api = ConfigService.get('api');
+  if ((await api.query.ctype.ctypes(draft.hash)).isSome) {
     if (configuration.storeDidAndCTypes) {
       logger.info('Youtube CType is already on the blockchain');
     }
@@ -35,7 +36,6 @@ export async function testYoutubeCType(): Promise<void> {
 
   logger.warn('Storing Youtube CType on the blockchain');
 
-  const api = ConfigService.get('api');
   const tx = api.tx.ctype.add(CType.toChain(draft));
   await signAndSubmit(tx);
 
