@@ -38,6 +38,7 @@ export async function createFullDid(): Promise<DidUri> {
       keyAgreement: [keypairs.keyAgreement],
     },
     keypairs.identity.address as KiltAddress,
+    // @ts-expect-error This parameter expects a reduced SignCallback interface, but SignCallback does not extend it
     authenticationSigner,
   );
 

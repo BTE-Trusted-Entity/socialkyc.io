@@ -11,7 +11,7 @@ export async function signAndSubmit(tx: SubmittableExtrinsic): Promise<void> {
   const { identity } = await keypairsPromise;
 
   const extrinsic = await authorizeExtrinsic(
-    fullDid,
+    fullDid.uri,
     tx,
     assertionSigner,
     identity.address,

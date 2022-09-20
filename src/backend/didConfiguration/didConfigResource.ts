@@ -38,7 +38,6 @@ async function attestDomainLinkage(): Promise<ICredentialPresentation> {
     credential,
     // the domain linkage credential is special in that it is signed with the assertionMethod key
     signCallback: assertionSigner,
-    claimerDid: fullDid,
   });
 }
 

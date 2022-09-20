@@ -8,7 +8,6 @@ import * as Message from '@kiltprotocol/messaging';
 
 import { Utils } from '@kiltprotocol/did';
 
-import { fullDidPromise } from './fullDid';
 import { encryptCallback } from './keystores';
 import { configuration } from './configuration';
 
@@ -16,15 +15,7 @@ export async function encryptMessage(
   message: IMessage,
   encryptionKeyUri: DidResourceUri,
 ): Promise<IEncryptedMessage> {
-  const { fullDid, encryptionKey } = await fullDidPromise;
-
-  return Message.encrypt(
-    message,
-    encryptionKey.id,
-    fullDid,
-    encryptCallback,
-    encryptionKeyUri,
-  );
+  return Message.encrypt(message, encryptCallback, encryptionKeyUri);
 }
 
 export async function encryptMessageBody(

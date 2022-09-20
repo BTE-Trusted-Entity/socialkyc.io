@@ -35,8 +35,8 @@ export const keypairsPromise = (async () => {
   const { backupPhrase } = configuration;
 
   const identity = getKeypairByBackupPhrase(backupPhrase);
-  const authentication = identity.derive('//did//0');
-  const assertion = identity.derive('//did//assertion//0');
+  const authentication = identity.derive('//did//0') as KiltKeyringPair;
+  const assertion = identity.derive('//did//assertion//0') as KiltKeyringPair;
 
   const edKeypair = ed25519PairFromSeed(mnemonicToMiniSecret(backupPhrase));
   const { path } = keyExtractPath('//did//keyAgreement//0');

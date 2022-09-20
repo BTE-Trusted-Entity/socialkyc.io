@@ -15,7 +15,6 @@ import { randomAsHex } from '@polkadot/util-crypto';
 
 import { fullDidPromise } from '../utilities/fullDid';
 import { decryptCallback } from '../utilities/keystores';
-import { keypairsPromise } from '../utilities/keypairs';
 import { getBasicSession, setSession } from '../utilities/sessionStorage';
 
 import { isDidResourceUri } from '../utilities/isDidResourceUri';
@@ -56,14 +55,13 @@ async function handler(
   }
   logger.debug('Session confirmation resolved DID encryption key');
 
-  const { keyAgreement } = await keypairsPromise;
+  const { encryptionKey: ourKey, fullDid } = await fullDidPromise;
 
   const { data } = await decryptCallback({
     data: Crypto.coToUInt8(encryptedChallenge),
     nonce: Crypto.coToUInt8(nonce),
-    publicKey: keyAgreement.publicKey,
+    keyUri: `${fullDid.uri}${ourKey.id}`,
     peerPublicKey: encryptionKey.publicKey,
-    alg: 'x25519-xsalsa20-poly1305',
   });
   logger.debug('Session confirmation decrypted challenge');
 
