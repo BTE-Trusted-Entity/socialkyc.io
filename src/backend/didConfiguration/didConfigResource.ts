@@ -7,7 +7,7 @@ import { assertionSigner } from '../utilities/keystores';
 import { exitOnError } from '../utilities/exitOnError';
 
 import { domainLinkageCType } from './domainLinkageCType';
-import { fromCredentialAndIssuer } from './domainLinkageCredential';
+import { fromCredential } from './domainLinkageCredential';
 
 async function attestDomainLinkage(): Promise<ICredentialPresentation> {
   const claimContents = {
@@ -47,10 +47,7 @@ export const didConfigResourcePromise = (async () => {
 
   const credential = await attestDomainLinkage();
 
-  const domainLinkageCredential = fromCredentialAndIssuer(
-    credential,
-    configuration.did as DidUri,
-  );
+  const domainLinkageCredential = fromCredential(credential);
 
   return {
     '@context': 'https://identity.foundation/.well-known/did-configuration/v1',

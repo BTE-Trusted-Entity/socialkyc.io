@@ -1,7 +1,6 @@
 import {
   DidSignature,
   IClaimContents,
-  DidUri,
   ICredentialPresentation,
 } from '@kiltprotocol/types';
 import {
@@ -41,9 +40,8 @@ interface DomainLinkageCredential
   proof: Proof;
 }
 
-export function fromCredentialAndIssuer(
+export function fromCredential(
   input: ICredentialPresentation,
-  issuer: DidUri,
 ): DomainLinkageCredential {
   const credentialSubject = {
     ...input.claim.contents,
@@ -72,7 +70,7 @@ export function fromCredentialAndIssuer(
 
   return {
     '@context': context,
-    issuer,
+    issuer: input.claim.owner,
     issuanceDate,
     expirationDate,
     type: [
