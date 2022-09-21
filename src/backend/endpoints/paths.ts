@@ -88,7 +88,6 @@ export const paths = {
   liveness: '/liveness',
 
   test: {
-    loadTest: '/api/test',
     secret: '/api/test/secret',
   },
 };

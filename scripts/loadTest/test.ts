@@ -1,32 +1,47 @@
-import { ServerRoute } from '@hapi/hapi';
-import { naclSeal } from '@polkadot/util-crypto';
+/* eslint-disable import/no-unresolved */
+import { cryptoWaitReady, naclSeal } from '@polkadot/util-crypto';
 import { Crypto } from '@kiltprotocol/utils';
 
 import { DidResourceUri } from '@kiltprotocol/types';
 
-import { Claim } from '@kiltprotocol/core';
+import { Claim, CType, init } from '@kiltprotocol/core';
 
 import { HexString } from '@polkadot/util/types';
 
-import { emailCType } from '../email/emailCType';
-
-import { paths } from '../endpoints/paths';
-
-import { getEncryptedMessage } from './encryptedMessage';
-import { getMessageEncryption } from './getMessageEncryption';
-import { quoteEmailApi } from './quoteEmailApi';
-import { checkSession, getSessionFromEndpoint } from './sessionApi';
-import { requestAttestationApi } from './requestAttestationApi';
-import { authEmailApi } from './mockAuthEmaiApi';
-import { attestEmailApi } from './attestationEmailApi';
-import { confirmEmailApi } from './confirmEmailApi';
-import { getSecretApi } from './getSecretApi';
+import { getEncryptedMessage } from './encryptedMessage.js';
+import { getMessageEncryption } from './getMessageEncryption.js';
+import {
+  attestEmailApi,
+  requestAttestationApi,
+  authEmailApi,
+  checkSession,
+  getSessionFromEndpoint,
+  quoteEmailApi,
+  getSecretApi,
+  confirmEmailApi,
+} from './apis.js';
 
 export type CheckSessionInput = {
   encryptionKeyUri: DidResourceUri;
   encryptedChallenge: HexString;
   nonce: HexString;
 };
+
+const emailCType = CType.fromCType({
+  schema: {
+    $schema: 'http://kilt-protocol.org/draft-01/ctype#',
+    title: 'Email',
+    properties: {
+      Email: {
+        type: 'string',
+      },
+    },
+    type: 'object',
+    $id: 'kilt:ctype:0x3291bb126e33b4862d421bfaa1d2f272e6cdfc4f96658988fbcffea8914bd9ac',
+  },
+  owner: null,
+  hash: '0x3291bb126e33b4862d421bfaa1d2f272e6cdfc4f96658988fbcffea8914bd9ac',
+});
 
 async function produceEncryptedChallenge(
   challenge: string,
@@ -60,49 +75,61 @@ async function createSession() {
 
   await checkSession(encryptionChallenge, sessionId);
 
-  return sessionId;
+  console.log('New Session started');
+
+  return { sessionId, dAppEncryptionKeyUri };
 }
 
 const generateRandomEmail = () =>
   Math.round(Math.random() * 100000) + '@email.com';
 
 async function performTest() {
-  const sessionId = await createSession();
+  await init({ address: 'wss://peregrine.kilt.io/parachain-public-ws' });
+  await cryptoWaitReady();
+
+  const { sessionId, dAppEncryptionKeyUri } = await createSession();
   const email = generateRandomEmail();
 
   await quoteEmailApi({ email }, sessionId);
 
-  const identityDid =
-    'did:kilt:4qsQ5sRVhbti5k9QU1Z1Wg932MwFboCmAdbSyR6GpavMkrr3';
+  console.log('Email quote created');
 
   const claim = Claim.fromCTypeAndClaimContents(
     emailCType,
-    { Email: email.trim() },
-    identityDid,
+    { Email: email },
+    'did:kilt:4qsQ5sRVhbti5k9QU1Z1Wg932MwFboCmAdbSyR6GpavMkrr3',
   );
 
-  const encryptedMessage = await getEncryptedMessage(claim);
+  const dAppDid = dAppEncryptionKeyUri.split('#')[0];
+
+  const encryptedMessage = await getEncryptedMessage(claim, dAppDid);
 
   await requestAttestationApi(
     { message: encryptedMessage, wallet: 'sporran' },
     sessionId,
   );
 
-  // Substitutes the manual step of the user clicking the email confirmation link
+  console.log('Email request attestation message sent');
+
   const { secret } = await getSecretApi({}, sessionId);
+
+  console.log('Successfully got secret');
 
   await authEmailApi(secret);
 
-  const redirectSessionId = await createSession();
+  console.log('Email auth completed');
+
+  const { sessionId: redirectSessionId } = await createSession();
 
   await confirmEmailApi({ secret }, redirectSessionId);
+
+  console.log('Session data migration completed');
+
   await attestEmailApi({}, redirectSessionId);
+
+  console.log('Email Attestation test completed');
 
   return 'Success';
 }
 
-export const loadTest: ServerRoute = {
-  method: 'GET',
-  path: paths.test.loadTest,
-  handler: () => performTest(),
-};
+performTest();

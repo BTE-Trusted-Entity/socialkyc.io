@@ -2,6 +2,8 @@ import inert from '@hapi/inert';
 import pino from 'hapi-pino';
 import gate from 'hapi-gate';
 
+import { getSecret } from './endpoints/getSecret';
+
 import { fullDidPromise } from './utilities/fullDid';
 import { testTwitterCType } from './twitter/twitterCType';
 import { testEmailCType } from './email/emailCType';
@@ -90,8 +92,6 @@ import { terms } from './endpoints/terms';
 import { privacy } from './endpoints/privacy';
 import { sessionHeader } from './endpoints/sessionHeader';
 import { metrics } from './endpoints/metrics';
-import { loadTest } from './loadTest/loadTest';
-import { getSecret } from './loadTest/getSecret';
 
 const { isProduction, maintenanceMode } = configuration;
 
@@ -169,9 +169,7 @@ const logger = {
 
   server.route(session);
 
-  !isProduction && server.route(loadTest);
-  !isProduction && server.route(getSecret);
-
+  if (!isProduction) server.route(getSecret);
   server.route(authHtmlEmail);
   server.route(quoteEmail);
   server.route(confirmEmail);

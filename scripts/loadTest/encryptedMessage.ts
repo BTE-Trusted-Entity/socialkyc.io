@@ -19,9 +19,8 @@ import {
   sr25519PairFromSeed,
 } from '@polkadot/util-crypto';
 
-import { getKeystoreFromSeed } from './getMessageEncryption';
-
-const { env } = process;
+// eslint-disable-next-line import/no-unresolved
+import { getKeystoreFromSeed } from './getMessageEncryption.js';
 
 function getDidEncryptionKey(details: DidDetails): DidEncryptionKey {
   const { encryptionKey } = details;
@@ -33,7 +32,7 @@ function getDidEncryptionKey(details: DidDetails): DidEncryptionKey {
   return encryptionKey;
 }
 
-export async function getEncryptedMessage(claim: Claim) {
+export async function getEncryptedMessage(claim: Claim, dAppDid: string) {
   const requestForAttestation = RequestForAttestation.fromClaim(claim);
   const seed = mnemonicToMiniSecret(
     'turtle mother mechanic bacon uncover acoustic prison buyer frog wool castle error',
@@ -57,7 +56,7 @@ export async function getEncryptedMessage(claim: Claim) {
   };
 
   const attesterDidDetails = await FullDidDetails.fromChainInfo(
-    env.DID as DidUri,
+    dAppDid as DidUri,
   );
 
   if (!attesterDidDetails) throw new Error('No DID Details');

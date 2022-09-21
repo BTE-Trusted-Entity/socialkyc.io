@@ -6,7 +6,8 @@ import {
 } from '@hapi/hapi';
 
 import { getSecretForSession, getSession } from '../utilities/sessionStorage';
-import { paths } from '../endpoints/paths';
+
+import { paths } from './paths';
 
 export type Input = Record<string, never>;
 
