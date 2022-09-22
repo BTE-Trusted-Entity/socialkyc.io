@@ -6,6 +6,6 @@
     "module": "es6", 
   },
   "include": [
-    "test.ts"
+    "loadTest.ts"
 ]
 }

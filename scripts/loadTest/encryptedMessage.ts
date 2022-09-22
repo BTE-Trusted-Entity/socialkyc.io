@@ -9,6 +9,7 @@ import {
   MessageBodyType,
   NaclBoxCapable,
 } from '@kiltprotocol/types';
+
 import {
   blake2AsU8a,
   keyExtractPath,
@@ -19,7 +20,6 @@ import {
   sr25519PairFromSeed,
 } from '@polkadot/util-crypto';
 
-// eslint-disable-next-line import/no-unresolved
 import { getKeystoreFromSeed } from './getMessageEncryption.js';
 
 function getDidEncryptionKey(details: DidDetails): DidEncryptionKey {
@@ -38,9 +38,7 @@ export async function getEncryptedMessage(claim: Claim, dAppDid: string) {
     'turtle mother mechanic bacon uncover acoustic prison buyer frog wool castle error',
   );
   const keystore = await getKeystoreFromSeed(seed);
-  const didDetails = await FullDidDetails.fromChainInfo(
-    'did:kilt:4qsQ5sRVhbti5k9QU1Z1Wg932MwFboCmAdbSyR6GpavMkrr3',
-  );
+  const didDetails = await FullDidDetails.fromChainInfo(claim.owner);
 
   if (!didDetails) throw new Error('No DID Details');
 

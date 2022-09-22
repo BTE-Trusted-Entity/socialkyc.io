@@ -9,8 +9,6 @@ import { getSecretForSession, getSession } from '../utilities/sessionStorage';
 
 import { paths } from './paths';
 
-export type Input = Record<string, never>;
-
 export type Output = { secret: string };
 
 async function handler(

@@ -133,7 +133,7 @@ export async function getMessageEncryption(
     );
   }
 
-  const encryptions = {
+  return {
     authenticationKey,
     encryptionKey,
     sporranEncryptionDidKeyUri,
@@ -141,8 +141,6 @@ export async function getMessageEncryption(
     decrypt,
     encrypt,
   };
-
-  return encryptions;
 }
 
 function getKeypairBySeed(seed: Uint8Array): KeyringPair {

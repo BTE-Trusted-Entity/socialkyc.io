@@ -93,7 +93,7 @@ import { privacy } from './endpoints/privacy';
 import { sessionHeader } from './endpoints/sessionHeader';
 import { metrics } from './endpoints/metrics';
 
-const { isProduction, maintenanceMode } = configuration;
+const { isProduction, maintenanceMode, baseUri } = configuration;
 
 const noWww = {
   plugin: gate,
@@ -169,7 +169,10 @@ const logger = {
 
   server.route(session);
 
-  if (!isProduction) server.route(getSecret);
+  if (baseUri === 'http://localhost:3000' || 'https://dev.socialkyc.io') {
+    server.route(getSecret);
+  }
+
   server.route(authHtmlEmail);
   server.route(quoteEmail);
   server.route(confirmEmail);

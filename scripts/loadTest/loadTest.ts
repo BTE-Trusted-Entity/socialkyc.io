@@ -1,5 +1,8 @@
-/* eslint-disable import/no-unresolved */
-import { cryptoWaitReady, naclSeal } from '@polkadot/util-crypto';
+import {
+  cryptoWaitReady,
+  naclSeal,
+  randomAsNumber,
+} from '@polkadot/util-crypto';
 import { Crypto } from '@kiltprotocol/utils';
 
 import { DidResourceUri } from '@kiltprotocol/types';
@@ -80,24 +83,25 @@ async function createSession() {
   return { sessionId, dAppEncryptionKeyUri };
 }
 
-const generateRandomEmail = () =>
-  Math.round(Math.random() * 100000) + '@email.com';
-
-async function performTest() {
+(async () => {
   await init({ address: 'wss://peregrine.kilt.io/parachain-public-ws' });
   await cryptoWaitReady();
 
   const { sessionId, dAppEncryptionKeyUri } = await createSession();
-  const email = generateRandomEmail();
+
+  const email = `${randomAsNumber()}@example.com`;
 
   await quoteEmailApi({ email }, sessionId);
 
   console.log('Email quote created');
 
+  const sporranDid =
+    'did:kilt:4qsQ5sRVhbti5k9QU1Z1Wg932MwFboCmAdbSyR6GpavMkrr3';
+
   const claim = Claim.fromCTypeAndClaimContents(
     emailCType,
     { Email: email },
-    'did:kilt:4qsQ5sRVhbti5k9QU1Z1Wg932MwFboCmAdbSyR6GpavMkrr3',
+    sporranDid,
   );
 
   const dAppDid = dAppEncryptionKeyUri.split('#')[0];
@@ -130,6 +134,4 @@ async function performTest() {
   console.log('Email Attestation test completed');
 
   return 'Success';
-}
-
-performTest();
+})();
