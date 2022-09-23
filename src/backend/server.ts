@@ -2,6 +2,8 @@ import inert from '@hapi/inert';
 import pino from 'hapi-pino';
 import gate from 'hapi-gate';
 
+import { getSecret } from './endpoints/getSecret';
+
 import { fullDidPromise } from './utilities/fullDid';
 import { testTwitterCType } from './twitter/twitterCType';
 import { testEmailCType } from './email/emailCType';
@@ -83,7 +85,7 @@ import { privacy } from './endpoints/privacy';
 import { sessionHeader } from './endpoints/sessionHeader';
 import { metrics } from './endpoints/metrics';
 
-const { isProduction, maintenanceMode } = configuration;
+const { isProduction, maintenanceMode, baseUri } = configuration;
 
 const noWww = {
   plugin: gate,
@@ -157,6 +159,10 @@ const logger = {
   server.route(wellKnownDidConfig);
 
   server.route(session);
+
+  if (baseUri === 'http://localhost:3000' || 'https://dev.socialkyc.io') {
+    server.route(getSecret);
+  }
 
   server.route(authHtmlEmail);
   server.route(quoteEmail);

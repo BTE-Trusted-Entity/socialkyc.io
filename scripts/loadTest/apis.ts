@@ -1,0 +1,100 @@
+import got from 'got';
+
+import { DidResourceUri, IEncryptedMessage } from '@kiltprotocol/types';
+
+import { CheckSessionInput } from './loadTest';
+
+const sessionHeader = 'x-session-id';
+
+const api = got.extend({ prefixUrl: process.env.URL });
+
+export async function getSessionFromEndpoint(): Promise<{
+  dAppEncryptionKeyUri: DidResourceUri;
+  sessionId: string;
+  challenge: string;
+}> {
+  return api('api/session').json();
+}
+
+export async function checkSession(
+  encryptionChallenge: CheckSessionInput,
+  sessionId: string,
+) {
+  await api
+    .post('api/session', {
+      json: encryptionChallenge,
+      headers: { [sessionHeader]: sessionId },
+    })
+    .json();
+}
+
+export async function getSecretApi(
+  json: Record<string, never>,
+  sessionId: string,
+): Promise<{ secret: string }> {
+  return api
+    .post('api/test/secret', {
+      json,
+      headers: { [sessionHeader]: sessionId },
+    })
+    .json();
+}
+
+export async function quoteEmailApi(
+  json: {
+    email: string;
+  },
+  sessionId: string,
+): Promise<IEncryptedMessage> {
+  return api
+    .post('api/email/quote', {
+      json,
+      headers: { [sessionHeader]: sessionId },
+    })
+    .json();
+}
+
+export async function authEmailApi(state: string): Promise<string> {
+  return api('email/auth', {
+    searchParams: { state },
+  }).text();
+}
+
+export async function requestAttestationApi(
+  json: {
+    message: IEncryptedMessage;
+    wallet: string;
+  },
+  sessionId: string,
+): Promise<void> {
+  return api
+    .post('api/email/request-attestation', {
+      json,
+      headers: { [sessionHeader]: sessionId },
+    })
+    .json();
+}
+
+export async function confirmEmailApi(
+  json: { secret: string },
+  sessionId: string,
+): Promise<void> {
+  return api
+    .post('api/email/confirm', {
+      json,
+      headers: { [sessionHeader]: sessionId },
+    })
+    .json();
+}
+
+export async function attestEmailApi(
+  json: Record<string, never>,
+  sessionId: string,
+): Promise<IEncryptedMessage> {
+  return api
+    .post('api/email/attest', {
+      json,
+      headers: { [sessionHeader]: sessionId },
+    })
+    .json();
+}

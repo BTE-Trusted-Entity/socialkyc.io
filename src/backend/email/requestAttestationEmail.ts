@@ -131,8 +131,13 @@ async function handler(
 
   try {
     const email = requestForAttestation.claim.contents.Email as string;
-    await send(url.toString(), email);
-    logger.debug('Email request attestation message sent');
+
+    const isTestEmail = email.split('@').pop() === 'example.com';
+
+    if (!isTestEmail) {
+      await send(url.toString(), email);
+      logger.debug('Email request attestation message sent');
+    }
 
     return h.response().code(StatusCodes.NO_CONTENT);
   } catch (exception) {
