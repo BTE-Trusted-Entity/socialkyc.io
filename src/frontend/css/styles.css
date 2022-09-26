@@ -240,82 +240,6 @@ p {
   content: var(--hexagon-content-bottom);
 }
 
-.navList {
-  bottom: 0;
-  width: 100%;
-  display: flex;
-  flex-direction: column;
-  justify-content: center;
-  align-items: center;
-  list-style: none;
-  padding: 1rem 0 0;
-  margin: 0;
-  gap: 0.25rem;
-}
-
-@media screen and (min-width: 800px) {
-  .navList {
-    position: fixed;
-    flex-direction: row;
-    height: 2.5rem;
-    padding-top: 0;
-    width: 100%;
-    background-color: #030006;
-  }
-}
-
-.navItem {
-  display: inline-block;
-}
-
-.navItem:first-child {
-  order: 4;
-  margin-top: 1rem;
-}
-
-@media screen and (min-width: 800px) {
-  .navItem:first-child {
-    margin: 0 auto 0 1rem;
-    order: 0;
-  }
-}
-
-@media screen and (min-width: 800px) {
-  .navItem:nth-child(5) {
-    margin-left: auto;
-  }
-}
-
-@media screen and (min-width: 800px) {
-  .navItem:last-child {
-    margin-right: 1rem;
-  }
-}
-
-@media screen and (min-width: 800px) {
-  .navItem:nth-child(2)::after,
-  .navItem:nth-child(3)::after,
-  .navItem:nth-child(5)::after {
-    content: ' | ';
-    color: var(--color-magenta);
-  }
-}
-
-.navItem a,
-.navItem a:active,
-.navItem a:visited {
-  color: inherit;
-  cursor: pointer;
-}
-
-.navItem a:not(:hover) {
-  text-decoration: none;
-}
-
-.navItem img {
-  vertical-align: top;
-}
-
 ::-webkit-scrollbar {
   display: block;
   width: 0.625rem;
@@ -333,5 +257,72 @@ p {
 @supports not (aspect-ratio: 545 / 570) {
   .rightContainer::before {
     padding-bottom: 100%;
+  }
+}
+
+.footer {
+  width: 100%;
+  display: flex;
+  position: fixed;
+  place-content: center;
+  min-height: 34px;
+  background: var(--color-violet);
+  bottom: 0;
+  border-top: 1px solid var(--color-magenta);
+}
+
+.content {
+  width: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  font-size: 14px;
+  margin: 0 5rem;
+}
+
+@media (max-width: 700px) {
+  .content {
+    flex-direction: column;
+  }
+}
+
+.navMenu {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+@media (max-width: 700px) {
+  .navMenu {
+    width: 100vw;
+    display: flex;
+    place-content: center;
+    padding: 7px 0;
+    border-bottom: 1px solid rgb(var(--color-line-rgb) / 75%);
+  }
+}
+
+.navLink {
+  color: var(--color-nav-link);
+  text-decoration: none;
+  line-height: 20px;
+}
+
+.navLinkActive.navLink {
+  opacity: 0.5;
+}
+
+.copyright {
+  color: var(--color-white);
+  padding: 7px 90px 0 0;
+  line-height: 20px;
+  font-size: 10px;
+  margin: 0;
+  background: url('../images/built-on-KILT.svg') no-repeat center right;
+}
+
+@media (max-width: 700px) {
+  .copyright {
+    margin: 0 0 7px;
   }
 }
