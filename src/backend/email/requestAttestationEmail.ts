@@ -32,20 +32,14 @@ import { paths } from '../endpoints/paths';
 import { sesClient } from './sesClient';
 import { sesConnectionState } from './sesConnection';
 
-let rateLimiter = new RateLimiterMemory({
-  duration: 1 * 60,
-  points: 5,
-});
-
-if (
+const isDevEnv =
   configuration.baseUri === 'http://localhost:3000' ||
-  'https://dev.socialkyc.io'
-) {
-  rateLimiter = new RateLimiterMemory({
-    duration: 1 * 60,
-    points: 500,
-  });
-}
+  'https://dev.socialkyc.io';
+
+const rateLimiter = new RateLimiterMemory({
+  duration: 1 * 60,
+  points: isDevEnv ? 500 : 5,
+});
 
 const htmlTemplatePromise = readFile(
   join(configuration.distFolder, 'email.html'),
