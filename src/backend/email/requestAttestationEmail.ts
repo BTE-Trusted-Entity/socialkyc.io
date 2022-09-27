@@ -32,10 +32,20 @@ import { paths } from '../endpoints/paths';
 import { sesClient } from './sesClient';
 import { sesConnectionState } from './sesConnection';
 
-const rateLimiter = new RateLimiterMemory({
+let rateLimiter = new RateLimiterMemory({
   duration: 1 * 60,
   points: 5,
 });
+
+if (
+  configuration.baseUri === 'http://localhost:3000' ||
+  'https://dev.socialkyc.io'
+) {
+  rateLimiter = new RateLimiterMemory({
+    duration: 1 * 60,
+    points: 500,
+  });
+}
 
 const htmlTemplatePromise = readFile(
   join(configuration.distFolder, 'email.html'),
