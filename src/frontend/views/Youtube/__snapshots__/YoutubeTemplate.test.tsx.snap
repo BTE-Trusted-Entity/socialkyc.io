@@ -122,15 +122,13 @@ exports[`YoutubeTemplate should match snapshot with flowError=noChannel 1`] = `
       class="buttonsLine"
     >
       <a
-        class="signinButton"
+        aria-label="Open Youtube"
+        class="youtubeButton"
         href="https://www.youtube.com/account"
         rel="noreferrer"
         target="_blank"
       >
         Open
-        <span
-          class="youtubeBrandLogo"
-        />
       </a>
     </p>
     <a
@@ -543,12 +541,10 @@ exports[`YoutubeTemplate should match snapshot with status=urlReady 1`] = `
       class="buttonsLine"
     >
       <a
-        class="signinButton"
+        aria-label="Sign in with Youtube"
+        class="youtubeButton"
       >
         Sign-in with
-        <span
-          class="youtubeBrandLogo"
-        />
       </a>
     </p>
     <a

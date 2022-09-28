@@ -163,9 +163,12 @@ describe('Youtube', () => {
     await act(async () => {
       authUrlPromise.resolve('https://youtube-auth-url.example');
     });
-
     await signInWithYoutube();
-    expect(await screen.findByText('Sign-in with')).toBeInTheDocument();
+
+    // expect(await screen.findByText('Sign-in with ')).toBeInTheDocument();
+    expect(
+      await screen.queryByRole('link', { name: 'Sign-in with' }),
+    ).toBeInTheDocument();
   });
 
   it('should show an error when authUrl fails', async () => {
