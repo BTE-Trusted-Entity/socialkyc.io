@@ -93,9 +93,12 @@ export function YoutubeTemplate({
 
       {status === 'urlReady' && (
         <p className={styles.buttonsLine}>
-          <a className={styles.signinButton} href={authUrl}>
+          <a
+            className={styles.youtubeButton}
+            href={authUrl}
+            aria-label="Sign in with Youtube"
+          >
             Sign-in with
-            <span className={styles.youtubeBrandLogo}></span>
           </a>
         </p>
       )}
@@ -175,14 +178,13 @@ export function YoutubeTemplate({
           />
           <p className={styles.buttonsLine}>
             <a
-              className={styles.signinButton}
+              className={styles.youtubeButton}
+              aria-label="Open Youtube"
               href="https://www.youtube.com/account"
               target="_blank"
               rel="noreferrer"
             >
               Open
-              <span className={styles.youtubeBrandLogo}></span>
-              {/* Open Youtube */}
             </a>
           </p>
         </Fragment>
