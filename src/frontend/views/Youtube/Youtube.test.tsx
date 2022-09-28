@@ -42,14 +42,14 @@ let attestPromise: TestPromise<IEncryptedMessage>;
 
 async function signInWithYoutube() {
   const signInLink = await screen.findByRole('link', {
-    name: 'Start Credential process',
+    name: 'Sign-in with',
   });
   await userEvent.click(signInLink);
 }
 
 async function openYoutube() {
   const openYoutubeLink = await screen.findByRole('link', {
-    name: 'Open YouTube',
+    name: 'Open',
   });
   await userEvent.click(openYoutubeLink);
 }
@@ -165,9 +165,7 @@ describe('Youtube', () => {
     });
 
     await signInWithYoutube();
-    expect(
-      await screen.findByText('Start Credential process'),
-    ).toBeInTheDocument();
+    expect(await screen.findByText('Sign-in with')).toBeInTheDocument();
   });
 
   it('should show an error when authUrl fails', async () => {
@@ -281,7 +279,7 @@ describe('Youtube', () => {
     ).not.toBeInTheDocument();
 
     await openYoutube();
-    expect(await screen.findByText('Open YouTube')).toBeInTheDocument();
+    expect(await screen.findByText('Open')).toBeInTheDocument();
   });
 
   it('should show error when quote fails', async () => {
