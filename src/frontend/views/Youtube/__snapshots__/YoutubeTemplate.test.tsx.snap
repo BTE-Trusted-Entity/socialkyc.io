@@ -541,7 +541,7 @@ exports[`YoutubeTemplate should match snapshot with status=urlReady 1`] = `
       class="buttonsLine"
     >
       <a
-        aria-label="Sign in with Youtube"
+        aria-label="Sign-in with Youtube"
         class="youtubeButton"
       >
         Sign-in with
