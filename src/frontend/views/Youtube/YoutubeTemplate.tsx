@@ -93,8 +93,12 @@ export function YoutubeTemplate({
 
       {status === 'urlReady' && (
         <p className={styles.buttonsLine}>
-          <a className={styles.ctaButton} href={authUrl}>
-            Start Credential process
+          <a
+            className={styles.youtubeButton}
+            href={authUrl}
+            aria-label="Sign-in with Youtube"
+          >
+            Sign-in with
           </a>
         </p>
       )}
@@ -174,12 +178,13 @@ export function YoutubeTemplate({
           />
           <p className={styles.buttonsLine}>
             <a
-              className={styles.ctaButton}
+              className={styles.youtubeButton}
+              aria-label="Open Youtube"
               href="https://www.youtube.com/account"
               target="_blank"
               rel="noreferrer"
             >
-              Open YouTube
+              Open
             </a>
           </p>
         </Fragment>
