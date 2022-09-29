@@ -96,7 +96,7 @@ export function YoutubeTemplate({
           <a
             className={styles.youtubeButton}
             href={authUrl}
-            aria-label="Sign in with Youtube"
+            aria-label="Sign-in with Youtube"
           >
             Sign-in with
           </a>

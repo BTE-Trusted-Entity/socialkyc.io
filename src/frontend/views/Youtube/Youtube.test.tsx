@@ -42,14 +42,14 @@ let attestPromise: TestPromise<IEncryptedMessage>;
 
 async function signInWithYoutube() {
   const signInLink = await screen.findByRole('link', {
-    name: 'Sign-in with',
+    name: 'Sign-in with Youtube',
   });
   await userEvent.click(signInLink);
 }
 
 async function openYoutube() {
   const openYoutubeLink = await screen.findByRole('link', {
-    name: 'Open',
+    name: 'Open Youtube',
   });
   await userEvent.click(openYoutubeLink);
 }
@@ -165,10 +165,7 @@ describe('Youtube', () => {
     });
     await signInWithYoutube();
 
-    // expect(await screen.findByText('Sign-in with ')).toBeInTheDocument();
-    expect(
-      await screen.queryByRole('link', { name: 'Sign-in with' }),
-    ).toBeInTheDocument();
+    expect(await screen.findByText('Sign-in with')).toBeInTheDocument();
   });
 
   it('should show an error when authUrl fails', async () => {
