@@ -3,10 +3,14 @@ import { IEncryptedMessage } from '@kiltprotocol/types';
 
 import { Rejection, Session } from '../../utilities/session';
 import { useValuesFromRedirectUri } from '../../utilities/useValuesFromRedirectUri';
-import { InvalidEmail } from '../../../backend/email/requestAttestationEmailApi';
+import { InvalidEmail } from '../../../backend/email/sendEmailApi';
 
 import { useEmailApi } from './useEmailApi';
 import { AttestationStatus, EmailTemplate, FlowError } from './EmailTemplate';
+
+export interface EmailProfile {
+  email: string;
+}
 
 interface Props {
   session: Session;
@@ -17,7 +21,7 @@ export function Email({ session }: Props): JSX.Element {
 
   const { secret } = useValuesFromRedirectUri(true);
 
-  const initialStatus = secret ? 'confirming' : 'none';
+  const initialStatus = secret ? 'authorizing' : 'none';
 
   const [flowError, setFlowError] = useState<FlowError>();
   const [status, setStatus] = useState<AttestationStatus>(initialStatus);
@@ -25,30 +29,25 @@ export function Email({ session }: Props): JSX.Element {
 
   const emailApi = useEmailApi(session.sessionId);
   const [backupMessage, setBackupMessage] = useState<IEncryptedMessage>();
+
+  const [profile, setProfile] = useState<EmailProfile>();
+
   useEffect(() => {
     if (!secret) {
       return;
     }
     (async () => {
       try {
-        await emailApi.confirm({ secret });
-        setStatus('attesting');
+        setProfile(await emailApi.confirm({ secret }));
+        setStatus('authorized');
       } catch {
         setStatus('error');
         setFlowError('expired');
-        return;
-      }
-      try {
-        setBackupMessage(await emailApi.attest({}));
-        setStatus('ready');
-      } catch {
-        setStatus('error');
-        setFlowError('unknown');
       }
     })();
   }, [emailApi, secret]);
 
-  const handleSubmit = useCallback(
+  const handleSendEmail = useCallback(
     async (event: FormEvent) => {
       event.preventDefault();
       setProcessing(true);
@@ -58,17 +57,43 @@ export function Email({ session }: Props): JSX.Element {
       const formData = new FormData(event.target as HTMLFormElement);
       const emailInput = formData.get('email') as string;
 
+      const { wallet } = session;
+
+      try {
+        await emailApi.send({ wallet, email: emailInput.trim() });
+        setStatus('emailSent');
+      } catch (exception) {
+        if (exception instanceof InvalidEmail) {
+          setInputError('Incorrect email format, please review.');
+        } else {
+          console.error(exception);
+          setFlowError('unknown');
+          setStatus('error');
+        }
+      } finally {
+        setProcessing(false);
+      }
+    },
+    [emailApi, session],
+  );
+
+  const handleRequestAttestation = useCallback(
+    async (event: FormEvent) => {
+      event.preventDefault();
+      setProcessing(true);
+      setFlowError(undefined);
       try {
         await session.listen(async (message) => {
           try {
-            const { wallet } = session;
-            await emailApi.requestAttestation({ message, wallet });
-            setStatus('requested');
+            await emailApi.requestAttestation({ message });
+            setStatus('attesting');
+            setProcessing(false);
+
+            setBackupMessage(await emailApi.attest({}));
+            setStatus('ready');
           } catch (exception) {
             if (exception instanceof Rejection) {
               setFlowError('closed');
-            } else if (exception instanceof InvalidEmail) {
-              setInputError('Incorrect email format, please review.');
             } else {
               console.error(exception);
               setFlowError('unknown');
@@ -77,7 +102,7 @@ export function Email({ session }: Props): JSX.Element {
           }
         });
 
-        const message = await emailApi.quote({ email: emailInput });
+        const message = await emailApi.quote({});
 
         await session.send(message);
       } catch (error) {
@@ -118,9 +143,11 @@ export function Email({ session }: Props): JSX.Element {
       flowError={flowError}
       inputError={inputError}
       setInputError={setInputError}
-      handleSubmit={handleSubmit}
+      handleSendEmail={handleSendEmail}
+      handleRequestAttestation={handleRequestAttestation}
       handleBackup={handleBackup}
       handleTryAgainClick={handleTryAgainClick}
+      profile={profile}
     />
   );
 }

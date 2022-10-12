@@ -21,11 +21,12 @@ import { exitOnError } from './utilities/exitOnError';
 
 import { wellKnownDidConfig } from './didConfiguration/wellKnownDidConfig';
 
+import { sendEmail } from './email/sendEmail';
 import { authHtmlEmail } from './email/authHtmlEmail';
-import { quoteEmail } from './email/quoteEmail';
 import { confirmEmail } from './email/confirmEmail';
+import { quoteEmail } from './email/quoteEmail';
 import { requestAttestationEmail } from './email/requestAttestationEmail';
-import { attestationEmail } from './email/attestationEmail';
+import { attestEmail } from './email/attestEmail';
 
 import { listenForTweets } from './twitter/tweets';
 import { quoteTwitter } from './twitter/quoteTwitter';
@@ -164,11 +165,12 @@ const logger = {
     server.route(getSecret);
   }
 
+  server.route(sendEmail);
   server.route(authHtmlEmail);
-  server.route(quoteEmail);
   server.route(confirmEmail);
+  server.route(quoteEmail);
   server.route(requestAttestationEmail);
-  server.route(attestationEmail);
+  server.route(attestEmail);
 
   server.route(quoteTwitter);
   server.route(confirmTwitter);

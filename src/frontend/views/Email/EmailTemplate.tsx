@@ -24,37 +24,44 @@ import { AttestationProcessReady } from '../../components/AttestationProcessRead
 import { AttestationErrorUnknown } from '../../components/AttestationErrorUnknown/AttestationErrorUnknown';
 import { LinkBack } from '../../components/LinkBack/LinkBack';
 
+import { EmailProfile } from './Email';
+
 export type AttestationStatus =
   | 'none'
-  | 'requested'
-  | 'confirming'
+  | 'emailSent'
+  | 'authorizing'
+  | 'authorized'
   | 'attesting'
   | 'ready'
   | 'error';
 
 export type FlowError = 'closed' | 'expired' | 'unknown';
 
-interface Props2 {
+interface Props {
   status: AttestationStatus;
   processing: boolean;
-  handleSubmit: FormEventHandler;
+  handleSendEmail: FormEventHandler;
+  handleRequestAttestation: FormEventHandler;
   handleBackup: MouseEventHandler;
   handleTryAgainClick: MouseEventHandler;
   setInputError: (error?: string) => void;
   inputError?: string;
   flowError?: FlowError;
+  profile?: EmailProfile;
 }
 
 export function EmailTemplate({
   status,
   processing,
-  handleSubmit,
+  handleSendEmail,
+  handleRequestAttestation,
   handleBackup,
   handleTryAgainClick,
   setInputError,
   inputError,
   flowError,
-}: Props2): JSX.Element {
+  profile,
+}: Props): JSX.Element {
   const [emailInput, setEmailInput] = useState('');
 
   const handleInput = useCallback(
@@ -103,13 +110,13 @@ export function EmailTemplate({
       />
 
       <Explainer>
-        After entering your email address, please choose an Identity in your
-        wallet to associate with your email credential. We will email you a link
-        so that we can attest your credential.
+        We will email you a confirmation link. After confirming your email
+        address, you can sign the data with one of your identities in Sporran,
+        and SocialKYC will create the credential.
       </Explainer>
 
       {status === 'none' && (
-        <form onSubmit={handleSubmit}>
+        <form onSubmit={handleSendEmail}>
           <label>
             Your email address
             <input
@@ -133,25 +140,49 @@ export function EmailTemplate({
             Validity: one year (<ExpiryDate />)
           </p>
 
-          {flowError === 'closed' && <SigningErrorClosed />}
-
           <button
             type="submit"
             className={flowStyles.ctaButton}
             disabled={!emailInput}
           >
-            Continue in wallet
+            Send email
           </button>
         </form>
       )}
 
-      {status === 'requested' && (
+      {status === 'emailSent' && (
         <DetailedMessage
           icon="spinner"
           heading="Attestation process:"
           message="Email sent"
           details={`Email sent to ${emailInput}. Please check your inbox and spam folder and click the link.`}
         />
+      )}
+
+      {status === 'authorizing' && (
+        <DetailedMessage
+          icon="spinner"
+          heading="Attestation process:"
+          message="Authorizing"
+          details="Please wait, confirming email ."
+        />
+      )}
+
+      {status === 'authorized' && profile && (
+        <form onSubmit={handleRequestAttestation}>
+          <dl className={styles.profile}>
+            <dt>Email:</dt>
+            <dd>{profile.email}</dd>
+          </dl>
+
+          <p>
+            Validity: one year (<ExpiryDate />)
+          </p>
+
+          {flowError === 'closed' && <SigningErrorClosed />}
+
+          <button className={flowStyles.ctaButton}>Continue in wallet</button>
+        </form>
       )}
 
       {status === 'attesting' && <AttestationProcessAnchoring />}
@@ -190,7 +221,7 @@ export function EmailTemplate({
         </button>
       )}
 
-      {status !== 'requested' && <LinkBack />}
+      {status !== 'attesting' && <LinkBack />}
     </section>
   );
 }

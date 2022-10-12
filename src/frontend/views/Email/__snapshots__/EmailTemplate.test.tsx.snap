@@ -41,32 +41,12 @@ exports[`EmailTemplate should match snapshot with flowError=closed 1`] = `
         1/3/2023
         )
       </p>
-      <section
-        class="container"
-      >
-        <div
-          class="exclamation"
-        />
-        <h2
-          class="heading"
-        >
-          Signing error:
-        </h2>
-        <p
-          class="message"
-        >
-          Your wallet was closed before the request was signed.
-        </p>
-        <p>
-          Click “Continue in Wallet” to try again.
-        </p>
-      </section>
       <button
         class="ctaButton"
         disabled=""
         type="submit"
       >
-        Continue in wallet
+        Send email
       </button>
     </form>
     <a
@@ -135,6 +115,59 @@ exports[`EmailTemplate should match snapshot with flowError=unknown 1`] = `
 </div>
 `;
 
+exports[`EmailTemplate should match snapshot with flowerror=expired 1`] = `
+<div>
+  <section
+    aria-busy="false"
+    class="container"
+  >
+    <h1
+      class="heading"
+    >
+      Email Address Attestation
+    </h1>
+    <div
+      class="explainerContainer"
+    >
+      <button
+        aria-label="Toggle explanation"
+        class="showExplainer"
+        type="button"
+      />
+    </div>
+    <section
+      class="container"
+    >
+      <div
+        class="exclamation"
+      />
+      <h2
+        class="heading"
+      >
+        Attestation error:
+      </h2>
+      <p
+        class="message"
+      >
+        This link has expired.
+      </p>
+    </section>
+    <button
+      class="ctaButton"
+      type="button"
+    >
+      Try again
+    </button>
+    <a
+      class="link"
+      href="/"
+    >
+      Back to list
+    </a>
+  </section>
+</div>
+`;
+
 exports[`EmailTemplate should match snapshot with status=attesting 1`] = `
 <div>
   <section
@@ -173,6 +206,152 @@ exports[`EmailTemplate should match snapshot with status=attesting 1`] = `
       </p>
       <p>
         Please leave this tab open until your credential is attested.
+      </p>
+    </section>
+  </section>
+</div>
+`;
+
+exports[`EmailTemplate should match snapshot with status=authorized 1`] = `
+<div>
+  <section
+    aria-busy="false"
+    class="container"
+  >
+    <h1
+      class="heading"
+    >
+      Email Address Attestation
+    </h1>
+    <div
+      class="explainerContainer"
+    >
+      <button
+        aria-label="Toggle explanation"
+        class="showExplainer"
+        type="button"
+      />
+    </div>
+    <form>
+      <dl
+        class="profile"
+      >
+        <dt>
+          Email:
+        </dt>
+        <dd>
+          user@example.com
+        </dd>
+      </dl>
+      <p>
+        Validity: one year (
+        1/3/2023
+        )
+      </p>
+      <button
+        class="ctaButton"
+      >
+        Continue in wallet
+      </button>
+    </form>
+    <a
+      class="link"
+      href="/"
+    >
+      Back to list
+    </a>
+  </section>
+</div>
+`;
+
+exports[`EmailTemplate should match snapshot with status=authorizing 1`] = `
+<div>
+  <section
+    aria-busy="false"
+    class="container"
+  >
+    <h1
+      class="heading"
+    >
+      Email Address Attestation
+    </h1>
+    <div
+      class="explainerContainer"
+    >
+      <button
+        aria-label="Toggle explanation"
+        class="showExplainer"
+        type="button"
+      />
+    </div>
+    <section
+      class="container"
+    >
+      <div
+        class="spinner"
+      />
+      <h2
+        class="heading"
+      >
+        Attestation process:
+      </h2>
+      <p
+        class="message"
+      >
+        Authorizing
+      </p>
+      <p>
+        Please wait, confirming email .
+      </p>
+    </section>
+    <a
+      class="link"
+      href="/"
+    >
+      Back to list
+    </a>
+  </section>
+</div>
+`;
+
+exports[`EmailTemplate should match snapshot with status=emailSent 1`] = `
+<div>
+  <section
+    aria-busy="false"
+    class="container"
+  >
+    <h1
+      class="heading"
+    >
+      Email Address Attestation
+    </h1>
+    <div
+      class="explainerContainer"
+    >
+      <button
+        aria-label="Toggle explanation"
+        class="showExplainer"
+        type="button"
+      />
+    </div>
+    <section
+      class="container"
+    >
+      <div
+        class="spinner"
+      />
+      <h2
+        class="heading"
+      >
+        Attestation process:
+      </h2>
+      <p
+        class="message"
+      >
+        Email sent
+      </p>
+      <p>
+        Email sent to . Please check your inbox and spam folder and click the link.
       </p>
     </section>
     <a
@@ -231,7 +410,7 @@ exports[`EmailTemplate should match snapshot with status=none 1`] = `
         disabled=""
         type="submit"
       >
-        Continue in wallet
+        Send email
       </button>
     </form>
     <a
@@ -296,53 +475,6 @@ exports[`EmailTemplate should match snapshot with status=ready 1`] = `
     >
       Back to list
     </a>
-  </section>
-</div>
-`;
-
-exports[`EmailTemplate should match snapshot with status=requested 1`] = `
-<div>
-  <section
-    aria-busy="true"
-    class="container processing"
-  >
-    <div
-      class="spinner"
-    />
-    <h1
-      class="heading"
-    >
-      Email Address Attestation
-    </h1>
-    <div
-      class="explainerContainer"
-    >
-      <button
-        aria-label="Toggle explanation"
-        class="showExplainer"
-        type="button"
-      />
-    </div>
-    <section
-      class="container"
-    >
-      <div
-        class="spinner"
-      />
-      <h2
-        class="heading"
-      >
-        Attestation process:
-      </h2>
-      <p
-        class="message"
-      >
-        Email sent
-      </p>
-      <p>
-        Email sent to . Please check your inbox and spam folder and click the link.
-      </p>
-    </section>
   </section>
 </div>
 `;
