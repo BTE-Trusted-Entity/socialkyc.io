@@ -164,7 +164,7 @@ export function EmailTemplate({
           icon="spinner"
           heading="Attestation process:"
           message="Authorizing"
-          details="Please wait, confirming email ."
+          details="Please wait, confirming email."
         />
       )}
 
