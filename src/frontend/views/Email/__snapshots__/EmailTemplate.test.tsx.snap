@@ -301,7 +301,7 @@ exports[`EmailTemplate should match snapshot with status=authorizing 1`] = `
         Authorizing
       </p>
       <p>
-        Please wait, confirming email .
+        Please wait, confirming email.
       </p>
     </section>
     <a
