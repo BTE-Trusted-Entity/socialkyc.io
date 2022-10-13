@@ -8,8 +8,9 @@ export const paths = {
   session: '/api/session',
 
   email: {
-    quote: '/api/email/quote',
+    send: '/api/email/send',
     confirm: '/api/email/confirm',
+    quote: '/api/email/quote',
     requestAttestation: '/api/email/request-attestation',
     attest: '/api/email/attest',
   },

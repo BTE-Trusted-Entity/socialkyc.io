@@ -4,8 +4,8 @@ import {
   ResponseToolkit,
   ServerRoute,
 } from '@hapi/hapi';
-import { z } from 'zod';
-import { Claim } from '@kiltprotocol/core';
+import Boom from '@hapi/boom';
+
 import { IEncryptedMessage, MessageBodyType } from '@kiltprotocol/types';
 
 import { encryptMessageBody } from '../utilities/encryptMessage';
@@ -14,11 +14,7 @@ import { paths } from '../endpoints/paths';
 
 import { emailCType } from './emailCType';
 
-const zodPayload = z.object({
-  email: z.string(),
-});
-
-export type Input = z.infer<typeof zodPayload>;
+export type Input = Record<string, never>;
 
 export type Output = IEncryptedMessage;
 
@@ -29,14 +25,11 @@ async function handler(
   const { logger } = request;
   logger.debug('Email quote started');
 
-  const { email } = request.payload as Input;
-  const { did, encryptionKeyUri } = getSession(request.headers);
+  const { encryptionKeyUri, claim, confirmed } = getSession(request.headers);
 
-  const claimContents = {
-    Email: email.trim(),
-  };
-  const claim = Claim.fromCTypeAndClaimContents(emailCType, claimContents, did);
-  logger.debug('Email quote created');
+  if (!claim || !confirmed) {
+    throw Boom.notFound('Confirmed claim not found');
+  }
 
   const output = await encryptMessageBody(encryptionKeyUri, {
     content: {
@@ -55,9 +48,4 @@ export const quoteEmail: ServerRoute = {
   method: 'POST',
   path: paths.email.quote,
   handler,
-  options: {
-    validate: {
-      payload: async (payload) => zodPayload.parse(payload),
-    },
-  },
 };

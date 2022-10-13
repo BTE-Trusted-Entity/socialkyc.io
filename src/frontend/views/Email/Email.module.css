@@ -11,3 +11,11 @@
 .inputError {
   composes: error from '../../components/Input/Input.module.css';
 }
+
+.profile {
+  display: grid;
+  grid-template-areas: 'key value' 'key value';
+  width: calc(250rem / 16);
+  gap: 0.5rem;
+  margin-bottom: 2rem;
+}
