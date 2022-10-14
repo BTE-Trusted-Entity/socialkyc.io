@@ -31,7 +31,7 @@ async function handler(
   return h.response(response as Output);
 }
 
-export const attestationTwitter: ServerRoute = {
+export const attestTwitter: ServerRoute = {
   method: 'POST',
   path: paths.twitter.attest,
   handler,

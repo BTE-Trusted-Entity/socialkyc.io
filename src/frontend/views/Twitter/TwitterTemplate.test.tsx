@@ -1,7 +1,9 @@
 import { describe, it, jest, expect } from '@jest/globals';
 
 import { render } from '../../../testing/testing';
+
 import '../../components/useCopyButton/useCopyButton.mock';
+import { TwitterProfile } from './Twitter';
 
 import { TwitterTemplate } from './TwitterTemplate';
 
@@ -9,11 +11,18 @@ jest.useFakeTimers();
 jest.setSystemTime(new Date('2022-01-03T12:00:00'));
 
 const actions = {
-  handleSubmit: jest.fn(),
+  handleClaim: jest.fn(),
+  handleRequestAttestation: jest.fn(),
   handleBackup: jest.fn(),
   handleTryAgainClick: jest.fn(),
   setInputError: jest.fn(),
 };
+
+const profileMock: TwitterProfile = {
+  twitterHandle: 'social_kyc_tech',
+};
+
+const secret = 'SECRET';
 
 describe('TwitterTemplate', () => {
   it('should match snapshot with status=none', async () => {
@@ -23,19 +32,24 @@ describe('TwitterTemplate', () => {
     expect(container).toMatchSnapshot();
   });
 
-  it('should match snapshot with status=requested', async () => {
+  it('should match snapshot with status=authenticating', async () => {
     const { container } = render(
-      <TwitterTemplate status="requested" processing={true} {...actions} />,
+      <TwitterTemplate
+        status="authenticating"
+        processing={false}
+        secret={secret}
+        {...actions}
+      />,
     );
     expect(container).toMatchSnapshot();
   });
 
-  it('should match snapshot with status=confirming', async () => {
+  it('should match snapshot with status=authenticated', async () => {
     const { container } = render(
       <TwitterTemplate
-        status="confirming"
-        secret="0123456789"
+        status="authenticated"
         processing={false}
+        profile={profileMock}
         {...actions}
       />,
     );
@@ -56,12 +70,25 @@ describe('TwitterTemplate', () => {
     expect(container).toMatchSnapshot();
   });
 
+  it('should match snapshot with flowerror=timeout', async () => {
+    const { container } = render(
+      <TwitterTemplate
+        status="error"
+        flowError="timeout"
+        processing={false}
+        {...actions}
+      />,
+    );
+    expect(container).toMatchSnapshot();
+  });
+
   it('should match snapshot with flowError=closed', async () => {
     const { container } = render(
       <TwitterTemplate
-        status="requested"
+        status="authenticated"
         flowError="closed"
         processing={false}
+        profile={profileMock}
         {...actions}
       />,
     );
@@ -76,13 +103,6 @@ describe('TwitterTemplate', () => {
         processing={false}
         {...actions}
       />,
-    );
-    expect(container).toMatchSnapshot();
-  });
-
-  it('should match snapshot with status=unconfirmed', async () => {
-    const { container } = render(
-      <TwitterTemplate status="unconfirmed" processing={false} {...actions} />,
     );
     expect(container).toMatchSnapshot();
   });

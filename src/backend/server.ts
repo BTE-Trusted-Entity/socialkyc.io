@@ -28,11 +28,12 @@ import { quoteEmail } from './email/quoteEmail';
 import { requestAttestationEmail } from './email/requestAttestationEmail';
 import { attestEmail } from './email/attestEmail';
 
+import { claimTwitter } from './twitter/claimTwitter';
 import { listenForTweets } from './twitter/tweets';
 import { quoteTwitter } from './twitter/quoteTwitter';
 import { confirmTwitter } from './twitter/confirmTwitter';
-import { requestTwitter } from './twitter/requestAttestationTwitter';
-import { attestationTwitter } from './twitter/attestationTwitter';
+import { requestAttestationTwitter } from './twitter/requestAttestationTwitter';
+import { attestTwitter } from './twitter/attestTwitter';
 
 import { authUrlDiscord } from './discord/authUrlDiscord';
 import { authHtmlDiscord } from './discord/authHtmlDiscord';
@@ -172,10 +173,11 @@ const logger = {
   server.route(requestAttestationEmail);
   server.route(attestEmail);
 
+  server.route(claimTwitter);
   server.route(quoteTwitter);
   server.route(confirmTwitter);
-  server.route(requestTwitter);
-  server.route(attestationTwitter);
+  server.route(requestAttestationTwitter);
+  server.route(attestTwitter);
 
   server.route(authHtmlDiscord);
   server.route(authUrlDiscord);

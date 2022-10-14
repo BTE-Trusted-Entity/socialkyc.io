@@ -12,6 +12,10 @@ import {
 
 const confirmingTimeout = 5 * 60 * 1000;
 
+export interface TwitterProfile {
+  twitterHandle: string;
+}
+
 interface Props {
   session: Session;
 }
@@ -28,7 +32,9 @@ export function Twitter({ session }: Props): JSX.Element {
 
   const twitterApi = useTwitterApi(session.sessionId);
 
-  const handleSubmit = useCallback(
+  const [profile, setProfile] = useState<TwitterProfile>();
+
+  const handleClaim = useCallback(
     async (event: FormEvent) => {
       try {
         event.preventDefault();
@@ -47,19 +53,37 @@ export function Twitter({ session }: Props): JSX.Element {
           return;
         }
 
+        const secret = await twitterApi.claim({ twitterHandle });
+        setSecret(secret);
+        setStatus('authenticating');
+        setProcessing(false);
+
+        setProfile(await twitterApi.confirm({}));
+        setStatus('authenticated');
+      } catch (error) {
+        console.error(error);
+        setFlowError('unknown');
+        setStatus('error');
+      } finally {
+        setProcessing(false);
+      }
+    },
+    [twitterApi],
+  );
+
+  const handleRequestAttestation = useCallback(
+    async (event: FormEvent) => {
+      event.preventDefault();
+      setProcessing(true);
+      setFlowError(undefined);
+      try {
         await session.listen(async (message) => {
           try {
-            const secret = await twitterApi.requestAttestation({ message });
-            setSecret(secret);
-            setStatus('confirming');
+            await twitterApi.requestAttestation({ message });
+            setStatus('attesting');
             setProcessing(false);
 
-            await twitterApi.confirm({});
-            setStatus('attesting');
-
-            const attestationMessage = await twitterApi.attest({});
-            setBackupMessage(attestationMessage);
-
+            setBackupMessage(await twitterApi.attest({}));
             setStatus('ready');
           } catch (exception) {
             if (exception instanceof Rejection) {
@@ -72,19 +96,18 @@ export function Twitter({ session }: Props): JSX.Element {
           }
         });
 
-        const message = await twitterApi.quote({ username: twitterHandle });
+        const message = await twitterApi.quote({});
 
-        setStatus('requested');
         await session.send(message);
       } catch (error) {
         console.error(error);
-        setFlowError('unknown');
         setStatus('error');
+        setFlowError('unknown');
       } finally {
         setProcessing(false);
       }
     },
-    [session, twitterApi],
+    [twitterApi, session],
   );
 
   const handleBackup = useCallback(async () => {
@@ -105,13 +128,13 @@ export function Twitter({ session }: Props): JSX.Element {
   }, []);
 
   useEffect(() => {
-    if (status !== 'confirming') {
+    if (status !== 'authenticating') {
       return;
     }
-    const timeout = setTimeout(
-      () => setStatus('unconfirmed'),
-      confirmingTimeout,
-    );
+    const timeout = setTimeout(() => {
+      setStatus('error');
+      setFlowError('timeout');
+    }, confirmingTimeout);
     return () => clearTimeout(timeout);
   }, [status]);
 
@@ -124,8 +147,10 @@ export function Twitter({ session }: Props): JSX.Element {
       inputError={inputError}
       setInputError={setInputError}
       handleBackup={handleBackup}
-      handleSubmit={handleSubmit}
+      handleClaim={handleClaim}
+      handleRequestAttestation={handleRequestAttestation}
       handleTryAgainClick={handleTryAgainClick}
+      profile={profile}
     />
   );
 }

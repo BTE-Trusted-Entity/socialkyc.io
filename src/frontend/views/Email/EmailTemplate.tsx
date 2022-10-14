@@ -29,8 +29,8 @@ import { EmailProfile } from './Email';
 export type AttestationStatus =
   | 'none'
   | 'emailSent'
-  | 'authorizing'
-  | 'authorized'
+  | 'authenticating'
+  | 'authenticated'
   | 'attesting'
   | 'ready'
   | 'error';
@@ -88,9 +88,9 @@ export function EmailTemplate({
     [],
   );
 
-  // TODO: include status 'requested'
   const preventNavigation = usePreventNavigation(
-    processing || ['confirming', 'attesting'].includes(status),
+    processing ||
+      ['authenticating', 'authenticated', 'attesting'].includes(status),
   );
 
   return (
@@ -159,7 +159,7 @@ export function EmailTemplate({
         />
       )}
 
-      {status === 'authorizing' && (
+      {status === 'authenticating' && (
         <DetailedMessage
           icon="spinner"
           heading="Attestation process:"
@@ -168,7 +168,7 @@ export function EmailTemplate({
         />
       )}
 
-      {status === 'authorized' && profile && (
+      {status === 'authenticated' && profile && (
         <form onSubmit={handleRequestAttestation}>
           <dl className={styles.profile}>
             <dt>Email:</dt>

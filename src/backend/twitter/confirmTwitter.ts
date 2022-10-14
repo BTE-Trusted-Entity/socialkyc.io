@@ -11,10 +11,13 @@ import { getSession, setSession } from '../utilities/sessionStorage';
 import { paths } from '../endpoints/paths';
 
 import { tweetsListeners } from './tweets';
+import { twitterCType } from './twitterCType';
 
 export type Input = Record<string, never>;
 
-export type Output = undefined;
+export interface Output {
+  twitterHandle: string;
+}
 
 async function handler(
   request: Request,
@@ -24,26 +27,28 @@ async function handler(
   logger.debug('Twitter confirmation started');
 
   const session = getSession(request.headers);
+  const { claim } = session;
 
-  const { requestForAttestation } = session;
-  if (!requestForAttestation) {
-    throw Boom.notFound('requestForAttestation not found');
+  if (!claim) {
+    throw Boom.notFound('Claim not found');
   }
-  logger.debug('Twitter confirmation found request');
+  if (claim.cTypeHash !== twitterCType.hash) {
+    throw Boom.notFound('Claim cType mismatch');
+  }
 
-  const username = requestForAttestation.claim.contents['Twitter'] as string;
-  const userListeners = tweetsListeners.get(username.toLowerCase());
+  const twitterHandle = claim.contents['Twitter'] as string;
+  const userListeners = tweetsListeners.get(twitterHandle.toLowerCase());
   if (!userListeners) {
-    throw Boom.notFound(`Twitter handle not found: ${username}`);
+    throw Boom.notFound(`Twitter handle not found: ${twitterHandle}`);
   }
 
   logger.debug('Twitter confirmation waiting for tweet');
   const confirmation = userListeners[1];
   await confirmation.promise;
-  tweetsListeners.delete(username.toLowerCase());
+  tweetsListeners.delete(twitterHandle.toLowerCase());
   setSession({ ...session, confirmed: true });
 
-  return h.response(<Output>undefined);
+  return h.response({ twitterHandle } as Output);
 }
 
 export const confirmTwitter: ServerRoute = {
