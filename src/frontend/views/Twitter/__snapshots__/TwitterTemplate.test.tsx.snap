@@ -336,7 +336,7 @@ exports[`TwitterTemplate should match snapshot with status=authenticating 1`] = 
           Starting
         </p>
         <p>
-          To continue the attestation process, please tweet the text below and then return to this page. It may take SocialKYC a moment to find your tweet.
+          To continue the attestation process, please Tweet the text below and then return to this page. It may take SocialKYC a moment to complete the process.
         </p>
       </section>
       <div>

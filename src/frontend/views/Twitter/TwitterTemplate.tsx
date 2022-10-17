@@ -117,9 +117,9 @@ export function TwitterTemplate({
 
       <Explainer>
         After entering your Twitter handle, we will prompt you to make an
-        authentication Tweet. After the authentication is complete, you can sign
-        the data with one of your identities in Sporran, and SocialKYC will
-        create the credential.
+        authentication Tweet with text we provide. When the authentication is
+        complete, you can sign with one of your identities in Sporran, and
+        SocialKYC will create the credential.
       </Explainer>
 
       <section>
@@ -169,7 +169,7 @@ export function TwitterTemplate({
               icon="spinner"
               heading="Attestation process:"
               message="Starting"
-              details="To continue the attestation process, please tweet the text below and then return to this page. It may take SocialKYC a moment to find your tweet."
+              details="To continue the attestation process, please Tweet the text below and then return to this page. It may take SocialKYC a moment to complete the process."
             />
             <div>
               <label htmlFor="tweet">Please tweet this message:</label>
