@@ -16,8 +16,9 @@ export const paths = {
   },
 
   twitter: {
-    quote: '/api/twitter/quote',
+    claim: '/api/twitter/claim',
     confirm: '/api/twitter/confirm',
+    quote: '/api/twitter/quote',
     requestAttestation: '/api/twitter/request-attestation',
     attest: '/api/twitter/attest',
   },

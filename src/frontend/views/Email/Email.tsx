@@ -21,7 +21,7 @@ export function Email({ session }: Props): JSX.Element {
 
   const { secret } = useValuesFromRedirectUri(true);
 
-  const initialStatus = secret ? 'authorizing' : 'none';
+  const initialStatus = secret ? 'authenticating' : 'none';
 
   const [flowError, setFlowError] = useState<FlowError>();
   const [status, setStatus] = useState<AttestationStatus>(initialStatus);
@@ -39,7 +39,7 @@ export function Email({ session }: Props): JSX.Element {
     (async () => {
       try {
         setProfile(await emailApi.confirm({ secret }));
-        setStatus('authorized');
+        setStatus('authenticated');
       } catch {
         setStatus('error');
         setFlowError('expired');

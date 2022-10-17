@@ -195,7 +195,7 @@ describe('Email', () => {
     ).toBeInTheDocument();
   });
 
-  it('should finish the happy path after authorization', async () => {
+  it('should finish the happy path after authentication', async () => {
     jest.mocked(useValuesFromRedirectUri).mockReturnValue({ secret });
 
     const { container } = render(<Email session={sessionMock} />);
@@ -239,7 +239,7 @@ describe('Email', () => {
     expect(sessionMock.send).toHaveBeenCalledWith({ done: '' });
   });
 
-  it('should show authorization error', async () => {
+  it('should show authentication error', async () => {
     jest.mocked(useValuesFromRedirectUri).mockReturnValue({ secret });
 
     const { container } = render(<Email session={sessionMock} />);
@@ -249,7 +249,7 @@ describe('Email', () => {
     expectConfirmCalledWith(secret);
 
     await act(async () => {
-      confirmPromise.reject(new Error('authorization'));
+      confirmPromise.reject(new Error('authentication'));
     });
 
     expect(

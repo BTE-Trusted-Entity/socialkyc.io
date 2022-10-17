@@ -2,6 +2,7 @@ import {
   FormEvent,
   FormEventHandler,
   Fragment,
+  KeyboardEventHandler,
   MouseEventHandler,
   useCallback,
   useRef,
@@ -25,39 +26,44 @@ import { LinkBack } from '../../components/LinkBack/LinkBack';
 import { usePreventNavigation } from '../../utilities/usePreventNavigation';
 import { useCopyButton } from '../../components/useCopyButton/useCopyButton';
 
+import { TwitterProfile } from './Twitter';
+
 export type AttestationStatus =
   | 'none'
-  | 'requested'
-  | 'confirming'
-  | 'unconfirmed'
+  | 'authenticating'
+  | 'authenticated'
   | 'attesting'
   | 'ready'
   | 'error';
 
-export type FlowError = 'closed' | 'unknown';
+export type FlowError = 'timeout' | 'closed' | 'unknown';
 
 interface Props {
   status: AttestationStatus;
   processing: boolean;
-  handleSubmit: FormEventHandler;
+  handleClaim: FormEventHandler;
+  handleRequestAttestation: FormEventHandler;
   handleBackup: MouseEventHandler;
   handleTryAgainClick: MouseEventHandler;
   setInputError: (error?: string) => void;
   inputError?: string;
   flowError?: FlowError;
   secret?: string;
+  profile?: TwitterProfile;
 }
 
 export function TwitterTemplate({
   status,
   processing,
-  handleSubmit,
+  handleClaim,
+  handleRequestAttestation,
   handleBackup,
   handleTryAgainClick,
   setInputError,
   inputError,
   flowError,
   secret,
+  profile,
 }: Props): JSX.Element {
   const [twitterHandle, setTwitterHandle] = useState('');
 
@@ -76,8 +82,18 @@ export function TwitterTemplate({
     }
   }, [twitterHandle]);
 
+  const handleKeyPress: KeyboardEventHandler<HTMLInputElement> = useCallback(
+    (event) => {
+      if (event.key === 'Enter') {
+        (event.target as HTMLInputElement).blur();
+      }
+    },
+    [],
+  );
+
   const preventNavigation = usePreventNavigation(
-    processing || ['confirming', 'attesting'].includes(status),
+    processing ||
+      ['authenticating', 'authenticated', 'attesting'].includes(status),
   );
 
   const messageRef = useRef<HTMLTextAreaElement>(null);
@@ -100,14 +116,15 @@ export function TwitterTemplate({
       />
 
       <Explainer>
-        After entering your Twitter handle, please choose an identity in your
-        wallet to associate with your Twitter credential. We will prompt you to
-        Tweet so that we can attest your credential.
+        After entering your Twitter handle, we will prompt you to make an
+        authentication Tweet with text we provide. When the authentication is
+        complete, you can sign with one of your identities in Sporran, and
+        SocialKYC will create the credential.
       </Explainer>
 
       <section>
-        {(status === 'none' || status === 'requested') && (
-          <form onSubmit={handleSubmit}>
+        {status === 'none' && (
+          <form onSubmit={handleClaim}>
             <label>
               Your Twitter handle
               <span
@@ -118,6 +135,7 @@ export function TwitterTemplate({
                   className={styles.twitterInput}
                   onInput={handleInput}
                   onBlur={handleBlur}
+                  onKeyPress={handleKeyPress}
                   value={twitterHandle}
                   type="text"
                   name="twitterHandle"
@@ -135,25 +153,23 @@ export function TwitterTemplate({
               Validity: one year (<ExpiryDate />)
             </p>
 
-            {flowError === 'closed' && <SigningErrorClosed />}
-
             <button
               type="submit"
               className={flowStyles.ctaButton}
               disabled={!twitterHandle}
             >
-              Continue in wallet
+              Continue
             </button>
           </form>
         )}
 
-        {status === 'confirming' && (
+        {status === 'authenticating' && (
           <Fragment>
             <DetailedMessage
               icon="spinner"
               heading="Attestation process:"
               message="Starting"
-              details="Your credential will be attested as soon as you Tweet the text below."
+              details="To continue the attestation process, please Tweet the text below and then return to this page. It may take SocialKYC a moment to complete the process."
             />
             <div>
               <label htmlFor="tweet">Please tweet this message:</label>
@@ -189,13 +205,23 @@ export function TwitterTemplate({
           </Fragment>
         )}
 
-        {status === 'unconfirmed' && (
-          <DetailedMessage
-            icon="exclamation"
-            heading="Attestation error:"
-            message="Tweet not found"
-            details="SocialKYC could not find your tweet. Please make sure you tweet the text exactly as provided. You can use the copy button to avoid any typos."
-          />
+        {status === 'authenticated' && profile && (
+          <form onSubmit={handleRequestAttestation}>
+            <dl className={styles.profile}>
+              <dt>Twitter handle:</dt>
+              <dd>{profile.twitterHandle}</dd>
+            </dl>
+
+            <p>
+              Validity: one year (<ExpiryDate />)
+            </p>
+
+            {flowError === 'closed' && <SigningErrorClosed />}
+
+            <button type="submit" className={flowStyles.ctaButton}>
+              Continue in wallet
+            </button>
+          </form>
         )}
 
         {status === 'attesting' && <AttestationProcessAnchoring />}
@@ -213,9 +239,18 @@ export function TwitterTemplate({
           </Fragment>
         )}
 
+        {flowError === 'timeout' && (
+          <DetailedMessage
+            icon="exclamation"
+            heading="Attestation error:"
+            message="Tweet not found"
+            details="SocialKYC could not find your tweet. Please make sure you tweet the text exactly as provided. You can use the copy button to avoid any typos."
+          />
+        )}
+
         {flowError === 'unknown' && <AttestationErrorUnknown />}
 
-        {(status === 'unconfirmed' || flowError === 'unknown') && (
+        {(flowError === 'timeout' || flowError === 'unknown') && (
           <button
             type="button"
             className={flowStyles.ctaButton}

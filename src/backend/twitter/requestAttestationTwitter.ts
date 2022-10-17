@@ -1,42 +1,53 @@
-import { Request, ServerRoute } from '@hapi/hapi';
-
 import {
-  getSecretForSession,
-  getSession,
-  setSession,
-} from '../utilities/sessionStorage';
+  Request,
+  ResponseObject,
+  ResponseToolkit,
+  ServerRoute,
+} from '@hapi/hapi';
+import Boom from '@hapi/boom';
+
+import { RequestForAttestationUtils } from '@kiltprotocol/core';
+
+import { StatusCodes } from 'http-status-codes';
+
+import { getSession, setSession } from '../utilities/sessionStorage';
 import { validateEncryptedMessage } from '../utilities/validateEncryptedMessage';
 import { decryptRequestAttestation } from '../utilities/decryptMessage';
-import { makeControlledPromise } from '../utilities/makeControlledPromise';
 import { paths } from '../endpoints/paths';
 
-import { tweetsListeners } from './tweets';
+export type Output = void;
 
-export type Output = string;
-
-async function handler(request: Request): Promise<string> {
+async function handler(
+  request: Request,
+  h: ResponseToolkit,
+): Promise<ResponseObject> {
   const { logger } = request;
   logger.debug('Twitter request attestation started');
 
   const session = getSession(request.headers);
-  delete session.attestationPromise;
+  if (!session.confirmed) {
+    throw Boom.badRequest('Twitter Claim has not been confirmed');
+  }
 
   const { requestForAttestation } = await decryptRequestAttestation(request);
-  setSession({ ...session, requestForAttestation, confirmed: false });
-  logger.debug('Twitter request attestation cached');
+  if (session.claim?.cTypeHash !== requestForAttestation.claim.cTypeHash) {
+    throw Boom.badRequest(
+      'Twitter request CType does not match confirmed claim cType',
+    );
+  }
 
-  const secret = getSecretForSession(session.sessionId);
-  const username = requestForAttestation.claim.contents['Twitter'] as string;
+  session.claim.owner = requestForAttestation.claim.owner;
+  requestForAttestation.claim = session.claim;
 
-  const confirmation = makeControlledPromise<void>();
-  confirmation.promise.catch((error) => logger.error(error));
-  tweetsListeners.set(username.toLowerCase(), [secret, confirmation]);
-  logger.debug('Twitter request attestation listener added');
+  RequestForAttestationUtils.errorCheck(requestForAttestation);
+  logger.debug('Twitter request attestation verified');
 
-  return secret as Output;
+  setSession({ ...session, requestForAttestation });
+
+  return h.response().code(StatusCodes.NO_CONTENT);
 }
 
-export const requestTwitter: ServerRoute = {
+export const requestAttestationTwitter: ServerRoute = {
   method: 'POST',
   path: paths.twitter.requestAttestation,
   handler,

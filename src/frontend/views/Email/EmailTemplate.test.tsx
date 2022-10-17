@@ -37,17 +37,17 @@ describe('EmailTemplate', () => {
     expect(container).toMatchSnapshot();
   });
 
-  it('should match snapshot with status=authorizing', async () => {
+  it('should match snapshot with status=authenticating', async () => {
     const { container } = render(
-      <EmailTemplate status="authorizing" processing={false} {...actions} />,
+      <EmailTemplate status="authenticating" processing={false} {...actions} />,
     );
     expect(container).toMatchSnapshot();
   });
 
-  it('should match snapshot with status=authorized', async () => {
+  it('should match snapshot with status=authenticated', async () => {
     const { container } = render(
       <EmailTemplate
-        status="authorized"
+        status="authenticated"
         processing={false}
         profile={profileMock}
         {...actions}
@@ -85,7 +85,7 @@ describe('EmailTemplate', () => {
   it('should match snapshot with flowError=closed', async () => {
     const { container } = render(
       <EmailTemplate
-        status="none"
+        status="authenticated"
         flowError="closed"
         processing={false}
         profile={profileMock}

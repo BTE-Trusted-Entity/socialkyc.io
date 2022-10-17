@@ -29,14 +29,16 @@ export function EmailSent(): JSX.Element {
   return <EmailTemplate status="emailSent" processing={false} {...actions} />;
 }
 
-export function Authorizing(): JSX.Element {
-  return <EmailTemplate status="authorizing" processing={false} {...actions} />;
+export function Authenticating(): JSX.Element {
+  return (
+    <EmailTemplate status="authenticating" processing={false} {...actions} />
+  );
 }
 
-export function Authorized(): JSX.Element {
+export function Authenticated(): JSX.Element {
   return (
     <EmailTemplate
-      status="authorized"
+      status="authenticated"
       processing={false}
       profile={profileMock}
       {...actions}
@@ -47,7 +49,7 @@ export function Authorized(): JSX.Element {
 export function QuoteOpen(): JSX.Element {
   return (
     <EmailTemplate
-      status="authorized"
+      status="authenticated"
       processing={true}
       profile={profileMock}
       {...actions}
@@ -66,7 +68,7 @@ export function Ready(): JSX.Element {
 export function Expired(): JSX.Element {
   return (
     <EmailTemplate
-      status="authorized"
+      status="error"
       flowError="expired"
       processing={false}
       {...actions}
@@ -77,7 +79,7 @@ export function Expired(): JSX.Element {
 export function Closed(): JSX.Element {
   return (
     <EmailTemplate
-      status="authorized"
+      status="authenticated"
       flowError="closed"
       processing={false}
       profile={profileMock}
