@@ -65,12 +65,6 @@ exports[`TwitterTemplate should match snapshot with flowError=closed 1`] = `
         </button>
       </form>
     </section>
-    <a
-      class="link"
-      href="/"
-    >
-      Back to list
-    </a>
   </section>
 </div>
 `;
@@ -233,12 +227,6 @@ exports[`TwitterTemplate should match snapshot with status=attesting 1`] = `
         </p>
       </section>
     </section>
-    <a
-      class="link"
-      href="/"
-    >
-      Back to list
-    </a>
   </section>
 </div>
 `;
@@ -288,12 +276,6 @@ exports[`TwitterTemplate should match snapshot with status=authenticated 1`] = `
         </button>
       </form>
     </section>
-    <a
-      class="link"
-      href="/"
-    >
-      Back to list
-    </a>
   </section>
 </div>
 `;
@@ -376,12 +358,6 @@ exports[`TwitterTemplate should match snapshot with status=authenticating 1`] = 
         </p>
       </div>
     </section>
-    <a
-      class="link"
-      href="/"
-    >
-      Back to list
-    </a>
   </section>
 </div>
 `;

@@ -161,7 +161,7 @@ export function TwitchTemplate({
         </button>
       )}
 
-      <LinkBack />
+      {!preventNavigation && <LinkBack />}
     </section>
   );
 }

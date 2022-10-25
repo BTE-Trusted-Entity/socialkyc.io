@@ -70,12 +70,6 @@ exports[`DiscordTemplate should match snapshot with flowError=closed 1`] = `
         Continue in Wallet
       </button>
     </form>
-    <a
-      class="link"
-      href="/"
-    >
-      Back to list
-    </a>
   </section>
 </div>
 `;
@@ -232,12 +226,6 @@ exports[`DiscordTemplate should match snapshot with status=attesting 1`] = `
         Please leave this tab open until your credential is attested.
       </p>
     </section>
-    <a
-      class="link"
-      href="/"
-    >
-      Back to list
-    </a>
   </section>
 </div>
 `;
@@ -292,12 +280,6 @@ exports[`DiscordTemplate should match snapshot with status=authorized 1`] = `
         Continue in Wallet
       </button>
     </form>
-    <a
-      class="link"
-      href="/"
-    >
-      Back to list
-    </a>
   </section>
 </div>
 `;
@@ -342,12 +324,6 @@ exports[`DiscordTemplate should match snapshot with status=authorizing 1`] = `
         Please wait, accessing Discord account details.
       </p>
     </section>
-    <a
-      class="link"
-      href="/"
-    >
-      Back to list
-    </a>
   </section>
 </div>
 `;

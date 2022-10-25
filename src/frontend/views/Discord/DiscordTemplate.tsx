@@ -163,7 +163,7 @@ export function DiscordTemplate({
         </button>
       )}
 
-      <LinkBack />
+      {!preventNavigation && <LinkBack />}
     </section>
   );
 }

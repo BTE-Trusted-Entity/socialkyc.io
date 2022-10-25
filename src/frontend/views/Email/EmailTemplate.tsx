@@ -221,7 +221,7 @@ export function EmailTemplate({
         </button>
       )}
 
-      {status !== 'attesting' && <LinkBack />}
+      {!preventNavigation && <LinkBack />}
     </section>
   );
 }

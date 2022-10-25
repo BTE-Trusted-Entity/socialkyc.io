@@ -261,7 +261,7 @@ export function TwitterTemplate({
         )}
       </section>
 
-      <LinkBack />
+      {!preventNavigation && <LinkBack />}
     </section>
   );
 }

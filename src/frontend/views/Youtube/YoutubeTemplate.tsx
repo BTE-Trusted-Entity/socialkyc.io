@@ -189,7 +189,8 @@ export function YoutubeTemplate({
           </p>
         </Fragment>
       )}
-      <LinkBack />
+
+      {!preventNavigation && <LinkBack />}
     </section>
   );
 }

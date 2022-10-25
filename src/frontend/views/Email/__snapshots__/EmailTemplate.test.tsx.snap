@@ -62,12 +62,6 @@ exports[`EmailTemplate should match snapshot with flowError=closed 1`] = `
         Continue in wallet
       </button>
     </form>
-    <a
-      class="link"
-      href="/"
-    >
-      Back to list
-    </a>
   </section>
 </div>
 `;
@@ -267,12 +261,6 @@ exports[`EmailTemplate should match snapshot with status=authenticated 1`] = `
         Continue in wallet
       </button>
     </form>
-    <a
-      class="link"
-      href="/"
-    >
-      Back to list
-    </a>
   </section>
 </div>
 `;
@@ -317,12 +305,6 @@ exports[`EmailTemplate should match snapshot with status=authenticating 1`] = `
         Please wait, confirming email.
       </p>
     </section>
-    <a
-      class="link"
-      href="/"
-    >
-      Back to list
-    </a>
   </section>
 </div>
 `;
