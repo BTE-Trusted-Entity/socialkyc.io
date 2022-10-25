@@ -161,7 +161,7 @@ export function GithubTemplate({
         </button>
       )}
 
-      <LinkBack />
+      {!preventNavigation && <LinkBack />}
     </section>
   );
 }
