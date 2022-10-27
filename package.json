@@ -3,7 +3,7 @@
   "license": "UNLICENSED",
   "type": "module",
   "engines": {
-    "node": ">= v16.17.0"
+    "node": ">= v18.12.0"
   },
   "scripts": {
     "prettify": "prettier --write \"src/**/*.ts*\"",
@@ -14,7 +14,7 @@
     "test": "tsc --noEmit && LC_ALL=en_US.UTF-8 jest",
     "storybook": "start-storybook --port 6007 --modern",
     "dev": "yarn parcel watch",
-    "build": "yarn parcel build",
+    "build": "NODE_OPTIONS=--no-experimental-fetch yarn parcel build",
     "start": "node --enable-source-maps dist/backend/server.js",
     "dev-start": "echo '{\"type\":\"commonjs\"}' > dist/package.json && supervisor --watch dist/backend/ -- --enable-source-maps dist/backend/server.js"
   },
