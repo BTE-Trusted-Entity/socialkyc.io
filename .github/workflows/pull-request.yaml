@@ -10,7 +10,7 @@ jobs:
       - name: Configure Node and package manager
         uses: actions/setup-node@v3.5.1
         with:
-          node-version: '18.12.0'
+          node-version-file: 'package.json'
           cache: 'yarn'
 
       - name: Install dependencies
