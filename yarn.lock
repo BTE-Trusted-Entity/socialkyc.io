@@ -1988,10 +1988,10 @@
   resolved "https://registry.yarnpkg.com/@hapi/file/-/file-3.0.0.tgz#f1fd824493ac89a6fceaf89c824afc5ae2121c09"
   integrity sha512-w+lKW+yRrLhJu620jT3y+5g2mHqnKfepreykvdOcl9/6up8GrQQn+l3FRTsjHTKbkbfQFkuksHpdv2EcpKcJ4Q==
 
-"@hapi/hapi@^21.0.0":
-  version "21.0.0"
-  resolved "https://registry.yarnpkg.com/@hapi/hapi/-/hapi-21.0.0.tgz#b13b0acfb73984fa59b6e2b2c7b2d3084f6604b3"
-  integrity sha512-gqGifa4X4nskhsmsgp3AwBq4LPIl7XOlnzpdWSogdc46Z4Hfy/WDjCcaO2yK84tQRmGSlg0nZowOfSCyeT0hRw==
+"@hapi/hapi@^21.1.0":
+  version "21.1.0"
+  resolved "https://registry.yarnpkg.com/@hapi/hapi/-/hapi-21.1.0.tgz#0936480a92a4c57f4f49004ac857fe41dcd7fadb"
+  integrity sha512-het7j9yLXZMVU1IvtN2JXkPkn/UcU1j8gsZxMS0Mu1q7791IQeyhT37tpRPUhqerOtL6L0E8Z8CvVVFOYxoN6w==
   dependencies:
     "@hapi/accept" "^6.0.0"
     "@hapi/ammo" "^6.0.0"
@@ -12587,7 +12587,7 @@ postcss@^6.0.1:
     source-map "^0.6.1"
     supports-color "^5.4.0"
 
-postcss@^8.2.15, postcss@^8.4.18, postcss@^8.4.19:
+postcss@^8.2.15, postcss@^8.4.19:
   version "8.4.19"
   resolved "https://registry.yarnpkg.com/postcss/-/postcss-8.4.19.tgz#61178e2add236b17351897c8bcc0b4c8ecab56fc"
   integrity sha512-h+pbPsyhlYj6N2ozBmHhHrs9DzGmbaarbLvWipMRO7RLS+v4onj26MPFXA5OBYFxyqYhUJK456SwDcY9H2/zsA==
