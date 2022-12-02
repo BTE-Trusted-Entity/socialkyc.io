@@ -81,6 +81,7 @@
     "@types/hapi__inert": "^5.2.3",
     "@types/jest": "^29.2.3",
     "@types/lodash-es": "^4.17.6",
+    "@types/node": "^18.11.10",
     "@types/react": "^18.0.25",
     "@types/react-dom": "^18.0.9",
     "@types/react-router-dom": "^5.3.3",
@@ -107,7 +108,7 @@
     "supervisor": "^0.12.0",
     "ts-jest": "^29.0.3",
     "typed-css-modules": "^0.7.2",
-    "typescript": "^4.8.4"
+    "typescript": "^4.9.3"
   },
   "targets": {
     "frontend": {
