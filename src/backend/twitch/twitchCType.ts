@@ -1,26 +1,24 @@
-import { CType, CTypeUtils } from '@kiltprotocol/core';
+import { CType } from '@kiltprotocol/core';
+import { ConfigService } from '@kiltprotocol/config';
+import { ICType } from '@kiltprotocol/types';
 
 import { signAndSubmit } from '../utilities/signAndSubmit';
 import { logger } from '../utilities/logger';
 import { configuration } from '../utilities/configuration';
+import { cTypeIsStored } from '../utilities/cTypeIsStored';
 
 /** Run this function once to store the CType */
 export async function testTwitchCType(): Promise<void> {
-  const draft = CType.fromSchema({
-    $schema: 'http://kilt-protocol.org/draft-01/ctype#',
-    title: 'Twitch',
-    properties: {
-      Username: {
-        type: 'string',
-      },
-      'User ID': {
-        type: 'string',
-      },
+  const draft = CType.fromProperties('Twitch', {
+    Username: {
+      type: 'string',
     },
-    type: 'object',
+    'User ID': {
+      type: 'string',
+    },
   });
 
-  if (await CTypeUtils.verifyStored(draft)) {
+  if (await cTypeIsStored(draft)) {
     if (configuration.storeDidAndCTypes) {
       logger.info('Twitch CType is already on the blockchain');
     }
@@ -33,28 +31,25 @@ export async function testTwitchCType(): Promise<void> {
 
   logger.warn('Storing Twitch CType on the blockchain');
 
-  const tx = await draft.getStoreTx();
+  const api = ConfigService.get('api');
+  const tx = api.tx.ctype.add(CType.toChain(draft));
   await signAndSubmit(tx);
 
-  logger.warn(draft, 'Pass this object to CType.fromCType');
+  logger.warn(draft, 'Twitch CType');
 }
 
 // This object was logged by storeTwitchCType()
-export const twitchCType = CType.fromCType({
-  schema: {
-    $schema: 'http://kilt-protocol.org/draft-01/ctype#',
-    title: 'Twitch',
-    properties: {
-      Username: {
-        type: 'string',
-      },
-      'User ID': {
-        type: 'string',
-      },
+export const twitchCType: ICType = {
+  $schema: 'http://kilt-protocol.org/draft-01/ctype#',
+  title: 'Twitch',
+  properties: {
+    Username: {
+      type: 'string',
     },
-    type: 'object',
-    $id: 'kilt:ctype:0x568ec5ffd7771c4677a5470771adcdea1ea4d6b566f060dc419ff133a0089d80',
+    'User ID': {
+      type: 'string',
+    },
   },
-  owner: null,
-  hash: '0x568ec5ffd7771c4677a5470771adcdea1ea4d6b566f060dc419ff133a0089d80',
-});
+  type: 'object',
+  $id: 'kilt:ctype:0x568ec5ffd7771c4677a5470771adcdea1ea4d6b566f060dc419ff133a0089d80',
+};

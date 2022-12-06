@@ -5,15 +5,15 @@ import {
   ResponseToolkit,
   ServerRoute,
 } from '@hapi/hapi';
-
-import { RequestForAttestationUtils } from '@kiltprotocol/core';
-
 import Boom from '@hapi/boom';
+import { Credential } from '@kiltprotocol/core';
 
 import { getSession, setSession } from '../utilities/sessionStorage';
 import { validateEncryptedMessage } from '../utilities/validateEncryptedMessage';
 import { decryptRequestAttestation } from '../utilities/decryptMessage';
 import { paths } from '../endpoints/paths';
+
+import { emailCType } from './emailCType';
 
 export type Output = void;
 
@@ -29,20 +29,20 @@ async function handler(
     throw Boom.badRequest('Email Claim has not been confirmed');
   }
 
-  const { requestForAttestation } = await decryptRequestAttestation(request);
-  if (session.claim?.cTypeHash !== requestForAttestation.claim.cTypeHash) {
+  const { credential } = await decryptRequestAttestation(request);
+  if (session.claim?.cTypeHash !== credential.claim.cTypeHash) {
     throw Boom.badRequest(
       'Email request CType does not match confirmed claim cType',
     );
   }
 
-  session.claim.owner = requestForAttestation.claim.owner;
-  requestForAttestation.claim = session.claim;
+  session.claim.owner = credential.claim.owner;
+  credential.claim = session.claim;
 
-  RequestForAttestationUtils.errorCheck(requestForAttestation);
+  await Credential.verifyCredential(credential, { ctype: emailCType });
   logger.debug('Email request attestation verified');
 
-  setSession({ ...session, requestForAttestation });
+  setSession({ ...session, credential });
 
   return h.response().code(StatusCodes.NO_CONTENT);
 }

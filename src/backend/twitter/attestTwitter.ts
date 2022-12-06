@@ -24,7 +24,7 @@ async function handler(
   const session = getSession(request.headers);
 
   const response = await getAttestationMessage(session, logger);
-  delete session.requestForAttestation;
+  delete session.credential;
   setSession(session);
 
   logger.debug('Twitter attestation completed');

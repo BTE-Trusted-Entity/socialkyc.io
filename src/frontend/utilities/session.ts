@@ -13,8 +13,7 @@ interface PubSubSession {
   ) => Promise<void>;
   close: () => Promise<void>;
   send: (message: IEncryptedMessage) => Promise<void>;
-  // TODO: Update to encryptionKeyUri after PubSubSession is updated in the specification and in Sporran
-  encryptionKeyId: DidResourceUri;
+  encryptionKeyUri: DidResourceUri;
   encryptedChallenge: string;
   nonce: string;
 }
@@ -27,12 +26,18 @@ interface InjectedWindowProvider {
   ) => Promise<PubSubSession>;
   name: string;
   version: string;
-  specVersion: '0.1';
+  specVersion: '3.0';
 }
 
 export const apiWindow = window as unknown as {
   kilt: Record<string, InjectedWindowProvider>;
 };
+
+export function getCompatibleExtensions(): Array<string> {
+  return Object.entries(apiWindow.kilt)
+    .filter(([, provider]) => provider.specVersion.startsWith('3.'))
+    .map(([name]) => name);
+}
 
 export class Rejection extends Error {}
 
@@ -73,11 +78,7 @@ export async function getSession(
       challenge,
     );
 
-    const {
-      encryptionKeyId: encryptionKeyUri,
-      encryptedChallenge,
-      nonce,
-    } = session;
+    const { encryptionKeyUri, encryptedChallenge, nonce } = session;
     await checkSession(
       {
         encryptionKeyUri,

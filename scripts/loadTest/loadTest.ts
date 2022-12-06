@@ -1,27 +1,25 @@
-import {
-  cryptoWaitReady,
-  naclSeal,
-  randomAsNumber,
-} from '@polkadot/util-crypto';
-import { Crypto } from '@kiltprotocol/utils';
-
-import { DidResourceUri } from '@kiltprotocol/types';
-
-import { Claim, CType, init } from '@kiltprotocol/core';
-
+import { naclSeal, randomAsNumber } from '@polkadot/util-crypto';
 import { HexString } from '@polkadot/util/types';
+import { Crypto } from '@kiltprotocol/utils';
+import {
+  DidResourceUri,
+  DidDocument,
+  DidEncryptionKey,
+  ICType,
+} from '@kiltprotocol/types';
+import { Claim, connect, disconnect } from '@kiltprotocol/core';
+import * as Did from '@kiltprotocol/did';
 
 import { getEncryptedMessage } from './encryptedMessage.js';
-import { getMessageEncryption } from './getMessageEncryption.js';
 import {
   attestEmailApi,
-  requestAttestationApi,
-  authEmailApi,
   checkSession,
+  confirmEmailApi,
+  getSecretApi,
   getSessionFromEndpoint,
   quoteEmailApi,
-  getSecretApi,
-  confirmEmailApi,
+  requestAttestationApi,
+  sendEmailApi,
 } from './apis.js';
 
 export type CheckSessionInput = {
@@ -30,38 +28,61 @@ export type CheckSessionInput = {
   nonce: HexString;
 };
 
-const emailCType = CType.fromCType({
-  schema: {
-    $schema: 'http://kilt-protocol.org/draft-01/ctype#',
-    title: 'Email',
-    properties: {
-      Email: {
-        type: 'string',
-      },
+const emailCType: ICType = {
+  $id: 'kilt:ctype:0x3291bb126e33b4862d421bfaa1d2f272e6cdfc4f96658988fbcffea8914bd9ac',
+  $schema: 'http://kilt-protocol.org/draft-01/ctype#',
+  title: 'Email',
+  properties: {
+    Email: {
+      type: 'string',
     },
-    type: 'object',
-    $id: 'kilt:ctype:0x3291bb126e33b4862d421bfaa1d2f272e6cdfc4f96658988fbcffea8914bd9ac',
   },
-  owner: null,
-  hash: '0x3291bb126e33b4862d421bfaa1d2f272e6cdfc4f96658988fbcffea8914bd9ac',
-});
+  type: 'object',
+};
+
+function getDidEncryptionKey(details: DidDocument): DidEncryptionKey {
+  const { keyAgreement } = details;
+  if (!keyAgreement?.[0]) {
+    throw new Error('encryptionKey is not defined somehow');
+  }
+  return keyAgreement[0];
+}
+
+export function createDid() {
+  const authentication = Crypto.makeKeypairFromSeed();
+  const keyAgreement = Crypto.makeEncryptionKeypairFromSeed();
+
+  const document = Did.createLightDidDocument({
+    authentication: [authentication],
+    keyAgreement: [keyAgreement],
+  });
+  const { id } = getDidEncryptionKey(document);
+  const keyAgreementKeyUri: DidResourceUri = `${document.uri}${id}`;
+
+  return {
+    document,
+    keyAgreement,
+    keyAgreementKeyUri,
+  };
+}
 
 async function produceEncryptedChallenge(
   challenge: string,
   dAppEncryptionKeyUri: DidResourceUri,
 ): Promise<CheckSessionInput> {
-  const encryption = await getMessageEncryption(dAppEncryptionKeyUri);
+  const dAppEncryptionDidKey = await Did.resolveKey(dAppEncryptionKeyUri);
 
-  const { dAppEncryptionDidKey, sporranEncryptionDidKeyUri } = encryption;
+  const temporaryChannelDid = createDid();
+  const { keyAgreementKeyUri, keyAgreement } = temporaryChannelDid;
 
   const { sealed, nonce } = naclSeal(
     Crypto.coToUInt8(challenge),
-    encryption.encryptionKey.secretKey,
+    keyAgreement.secretKey,
     dAppEncryptionDidKey.publicKey,
   );
 
   return {
-    encryptionKeyUri: sporranEncryptionDidKeyUri,
+    encryptionKeyUri: keyAgreementKeyUri,
     encryptedChallenge: Crypto.u8aToHex(sealed),
     nonce: Crypto.u8aToHex(nonce),
   };
@@ -84,29 +105,45 @@ async function createSession() {
 }
 
 (async () => {
-  await init({ address: 'wss://peregrine.kilt.io/parachain-public-ws' });
-  await cryptoWaitReady();
+  await connect('wss://peregrine.kilt.io/parachain-public-ws');
 
-  const { sessionId, dAppEncryptionKeyUri } = await createSession();
+  const { sessionId: firstSessionId, dAppEncryptionKeyUri } =
+    await createSession();
 
   const email = `${randomAsNumber()}@example.com`;
+
+  await sendEmailApi({ email, wallet: 'load' }, firstSessionId);
+
+  console.log('Send email completed');
+
+  const { secret } = await getSecretApi({}, firstSessionId);
+
+  console.log('Successfully got secret');
+
+  const { sessionId } = await createSession();
+
+  await confirmEmailApi({ secret }, sessionId);
+
+  console.log('Session data migration completed');
 
   await quoteEmailApi({ email }, sessionId);
 
   console.log('Email quote created');
 
-  const sporranDid =
-    'did:kilt:4qsQ5sRVhbti5k9QU1Z1Wg932MwFboCmAdbSyR6GpavMkrr3';
+  const sporran = createDid();
 
   const claim = Claim.fromCTypeAndClaimContents(
     emailCType,
     { Email: email },
-    sporranDid,
+    sporran.document.uri,
   );
 
-  const dAppDid = dAppEncryptionKeyUri.split('#')[0];
-
-  const encryptedMessage = await getEncryptedMessage(claim, dAppDid);
+  const encryptedMessage = await getEncryptedMessage(
+    claim,
+    dAppEncryptionKeyUri,
+    sporran.keyAgreementKeyUri,
+    sporran.keyAgreement,
+  );
 
   await requestAttestationApi(
     { message: encryptedMessage, wallet: 'sporran' },
@@ -115,23 +152,11 @@ async function createSession() {
 
   console.log('Email request attestation message sent');
 
-  const { secret } = await getSecretApi({}, sessionId);
-
-  console.log('Successfully got secret');
-
-  await authEmailApi(secret);
-
-  console.log('Email auth completed');
-
-  const { sessionId: redirectSessionId } = await createSession();
-
-  await confirmEmailApi({ secret }, redirectSessionId);
-
-  console.log('Session data migration completed');
-
-  await attestEmailApi({}, redirectSessionId);
+  await attestEmailApi({}, sessionId);
 
   console.log('Email Attestation test completed');
+
+  await disconnect();
 
   return 'Success';
 })();

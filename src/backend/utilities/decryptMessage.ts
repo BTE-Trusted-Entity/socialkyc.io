@@ -4,11 +4,10 @@ import {
   MessageBodyType,
   IRequestAttestationContent,
 } from '@kiltprotocol/types';
-import { Message } from '@kiltprotocol/messaging';
+import * as Message from '@kiltprotocol/messaging';
 
-import { encryptionKeystore } from './keystores';
+import { decrypt } from './cryptoCallbacks';
 import { EncryptedMessageInput } from './validateEncryptedMessage';
-import { fullDidPromise } from './fullDid';
 
 export async function decryptMessageContent<Result>(
   request: Request,
@@ -19,18 +18,14 @@ export async function decryptMessageContent<Result>(
   logger.debug('Message will be decrypted');
 
   const payload = request.payload as EncryptedMessageInput;
-  const { fullDid } = await fullDidPromise;
-  const message = await Message.decrypt(
-    payload.message,
-    encryptionKeystore,
-    fullDid,
-  );
+  const message = await Message.decrypt(payload.message, decrypt);
   logger.debug('Message decrypted');
 
   const messageBody = message.body;
+  Message.verifyMessageBody(messageBody);
   const { type } = messageBody;
 
-  if (type === rejectionType || type === MessageBodyType.REJECT) {
+  if (type === rejectionType || type === 'reject') {
     logger.debug('Message contains rejection');
     throw Boom.conflict('Message contains rejection');
   }
@@ -48,7 +43,7 @@ export async function decryptRequestAttestation(
 ): Promise<IRequestAttestationContent> {
   return decryptMessageContent<IRequestAttestationContent>(
     request,
-    MessageBodyType.REQUEST_ATTESTATION,
-    MessageBodyType.REJECT_TERMS,
+    'request-attestation',
+    'reject-terms',
   );
 }

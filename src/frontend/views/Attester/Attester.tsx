@@ -15,6 +15,7 @@ import * as styles from './Attester.module.css';
 import {
   apiWindow,
   ClosedRejection,
+  getCompatibleExtensions,
   getSession,
   Session,
   UnauthorizedRejection,
@@ -48,7 +49,7 @@ function useHasExtension(): HasExtension {
 
   useEffect(() => {
     const intervalId = setInterval(() => {
-      if (Object.entries(kilt).length > 0) {
+      if (getCompatibleExtensions().length > 0) {
         setHasExtension(true);
       }
     }, 100);
@@ -205,7 +206,7 @@ function Connect({ setSession }: { setSession: (s: Session) => void }) {
   const [error, setError] = useState<'closed' | 'rejected' | 'unknown'>();
 
   const { kilt } = apiWindow;
-  const extensions = useMemo(() => Object.keys(kilt), [kilt]);
+  const extensions = useMemo(getCompatibleExtensions, [kilt]);
 
   const [extension, setExtension] = useState<string>(extensions[0]);
 

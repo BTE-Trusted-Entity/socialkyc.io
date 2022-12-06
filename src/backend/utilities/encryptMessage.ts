@@ -3,38 +3,23 @@ import {
   IEncryptedMessage,
   MessageBody,
 } from '@kiltprotocol/types';
-import { Message } from '@kiltprotocol/messaging';
+import * as Message from '@kiltprotocol/messaging';
 
-import { Utils } from '@kiltprotocol/did';
+import * as Did from '@kiltprotocol/did';
 
-import { fullDidPromise } from './fullDid';
-import { encryptionKeystore } from './keystores';
+import { encrypt } from './cryptoCallbacks';
 import { configuration } from './configuration';
-
-export async function encryptMessage(
-  message: Message,
-  encryptionKeyUri: DidResourceUri,
-): Promise<IEncryptedMessage> {
-  const { fullDid, encryptionKey } = await fullDidPromise;
-
-  return message.encrypt(
-    encryptionKey.id,
-    fullDid,
-    encryptionKeystore,
-    encryptionKeyUri,
-  );
-}
 
 export async function encryptMessageBody(
   encryptionKeyUri: DidResourceUri,
   messageBody: MessageBody,
 ): Promise<IEncryptedMessage> {
-  const { did } = Utils.parseDidUri(encryptionKeyUri);
+  const { did } = Did.parse(encryptionKeyUri);
 
   if (configuration.did === 'pending') {
     throw new Error('Own DID not found');
   }
 
-  const message = new Message(messageBody, configuration.did, did);
-  return encryptMessage(message, encryptionKeyUri);
+  const message = Message.fromBody(messageBody, configuration.did, did);
+  return Message.encrypt(message, encrypt, encryptionKeyUri);
 }

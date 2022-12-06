@@ -5,6 +5,7 @@ import {
   ServerRoute,
 } from '@hapi/hapi';
 import Boom from '@hapi/boom';
+import { CType } from '@kiltprotocol/core';
 import { z } from 'zod';
 
 import {
@@ -45,7 +46,7 @@ async function handler(
   if (!claim) {
     throw Boom.notFound('Claim not found');
   }
-  if (claim.cTypeHash !== emailCType.hash) {
+  if (CType.hashToId(claim.cTypeHash) !== emailCType.$id) {
     throw Boom.notFound('Claim cType mismatch');
   }
 

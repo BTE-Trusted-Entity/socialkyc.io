@@ -1,108 +1,41 @@
-import { Claim, RequestForAttestation } from '@kiltprotocol/core';
-import { DidDetails, FullDidDetails } from '@kiltprotocol/did';
-import { Message } from '@kiltprotocol/messaging';
+import { Credential } from '@kiltprotocol/core';
+import * as Did from '@kiltprotocol/did';
+import * as Message from '@kiltprotocol/messaging';
 import {
-  DidEncryptionKey,
-  DidUri,
-  EncryptionKeyType,
+  DidResourceUri,
+  IClaim,
   IRequestAttestation,
-  MessageBodyType,
-  NaclBoxCapable,
+  KiltEncryptionKeypair,
 } from '@kiltprotocol/types';
 
-import {
-  blake2AsU8a,
-  keyExtractPath,
-  keyFromPath,
-  mnemonicToMiniSecret,
-  naclBoxPairFromSecret,
-  naclSeal,
-  sr25519PairFromSeed,
-} from '@polkadot/util-crypto';
+import { naclSeal } from '@polkadot/util-crypto';
 
-import { getKeystoreFromSeed } from './getMessageEncryption.js';
-
-function getDidEncryptionKey(details: DidDetails): DidEncryptionKey {
-  const { encryptionKey } = details;
-
-  if (!encryptionKey) {
-    throw new Error('encryptionKey is not defined somehow');
-  }
-
-  return encryptionKey;
-}
-
-export async function getEncryptedMessage(claim: Claim, dAppDid: string) {
-  const requestForAttestation = RequestForAttestation.fromClaim(claim);
-  const seed = mnemonicToMiniSecret(
-    'turtle mother mechanic bacon uncover acoustic prison buyer frog wool castle error',
-  );
-  const keystore = await getKeystoreFromSeed(seed);
-  const didDetails = await FullDidDetails.fromChainInfo(claim.owner);
-
-  if (!didDetails) throw new Error('No DID Details');
-
-  await requestForAttestation.signWithDidKey(
-    keystore,
-    didDetails,
-    didDetails.authenticationKey.id,
-  );
+export async function getEncryptedMessage(
+  claim: IClaim,
+  dAppEncryptionKeyUri: DidResourceUri,
+  keyAgreementKeyUri: DidResourceUri,
+  keyAgreement: KiltEncryptionKeypair,
+) {
+  const credential = Credential.fromClaim(claim);
 
   const requestForAttestationBody: IRequestAttestation = {
-    content: { requestForAttestation },
-    type: MessageBodyType.REQUEST_ATTESTATION,
+    content: { credential },
+    type: 'request-attestation',
   };
 
-  const attesterDidDetails = await FullDidDetails.fromChainInfo(
-    dAppDid as DidUri,
-  );
-
-  if (!attesterDidDetails) throw new Error('No DID Details');
-
-  const message = new Message(
+  const message = Message.fromBody(
     requestForAttestationBody,
-    didDetails.uri,
-    attesterDidDetails.uri,
+    claim.owner,
+    Did.parse(dAppEncryptionKeyUri).did,
   );
 
-  const encryptionKeyExtension = deriveEncryptionKeyFromSeed(seed);
-
-  const encryptionKeystoreExtension: Pick<NaclBoxCapable, 'encrypt'> = {
-    async encrypt({ data, alg, peerPublicKey }) {
-      const { sealed, nonce } = naclSeal(
-        data,
-        encryptionKeyExtension.secretKey,
-        peerPublicKey,
-      );
-
-      return {
-        data: sealed,
-        alg,
-        nonce,
-      };
+  return Message.encrypt(
+    message,
+    async function decrypt({ data, peerPublicKey }) {
+      const { secretKey } = keyAgreement;
+      const { sealed, nonce } = naclSeal(data, secretKey, peerPublicKey);
+      return { nonce, data: sealed, keyUri: keyAgreementKeyUri };
     },
-  };
-
-  const encryptedMsg = await message.encrypt(
-    getDidEncryptionKey(didDetails).id,
-    didDetails,
-    encryptionKeystoreExtension,
-    attesterDidDetails.assembleKeyUri(
-      getDidEncryptionKey(attesterDidDetails).id,
-    ),
+    dAppEncryptionKeyUri,
   );
-  return encryptedMsg;
-}
-export function deriveEncryptionKeyFromSeed(seed: Uint8Array): {
-  type: EncryptionKeyType;
-  publicKey: Uint8Array;
-  secretKey: Uint8Array;
-} {
-  const keypair = sr25519PairFromSeed(seed);
-  const { path } = keyExtractPath('//did//keyAgreement//0');
-  const { secretKey } = keyFromPath(keypair, path, 'sr25519');
-  return {
-    ...naclBoxPairFromSecret(blake2AsU8a(secretKey)),
-    type: EncryptionKeyType.X25519,
-  };
 }

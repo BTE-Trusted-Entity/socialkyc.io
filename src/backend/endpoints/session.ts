@@ -8,14 +8,13 @@ import Boom from '@hapi/boom';
 import { z } from 'zod';
 import { StatusCodes } from 'http-status-codes';
 
-import { DidResolver } from '@kiltprotocol/did';
+import * as Did from '@kiltprotocol/did';
 import { Crypto } from '@kiltprotocol/utils';
 import { DidResourceUri } from '@kiltprotocol/types';
 import { randomAsHex } from '@polkadot/util-crypto';
 
 import { fullDidPromise } from '../utilities/fullDid';
-import { encryptionKeystore } from '../utilities/keystores';
-import { keypairsPromise } from '../utilities/keypairs';
+import { decrypt } from '../utilities/cryptoCallbacks';
 import { getBasicSession, setSession } from '../utilities/sessionStorage';
 
 import { isDidResourceUri } from '../utilities/isDidResourceUri';
@@ -49,21 +48,17 @@ async function handler(
   const { encryptionKeyUri, encryptedChallenge, nonce } = payload;
   const session = getBasicSession(request.headers);
 
-  const encryptionKey = await DidResolver.resolveKey(encryptionKeyUri);
+  const encryptionKey = await Did.resolveKey(encryptionKeyUri);
 
-  if (!encryptionKey) {
-    throw Boom.forbidden(`Could not resolve the DID key ${encryptionKeyUri}`);
-  }
   logger.debug('Session confirmation resolved DID encryption key');
 
-  const { keyAgreement } = await keypairsPromise;
+  const { keyAgreementKey, fullDid } = await fullDidPromise;
 
-  const { data } = await encryptionKeystore.decrypt({
+  const { data } = await decrypt({
     data: Crypto.coToUInt8(encryptedChallenge),
     nonce: Crypto.coToUInt8(nonce),
-    publicKey: keyAgreement.publicKey,
+    keyUri: `${fullDid.uri}${keyAgreementKey.id}`,
     peerPublicKey: encryptionKey.publicKey,
-    alg: 'x25519-xsalsa20-poly1305',
   });
   logger.debug('Session confirmation decrypted challenge');
 
@@ -104,8 +99,8 @@ export const session: ServerRoute[] = [
     method: 'GET',
     path,
     handler: async () => {
-      const { fullDid, encryptionKey } = await fullDidPromise;
-      const dAppEncryptionKeyUri = fullDid.assembleKeyUri(encryptionKey.id);
+      const { fullDid, keyAgreementKey } = await fullDidPromise;
+      const dAppEncryptionKeyUri: DidResourceUri = `${fullDid.uri}${keyAgreementKey.id}`;
       return {
         dAppEncryptionKeyUri,
         ...startSession(),
