@@ -303,7 +303,7 @@ p {
 }
 
 .navLink {
-  color: var(--color-nav-link);
+  color: var(--color-white);
   text-decoration: none;
   line-height: 20px;
 }
