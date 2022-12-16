@@ -265,7 +265,7 @@ p {
   display: flex;
   position: fixed;
   place-content: center;
-  min-height: 34px;
+  min-height: 2.125rem;
   background: var(--color-violet);
   bottom: 0;
   border-top: 1px solid var(--color-magenta);
@@ -277,7 +277,7 @@ p {
   flex-direction: column;
   align-items: center;
   justify-content: space-between;
-  font-size: 14px;
+  line-height: 2.25rem;
   margin: 0 5rem;
 }
 
@@ -290,17 +290,15 @@ p {
 .navMenu {
   display: flex;
   width: 100vw;
-  place-content: center;
-  gap: 10px;
-  padding-block: 7px;
+  justify-content: center;
+  gap: 0.625rem;
   border-bottom: 1px solid rgb(var(--color-line-rgb) / 75%);
+  font-size: 0.875rem;
 }
 
 @media screen and (min-width: 700px) {
   .navMenu {
     width: auto;
-    justify-content: normal;
-    padding: 0;
     border: 0;
   }
 }
@@ -308,7 +306,6 @@ p {
 .navLink {
   color: var(--color-white);
   text-decoration: none;
-  line-height: 20px;
 }
 
 .navLinkActive.navLink {
@@ -317,15 +314,8 @@ p {
 
 .copyright {
   color: var(--color-white);
-  padding: 7px 90px 0 0;
-  line-height: 20px;
-  font-size: 10px;
-  margin: 0 0 7px;
-  background: url('../images/built-on-KILT.svg') no-repeat center right;
-}
-
-@media screen and (min-width: 700px) {
-  .copyright {
-    margin: 0;
-  }
+  padding: 0 calc(90rem / 16) 0 0;
+  font-size: 0.625rem;
+  margin: 0;
+  background: url('../images/built-on-KILT.svg') no-repeat top calc(5rem / 16) right;
 }
