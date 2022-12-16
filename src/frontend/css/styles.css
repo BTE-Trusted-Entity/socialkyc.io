@@ -274,31 +274,34 @@ p {
 .content {
   width: 100%;
   display: flex;
+  flex-direction: column;
   align-items: center;
   justify-content: space-between;
   font-size: 14px;
   margin: 0 5rem;
 }
 
-@media (max-width: 700px) {
+@media screen and (min-width: 700px) {
   .content {
-    flex-direction: column;
+    flex-direction: row;
   }
 }
 
 .navMenu {
   display: flex;
-  align-items: center;
+  width: 100vw;
+  place-content: center;
   gap: 10px;
+  padding-block: 7px;
+  border-bottom: 1px solid rgb(var(--color-line-rgb) / 75%);
 }
 
-@media (max-width: 700px) {
+@media screen and (min-width: 700px) {
   .navMenu {
-    width: 100vw;
-    display: flex;
-    place-content: center;
-    padding: 7px 0;
-    border-bottom: 1px solid rgb(var(--color-line-rgb) / 75%);
+    width: auto;
+    justify-content: normal;
+    padding: 0;
+    border: 0;
   }
 }
 
@@ -317,12 +320,12 @@ p {
   padding: 7px 90px 0 0;
   line-height: 20px;
   font-size: 10px;
-  margin: 0;
+  margin: 0 0 7px;
   background: url('../images/built-on-KILT.svg') no-repeat center right;
 }
 
-@media (max-width: 700px) {
+@media screen and (min-width: 700px) {
   .copyright {
-    margin: 0 0 7px;
+    margin: 0;
   }
 }
