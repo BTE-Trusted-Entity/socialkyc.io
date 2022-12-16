@@ -103,11 +103,13 @@ p {
   box-shadow:
     -2px -2px 9px 0 rgb(var(--color-white-rgb) / 20%),
     2px 2px 9px 0 rgb(var(--color-black-rgb) / 20%);
+  margin-bottom: 5rem;
 }
 
 @media screen and (min-width: 800px) {
   .leftContainer {
     min-height: calc(100vh - 10rem);
+    margin-bottom: auto;
   }
 }
 
