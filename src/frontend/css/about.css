@@ -1,4 +1,4 @@
-@import 'styles.css';
+@import url('styles.css');
 
 .leftContainer section {
   margin-bottom: 5rem;
