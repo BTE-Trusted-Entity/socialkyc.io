@@ -59,7 +59,7 @@ Thanks,
 The SocialKYC Team
 
 
-The SocialKYC identity verification service is brought to you by B.T.E. BOTLabs Trusted Entity GmbH, a subsidiary of BOTLabs GmbH, the entity that initially developed KILT Protocol.`;
+The SocialKYC identity verification service is brought to you by BOTLabs GmbH, the entity that initially developed KILT Protocol.`;
 
   // Cannot inline the images, webmails ignore them or even drop styles
   const html = (await htmlTemplatePromise)
