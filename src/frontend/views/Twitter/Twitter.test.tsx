@@ -19,13 +19,20 @@ import {
 import { ClosedRejection } from '../../utilities/session';
 
 import { useTwitterApi } from './useTwitterApi';
-import { Twitter } from './Twitter';
+import { Twitter, TwitterProfile } from './Twitter';
+
+const profileMock: TwitterProfile = {
+  twitterHandle: 'social_kyc_tech',
+};
+
+const secret = 'SECRET';
 
 jest.mock('./useTwitterApi');
 let mockTwitterApi: ReturnType<typeof useTwitterApi>;
+let claimPromise: TestPromise<string>;
+let confirmPromise: TestPromise<TwitterProfile>;
 let quotePromise: TestPromise<IEncryptedMessage>;
-let requestPromise: TestPromise<string>;
-let confirmPromise: TestPromise<undefined>;
+let requestPromise: TestPromise<void>;
 let attestPromise: TestPromise<IEncryptedMessage>;
 
 async function enterTwitter() {
@@ -33,10 +40,20 @@ async function enterTwitter() {
   await userEvent.type(input, 'social_kyc_tech');
 }
 
-function expectQuoteRequested() {
-  expect(mockTwitterApi.quote).toHaveBeenCalledWith({
-    username: 'social_kyc_tech',
+async function clickContinue() {
+  await userEvent.click(
+    await screen.findByRole('button', { name: 'Continue' }),
+  );
+}
+
+function expectClaimCalled() {
+  expect(mockTwitterApi.claim).toHaveBeenCalledWith({
+    twitterHandle: 'social_kyc_tech',
   });
+}
+
+function expectQuoteRequested() {
+  expect(mockTwitterApi.quote).toHaveBeenCalledWith({});
 }
 
 async function continueInWallet() {
@@ -81,6 +98,12 @@ async function tryAgain() {
   );
 }
 
+async function expectStartOver() {
+  expect(
+    await screen.findByLabelText('Your Twitter handle'),
+  ).toBeInTheDocument();
+}
+
 async function expectSecretInMessage() {
   const messageOutput = (await screen.findByLabelText(
     'Please tweet this message:',
@@ -102,22 +125,24 @@ async function respondWithQuote() {
 
 async function confirmOwnership() {
   await act(async () => {
-    confirmPromise.resolve(undefined);
+    confirmPromise.resolve(profileMock);
   });
 }
 
 describe('Twitter', () => {
   beforeEach(() => {
+    claimPromise = makeTestPromise();
+    confirmPromise = makeTestPromise();
     quotePromise = makeTestPromise();
     requestPromise = makeTestPromise();
-    confirmPromise = makeTestPromise();
     attestPromise = makeTestPromise();
 
     mockTwitterApi = {
+      claim: claimPromise.jestFn,
+      confirm: confirmPromise.jestFn,
       quote: quotePromise.jestFn,
       requestAttestation: requestPromise.jestFn,
       attest: attestPromise.jestFn,
-      confirm: confirmPromise.jestFn,
     };
     jest.mocked(useTwitterApi).mockReturnValue(mockTwitterApi);
 
@@ -133,7 +158,26 @@ describe('Twitter', () => {
   it('should go through the happy path', async () => {
     const { container } = render(<Twitter session={sessionMock} />);
 
+    expectIsNotProcessing(container);
+
     await enterTwitter();
+    await clickContinue();
+    expectIsProcessing(container);
+
+    expectClaimCalled();
+
+    await act(async () => {
+      claimPromise.resolve(secret);
+    });
+
+    expectIsNotProcessing(container);
+
+    expectSecretInMessage();
+
+    expect(await screen.findByText('Go to Twitter')).toBeInTheDocument();
+
+    await confirmOwnership();
+
     await continueInWallet();
     expectIsProcessing(container);
     expectQuoteRequested();
@@ -145,12 +189,9 @@ describe('Twitter', () => {
     expectAttestationRequested();
 
     await act(async () => {
-      requestPromise.resolve('SECRET');
+      requestPromise.resolve();
     });
     expectIsNotProcessing(container);
-
-    await expectSecretInMessage();
-    await confirmOwnership();
     await expectAnchoringInProgress();
 
     await act(async () => {
@@ -169,10 +210,103 @@ describe('Twitter', () => {
     expect(sessionMock.send).toHaveBeenCalledWith({ done: '' });
   });
 
+  it('should show an error when the username is invalid', async () => {
+    const { container } = render(<Twitter session={sessionMock} />);
+
+    const input = await screen.findByLabelText('Your Twitter handle');
+    await userEvent.type(input, 'social_ kyc_tech');
+    await clickContinue();
+
+    expectIsNotProcessing(container);
+    expect(
+      await screen.findByText(
+        'There is an unexpected character „ “, please correct.',
+      ),
+    ).toBeInTheDocument();
+  });
+
+  // eslint-disable-next-line jest/expect-expect
+  it('should show an error when claim fails', async () => {
+    const { container } = render(<Twitter session={sessionMock} />);
+
+    expectIsNotProcessing(container);
+
+    await enterTwitter();
+    await clickContinue();
+    expectIsProcessing(container);
+
+    expectClaimCalled();
+
+    await act(async () => {
+      claimPromise.reject(new Error());
+    });
+
+    expectIsNotProcessing(container);
+
+    expectSomethingWrong();
+
+    await tryAgain();
+    await expectStartOver();
+    await clickContinue();
+
+    expect(mockTwitterApi.claim).toHaveBeenCalledTimes(2);
+  });
+
+  it('should advice about the slow confirmation', async () => {
+    const { container } = render(<Twitter session={sessionMock} />);
+
+    expectIsNotProcessing(container);
+
+    await enterTwitter();
+    await clickContinue();
+
+    jest.useFakeTimers();
+
+    expectIsProcessing(container);
+
+    expectClaimCalled();
+
+    await act(async () => {
+      claimPromise.resolve(secret);
+    });
+
+    expectIsNotProcessing(container);
+
+    expectSecretInMessage();
+
+    jest.runAllTimers();
+
+    expect(await screen.findByText('Tweet not found')).toBeInTheDocument();
+
+    jest.useRealTimers();
+
+    await tryAgain();
+    await expectStartOver();
+  });
+
   it('should show error when quote fails', async () => {
     const { container } = render(<Twitter session={sessionMock} />);
 
+    expectIsNotProcessing(container);
+
     await enterTwitter();
+    await clickContinue();
+    expectIsProcessing(container);
+
+    expectClaimCalled();
+
+    await act(async () => {
+      claimPromise.resolve(secret);
+    });
+
+    expectIsNotProcessing(container);
+
+    expectSecretInMessage();
+
+    expect(await screen.findByText('Go to Twitter')).toBeInTheDocument();
+
+    await confirmOwnership();
+
     await continueInWallet();
     expectIsProcessing(container);
     expectQuoteRequested();
@@ -185,16 +319,34 @@ describe('Twitter', () => {
     expectIsNotProcessing(container);
     await expectSomethingWrong();
 
-    expect(mockTwitterApi.quote).toHaveBeenCalledTimes(1);
     await tryAgain();
-    await continueInWallet();
-    expect(mockTwitterApi.quote).toHaveBeenCalledTimes(2);
+    await expectStartOver();
   });
 
+  // eslint-disable-next-line jest/expect-expect
   it('should show an error when the wallet communication fails', async () => {
     const { container } = render(<Twitter session={sessionMock} />);
 
+    expectIsNotProcessing(container);
+
     await enterTwitter();
+    await clickContinue();
+    expectIsProcessing(container);
+
+    expectClaimCalled();
+
+    await act(async () => {
+      claimPromise.resolve(secret);
+    });
+
+    expectIsNotProcessing(container);
+
+    expectSecretInMessage();
+
+    expect(await screen.findByText('Go to Twitter')).toBeInTheDocument();
+
+    await confirmOwnership();
+
     await continueInWallet();
     expectIsProcessing(container);
     expectQuoteRequested();
@@ -210,14 +362,33 @@ describe('Twitter', () => {
     await expectSomethingWrong();
 
     await tryAgain();
-    await continueInWallet();
-    expect(mockTwitterApi.quote).toHaveBeenCalledTimes(2);
+    await expectStartOver();
   });
 
+  // eslint-disable-next-line jest/expect-expect
   it('should show an error when there’s an error in Sporran', async () => {
     const { container } = render(<Twitter session={sessionMock} />);
 
+    expectIsNotProcessing(container);
+
     await enterTwitter();
+    await clickContinue();
+    expectIsProcessing(container);
+
+    expectClaimCalled();
+
+    await act(async () => {
+      claimPromise.resolve(secret);
+    });
+
+    expectIsNotProcessing(container);
+
+    expectSecretInMessage();
+
+    expect(await screen.findByText('Go to Twitter')).toBeInTheDocument();
+
+    await confirmOwnership();
+
     await continueInWallet();
     expectIsProcessing(container);
     expectQuoteRequested();
@@ -226,9 +397,6 @@ describe('Twitter', () => {
     expectQuoteIsSent();
 
     const listenerPromise = callSessionListenerWith({ error: 'unknown' });
-    expect(mockTwitterApi.requestAttestation).toHaveBeenCalledWith({
-      message: { error: 'unknown' },
-    });
 
     await act(async () => {
       requestPromise.reject(new Error('unknown'));
@@ -240,14 +408,32 @@ describe('Twitter', () => {
     await expectSomethingWrong();
 
     await tryAgain();
-    await continueInWallet();
-    expect(mockTwitterApi.quote).toHaveBeenCalledTimes(2);
+    await expectStartOver();
   });
 
   it('should advice when the popup is closed', async () => {
     const { container } = render(<Twitter session={sessionMock} />);
 
+    expectIsNotProcessing(container);
+
     await enterTwitter();
+    await clickContinue();
+    expectIsProcessing(container);
+
+    expectClaimCalled();
+
+    await act(async () => {
+      claimPromise.resolve(secret);
+    });
+
+    expectIsNotProcessing(container);
+
+    expectSecretInMessage();
+
+    expect(await screen.findByText('Go to Twitter')).toBeInTheDocument();
+
+    await confirmOwnership();
+
     await continueInWallet();
     expectIsProcessing(container);
     expectQuoteRequested();
@@ -277,56 +463,29 @@ describe('Twitter', () => {
     expect(mockTwitterApi.quote).toHaveBeenCalledTimes(2);
   });
 
-  it('should show an error when the username is invalid', async () => {
-    const { container } = render(<Twitter session={sessionMock} />);
-
-    const input = await screen.findByLabelText('Your Twitter handle');
-    await userEvent.type(input, 'social_ kyc_tech');
-    await continueInWallet();
-
-    expectIsNotProcessing(container);
-    expect(
-      await screen.findByText(
-        'There is an unexpected character „ “, please correct.',
-      ),
-    ).toBeInTheDocument();
-  });
-
-  it('should advice about the slow confirmation', async () => {
-    const { container } = render(<Twitter session={sessionMock} />);
-
-    await enterTwitter();
-    await continueInWallet();
-    expectIsProcessing(container);
-    expectQuoteRequested();
-
-    await respondWithQuote();
-    expectQuoteIsSent();
-
-    jest.useFakeTimers();
-    callSessionListenerWith({ signed: 'quote' });
-    expectAttestationRequested();
-
-    await act(async () => {
-      requestPromise.resolve('SECRET');
-    });
-    expectIsNotProcessing(container);
-    await expectSecretInMessage();
-
-    jest.runAllTimers();
-
-    expect(await screen.findByText('Tweet not found')).toBeInTheDocument();
-
-    jest.useRealTimers();
-    await tryAgain();
-    await continueInWallet();
-    expect(mockTwitterApi.quote).toHaveBeenCalledTimes(2);
-  });
-
   it('should advice about the slow attestation', async () => {
     const { container } = render(<Twitter session={sessionMock} />);
 
+    expectIsNotProcessing(container);
+
     await enterTwitter();
+    await clickContinue();
+    expectIsProcessing(container);
+
+    expectClaimCalled();
+
+    await act(async () => {
+      claimPromise.resolve(secret);
+    });
+
+    expectIsNotProcessing(container);
+
+    expectSecretInMessage();
+
+    expect(await screen.findByText('Go to Twitter')).toBeInTheDocument();
+
+    await confirmOwnership();
+
     await continueInWallet();
     expectIsProcessing(container);
     expectQuoteRequested();
@@ -339,12 +498,9 @@ describe('Twitter', () => {
     expectAttestationRequested();
 
     await act(async () => {
-      requestPromise.resolve('SECRET');
+      requestPromise.resolve();
     });
     expectIsNotProcessing(container);
-    await expectSecretInMessage();
-
-    await confirmOwnership();
     await expectAnchoringInProgress();
 
     jest.runAllTimers();

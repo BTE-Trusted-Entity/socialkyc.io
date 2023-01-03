@@ -68,12 +68,6 @@ exports[`YoutubeTemplate should match snapshot with flowError=closed 1`] = `
         Continue in Wallet
       </button>
     </form>
-    <a
-      class="link"
-      href="/"
-    >
-      Back to list
-    </a>
   </section>
 </div>
 `;
@@ -122,12 +116,13 @@ exports[`YoutubeTemplate should match snapshot with flowError=noChannel 1`] = `
       class="buttonsLine"
     >
       <a
-        class="ctaButton"
+        aria-label="Open Youtube"
+        class="youtubeButton"
         href="https://www.youtube.com/account"
         rel="noreferrer"
         target="_blank"
       >
-        Open YouTube
+        Open
       </a>
     </p>
     <a
@@ -292,12 +287,6 @@ exports[`YoutubeTemplate should match snapshot with status=attesting 1`] = `
         Please leave this tab open until your credential is attested.
       </p>
     </section>
-    <a
-      class="link"
-      href="/"
-    >
-      Back to list
-    </a>
   </section>
 </div>
 `;
@@ -350,12 +339,6 @@ exports[`YoutubeTemplate should match snapshot with status=authorized 1`] = `
         Continue in Wallet
       </button>
     </form>
-    <a
-      class="link"
-      href="/"
-    >
-      Back to list
-    </a>
   </section>
 </div>
 `;
@@ -400,12 +383,6 @@ exports[`YoutubeTemplate should match snapshot with status=authorizing 1`] = `
         Please wait, accessing YouTube channel details.
       </p>
     </section>
-    <a
-      class="link"
-      href="/"
-    >
-      Back to list
-    </a>
   </section>
 </div>
 `;
@@ -540,11 +517,10 @@ exports[`YoutubeTemplate should match snapshot with status=urlReady 1`] = `
       class="buttonsLine"
     >
       <a
-        class="ctaButton"
-        rel="noreferrer"
-        target="_blank"
+        aria-label="Sign-in with Youtube"
+        class="youtubeButton"
       >
-        Sign in with YouTube
+        Sign-in with
       </a>
     </p>
     <a

@@ -5,7 +5,7 @@ import {
   ServerRoute,
 } from '@hapi/hapi';
 import Boom from '@hapi/boom';
-import { IEncryptedMessage, MessageBodyType } from '@kiltprotocol/types';
+import { IEncryptedMessage } from '@kiltprotocol/types';
 
 import { encryptMessageBody } from '../utilities/encryptMessage';
 import { getSession } from '../utilities/sessionStorage';
@@ -24,18 +24,18 @@ async function handler(
   const { logger } = request;
   logger.debug('Youtube quote started');
 
-  const { encryptionKeyId, claim, confirmed } = getSession(request.headers);
+  const { encryptionKeyUri, claim, confirmed } = getSession(request.headers);
   if (!claim || !confirmed) {
     throw Boom.notFound('Confirmed claim not found');
   }
 
-  const output = await encryptMessageBody(encryptionKeyId, {
+  const output = await encryptMessageBody(encryptionKeyUri, {
     content: {
       claim,
       legitimations: [],
       cTypes: [youtubeCType],
     },
-    type: MessageBodyType.SUBMIT_TERMS,
+    type: 'submit-terms',
   });
 
   logger.debug('Youtube quote completed');

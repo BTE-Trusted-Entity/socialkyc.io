@@ -1,40 +1,25 @@
 import {
-  DidPublicKey,
+  DidResourceUri,
   IEncryptedMessage,
   MessageBody,
 } from '@kiltprotocol/types';
-import { Message } from '@kiltprotocol/messaging';
+import * as Message from '@kiltprotocol/messaging';
 
-import { fullDidPromise } from './fullDid';
-import { encryptionKeystore } from './keystores';
+import * as Did from '@kiltprotocol/did';
+
+import { encrypt } from './cryptoCallbacks';
 import { configuration } from './configuration';
 
-export async function encryptMessage(
-  message: Message,
-  encryptionKeyId: DidPublicKey['id'],
-): Promise<IEncryptedMessage> {
-  const { fullDid } = await fullDidPromise;
-
-  const encryptionKey = fullDid.encryptionKey;
-  if (!encryptionKey) {
-    throw new Error('Own encryption key does not exist');
-  }
-
-  return message.encrypt(
-    encryptionKey.id,
-    fullDid,
-    encryptionKeystore,
-    encryptionKeyId,
-  );
-}
-
 export async function encryptMessageBody(
-  encryptionKeyId: DidPublicKey['id'],
+  encryptionKeyUri: DidResourceUri,
   messageBody: MessageBody,
 ): Promise<IEncryptedMessage> {
-  // TODO: restore that after the SDK fixes parsing of light DIDs
-  // const { did } = DidUtils.parseDidUrl(encryptionKeyId);
-  const did = encryptionKeyId.replace(/#.*$/, '');
-  const message = new Message(messageBody, configuration.did, did);
-  return encryptMessage(message, encryptionKeyId);
+  const { did } = Did.parse(encryptionKeyUri);
+
+  if (configuration.did === 'pending') {
+    throw new Error('Own DID not found');
+  }
+
+  const message = Message.fromBody(messageBody, configuration.did, did);
+  return Message.encrypt(message, encrypt, encryptionKeyUri);
 }

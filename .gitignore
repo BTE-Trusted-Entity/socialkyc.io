@@ -6,3 +6,5 @@
 /yarn-error.log
 /.parcel-cache
 /coverage
+/.vscode
+/scripts/loadTest/build

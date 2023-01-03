@@ -1,25 +1,23 @@
-import {
-  Claim,
-  RequestForAttestation,
-  Attestation,
-  Credential,
-} from '@kiltprotocol/core';
-
-import { Crypto } from '@kiltprotocol/utils';
+import { Claim, Credential } from '@kiltprotocol/core';
+import { ICredentialPresentation } from '@kiltprotocol/types';
 
 import { configuration } from '../utilities/configuration';
 import { fullDidPromise } from '../utilities/fullDid';
-import { assertionKeystore } from '../utilities/keystores';
+import { signWithAssertionMethod } from '../utilities/cryptoCallbacks';
 import { exitOnError } from '../utilities/exitOnError';
 
 import { domainLinkageCType } from './domainLinkageCType';
 import { fromCredential } from './domainLinkageCredential';
 
-async function attestDomainLinkage() {
+async function attestDomainLinkage(): Promise<ICredentialPresentation> {
   const claimContents = {
     id: configuration.did,
     origin: configuration.baseUri,
   };
+
+  if (configuration.did === 'pending') {
+    throw new Error('Own DID not found');
+  }
 
   const claim = Claim.fromCTypeAndClaimContents(
     domainLinkageCType,
@@ -27,32 +25,20 @@ async function attestDomainLinkage() {
     configuration.did,
   );
 
-  const requestForAttestation = RequestForAttestation.fromClaim(claim);
+  const credential = Credential.fromClaim(claim);
 
   const { fullDid } = await fullDidPromise;
 
-  const attestationKey = fullDid.attestationKey;
+  const attestationKey = fullDid.assertionMethod?.[0];
   if (!attestationKey) {
     throw new Error('The attestation key is not defined?!?');
   }
 
-  const { signature, keyId } = await fullDid.signPayload(
-    Crypto.coToUInt8(requestForAttestation.rootHash),
-    assertionKeystore,
-    attestationKey.id,
-  );
-
-  const selfSignedRequest = await requestForAttestation.addSignature(
-    signature,
-    keyId,
-  );
-
-  const attestation = Attestation.fromRequestAndDid(
-    selfSignedRequest,
-    configuration.did,
-  );
-
-  return Credential.fromRequestAndAttestation(selfSignedRequest, attestation);
+  return Credential.createPresentation({
+    credential,
+    // the domain linkage credential is special in that it is signed with the assertionMethod key
+    signCallback: signWithAssertionMethod,
+  });
 }
 
 export const didConfigResourcePromise = (async () => {

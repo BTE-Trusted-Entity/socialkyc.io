@@ -31,8 +31,6 @@ const cTypes: Record<string, string> = {
     'Telegram',
   '0x329a2a5861ea63c250763e5e4c4d4a18fe4470a31e541365c7fb831e5432b940':
     'Youtube',
-  '0xa3cc696621b9fef5fc94a61078ceecadd957f18634ccff05b9030f274e376459':
-    'Instagram',
 };
 
 function handleBeforeUnload(event: Event) {
@@ -52,20 +50,17 @@ async function handleSubmit(event: Event) {
   const requestedCType = target.elements.ctype.value;
 
   try {
-    const session = await getSession(apiWindow.kilt.sporran);
+    const session = await getSession(apiWindow.kilt.sporran, 'sporran');
     const { sessionId } = session;
 
     await session.listen(async (message) => {
       try {
-        const { credential, isAttested } = await verifyCredential(
-          { message },
-          sessionId,
-        );
+        const { presentation, isAttested, attestation } =
+          await verifyCredential({ message }, sessionId);
 
-        cType.textContent =
-          cTypes[credential.attestation.cTypeHash] || 'Unknown';
+        cType.textContent = cTypes[presentation.claim.cTypeHash] || 'Unknown';
 
-        const entries = Object.entries(credential.request.claim.contents);
+        const entries = Object.entries(presentation.claim.contents);
         if (entries.length > 0) {
           values.textContent = '';
           entries.forEach(([label, value]) => {
@@ -78,17 +73,19 @@ async function handleSubmit(event: Event) {
           values.textContent = 'Not disclosed';
         }
 
-        attesterDid.textContent = [
-          'did:kilt:4pehddkhEanexVTTzWAtrrfo2R7xPnePpuiJLC7shQU894aY', // peregrine
-          'did:kilt:4pnfkRn5UurBJTW92d9TaVLR2CqJdY4z5HPjrEbpGyBykare', // spiritnet
-        ].includes(credential.attestation.owner)
-          ? 'SocialKYC ✅'
-          : 'Unknown';
+        attesterDid.textContent =
+          attestation?.owner &&
+          [
+            'did:kilt:4pehddkhEanexVTTzWAtrrfo2R7xPnePpuiJLC7shQU894aY', // peregrine
+            'did:kilt:4pnfkRn5UurBJTW92d9TaVLR2CqJdY4z5HPjrEbpGyBykare', // spiritnet
+          ].includes(attestation.owner)
+            ? 'SocialKYC ✅'
+            : 'Unknown';
 
-        claimerDid.textContent = `✅ ${credential.request.claim.owner}`;
-        claimerDid.title = credential.request.claim.owner;
+        claimerDid.textContent = `✅ ${presentation.claim.owner}`;
+        claimerDid.title = presentation.claim.owner;
 
-        if (credential.attestation.revoked) {
+        if (attestation?.revoked) {
           status.textContent = 'Revoked ❌';
         } else if (isAttested) {
           status.textContent = 'Attested ✅';
@@ -96,7 +93,7 @@ async function handleSubmit(event: Event) {
           status.textContent = 'Not Attested ❓';
         }
 
-        json.textContent = JSON.stringify(credential, null, 4);
+        json.textContent = JSON.stringify(presentation, null, 4);
 
         shared.hidden = false;
       } finally {

@@ -1,7 +1,6 @@
 // expect cannot be imported because of https://github.com/testing-library/jest-dom/issues/426
 import { afterEach, beforeEach, describe, it, jest } from '@jest/globals';
 import userEvent from '@testing-library/user-event';
-import { generatePath, MemoryRouter } from 'react-router-dom';
 import { IEncryptedMessage } from '@kiltprotocol/types';
 
 import {
@@ -12,13 +11,13 @@ import {
   TestPromise,
 } from '../../../testing/testing';
 import '../../components/useCopyButton/useCopyButton.mock';
-import { paths } from '../../paths';
 import {
   sessionMock,
   sessionMockReset,
   sessionMockSendPromise,
 } from '../../utilities/session.mock';
 import { ClosedRejection } from '../../utilities/session';
+import { useValuesFromRedirectUri } from '../../utilities/useValuesFromRedirectUri';
 
 import { useTwitchApi } from './useTwitchApi';
 import { Twitch, TwitchProfile } from './Twitch';
@@ -30,6 +29,8 @@ const profileMock: TwitchProfile = {
 
 const secret = 'SECRET';
 const code = 'CODE';
+
+jest.mock('../../utilities/useValuesFromRedirectUri');
 
 jest.mock('./useTwitchApi');
 let mockTwitchApi: ReturnType<typeof useTwitchApi>;
@@ -121,6 +122,8 @@ async function respondWithQuote() {
 
 describe('Twitch', () => {
   beforeEach(() => {
+    jest.mocked(useValuesFromRedirectUri).mockReturnValue({});
+
     authUrlPromise = makeTestPromise();
     confirmPromise = makeTestPromise();
     quotePromise = makeTestPromise();
@@ -175,13 +178,9 @@ describe('Twitch', () => {
   });
 
   it('should finish the happy path after authorization', async () => {
-    const { container } = render(
-      <MemoryRouter
-        initialEntries={[generatePath(paths.twitchAuth, { secret, code })]}
-      >
-        <Twitch session={sessionMock} />
-      </MemoryRouter>,
-    );
+    jest.mocked(useValuesFromRedirectUri).mockReturnValue({ secret, code });
+
+    const { container } = render(<Twitch session={sessionMock} />);
 
     expectIsNotProcessing(container);
     expectConfirmCalledWith({ secret, code });
@@ -223,13 +222,9 @@ describe('Twitch', () => {
   });
 
   it('should show authorization error', async () => {
-    const { container } = render(
-      <MemoryRouter
-        initialEntries={[generatePath(paths.twitchAuth, { secret, code })]}
-      >
-        <Twitch session={sessionMock} />
-      </MemoryRouter>,
-    );
+    jest.mocked(useValuesFromRedirectUri).mockReturnValue({ secret, code });
+
+    const { container } = render(<Twitch session={sessionMock} />);
 
     expectIsNotProcessing(container);
 
@@ -254,13 +249,9 @@ describe('Twitch', () => {
   });
 
   it('should show error when quote fails', async () => {
-    const { container } = render(
-      <MemoryRouter
-        initialEntries={[generatePath(paths.twitchAuth, { secret, code })]}
-      >
-        <Twitch session={sessionMock} />
-      </MemoryRouter>,
-    );
+    jest.mocked(useValuesFromRedirectUri).mockReturnValue({ secret, code });
+
+    const { container } = render(<Twitch session={sessionMock} />);
 
     expectIsNotProcessing(container);
     expectConfirmCalledWith({ secret, code });
@@ -287,13 +278,9 @@ describe('Twitch', () => {
 
   // eslint-disable-next-line jest/expect-expect
   it('should show an error when the wallet communication fails', async () => {
-    const { container } = render(
-      <MemoryRouter
-        initialEntries={[generatePath(paths.twitchAuth, { secret, code })]}
-      >
-        <Twitch session={sessionMock} />
-      </MemoryRouter>,
-    );
+    jest.mocked(useValuesFromRedirectUri).mockReturnValue({ secret, code });
+
+    const { container } = render(<Twitch session={sessionMock} />);
 
     expectIsNotProcessing(container);
     expectConfirmCalledWith({ secret, code });
@@ -321,13 +308,9 @@ describe('Twitch', () => {
 
   // eslint-disable-next-line jest/expect-expect
   it('should show an error when there’s an error in Sporran', async () => {
-    const { container } = render(
-      <MemoryRouter
-        initialEntries={[generatePath(paths.twitchAuth, { secret, code })]}
-      >
-        <Twitch session={sessionMock} />
-      </MemoryRouter>,
-    );
+    jest.mocked(useValuesFromRedirectUri).mockReturnValue({ secret, code });
+
+    const { container } = render(<Twitch session={sessionMock} />);
 
     expectIsNotProcessing(container);
     expectConfirmCalledWith({ secret, code });
@@ -359,13 +342,9 @@ describe('Twitch', () => {
   });
 
   it('should advice when the popup is closed', async () => {
-    const { container } = render(
-      <MemoryRouter
-        initialEntries={[generatePath(paths.twitchAuth, { secret, code })]}
-      >
-        <Twitch session={sessionMock} />
-      </MemoryRouter>,
-    );
+    jest.mocked(useValuesFromRedirectUri).mockReturnValue({ secret, code });
+
+    const { container } = render(<Twitch session={sessionMock} />);
 
     expectIsNotProcessing(container);
     expectConfirmCalledWith({ secret, code });
@@ -404,13 +383,9 @@ describe('Twitch', () => {
   });
 
   it('should advice about the slow attestation', async () => {
-    const { container } = render(
-      <MemoryRouter
-        initialEntries={[generatePath(paths.twitchAuth, { secret, code })]}
-      >
-        <Twitch session={sessionMock} />
-      </MemoryRouter>,
-    );
+    jest.mocked(useValuesFromRedirectUri).mockReturnValue({ secret, code });
+
+    const { container } = render(<Twitch session={sessionMock} />);
 
     expectIsNotProcessing(container);
     expectConfirmCalledWith({ secret, code });

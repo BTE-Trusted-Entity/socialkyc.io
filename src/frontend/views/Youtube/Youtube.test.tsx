@@ -1,7 +1,6 @@
 // expect cannot be imported because of https://github.com/testing-library/jest-dom/issues/426
 import { afterEach, beforeEach, describe, it, jest } from '@jest/globals';
 import userEvent from '@testing-library/user-event';
-import { generatePath, MemoryRouter } from 'react-router-dom';
 import { IEncryptedMessage } from '@kiltprotocol/types';
 
 import {
@@ -12,13 +11,13 @@ import {
   TestPromise,
 } from '../../../testing/testing';
 import '../../components/useCopyButton/useCopyButton.mock';
-import { paths } from '../../paths';
 import {
   sessionMock,
   sessionMockReset,
   sessionMockSendPromise,
 } from '../../utilities/session.mock';
 import { ClosedRejection } from '../../utilities/session';
+import { useValuesFromRedirectUri } from '../../utilities/useValuesFromRedirectUri';
 
 import { useYoutubeApi } from './useYoutubeApi';
 import { Youtube, YoutubeChannel } from './Youtube';
@@ -31,6 +30,8 @@ const channelMock: YoutubeChannel = {
 const secret = 'SECRET';
 const code = 'CODE';
 
+jest.mock('../../utilities/useValuesFromRedirectUri');
+
 jest.mock('./useYoutubeApi');
 let mockYoutubeApi: ReturnType<typeof useYoutubeApi>;
 let authUrlPromise: TestPromise<string>;
@@ -41,14 +42,14 @@ let attestPromise: TestPromise<IEncryptedMessage>;
 
 async function signInWithYoutube() {
   const signInLink = await screen.findByRole('link', {
-    name: 'Sign in with YouTube',
+    name: 'Sign-in with Youtube',
   });
   await userEvent.click(signInLink);
 }
 
 async function openYoutube() {
   const openYoutubeLink = await screen.findByRole('link', {
-    name: 'Open YouTube',
+    name: 'Open Youtube',
   });
   await userEvent.click(openYoutubeLink);
 }
@@ -128,6 +129,8 @@ async function respondWithQuote() {
 
 describe('Youtube', () => {
   beforeEach(() => {
+    jest.mocked(useValuesFromRedirectUri).mockReturnValue({});
+
     authUrlPromise = makeTestPromise();
     confirmPromise = makeTestPromise();
     quotePromise = makeTestPromise();
@@ -160,9 +163,9 @@ describe('Youtube', () => {
     await act(async () => {
       authUrlPromise.resolve('https://youtube-auth-url.example');
     });
-
     await signInWithYoutube();
-    expect(await screen.findByText('Sign in with YouTube')).toBeInTheDocument();
+
+    expect(await screen.findByText('Sign-in with')).toBeInTheDocument();
   });
 
   it('should show an error when authUrl fails', async () => {
@@ -182,13 +185,9 @@ describe('Youtube', () => {
   });
 
   it('should finish the happy path after authorization', async () => {
-    const { container } = render(
-      <MemoryRouter
-        initialEntries={[generatePath(paths.youtubeAuth, { secret, code })]}
-      >
-        <Youtube session={sessionMock} />
-      </MemoryRouter>,
-    );
+    jest.mocked(useValuesFromRedirectUri).mockReturnValue({ secret, code });
+
+    const { container } = render(<Youtube session={sessionMock} />);
 
     expectIsNotProcessing(container);
     expectConfirmCalledWith({ secret, code });
@@ -230,13 +229,9 @@ describe('Youtube', () => {
   });
 
   it('should show authorization error', async () => {
-    const { container } = render(
-      <MemoryRouter
-        initialEntries={[generatePath(paths.youtubeAuth, { secret, code })]}
-      >
-        <Youtube session={sessionMock} />
-      </MemoryRouter>,
-    );
+    jest.mocked(useValuesFromRedirectUri).mockReturnValue({ secret, code });
+
+    const { container } = render(<Youtube session={sessionMock} />);
 
     expectIsNotProcessing(container);
 
@@ -261,13 +256,9 @@ describe('Youtube', () => {
   });
 
   it('should show no channel error', async () => {
-    const { container } = render(
-      <MemoryRouter
-        initialEntries={[generatePath(paths.youtubeAuth, { secret, code })]}
-      >
-        <Youtube session={sessionMock} />
-      </MemoryRouter>,
-    );
+    jest.mocked(useValuesFromRedirectUri).mockReturnValue({ secret, code });
+
+    const { container } = render(<Youtube session={sessionMock} />);
 
     expectIsNotProcessing(container);
 
@@ -288,17 +279,13 @@ describe('Youtube', () => {
     ).not.toBeInTheDocument();
 
     await openYoutube();
-    expect(await screen.findByText('Open YouTube')).toBeInTheDocument();
+    expect(await screen.findByText('Open')).toBeInTheDocument();
   });
 
   it('should show error when quote fails', async () => {
-    const { container } = render(
-      <MemoryRouter
-        initialEntries={[generatePath(paths.youtubeAuth, { secret, code })]}
-      >
-        <Youtube session={sessionMock} />
-      </MemoryRouter>,
-    );
+    jest.mocked(useValuesFromRedirectUri).mockReturnValue({ secret, code });
+
+    const { container } = render(<Youtube session={sessionMock} />);
 
     expectIsNotProcessing(container);
     expectConfirmCalledWith({ secret, code });
@@ -325,13 +312,9 @@ describe('Youtube', () => {
 
   // eslint-disable-next-line jest/expect-expect
   it('should show an error when the wallet communication fails', async () => {
-    const { container } = render(
-      <MemoryRouter
-        initialEntries={[generatePath(paths.youtubeAuth, { secret, code })]}
-      >
-        <Youtube session={sessionMock} />
-      </MemoryRouter>,
-    );
+    jest.mocked(useValuesFromRedirectUri).mockReturnValue({ secret, code });
+
+    const { container } = render(<Youtube session={sessionMock} />);
 
     expectIsNotProcessing(container);
     expectConfirmCalledWith({ secret, code });
@@ -359,13 +342,9 @@ describe('Youtube', () => {
 
   // eslint-disable-next-line jest/expect-expect
   it('should show an error when there’s an error in Sporran', async () => {
-    const { container } = render(
-      <MemoryRouter
-        initialEntries={[generatePath(paths.youtubeAuth, { secret, code })]}
-      >
-        <Youtube session={sessionMock} />
-      </MemoryRouter>,
-    );
+    jest.mocked(useValuesFromRedirectUri).mockReturnValue({ secret, code });
+
+    const { container } = render(<Youtube session={sessionMock} />);
 
     expectIsNotProcessing(container);
     expectConfirmCalledWith({ secret, code });
@@ -397,13 +376,9 @@ describe('Youtube', () => {
   });
 
   it('should advice when the popup is closed', async () => {
-    const { container } = render(
-      <MemoryRouter
-        initialEntries={[generatePath(paths.youtubeAuth, { secret, code })]}
-      >
-        <Youtube session={sessionMock} />
-      </MemoryRouter>,
-    );
+    jest.mocked(useValuesFromRedirectUri).mockReturnValue({ secret, code });
+
+    const { container } = render(<Youtube session={sessionMock} />);
 
     expectIsNotProcessing(container);
     expectConfirmCalledWith({ secret, code });
@@ -442,13 +417,9 @@ describe('Youtube', () => {
   });
 
   it('should advice about the slow attestation', async () => {
-    const { container } = render(
-      <MemoryRouter
-        initialEntries={[generatePath(paths.youtubeAuth, { secret, code })]}
-      >
-        <Youtube session={sessionMock} />
-      </MemoryRouter>,
-    );
+    jest.mocked(useValuesFromRedirectUri).mockReturnValue({ secret, code });
+
+    const { container } = render(<Youtube session={sessionMock} />);
 
     expectIsNotProcessing(container);
     expectConfirmCalledWith({ secret, code });

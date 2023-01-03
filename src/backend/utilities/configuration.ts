@@ -3,6 +3,7 @@ import path from 'node:path';
 
 import dotenv from 'dotenv';
 import pino from 'pino';
+import { DidUri } from '@kiltprotocol/types';
 
 dotenv.config();
 
@@ -34,11 +35,13 @@ if (!baseUri) {
   throw new ConfigurationError('No base URI provided');
 }
 
-const did = env.DID || 'pending';
+const did = (env.DID || 'pending') as DidUri | 'pending';
 const storeDidAndCTypes = env.STORE_DID_AND_CTYPES === 'true';
 if (did === 'pending' && !storeDidAndCTypes) {
   throw new ConfigurationError('Neither DID nor STORE_DID_AND_CTYPES provided');
 }
+
+const maintenanceMode = env.MAINTENANCE === 'true';
 
 const backupPhrase = env.SECRET_BACKUP_PHRASE;
 if (!backupPhrase) {
@@ -79,15 +82,6 @@ if (!twitch.clientId || !twitch.secret) {
   throw new ConfigurationError('No Twitch client credentials provided');
 }
 
-const instagram = {
-  clientId: env.INSTAGRAM_CLIENT_ID as string,
-  secret: env.SECRET_INSTAGRAM,
-};
-
-if (!instagram.clientId || !instagram.secret) {
-  throw new ConfigurationError('No Instagram client credentials provided');
-}
-
 const telegram = {
   token: env.SECRET_TELEGRAM as string,
 };
@@ -120,6 +114,7 @@ export const configuration = {
   port: env.PORT || 3000,
   blockchainEndpoint,
   isProduction: env.NODE_ENV === 'production',
+  maintenanceMode,
   baseUri,
   distFolder: path.join(cwd(), 'dist', 'frontend'),
   did,
@@ -130,7 +125,6 @@ export const configuration = {
   discord,
   github,
   twitch,
-  instagram,
   telegram,
   youtube,
   lowBalanceAlertRecipients,

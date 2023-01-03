@@ -1,4 +1,5 @@
-import { Balance, BalanceUtils } from '@kiltprotocol/core';
+import { BalanceUtils } from '@kiltprotocol/core';
+import { ConfigService } from '@kiltprotocol/config';
 
 import { SendEmailCommand } from '@aws-sdk/client-ses';
 
@@ -46,7 +47,8 @@ export function reportBalance() {
   setInterval(async () => {
     try {
       const { identity } = await keypairsPromise;
-      const balances = await Balance.getBalances(identity.address);
+      const api = ConfigService.get('api');
+      const balances = (await api.query.system.account(identity.address)).data;
 
       const free = BalanceUtils.formatKiltBalance(balances.free);
       const reserved = BalanceUtils.formatKiltBalance(balances.reserved);

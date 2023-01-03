@@ -2,6 +2,7 @@ import { Meta } from '@storybook/react';
 import { action } from '@storybook/addon-actions';
 
 import { TwitterTemplate } from './TwitterTemplate';
+import { TwitterProfile } from './Twitter';
 
 export default {
   title: 'Views/Twitter',
@@ -9,26 +10,49 @@ export default {
 } as Meta;
 
 const actions = {
-  handleSubmit: action('submit'),
+  handleClaim: action('claim'),
+  handleRequestAttestation: action('requestAttestation'),
   handleBackup: action('backup'),
   handleTryAgainClick: action('tryAgain'),
   setInputError: action('setInputError'),
+};
+
+const profileMock: TwitterProfile = {
+  twitterHandle: 'social_kyc_tech',
 };
 
 export function Start(): JSX.Element {
   return <TwitterTemplate status="none" processing={false} {...actions} />;
 }
 
-export function Requested(): JSX.Element {
-  return <TwitterTemplate status="requested" processing={true} {...actions} />;
-}
-
-export function Confirming(): JSX.Element {
+export function Authenticating(): JSX.Element {
   return (
     <TwitterTemplate
-      status="confirming"
+      status="authenticating"
       secret="0123456789"
       processing={false}
+      {...actions}
+    />
+  );
+}
+
+export function Authenticated(): JSX.Element {
+  return (
+    <TwitterTemplate
+      status="authenticated"
+      processing={false}
+      profile={profileMock}
+      {...actions}
+    />
+  );
+}
+
+export function QuoteOpen(): JSX.Element {
+  return (
+    <TwitterTemplate
+      status="authenticated"
+      processing={true}
+      profile={profileMock}
       {...actions}
     />
   );
@@ -45,9 +69,10 @@ export function Ready(): JSX.Element {
 export function Closed(): JSX.Element {
   return (
     <TwitterTemplate
-      status="requested"
+      status="authenticated"
       flowError="closed"
       processing={false}
+      profile={profileMock}
       {...actions}
     />
   );
@@ -59,13 +84,19 @@ export function UnexpectedError(): JSX.Element {
       status="error"
       flowError="unknown"
       processing={false}
+      profile={profileMock}
       {...actions}
     />
   );
 }
 
-export function Unconfirmed(): JSX.Element {
+export function Timeout(): JSX.Element {
   return (
-    <TwitterTemplate status="unconfirmed" processing={false} {...actions} />
+    <TwitterTemplate
+      status="error"
+      flowError="timeout"
+      processing={false}
+      {...actions}
+    />
   );
 }

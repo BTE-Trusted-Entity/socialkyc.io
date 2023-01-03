@@ -10,5 +10,5 @@ export async function requestAttestationTwitter(
   json: EncryptedMessageInput,
   ky: KyInstance,
 ): Promise<Output> {
-  return maybeRejected(ky.post(paths.twitter.requestAttestation, { json }));
+  await maybeRejected(ky.post(paths.twitter.requestAttestation, { json }));
 }

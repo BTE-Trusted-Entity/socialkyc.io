@@ -1,32 +1,30 @@
-import { CType, CTypeUtils } from '@kiltprotocol/core';
+import { CType } from '@kiltprotocol/core';
+import { ConfigService } from '@kiltprotocol/config';
+import { ICType } from '@kiltprotocol/types';
 
 import { signAndSubmit } from '../utilities/signAndSubmit';
 import { logger } from '../utilities/logger';
 import { configuration } from '../utilities/configuration';
+import { cTypeIsStored } from '../utilities/cTypeIsStored';
 
 /** Run this function once to store the CType */
 export async function testTelegramCType(): Promise<void> {
-  const draft = CType.fromSchema({
-    $schema: 'http://kilt-protocol.org/draft-01/ctype#',
-    title: 'Telegram',
-    properties: {
-      'First name': {
-        type: 'string',
-      },
-      'Last name': {
-        type: 'string',
-      },
-      Username: {
-        type: 'string',
-      },
-      'User ID': {
-        type: 'number',
-      },
+  const draft = CType.fromProperties('Telegram', {
+    'First name': {
+      type: 'string',
     },
-    type: 'object',
+    'Last name': {
+      type: 'string',
+    },
+    Username: {
+      type: 'string',
+    },
+    'User ID': {
+      type: 'number',
+    },
   });
 
-  if (await CTypeUtils.verifyStored(draft)) {
+  if (await cTypeIsStored(draft)) {
     if (configuration.storeDidAndCTypes) {
       logger.info('Telegram CType is already on the blockchain');
     }
@@ -39,34 +37,31 @@ export async function testTelegramCType(): Promise<void> {
 
   logger.warn('Storing Telegram CType on the blockchain');
 
-  const tx = await draft.getStoreTx();
+  const api = ConfigService.get('api');
+  const tx = api.tx.ctype.add(CType.toChain(draft));
   await signAndSubmit(tx);
 
-  logger.warn(draft, 'Pass this object to CType.fromCType');
+  logger.warn(draft, 'Telegram CType');
 }
 
 // This object was logged by storeTelegramCType()
-export const telegramCType = CType.fromCType({
-  schema: {
-    $schema: 'http://kilt-protocol.org/draft-01/ctype#',
-    title: 'Telegram',
-    properties: {
-      'First name': {
-        type: 'string',
-      },
-      'Last name': {
-        type: 'string',
-      },
-      Username: {
-        type: 'string',
-      },
-      'User ID': {
-        type: 'number',
-      },
+export const telegramCType: ICType = {
+  $schema: 'http://kilt-protocol.org/draft-01/ctype#',
+  title: 'Telegram',
+  properties: {
+    'First name': {
+      type: 'string',
     },
-    type: 'object',
-    $id: 'kilt:ctype:0xcef8f3fe5aa7379faea95327942fd77287e1c144e3f53243e55705f11e890a4c',
+    'Last name': {
+      type: 'string',
+    },
+    Username: {
+      type: 'string',
+    },
+    'User ID': {
+      type: 'number',
+    },
   },
-  owner: null,
-  hash: '0xcef8f3fe5aa7379faea95327942fd77287e1c144e3f53243e55705f11e890a4c',
-});
+  type: 'object',
+  $id: 'kilt:ctype:0xcef8f3fe5aa7379faea95327942fd77287e1c144e3f53243e55705f11e890a4c',
+};

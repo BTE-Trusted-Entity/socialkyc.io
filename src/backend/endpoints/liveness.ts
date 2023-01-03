@@ -1,10 +1,6 @@
 import { ServerRoute } from '@hapi/hapi';
 
-import {
-  initKilt,
-  connect,
-  blockchainConnectionState,
-} from '../utilities/initKilt';
+import { initKilt, blockchainConnectionState } from '../utilities/initKilt';
 import { canAccessTwitter, twitterConnectionState } from '../twitter/tweets';
 import {
   canAccessAmazonSES,
@@ -31,11 +27,6 @@ import {
   checkYoutubeConnection,
   youtubeConnectionState,
 } from '../youtube/youtubeConnection';
-import {
-  canAccessInstagram,
-  checkInstagramConnection,
-  instagramConnectionState,
-} from '../instagram/instagramConnection';
 import { reportBalance } from '../utilities/reportBalance';
 import {
   canAccessTelegram,
@@ -47,7 +38,6 @@ import { paths } from './paths';
 
 export async function testLiveness() {
   await initKilt();
-  await connect();
   reportBalance();
 
   await canAccessTwitter();
@@ -69,8 +59,6 @@ export async function testLiveness() {
 
   await canAccessYoutube();
   checkYoutubeConnection();
-  await canAccessInstagram();
-  checkInstagramConnection();
 }
 
 function handler() {
@@ -82,7 +70,6 @@ function handler() {
   const twitchOk = !twitchConnectionState.isOffForTooLong();
   const telegramOk = !telegramConnectionState.isOffForTooLong();
   const youtubeOk = !youtubeConnectionState.isOffForTooLong();
-  const instagramOk = !instagramConnectionState.isOffForTooLong();
 
   return (
     kiltOk &&
@@ -92,8 +79,7 @@ function handler() {
     githubOk &&
     twitchOk &&
     telegramOk &&
-    youtubeOk &&
-    instagramOk
+    youtubeOk
   );
 }
 

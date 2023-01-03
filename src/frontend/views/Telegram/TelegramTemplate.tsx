@@ -184,7 +184,7 @@ export function TelegramTemplate({
         </button>
       )}
 
-      <LinkBack />
+      {!preventNavigation && <LinkBack />}
     </section>
   );
 }

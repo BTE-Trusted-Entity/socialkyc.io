@@ -4,9 +4,9 @@ import {
   ResponseToolkit,
   ServerRoute,
 } from '@hapi/hapi';
-import { z } from 'zod';
-import { Claim } from '@kiltprotocol/core';
-import { IEncryptedMessage, MessageBodyType } from '@kiltprotocol/types';
+import Boom from '@hapi/boom';
+
+import { IEncryptedMessage } from '@kiltprotocol/types';
 
 import { encryptMessageBody } from '../utilities/encryptMessage';
 import { paths } from '../endpoints/paths';
@@ -14,11 +14,7 @@ import { getSession } from '../utilities/sessionStorage';
 
 import { twitterCType } from './twitterCType';
 
-const zodPayload = z.object({
-  username: z.string(),
-});
-
-export type Input = z.infer<typeof zodPayload>;
+export type Input = Record<string, never>;
 
 export type Output = IEncryptedMessage;
 
@@ -29,26 +25,19 @@ async function handler(
   const { logger } = request;
   logger.debug('Twitter quote started');
 
-  const { username } = request.payload as Input;
-  const { did, encryptionKeyId } = getSession(request.headers);
+  const { encryptionKeyUri, claim, confirmed } = getSession(request.headers);
 
-  const claimContents = {
-    Twitter: username.trim(),
-  };
-  const claim = Claim.fromCTypeAndClaimContents(
-    twitterCType,
-    claimContents,
-    did,
-  );
-  logger.debug('Twitter quote created');
+  if (!claim || !confirmed) {
+    throw Boom.notFound('Confirmed claim not found');
+  }
 
-  const output = await encryptMessageBody(encryptionKeyId, {
+  const output = await encryptMessageBody(encryptionKeyUri, {
     content: {
       claim,
       legitimations: [],
       cTypes: [twitterCType],
     },
-    type: MessageBodyType.SUBMIT_TERMS,
+    type: 'submit-terms',
   });
 
   logger.debug('Twitter quote completed');
@@ -59,9 +48,4 @@ export const quoteTwitter: ServerRoute = {
   method: 'POST',
   path: paths.twitter.quote,
   handler,
-  options: {
-    validate: {
-      payload: async (payload) => zodPayload.parse(payload),
-    },
-  },
 };

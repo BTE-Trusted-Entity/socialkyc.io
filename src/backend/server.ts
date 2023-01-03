@@ -2,6 +2,8 @@ import inert from '@hapi/inert';
 import pino from 'hapi-pino';
 import gate from 'hapi-gate';
 
+import { getSecret } from './endpoints/getSecret';
+
 import { fullDidPromise } from './utilities/fullDid';
 import { testTwitterCType } from './twitter/twitterCType';
 import { testEmailCType } from './email/emailCType';
@@ -11,26 +13,27 @@ import { testGithubCType } from './github/githubCType';
 import { testTwitchCType } from './twitch/twitchCType';
 import { testTelegramCType } from './telegram/telegramCType';
 import { testYoutubeCType } from './youtube/youtubeCType';
-import { testInstagramCType } from './instagram/instagramCType';
 import { configuration } from './utilities/configuration';
 import { configureAuthentication } from './utilities/configureAuthentication';
 import { configureDevErrors } from './utilities/configureDevErrors';
 import { manager, server } from './utilities/manager';
 import { exitOnError } from './utilities/exitOnError';
 
-import { confirmationHtml } from './endpoints/confirmationHtml';
 import { wellKnownDidConfig } from './didConfiguration/wellKnownDidConfig';
 
-import { quoteEmail } from './email/quoteEmail';
+import { sendEmail } from './email/sendEmail';
+import { authHtmlEmail } from './email/authHtmlEmail';
 import { confirmEmail } from './email/confirmEmail';
+import { quoteEmail } from './email/quoteEmail';
 import { requestAttestationEmail } from './email/requestAttestationEmail';
-import { attestationEmail } from './email/attestationEmail';
+import { attestEmail } from './email/attestEmail';
 
+import { claimTwitter } from './twitter/claimTwitter';
 import { listenForTweets } from './twitter/tweets';
 import { quoteTwitter } from './twitter/quoteTwitter';
 import { confirmTwitter } from './twitter/confirmTwitter';
-import { requestTwitter } from './twitter/requestAttestationTwitter';
-import { attestationTwitter } from './twitter/attestationTwitter';
+import { requestAttestationTwitter } from './twitter/requestAttestationTwitter';
+import { attestTwitter } from './twitter/attestTwitter';
 
 import { authUrlDiscord } from './discord/authUrlDiscord';
 import { authHtmlDiscord } from './discord/authHtmlDiscord';
@@ -49,13 +52,6 @@ import { attestGithub } from './github/attestGithub';
 import { authUrlTwitch } from './twitch/authUrlTwitch';
 import { authHtmlTwitch } from './twitch/authHtmlTwitch';
 import { confirmTwitch } from './twitch/confirmTwitch';
-
-import { authHtmlInstagram } from './instagram/authHtmlInstagram';
-import { authUrlInstagram } from './instagram/authUrlInstagram';
-import { confirmInstagram } from './instagram/confirmInstagram';
-import { quoteInstagram } from './instagram/quoteInstagram';
-import { requestAttestationInstagram } from './instagram/requestAttestationInstagram';
-import { attestInstagram } from './instagram/attestInstagram';
 
 import { quoteTwitch } from './twitch/quoteTwitch';
 import { requestAttestationTwitch } from './twitch/requestAttestationTwitch';
@@ -82,14 +78,16 @@ import { session } from './endpoints/session';
 import { staticFiles } from './endpoints/staticFiles';
 
 import { liveness, testLiveness } from './endpoints/liveness';
+import { maintenance } from './endpoints/maintenance';
 import { notFoundHandler } from './endpoints/notFoundHandler';
 import { home } from './endpoints/home';
 import { about } from './endpoints/about';
 import { terms } from './endpoints/terms';
 import { privacy } from './endpoints/privacy';
 import { sessionHeader } from './endpoints/sessionHeader';
+import { metrics } from './endpoints/metrics';
 
-const { isProduction } = configuration;
+const { isProduction, maintenanceMode, baseUri } = configuration;
 
 const noWww = {
   plugin: gate,
@@ -121,9 +119,24 @@ const logger = {
   await server.register(noWww);
   await server.register(inert);
   await server.register(logger);
+
   await configureAuthentication(server);
   await configureDevErrors(server);
   server.logger.info('Server configured');
+
+  server.route(about);
+  server.route(terms);
+  server.route(privacy);
+
+  server.ext('onPreResponse', notFoundHandler);
+
+  if (maintenanceMode) {
+    server.logger.info('Maintenance mode');
+    server.route(maintenance);
+    server.route(staticFiles);
+    await manager.start();
+    return;
+  }
 
   await testLiveness();
   server.logger.info('Liveness tests passed');
@@ -139,27 +152,32 @@ const logger = {
   await testTwitchCType();
   await testTelegramCType();
   await testYoutubeCType();
-  await testInstagramCType();
 
   server.logger.info('CTypes tested');
 
   await listenForTweets();
   server.logger.info('Twitter connection initialized');
 
-  server.route(confirmationHtml);
   server.route(wellKnownDidConfig);
 
   server.route(session);
 
-  server.route(quoteEmail);
-  server.route(confirmEmail);
-  server.route(requestAttestationEmail);
-  server.route(attestationEmail);
+  if (baseUri === 'http://localhost:3000' || 'https://dev.socialkyc.io') {
+    server.route(getSecret);
+  }
 
+  server.route(sendEmail);
+  server.route(authHtmlEmail);
+  server.route(confirmEmail);
+  server.route(quoteEmail);
+  server.route(requestAttestationEmail);
+  server.route(attestEmail);
+
+  server.route(claimTwitter);
   server.route(quoteTwitter);
   server.route(confirmTwitter);
-  server.route(requestTwitter);
-  server.route(attestationTwitter);
+  server.route(requestAttestationTwitter);
+  server.route(attestTwitter);
 
   server.route(authHtmlDiscord);
   server.route(authUrlDiscord);
@@ -182,13 +200,6 @@ const logger = {
   server.route(requestAttestationTwitch);
   server.route(attestTwitch);
 
-  server.route(authHtmlInstagram);
-  server.route(authUrlInstagram);
-  server.route(confirmInstagram);
-  server.route(quoteInstagram);
-  server.route(requestAttestationInstagram);
-  server.route(attestInstagram);
-
   server.route(authUrlTelegram);
   server.route(confirmTelegram);
   server.route(quoteTelegram);
@@ -206,15 +217,12 @@ const logger = {
   server.route(verify);
 
   server.route(home);
-  server.route(about);
-  server.route(terms);
-  server.route(privacy);
+
+  server.route(liveness);
+  server.route(metrics);
 
   server.route(staticFiles);
 
-  server.route(liveness);
-
-  server.ext('onPreResponse', notFoundHandler);
   server.logger.info('Routes configured');
 
   await manager.start();

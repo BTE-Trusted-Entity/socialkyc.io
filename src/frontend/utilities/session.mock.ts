@@ -5,7 +5,7 @@ import { makeControlledPromise } from '../../backend/utilities/makeControlledPro
 import { Session } from './session';
 
 export const sessionMock: Session = {
-  encryptionKeyId: 'encryptionKeyId',
+  encryptionKeyUri: 'did:kilt:4some_identifier#some_id',
   encryptedChallenge: 'encryptedChallenge',
   nonce: 'nonce',
   send: jest.fn(async () => {
@@ -19,6 +19,7 @@ export const sessionMock: Session = {
   }),
   sessionId: 'foo',
   name: 'foo bar',
+  wallet: 'purse',
 };
 
 export let sessionMockSendPromise = makeControlledPromise<void>();

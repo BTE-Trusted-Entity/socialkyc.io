@@ -8,16 +8,17 @@ export const paths = {
   session: '/api/session',
 
   email: {
-    quote: '/api/email/quote',
+    send: '/api/email/send',
     confirm: '/api/email/confirm',
+    quote: '/api/email/quote',
     requestAttestation: '/api/email/request-attestation',
     attest: '/api/email/attest',
-    confirmationHtml: '/email/confirmation/{secret}',
   },
 
   twitter: {
-    quote: '/api/twitter/quote',
+    claim: '/api/twitter/claim',
     confirm: '/api/twitter/confirm',
+    quote: '/api/twitter/quote',
     requestAttestation: '/api/twitter/request-attestation',
     attest: '/api/twitter/attest',
   },
@@ -62,19 +63,12 @@ export const paths = {
     attest: '/api/youtube/attest',
   },
 
-  instagram: {
-    authUrl: '/api/instagram/authUrl',
-    confirm: '/api/instagram/confirm',
-    quote: '/api/instagram/quote',
-    requestAttestation: '/api/instagram/request-attestation',
-    attest: '/api/instagram/attest',
-  },
-  oauth: {
+  redirect: {
+    email: '/email/auth',
     discord: '/discord/auth',
     github: '/github/auth',
     twitch: '/twitch/auth',
     youtube: '/youtube/auth',
-    instagram: '/instagram/auth',
   },
 
   verifier: {
@@ -85,4 +79,8 @@ export const paths = {
   staticFiles: '/{param*}',
 
   liveness: '/liveness',
+
+  test: {
+    secret: '/api/test/secret',
+  },
 };

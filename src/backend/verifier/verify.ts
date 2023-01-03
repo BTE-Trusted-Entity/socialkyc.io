@@ -4,9 +4,10 @@ import {
   ResponseToolkit,
   ServerRoute,
 } from '@hapi/hapi';
-import { ICredential, MessageBodyType } from '@kiltprotocol/types';
-import { Credential } from '@kiltprotocol/core';
+import { IAttestation, ICredentialPresentation } from '@kiltprotocol/types';
+import { Attestation, Credential } from '@kiltprotocol/core';
 import Boom from '@hapi/boom';
+import { ConfigService } from '@kiltprotocol/config';
 
 import { decryptMessageContent } from '../utilities/decryptMessage';
 import { validateEncryptedMessage } from '../utilities/validateEncryptedMessage';
@@ -14,8 +15,9 @@ import { paths } from '../endpoints/paths';
 import { getSession } from '../utilities/sessionStorage';
 
 export interface Output {
-  credential: Credential;
+  presentation: ICredentialPresentation;
   isAttested: boolean;
+  attestation?: IAttestation;
 }
 
 async function handler(
@@ -25,9 +27,9 @@ async function handler(
   const { logger } = request;
   logger.debug('Verification started');
 
-  const content = await decryptMessageContent<ICredential[]>(
+  const content = await decryptMessageContent<ICredentialPresentation[]>(
     request,
-    MessageBodyType.SUBMIT_CREDENTIAL,
+    'submit-credential',
   );
 
   const session = getSession(request.headers);
@@ -36,13 +38,30 @@ async function handler(
   }
   const challenge = session.requestChallenge;
 
-  const credential = Credential.fromCredential(content[0]);
+  const presentation = content[0];
   logger.debug('Verification credential constructed');
 
-  const isAttested = await credential.verify({ challenge });
+  try {
+    await Credential.verifyPresentation(presentation, { challenge });
+
+    const api = ConfigService.get('api');
+    const attestation = Attestation.fromChain(
+      await api.query.attestation.attestations(presentation.rootHash),
+      presentation.rootHash,
+    );
+
+    const isAttested =
+      !attestation.revoked &&
+      attestation.cTypeHash === presentation.claim.cTypeHash;
+
+    return h.response({ presentation, isAttested, attestation } as Output);
+  } catch {
+    return h.response({ presentation, isAttested: false } as Output);
+  } finally {
+    logger.debug('Verification completed');
+  }
 
   logger.debug('Verification completed');
-  return h.response({ credential, isAttested } as Output);
 }
 
 export const verify: ServerRoute = {

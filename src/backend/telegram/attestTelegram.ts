@@ -26,7 +26,7 @@ async function handler(
   logger.debug('Telegram attestation completed');
 
   delete session.claim;
-  delete session.requestForAttestation;
+  delete session.credential;
   delete session.confirmed;
   setSession(session);
 

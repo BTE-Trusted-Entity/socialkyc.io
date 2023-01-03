@@ -5,15 +5,21 @@ import { render } from '../../../testing/testing';
 import '../../components/useCopyButton/useCopyButton.mock';
 
 import { EmailTemplate } from './EmailTemplate';
+import { EmailProfile } from './Email';
 
 jest.useFakeTimers();
 jest.setSystemTime(new Date('2022-01-03T12:00:00'));
 
 const actions = {
-  handleSubmit: jest.fn(),
+  handleSendEmail: jest.fn(),
+  handleRequestAttestation: jest.fn(),
   handleBackup: jest.fn(),
   handleTryAgainClick: jest.fn(),
   setInputError: jest.fn(),
+};
+
+const profileMock: EmailProfile = {
+  email: 'user@example.com',
 };
 
 describe('EmailTemplate', () => {
@@ -24,9 +30,28 @@ describe('EmailTemplate', () => {
     expect(container).toMatchSnapshot();
   });
 
-  it('should match snapshot with status=requested', async () => {
+  it('should match snapshot with status=emailSent', async () => {
     const { container } = render(
-      <EmailTemplate status="requested" processing={true} {...actions} />,
+      <EmailTemplate status="emailSent" processing={false} {...actions} />,
+    );
+    expect(container).toMatchSnapshot();
+  });
+
+  it('should match snapshot with status=authenticating', async () => {
+    const { container } = render(
+      <EmailTemplate status="authenticating" processing={false} {...actions} />,
+    );
+    expect(container).toMatchSnapshot();
+  });
+
+  it('should match snapshot with status=authenticated', async () => {
+    const { container } = render(
+      <EmailTemplate
+        status="authenticated"
+        processing={false}
+        profile={profileMock}
+        {...actions}
+      />,
     );
     expect(container).toMatchSnapshot();
   });
@@ -45,12 +70,25 @@ describe('EmailTemplate', () => {
     expect(container).toMatchSnapshot();
   });
 
+  it('should match snapshot with flowerror=expired', async () => {
+    const { container } = render(
+      <EmailTemplate
+        status="error"
+        flowError="expired"
+        processing={false}
+        {...actions}
+      />,
+    );
+    expect(container).toMatchSnapshot();
+  });
+
   it('should match snapshot with flowError=closed', async () => {
     const { container } = render(
       <EmailTemplate
-        status="requested"
+        status="authenticated"
         flowError="closed"
         processing={false}
+        profile={profileMock}
         {...actions}
       />,
     );

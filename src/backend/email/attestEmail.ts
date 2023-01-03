@@ -25,13 +25,13 @@ async function handler(
   const response = await getAttestationMessage(session, logger);
   logger.debug('Email attestation completed');
 
-  delete session.requestForAttestation;
+  delete session.credential;
   setSession(session);
 
   return h.response(response as Output);
 }
 
-export const attestationEmail: ServerRoute = {
+export const attestEmail: ServerRoute = {
   method: 'POST',
   path: paths.email.attest,
   handler,

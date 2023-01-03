@@ -3,11 +3,11 @@ import { KyInstance } from 'ky/distribution/types/ky';
 import { paths } from '../endpoints/paths';
 import { pollingOptions } from '../../frontend/utilities/pollingOptions';
 
-import { Input, Output } from './attestationTwitter';
+import { Input, Output } from './attestEmail';
 
-export async function attestTwitter(
+export async function attestEmail(
   json: Input,
   ky: KyInstance,
 ): Promise<Output> {
-  return ky.post(paths.twitter.attest, { json, ...pollingOptions }).json();
+  return ky.post(paths.email.attest, { json, ...pollingOptions }).json();
 }

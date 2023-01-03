@@ -41,6 +41,7 @@ interface Props {
   flowError?: FlowError;
   profile?: TwitchProfile;
 }
+
 export function TwitchTemplate({
   status,
   processing,
@@ -89,12 +90,7 @@ export function TwitchTemplate({
 
       {status === 'urlReady' && (
         <p className={styles.buttonsLine}>
-          <a
-            className={styles.ctaButton}
-            href={authUrl}
-            target="_blank"
-            rel="noreferrer"
-          >
+          <a className={styles.ctaButton} href={authUrl}>
             Sign in with Twitch
           </a>
         </p>
@@ -165,7 +161,7 @@ export function TwitchTemplate({
         </button>
       )}
 
-      <LinkBack />
+      {!preventNavigation && <LinkBack />}
     </section>
   );
 }

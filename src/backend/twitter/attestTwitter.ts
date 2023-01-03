@@ -1,10 +1,10 @@
-import { IEncryptedMessage } from '@kiltprotocol/types';
 import {
   Request,
   ResponseObject,
   ResponseToolkit,
   ServerRoute,
 } from '@hapi/hapi';
+import { IEncryptedMessage } from '@kiltprotocol/types';
 
 import { getSession, setSession } from '../utilities/sessionStorage';
 import { getAttestationMessage } from '../utilities/attestClaim';
@@ -19,22 +19,20 @@ async function handler(
   h: ResponseToolkit,
 ): Promise<ResponseObject> {
   const { logger } = request;
+  logger.debug('Twitter attestation started');
 
   const session = getSession(request.headers);
 
   const response = await getAttestationMessage(session, logger);
-  logger.debug('Instagram attestation completed');
-
-  delete session.claim;
-  delete session.requestForAttestation;
-  delete session.confirmed;
+  delete session.credential;
   setSession(session);
 
+  logger.debug('Twitter attestation completed');
   return h.response(response as Output);
 }
 
-export const attestInstagram: ServerRoute = {
+export const attestTwitter: ServerRoute = {
   method: 'POST',
-  path: paths.instagram.attest,
+  path: paths.twitter.attest,
   handler,
 };

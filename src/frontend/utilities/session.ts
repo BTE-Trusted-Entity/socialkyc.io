@@ -1,4 +1,4 @@
-import { DidPublicKey, IEncryptedMessage } from '@kiltprotocol/types';
+import { DidResourceUri, IEncryptedMessage } from '@kiltprotocol/types';
 
 import {
   checkSession,
@@ -13,7 +13,7 @@ interface PubSubSession {
   ) => Promise<void>;
   close: () => Promise<void>;
   send: (message: IEncryptedMessage) => Promise<void>;
-  encryptionKeyId: DidPublicKey['id'];
+  encryptionKeyUri: DidResourceUri;
   encryptedChallenge: string;
   nonce: string;
 }
@@ -21,17 +21,23 @@ interface PubSubSession {
 interface InjectedWindowProvider {
   startSession: (
     dAppName: string,
-    dAppEncryptionKeyId: DidPublicKey['id'],
+    dAppEncryptionKeyUri: DidResourceUri,
     challenge: string,
   ) => Promise<PubSubSession>;
   name: string;
   version: string;
-  specVersion: '0.1';
+  specVersion: '3.0';
 }
 
 export const apiWindow = window as unknown as {
   kilt: Record<string, InjectedWindowProvider>;
 };
+
+export function getCompatibleExtensions(): Array<string> {
+  return Object.entries(apiWindow.kilt)
+    .filter(([, provider]) => provider.specVersion.startsWith('3.'))
+    .map(([name]) => name);
+}
 
 export class Rejection extends Error {}
 
@@ -44,38 +50,64 @@ export class UnauthorizedRejection extends Rejection {}
 export type Session = PubSubSession & {
   sessionId: string;
   name: string;
+  wallet: string;
+};
+
+type CompatibleMessage = IEncryptedMessage & {
+  receiverKeyId?: IEncryptedMessage['receiverKeyUri'];
+  senderKeyId?: IEncryptedMessage['senderKeyUri'];
 };
 
 export async function getSession(
   provider: InjectedWindowProvider,
+  wallet: string,
 ): Promise<Session> {
   if (!provider) {
     throw new Error('No provider');
   }
   try {
-    const { dAppEncryptionKeyId, challenge, sessionId } =
+    window.sessionStorage.setItem('wallet', wallet);
+
+    const { dAppEncryptionKeyUri, challenge, sessionId } =
       await getSessionValues();
     const dAppName = 'SocialKYC';
 
     const session = await provider.startSession(
       dAppName,
-      dAppEncryptionKeyId,
+      dAppEncryptionKeyUri,
       challenge,
     );
 
-    const { encryptionKeyId, encryptedChallenge, nonce } = session;
+    const { encryptionKeyUri, encryptedChallenge, nonce } = session;
     await checkSession(
       {
-        encryptionKeyId,
+        encryptionKeyUri,
         encryptedChallenge,
         nonce,
       },
       sessionId,
     );
 
+    async function send(message: CompatibleMessage): Promise<void> {
+      message.receiverKeyId = message.receiverKeyUri;
+      message.senderKeyId = message.senderKeyUri;
+      return session.send(message);
+    }
+
+    async function listen(
+      callback: (message: CompatibleMessage) => Promise<void>,
+    ) {
+      return session.listen(async (message: CompatibleMessage) => {
+        message.senderKeyUri = message.senderKeyUri || message.senderKeyId;
+        message.receiverKeyUri =
+          message.receiverKeyUri || message.receiverKeyId;
+        return callback(message);
+      });
+    }
+
     const { name } = provider;
 
-    return { ...session, sessionId, name };
+    return { ...session, send, listen, sessionId, name, wallet };
   } catch (exception) {
     const { message } = exceptionToError(exception);
     if (message.includes('closed')) {

@@ -22,25 +22,16 @@ exports[`TwitterTemplate should match snapshot with flowError=closed 1`] = `
     </div>
     <section>
       <form>
-        <label>
-          Your Twitter handle
-          <span
-            class="twitterInputContainer"
-          >
-            <input
-              class="twitterInput"
-              maxlength="100"
-              name="twitterHandle"
-              required=""
-              type="text"
-              value=""
-            />
-          </span>
-        </label>
-        <output
-          class="inputError"
-          hidden=""
-        />
+        <dl
+          class="profile"
+        >
+          <dt>
+            Twitter handle:
+          </dt>
+          <dd>
+            social_kyc_tech
+          </dd>
+        </dl>
         <p>
           Validity: one year (
           1/3/2023
@@ -68,19 +59,12 @@ exports[`TwitterTemplate should match snapshot with flowError=closed 1`] = `
         </section>
         <button
           class="ctaButton"
-          disabled=""
           type="submit"
         >
           Continue in wallet
         </button>
       </form>
     </section>
-    <a
-      class="link"
-      href="/"
-    >
-      Back to list
-    </a>
   </section>
 </div>
 `;
@@ -143,6 +127,64 @@ exports[`TwitterTemplate should match snapshot with flowError=unknown 1`] = `
 </div>
 `;
 
+exports[`TwitterTemplate should match snapshot with flowerror=timeout 1`] = `
+<div>
+  <section
+    aria-busy="false"
+    class="container"
+  >
+    <h1
+      class="heading"
+    >
+      Twitter Account Attestation
+    </h1>
+    <div
+      class="explainerContainer"
+    >
+      <button
+        aria-label="Toggle explanation"
+        class="showExplainer"
+        type="button"
+      />
+    </div>
+    <section>
+      <section
+        class="container"
+      >
+        <div
+          class="exclamation"
+        />
+        <h2
+          class="heading"
+        >
+          Attestation error:
+        </h2>
+        <p
+          class="message"
+        >
+          Tweet not found
+        </p>
+        <p>
+          SocialKYC could not find your tweet. Please make sure you tweet the text exactly as provided. You can use the copy button to avoid any typos.
+        </p>
+      </section>
+      <button
+        class="ctaButton"
+        type="button"
+      >
+        Try again
+      </button>
+    </section>
+    <a
+      class="link"
+      href="/"
+    >
+      Back to list
+    </a>
+  </section>
+</div>
+`;
+
 exports[`TwitterTemplate should match snapshot with status=attesting 1`] = `
 <div>
   <section
@@ -185,17 +227,60 @@ exports[`TwitterTemplate should match snapshot with status=attesting 1`] = `
         </p>
       </section>
     </section>
-    <a
-      class="link"
-      href="/"
-    >
-      Back to list
-    </a>
   </section>
 </div>
 `;
 
-exports[`TwitterTemplate should match snapshot with status=confirming 1`] = `
+exports[`TwitterTemplate should match snapshot with status=authenticated 1`] = `
+<div>
+  <section
+    aria-busy="false"
+    class="container"
+  >
+    <h1
+      class="heading"
+    >
+      Twitter Account Attestation
+    </h1>
+    <div
+      class="explainerContainer"
+    >
+      <button
+        aria-label="Toggle explanation"
+        class="showExplainer"
+        type="button"
+      />
+    </div>
+    <section>
+      <form>
+        <dl
+          class="profile"
+        >
+          <dt>
+            Twitter handle:
+          </dt>
+          <dd>
+            social_kyc_tech
+          </dd>
+        </dl>
+        <p>
+          Validity: one year (
+          1/3/2023
+          )
+        </p>
+        <button
+          class="ctaButton"
+          type="submit"
+        >
+          Continue in wallet
+        </button>
+      </form>
+    </section>
+  </section>
+</div>
+`;
+
+exports[`TwitterTemplate should match snapshot with status=authenticating 1`] = `
 <div>
   <section
     aria-busy="false"
@@ -233,7 +318,7 @@ exports[`TwitterTemplate should match snapshot with status=confirming 1`] = `
           Starting
         </p>
         <p>
-          Your credential will be attested as soon as you Tweet the text below.
+          To continue the attestation process, please Tweet the text below and then return to this page. It may take SocialKYC a moment to complete the process.
         </p>
       </section>
       <div>
@@ -250,7 +335,7 @@ exports[`TwitterTemplate should match snapshot with status=confirming 1`] = `
             id="tweet"
             readonly=""
           >
-            I use SocialKYC to represent my internet identity. @social_kyc_tech 0123456789
+            I use SocialKYC to represent my internet identity. @social_kyc_tech SECRET
           </textarea>
           <button
             class="copy"
@@ -273,12 +358,6 @@ exports[`TwitterTemplate should match snapshot with status=confirming 1`] = `
         </p>
       </div>
     </section>
-    <a
-      class="link"
-      href="/"
-    >
-      Back to list
-    </a>
   </section>
 </div>
 `;
@@ -334,7 +413,7 @@ exports[`TwitterTemplate should match snapshot with status=none 1`] = `
           disabled=""
           type="submit"
         >
-          Continue in wallet
+          Continue
         </button>
       </form>
     </section>
@@ -394,132 +473,6 @@ exports[`TwitterTemplate should match snapshot with status=ready 1`] = `
         type="button"
       >
         Show credential in wallet
-      </button>
-    </section>
-    <a
-      class="link"
-      href="/"
-    >
-      Back to list
-    </a>
-  </section>
-</div>
-`;
-
-exports[`TwitterTemplate should match snapshot with status=requested 1`] = `
-<div>
-  <section
-    aria-busy="true"
-    class="container processing"
-  >
-    <div
-      class="spinner"
-    />
-    <h1
-      class="heading"
-    >
-      Twitter Account Attestation
-    </h1>
-    <div
-      class="explainerContainer"
-    >
-      <button
-        aria-label="Toggle explanation"
-        class="showExplainer"
-        type="button"
-      />
-    </div>
-    <section>
-      <form>
-        <label>
-          Your Twitter handle
-          <span
-            class="twitterInputContainer"
-          >
-            <input
-              class="twitterInput"
-              maxlength="100"
-              name="twitterHandle"
-              required=""
-              type="text"
-              value=""
-            />
-          </span>
-        </label>
-        <output
-          class="inputError"
-          hidden=""
-        />
-        <p>
-          Validity: one year (
-          1/3/2023
-          )
-        </p>
-        <button
-          class="ctaButton"
-          disabled=""
-          type="submit"
-        >
-          Continue in wallet
-        </button>
-      </form>
-    </section>
-    <a
-      class="link"
-      href="/"
-    >
-      Back to list
-    </a>
-  </section>
-</div>
-`;
-
-exports[`TwitterTemplate should match snapshot with status=unconfirmed 1`] = `
-<div>
-  <section
-    aria-busy="false"
-    class="container"
-  >
-    <h1
-      class="heading"
-    >
-      Twitter Account Attestation
-    </h1>
-    <div
-      class="explainerContainer"
-    >
-      <button
-        aria-label="Toggle explanation"
-        class="showExplainer"
-        type="button"
-      />
-    </div>
-    <section>
-      <section
-        class="container"
-      >
-        <div
-          class="exclamation"
-        />
-        <h2
-          class="heading"
-        >
-          Attestation error:
-        </h2>
-        <p
-          class="message"
-        >
-          Tweet not found
-        </p>
-        <p>
-          SocialKYC could not find your tweet. Please make sure you tweet the text exactly as provided. You can use the copy button to avoid any typos.
-        </p>
-      </section>
-      <button
-        class="ctaButton"
-        type="button"
-      >
-        Try again
       </button>
     </section>
     <a

@@ -1,32 +1,33 @@
 import NodeCache from 'node-cache';
 import Boom from '@hapi/boom';
 import {
-  DidPublicKey,
+  DidResourceUri,
+  DidUri,
+  IAttestation,
   IClaim,
-  IDidDetails,
-  IRequestForAttestation,
+  ICredential,
 } from '@kiltprotocol/types';
 import { randomAsNumber } from '@polkadot/util-crypto';
-import { Attestation } from '@kiltprotocol/core';
 
 import { sessionHeader } from '../endpoints/sessionHeader';
 
 export interface BasicSession {
   sessionId: string;
-  did?: IDidDetails['did'];
-  encryptionKeyId?: DidPublicKey['id'];
+  did?: DidUri;
+  encryptionKeyUri?: DidResourceUri;
   didChallenge?: string;
   didConfirmed?: boolean;
   claim?: IClaim;
+  secret?: string;
   confirmed?: boolean;
-  requestForAttestation?: IRequestForAttestation;
-  attestationPromise?: Promise<Attestation>;
+  credential?: ICredential;
+  attestationPromise?: Promise<IAttestation>;
   requestChallenge?: string;
 }
 
 export type Session = BasicSession & {
-  did: IDidDetails['did'];
-  encryptionKeyId: DidPublicKey['id'];
+  did: DidUri;
+  encryptionKeyUri: DidResourceUri;
 };
 
 export interface PayloadWithSession {
@@ -55,12 +56,12 @@ export function getBasicSession(headers: Record<string, string>): BasicSession {
 export function getSession(headers: Record<string, string>): Session {
   const session = getBasicSession(headers);
 
-  const { did, didConfirmed, encryptionKeyId } = session;
-  if (!did || !didConfirmed || !encryptionKeyId) {
+  const { did, didConfirmed, encryptionKeyUri } = session;
+  if (!did || !didConfirmed || !encryptionKeyUri) {
     throw Boom.forbidden('Unconfirmed DID');
   }
 
-  return { ...session, did, encryptionKeyId };
+  return { ...session, did, encryptionKeyUri };
 }
 
 export function setSession(session: BasicSession): void {
@@ -74,12 +75,23 @@ export function getSessionBySecret(secret: string): BasicSession {
   if (!sessionId) {
     throw Boom.forbidden(`Not found session for secret ${secret}`);
   }
-  return getSessionById(sessionId);
+
+  const session = getSessionById(sessionId);
+  const expired = secret !== session.secret;
+  if (expired) {
+    throw Boom.forbidden(`Not found session for secret ${secret}`);
+  }
+
+  return session;
 }
 
 export function getSecretForSession(sessionId: string): string {
   const secret = String(randomAsNumber()); // only numbers to avoid 0xDEADDAD etc
+
+  const session = getSessionById(sessionId);
+  setSession({ ...session, secret });
   secrets.set(secret, sessionId);
+
   return secret;
 }
 

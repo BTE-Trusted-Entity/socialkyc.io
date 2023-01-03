@@ -5,6 +5,7 @@ import {
   ServerRoute,
 } from '@hapi/hapi';
 import Boom from '@hapi/boom';
+import { CType } from '@kiltprotocol/core';
 import { z } from 'zod';
 
 import {
@@ -23,7 +24,9 @@ const zodPayload = z.object({
 
 export type Input = z.infer<typeof zodPayload>;
 
-export type Output = undefined;
+export interface Output {
+  email: string;
+}
 
 async function handler(
   request: Request,
@@ -36,33 +39,33 @@ async function handler(
 
   // This is the initial session in the first tab the user has open
   const firstSession = getSessionBySecret(secret);
-  const { requestForAttestation, attestationPromise, confirmed } = firstSession;
-  if (!requestForAttestation) {
-    throw Boom.notFound('requestForAttestation not found');
+  if (!firstSession) {
+    throw Boom.notFound('No session found for secret');
   }
-  if (requestForAttestation.claim.cTypeHash !== emailCType.hash) {
-    throw Boom.notFound('requestForAttestation cType mismatch');
+  const { claim } = firstSession;
+  if (!claim) {
+    throw Boom.notFound('Claim not found');
+  }
+  if (CType.hashToId(claim.cTypeHash) !== emailCType.$id) {
+    throw Boom.notFound('Claim cType mismatch');
   }
 
   // Clicking the confirmation link in the email opens a new tab with a new session
   const currentSession = getSession(request.headers);
 
-  // carry over the request and attestation promise to the current session and clean up the initial one
+  // carry over the claim to the current session and clean up the initial one
   setSession({
     ...currentSession,
-    requestForAttestation,
-    attestationPromise,
-    confirmed,
+    claim,
+    confirmed: true,
   });
-  delete firstSession.requestForAttestation;
-  delete firstSession.attestationPromise;
-  delete firstSession.confirmed;
+  delete firstSession.claim;
   setSession(firstSession);
   deleteSecret(secret);
 
-  logger.debug('Session data migration complete');
+  logger.debug('Email claim confirmed');
 
-  return h.response(<Output>undefined);
+  return h.response({ email: claim.contents['Email'] } as Output);
 }
 
 export const confirmEmail: ServerRoute = {

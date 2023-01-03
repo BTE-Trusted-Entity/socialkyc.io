@@ -1,7 +1,6 @@
 // expect cannot be imported because of https://github.com/testing-library/jest-dom/issues/426
 import { afterEach, beforeEach, describe, it, jest } from '@jest/globals';
 import userEvent from '@testing-library/user-event';
-import { generatePath, MemoryRouter } from 'react-router-dom';
 import { IEncryptedMessage } from '@kiltprotocol/types';
 
 import {
@@ -12,23 +11,32 @@ import {
   TestPromise,
 } from '../../../testing/testing';
 import '../../components/useCopyButton/useCopyButton.mock';
-import { paths } from '../../paths';
 import {
   sessionMock,
   sessionMockReset,
   sessionMockSendPromise,
 } from '../../utilities/session.mock';
 import { ClosedRejection } from '../../utilities/session';
-import { InvalidEmail } from '../../../backend/email/requestAttestationEmailApi';
+import { InvalidEmail } from '../../../backend/email/sendEmailApi';
+import { useValuesFromRedirectUri } from '../../utilities/useValuesFromRedirectUri';
 
 import { useEmailApi } from './useEmailApi';
-import { Email } from './Email';
+import { Email, EmailProfile } from './Email';
+
+const profileMock: EmailProfile = {
+  email: 'user@example.com',
+};
+
+const secret = 'SECRET';
+
+jest.mock('../../utilities/useValuesFromRedirectUri');
 
 jest.mock('./useEmailApi');
 let mockEmailApi: ReturnType<typeof useEmailApi>;
+let sendEmailPromise: TestPromise<void>;
+let confirmPromise: TestPromise<EmailProfile>;
 let quotePromise: TestPromise<IEncryptedMessage>;
-let requestPromise: TestPromise<string>;
-let confirmPromise: TestPromise<undefined>;
+let requestPromise: TestPromise<void>;
 let attestPromise: TestPromise<IEncryptedMessage>;
 
 async function enterEmail() {
@@ -36,10 +44,21 @@ async function enterEmail() {
   await userEvent.type(input, 'user@example.com');
 }
 
-function expectQuoteRequested() {
-  expect(mockEmailApi.quote).toHaveBeenCalledWith({
+async function sendEmail() {
+  await userEvent.click(
+    await screen.findByRole('button', { name: 'Send email' }),
+  );
+}
+
+function expectSendEmailCalled() {
+  expect(mockEmailApi.send).toHaveBeenCalledWith({
     email: 'user@example.com',
+    wallet: 'purse',
   });
+}
+
+function expectQuoteRequested() {
+  expect(mockEmailApi.quote).toHaveBeenCalledWith({});
 }
 
 async function continueInWallet() {
@@ -76,7 +95,7 @@ function expectQuoteIsSent() {
   expect(sessionMock.send).toHaveBeenCalledWith({ quote: '' });
 }
 
-async function anchoringInProgress() {
+async function expectAnchoringInProgress() {
   expect(
     await screen.findByText('Anchoring credential on KILT blockchain'),
   ).toBeInTheDocument();
@@ -88,6 +107,18 @@ async function tryAgain() {
   );
 }
 
+async function expectStartOver() {
+  expect(
+    await screen.findByLabelText('Your email address'),
+  ).toBeInTheDocument();
+}
+
+function expectAttestationRequested() {
+  expect(mockEmailApi.requestAttestation).toHaveBeenCalledWith({
+    message: { signed: 'quote' },
+  });
+}
+
 async function respondWithQuote() {
   await act(async () => {
     quotePromise.resolve({ quote: '' } as unknown as IEncryptedMessage);
@@ -96,16 +127,20 @@ async function respondWithQuote() {
 
 describe('Email', () => {
   beforeEach(() => {
+    jest.mocked(useValuesFromRedirectUri).mockReturnValue({});
+
+    sendEmailPromise = makeTestPromise();
+    confirmPromise = makeTestPromise();
     quotePromise = makeTestPromise();
     requestPromise = makeTestPromise();
-    confirmPromise = makeTestPromise();
     attestPromise = makeTestPromise();
 
     mockEmailApi = {
+      send: sendEmailPromise.jestFn,
+      confirm: confirmPromise.jestFn,
       quote: quotePromise.jestFn,
       requestAttestation: requestPromise.jestFn,
       attest: attestPromise.jestFn,
-      confirm: confirmPromise.jestFn,
     };
     jest.mocked(useEmailApi).mockReturnValue(mockEmailApi);
 
@@ -118,10 +153,60 @@ describe('Email', () => {
     jest.mocked(console.error).mockRestore();
   });
 
-  it('should go through the happy path', async () => {
+  it('should go through the happy path until email is sent', async () => {
     const { container } = render(<Email session={sessionMock} />);
 
+    expectIsNotProcessing(container);
+
     await enterEmail();
+    await sendEmail();
+    expectIsProcessing(container);
+
+    expectSendEmailCalled();
+
+    await act(async () => {
+      sendEmailPromise.resolve();
+    });
+
+    expectIsNotProcessing(container);
+
+    expect(await screen.findByText('Email sent')).toBeInTheDocument();
+  });
+
+  it('should show an error when sendEmail fails', async () => {
+    const { container } = render(<Email session={sessionMock} />);
+
+    expectIsNotProcessing(container);
+
+    await enterEmail();
+    await sendEmail();
+    expectIsProcessing(container);
+
+    expectSendEmailCalled();
+
+    await act(async () => {
+      sendEmailPromise.reject(new InvalidEmail());
+    });
+
+    expectIsNotProcessing(container);
+
+    expect(
+      await screen.findByText('Incorrect email format, please review.'),
+    ).toBeInTheDocument();
+  });
+
+  it('should finish the happy path after authentication', async () => {
+    jest.mocked(useValuesFromRedirectUri).mockReturnValue({ secret });
+
+    const { container } = render(<Email session={sessionMock} />);
+
+    expectIsNotProcessing(container);
+    expectConfirmCalledWith(secret);
+
+    await act(async () => {
+      confirmPromise.resolve(profileMock);
+    });
+
     await continueInWallet();
     expectIsProcessing(container);
     expectQuoteRequested();
@@ -130,24 +215,67 @@ describe('Email', () => {
     expectQuoteIsSent();
 
     const listenerPromise = callSessionListenerWith({ signed: 'quote' });
-    expect(mockEmailApi.requestAttestation).toHaveBeenCalledWith({
-      message: { signed: 'quote' },
-    });
+    expectAttestationRequested();
 
     await act(async () => {
-      requestPromise.resolve('PASS');
+      requestPromise.resolve();
+    });
+    expectIsNotProcessing(container);
+    await expectAnchoringInProgress();
+
+    await act(async () => {
+      attestPromise.resolve({ done: '' } as unknown as IEncryptedMessage);
+    });
+    expect(await screen.findByText('Credential is ready')).toBeInTheDocument();
+
+    await act(async () => {
       await listenerPromise;
       sessionMockSendPromise.resolve(undefined);
     });
 
+    await userEvent.click(
+      await screen.findByRole('button', { name: 'Show credential in wallet' }),
+    );
+    expect(sessionMock.send).toHaveBeenCalledWith({ done: '' });
+  });
+
+  it('should show authentication error', async () => {
+    jest.mocked(useValuesFromRedirectUri).mockReturnValue({ secret });
+
+    const { container } = render(<Email session={sessionMock} />);
+
     expectIsNotProcessing(container);
-    expect(await screen.findByText('Email sent')).toBeInTheDocument();
+
+    expectConfirmCalledWith(secret);
+
+    await act(async () => {
+      confirmPromise.reject(new Error('authentication'));
+    });
+
+    expect(
+      await screen.findByText('This link has expired.'),
+    ).toBeInTheDocument();
+
+    expect(
+      screen.queryByRole('button', { name: 'Continue in Wallet' }),
+    ).not.toBeInTheDocument();
+
+    await tryAgain();
+    await expectStartOver();
   });
 
   it('should show error when quote fails', async () => {
+    jest.mocked(useValuesFromRedirectUri).mockReturnValue({ secret });
+
     const { container } = render(<Email session={sessionMock} />);
 
-    await enterEmail();
+    expectIsNotProcessing(container);
+    expectConfirmCalledWith(secret);
+
+    await act(async () => {
+      confirmPromise.resolve(profileMock);
+    });
+
     await continueInWallet();
     expectIsProcessing(container);
     expectQuoteRequested();
@@ -160,23 +288,29 @@ describe('Email', () => {
     expectIsNotProcessing(container);
     await expectSomethingWrong();
 
-    expect(mockEmailApi.quote).toHaveBeenCalledTimes(1);
     await tryAgain();
-    await continueInWallet();
-    expect(mockEmailApi.quote).toHaveBeenCalledTimes(2);
+    await expectStartOver();
   });
 
+  // eslint-disable-next-line jest/expect-expect
   it('should show an error when the wallet communication fails', async () => {
+    jest.mocked(useValuesFromRedirectUri).mockReturnValue({ secret });
+
     const { container } = render(<Email session={sessionMock} />);
 
-    await enterEmail();
+    expectIsNotProcessing(container);
+    expectConfirmCalledWith(secret);
+
+    await act(async () => {
+      confirmPromise.resolve(profileMock);
+    });
+
     await continueInWallet();
     expectIsProcessing(container);
     expectQuoteRequested();
 
     await respondWithQuote();
     expectQuoteIsSent();
-
     await act(async () => {
       sessionMockSendPromise.reject(new Error('closed'));
     });
@@ -185,14 +319,22 @@ describe('Email', () => {
     await expectSomethingWrong();
 
     await tryAgain();
-    await continueInWallet();
-    expect(mockEmailApi.quote).toHaveBeenCalledTimes(2);
+    await expectStartOver();
   });
 
+  // eslint-disable-next-line jest/expect-expect
   it('should show an error when there’s an error in Sporran', async () => {
+    jest.mocked(useValuesFromRedirectUri).mockReturnValue({ secret });
+
     const { container } = render(<Email session={sessionMock} />);
 
-    await enterEmail();
+    expectIsNotProcessing(container);
+    expectConfirmCalledWith(secret);
+
+    await act(async () => {
+      confirmPromise.resolve(profileMock);
+    });
+
     await continueInWallet();
     expectIsProcessing(container);
     expectQuoteRequested();
@@ -201,9 +343,6 @@ describe('Email', () => {
     expectQuoteIsSent();
 
     const listenerPromise = callSessionListenerWith({ error: 'unknown' });
-    expect(mockEmailApi.requestAttestation).toHaveBeenCalledWith({
-      message: { error: 'unknown' },
-    });
 
     await act(async () => {
       requestPromise.reject(new Error('unknown'));
@@ -215,14 +354,21 @@ describe('Email', () => {
     await expectSomethingWrong();
 
     await tryAgain();
-    await continueInWallet();
-    expect(mockEmailApi.quote).toHaveBeenCalledTimes(2);
+    await expectStartOver();
   });
 
   it('should advice when the popup is closed', async () => {
+    jest.mocked(useValuesFromRedirectUri).mockReturnValue({ secret });
+
     const { container } = render(<Email session={sessionMock} />);
 
-    await enterEmail();
+    expectIsNotProcessing(container);
+    expectConfirmCalledWith(secret);
+
+    await act(async () => {
+      confirmPromise.resolve(profileMock);
+    });
+
     await continueInWallet();
     expectIsProcessing(container);
     expectQuoteRequested();
@@ -252,10 +398,18 @@ describe('Email', () => {
     expect(mockEmailApi.quote).toHaveBeenCalledTimes(2);
   });
 
-  it('should show an error when email sending fails', async () => {
+  it('should advice about the slow attestation', async () => {
+    jest.mocked(useValuesFromRedirectUri).mockReturnValue({ secret });
+
     const { container } = render(<Email session={sessionMock} />);
 
-    await enterEmail();
+    expectIsNotProcessing(container);
+    expectConfirmCalledWith(secret);
+
+    await act(async () => {
+      confirmPromise.resolve(profileMock);
+    });
+
     await continueInWallet();
     expectIsProcessing(container);
     expectQuoteRequested();
@@ -263,104 +417,20 @@ describe('Email', () => {
     await respondWithQuote();
     expectQuoteIsSent();
 
-    const listenerPromise = callSessionListenerWith({ message: 'quote' });
-    expect(mockEmailApi.requestAttestation).toHaveBeenCalledWith({
-      message: { message: 'quote' },
-    });
-
-    await act(async () => {
-      requestPromise.reject(new InvalidEmail());
-      await listenerPromise;
-      sessionMockSendPromise.resolve(undefined);
-    });
-
-    expectIsNotProcessing(container);
-    expect(
-      await screen.findByText('Incorrect email format, please review.'),
-    ).toBeInTheDocument();
-
-    await continueInWallet();
-    expect(mockEmailApi.quote).toHaveBeenCalledTimes(2);
-  });
-
-  it('should finish the happy path after confirmation', async () => {
-    const secret = 'SECRET';
-    const { container } = render(
-      <MemoryRouter
-        initialEntries={[generatePath(paths.emailConfirmation, { secret })]}
-      >
-        <Email session={sessionMock} />
-      </MemoryRouter>,
-    );
-
-    expectIsNotProcessing(container);
-    expectConfirmCalledWith(secret);
-
-    await act(async () => {
-      confirmPromise.resolve(undefined);
-    });
-    await anchoringInProgress();
-
-    await act(async () => {
-      attestPromise.resolve({ done: '' } as unknown as IEncryptedMessage);
-    });
-    expect(await screen.findByText('Credential is ready')).toBeInTheDocument();
-
-    expect(sessionMock.send).not.toHaveBeenCalled();
-    await userEvent.click(
-      await screen.findByRole('button', { name: 'Show credential in wallet' }),
-    );
-    expect(sessionMock.send).toHaveBeenCalledTimes(1);
-  });
-
-  it('should advice about the slow attestation', async () => {
     jest.useFakeTimers();
-
-    const secret = 'SECRET';
-    const { container } = render(
-      <MemoryRouter
-        initialEntries={[generatePath(paths.emailConfirmation, { secret })]}
-      >
-        <Email session={sessionMock} />
-      </MemoryRouter>,
-    );
-
-    expectIsNotProcessing(container);
-    expectConfirmCalledWith(secret);
+    callSessionListenerWith({ signed: 'quote' });
+    expectAttestationRequested();
 
     await act(async () => {
-      confirmPromise.resolve(undefined);
+      requestPromise.resolve();
     });
-    await anchoringInProgress();
+    expectIsNotProcessing(container);
+    await expectAnchoringInProgress();
 
     jest.runAllTimers();
 
     expect(
       await screen.findByText('Anchoring is taking longer than expected.'),
-    ).toBeInTheDocument();
-  });
-
-  it('should show an error when the secret is expired', async () => {
-    jest.useFakeTimers();
-
-    const secret = 'SECRET';
-    const { container } = render(
-      <MemoryRouter
-        initialEntries={[generatePath(paths.emailConfirmation, { secret })]}
-      >
-        <Email session={sessionMock} />
-      </MemoryRouter>,
-    );
-
-    expectIsNotProcessing(container);
-    expectConfirmCalledWith(secret);
-
-    await act(async () => {
-      confirmPromise.reject(new Error('expired'));
-    });
-
-    expect(
-      await screen.findByText('This link has expired.'),
     ).toBeInTheDocument();
   });
 });
