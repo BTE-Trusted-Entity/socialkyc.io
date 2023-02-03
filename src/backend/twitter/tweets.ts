@@ -22,7 +22,7 @@ export async function canAccessTwitter() {
   } catch (error) {
     twitterConnectionState.off();
     logger.error(error, 'Error connecting to Twitter');
-    throw error;
+    // throw error;
   }
 }
 
