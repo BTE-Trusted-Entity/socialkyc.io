@@ -44,12 +44,10 @@ jobs:
     - name: Deploy to kilt cluster
       uses: kodermax/kubectl-aws-eks@master
       env:
-        KUBE_CONFIG_DATA: ${{ secrets.KUBE_CONFIG_DATA }}
+        KUBE_CONFIG_DATA: ${{ secrets.KUBE_CONFIG }}
         ECR_REGISTRY: ${{ steps.login-ecr.outputs.registry }}
         ECR_REPOSITORY: socialkyc
         IMAGE_TAG: ${{ github.sha }}
-        KUBECTL_VERSION: "v1.23.0"
-        IAM_VERSION: "0.5.6"
 
       with:
         args: rollout restart deployment social-kyc-dev -n social-kyc
