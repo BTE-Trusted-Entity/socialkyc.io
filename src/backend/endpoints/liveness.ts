@@ -63,7 +63,7 @@ export async function testLiveness() {
 
 function handler() {
   const kiltOk = !blockchainConnectionState.isOffForTooLong();
-  const twitterOk = !twitterConnectionState.isOffForTooLong();
+  // const twitterOk = !twitterConnectionState.isOffForTooLong();
   const sesOk = !sesConnectionState.isOffForTooLong();
   const discordOk = !discordConnectionState.isOffForTooLong();
   const githubOk = !githubConnectionState.isOffForTooLong();
@@ -73,7 +73,7 @@ function handler() {
 
   return (
     kiltOk &&
-    twitterOk &&
+    //twitterOk &&
     sesOk &&
     discordOk &&
     githubOk &&
