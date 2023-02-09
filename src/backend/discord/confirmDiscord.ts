@@ -8,7 +8,7 @@ import {
 
 import got from 'got';
 
-import Boom from '@hapi/boom';
+import * as Boom from '@hapi/boom';
 
 import { Claim } from '@kiltprotocol/core';
 

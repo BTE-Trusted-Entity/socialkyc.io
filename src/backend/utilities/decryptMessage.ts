@@ -1,5 +1,5 @@
 import { Request } from '@hapi/hapi';
-import Boom from '@hapi/boom';
+import * as Boom from '@hapi/boom';
 import {
   MessageBodyType,
   IRequestAttestationContent,

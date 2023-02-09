@@ -2,7 +2,7 @@ import { cwd } from 'node:process';
 import path from 'node:path';
 
 import dotenv from 'dotenv';
-import pino from 'pino';
+import { pino } from 'pino';
 import { DidUri } from '@kiltprotocol/types';
 
 dotenv.config();

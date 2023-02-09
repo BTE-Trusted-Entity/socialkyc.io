@@ -8,7 +8,7 @@ import {
 
 import { Credential } from '@kiltprotocol/core';
 
-import Boom from '@hapi/boom';
+import * as Boom from '@hapi/boom';
 
 import { getSession, setSession } from '../utilities/sessionStorage';
 import { validateEncryptedMessage } from '../utilities/validateEncryptedMessage';
