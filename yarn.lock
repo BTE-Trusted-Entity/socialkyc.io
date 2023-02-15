@@ -4750,13 +4750,13 @@
   dependencies:
     "@types/node" "*"
 
-"@types/hapi__basic@^5.1.2":
-  version "5.1.2"
-  resolved "https://registry.yarnpkg.com/@types/hapi__basic/-/hapi__basic-5.1.2.tgz#5809c0bfa04facf2b5f18eae770c59d23cf20dcc"
-  integrity sha512-sqoQ34nwmRlNgQ5fdHHnghyVzs23aC2d30l9G1sKvdrh4PDV22bnQ+8fBCjoItT+0gGSuXIoG4qdoVZGBjH5EQ==
+"@types/hapi__basic@^5.1.3":
+  version "5.1.3"
+  resolved "https://registry.yarnpkg.com/@types/hapi__basic/-/hapi__basic-5.1.3.tgz#fcc2866d9d1f837ab7d8a5e1d730fd45c46d2f53"
+  integrity sha512-YXyzRVrfvDKg52gjCjpypshJzOR9Nq1wApI6M52xsgHUnce6J5Y2W5gYFvgaAylpGQYOF5yhJ/QDGm3exaxSmw==
   dependencies:
-    "@types/hapi__hapi" "*"
-    joi "^17.3.0"
+    "@hapi/hapi" "^21.1.0"
+    joi "^17.7.0"
 
 "@types/hapi__catbox@*":
   version "10.2.4"
