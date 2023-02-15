@@ -3,6 +3,8 @@ import { ConfigService } from '@kiltprotocol/config';
 
 import { SendEmailCommand } from '@aws-sdk/client-ses';
 
+import { KiltAddress } from '@kiltprotocol/types';
+
 import { sesClient } from '../email/sesClient';
 
 import { logger } from './logger';
@@ -12,10 +14,17 @@ import { keypairsPromise } from './keypairs';
 const REPORT_THRESHOLD = BalanceUtils.toFemtoKilt(1000);
 const REPORT_FREQUENCY = 24 * 60 * 60 * 1000;
 
-async function sendLowBalanceAlert(balance: string) {
+async function sendLowBalanceAlert(
+  balance: string,
+  endpoint: string,
+  address: KiltAddress,
+) {
   const Data = `The SocialKYC balance is currently low. Please add more KILT coins.
 
 Current balance: ${balance}
+
+Address: ${address}
+endpoint: ${endpoint}
 
 This is an automatically generated email.`;
 
@@ -55,8 +64,10 @@ export function reportBalance() {
 
       logger.info(`Free: ${free}, bonded: ${reserved}`);
 
+      const { blockchainEndpoint } = configuration;
+
       if (balances.free.lt(REPORT_THRESHOLD)) {
-        await sendLowBalanceAlert(free);
+        await sendLowBalanceAlert(free, blockchainEndpoint, identity.address);
       }
     } catch (error) {
       logger.error(error, 'Error getting attester balance');
