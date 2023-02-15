@@ -4,7 +4,7 @@ import {
   ResponseToolkit,
   ServerRoute,
 } from '@hapi/hapi';
-import Boom from '@hapi/boom';
+import * as Boom from '@hapi/boom';
 
 import { Credential } from '@kiltprotocol/core';
 

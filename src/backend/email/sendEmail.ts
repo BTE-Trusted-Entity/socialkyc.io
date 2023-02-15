@@ -3,13 +3,14 @@ import { join } from 'node:path';
 
 import { StatusCodes } from 'http-status-codes';
 import { SendEmailCommand } from '@aws-sdk/client-ses';
+import { toUnicode } from 'punycode-esm';
 import {
   Request,
   ResponseObject,
   ResponseToolkit,
   ServerRoute,
 } from '@hapi/hapi';
-import Boom from '@hapi/boom';
+import * as Boom from '@hapi/boom';
 import { RateLimiterMemory } from 'rate-limiter-flexible';
 import { z } from 'zod';
 
@@ -104,7 +105,7 @@ export type Input = z.infer<typeof zodPayload>;
 export type Output = void;
 
 async function handler(
-  request: Request,
+  request: Request<{ Payload: Input }>,
   h: ResponseToolkit,
 ): Promise<ResponseObject | string> {
   const { logger } = request;
@@ -121,13 +122,14 @@ async function handler(
 
   const session = getSession(request.headers);
 
-  const { wallet, email } = request.payload as Input;
+  const { wallet } = request.payload;
   const { sessionId } = session;
   const secret = getSecretForSession(sessionId);
 
   const url = new URL(paths.redirect.email, configuration.baseUri);
   url.search = new URLSearchParams({ state: secret, wallet }).toString();
 
+  const email = toUnicode(request.payload.email);
   const claimContents = {
     Email: email,
   };
@@ -159,7 +161,7 @@ async function handler(
   }
 }
 
-export const sendEmail: ServerRoute = {
+export const sendEmail = {
   method: 'POST',
   path: paths.email.send,
   handler,
@@ -168,4 +170,4 @@ export const sendEmail: ServerRoute = {
       payload: async (payload) => zodPayload.parse(payload),
     },
   },
-};
+} as ServerRoute;

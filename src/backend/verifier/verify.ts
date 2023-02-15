@@ -6,7 +6,7 @@ import {
 } from '@hapi/hapi';
 import { IAttestation, ICredentialPresentation } from '@kiltprotocol/types';
 import { Attestation, Credential } from '@kiltprotocol/core';
-import Boom from '@hapi/boom';
+import * as Boom from '@hapi/boom';
 import { ConfigService } from '@kiltprotocol/config';
 
 import { decryptMessageContent } from '../utilities/decryptMessage';

@@ -1,11 +1,11 @@
-import Hapi from '@hapi/hapi';
-import exiting from 'exiting';
+import { server as hapiServer } from '@hapi/hapi';
+import { createManager } from 'exiting';
 
 import { configuration } from './configuration';
 
 const { isProduction, port } = configuration;
 
-export const server = Hapi.server({
+export const server = hapiServer({
   port,
   host: '127.0.0.1',
   uri: configuration.baseUri,
@@ -13,4 +13,4 @@ export const server = Hapi.server({
   routes: { security: true },
 });
 
-export const manager = exiting.createManager(server);
+export const manager = createManager(server);
