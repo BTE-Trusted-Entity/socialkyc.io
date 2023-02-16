@@ -1,9 +1,10 @@
 import { readFile } from 'node:fs/promises';
 import { join } from 'node:path';
 
+import { toUnicode, toASCII } from 'punycode';
+
 import { StatusCodes } from 'http-status-codes';
 import { SendEmailCommand } from '@aws-sdk/client-ses';
-import { toUnicode } from 'punycode-esm';
 import {
   Request,
   ResponseObject,
@@ -148,7 +149,7 @@ async function handler(
     const isTestEmail = email.split('@').pop() === 'example.com';
 
     if (!isTestEmail) {
-      await send(url.toString(), email);
+      await send(url.toString(), toASCII(email));
       logger.debug('Email request attestation message sent');
     }
 
