@@ -27,7 +27,7 @@ import {
 
 import { exceptionToError } from '../../frontend/utilities/exceptionToError';
 import { exitOnError } from '../utilities/exitOnError';
-import { paths } from '../endpoints/paths';
+import { generatePath, paths } from '../endpoints/paths';
 
 import { sesClient } from './sesClient';
 import { sesConnectionState } from './sesConnection';
@@ -127,7 +127,10 @@ async function handler(
   const { sessionId } = session;
   const secret = getSecretForSession(sessionId);
 
-  const url = new URL(paths.redirect.email, configuration.baseUri);
+  const url = new URL(
+    generatePath(paths.authHtml, 'email'),
+    configuration.baseUri,
+  );
   url.search = new URLSearchParams({ state: secret, wallet }).toString();
 
   const email = toUnicode(request.payload.email);

@@ -5,7 +5,7 @@ import type { SupportedCTypes } from '../utilities/supportedCTypes';
 import { EncryptedMessageInput } from '../utilities/validateEncryptedMessage';
 import { maybeRejected } from '../../frontend/utilities/maybeRejected';
 
-import { paths } from './paths';
+import { generatePath, paths } from './paths';
 
 import { Output } from './requestAttestation';
 
@@ -14,5 +14,6 @@ export async function requestAttestation(
   json: EncryptedMessageInput,
   ky: KyInstance,
 ): Promise<Output> {
-  await maybeRejected(ky.post(`${paths.requestAttestation}/${type}`, { json }));
+  const url = generatePath(paths.requestAttestation, type);
+  await maybeRejected(ky.post(url, { json }));
 }

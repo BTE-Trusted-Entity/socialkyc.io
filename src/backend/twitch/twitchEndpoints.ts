@@ -1,5 +1,5 @@
 import { configuration } from '../utilities/configuration';
-import { paths } from '../endpoints/paths';
+import { generatePath, paths } from '../endpoints/paths';
 
 export const twitchEndpoints = {
   authorize: 'https://id.twitch.tv/oauth2/authorize',
@@ -7,5 +7,8 @@ export const twitchEndpoints = {
   profile: 'https://api.twitch.tv/helix/users',
   revoke: 'https://id.twitch.tv/oauth2/revoke',
 
-  redirectUri: `${configuration.baseUri}${paths.redirect.twitch}`,
+  redirectUri: `${configuration.baseUri}${generatePath(
+    paths.authHtml,
+    'twitch',
+  )}`,
 };

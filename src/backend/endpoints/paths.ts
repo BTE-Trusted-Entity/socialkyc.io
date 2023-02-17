@@ -1,4 +1,7 @@
-import { supportedCTypeKeys } from '../utilities/supportedCTypes';
+import {
+  supportedCTypeKeys,
+  SupportedCTypes,
+} from '../utilities/supportedCTypes';
 
 const types = supportedCTypeKeys.join('|');
 
@@ -46,14 +49,7 @@ export const paths = {
     confirm: '/api/youtube/confirm',
   },
 
-  redirect: {
-    email: '/email/auth',
-    discord: '/discord/auth',
-    github: '/github/auth',
-    twitch: '/twitch/auth',
-    youtube: '/youtube/auth',
-  },
-
+  authHtml: '/auth/:type(discord|email|github|twitch|youtube)',
   quote: `/api/quote/:type(${types})`,
   requestAttestation: `/api/request-attestation/:type(${types})`,
   attest: '/api/attest',
@@ -71,3 +67,7 @@ export const paths = {
     secret: '/api/test/secret',
   },
 };
+
+export function generatePath(path: string, type: SupportedCTypes) {
+  return path.replace(/:type.*/, type);
+}

@@ -2,7 +2,7 @@ import { useLocation, useRouteMatch } from 'react-router-dom';
 
 import { paths as backendPaths } from '../../backend/endpoints/paths';
 
-export const redirectedPaths = Object.values(backendPaths.redirect);
+export const redirectedPaths = backendPaths.authHtml;
 
 interface ValuesFromRedirectUri {
   code?: string | null;
