@@ -1,3 +1,5 @@
+import type { SupportedCTypes } from '../backend/utilities/supportedCTypes';
+
 import { requestCredential } from '../backend/verifier/requestCredentialApi';
 import { verifyCredential } from '../backend/verifier/verifyApi';
 
@@ -47,7 +49,7 @@ async function handleSubmit(event: Event) {
     elements: Record<string, HTMLInputElement>;
   };
 
-  const requestedCType = target.elements.ctype.value;
+  const requestedCType = target.elements.ctype.value as SupportedCTypes;
 
   try {
     const session = await getSession(apiWindow.kilt.sporran, 'sporran');
