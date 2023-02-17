@@ -25,31 +25,27 @@ export const paths = {
   },
 
   discord: {
-    authUrl: '/api/discord/authUrl',
     confirm: '/api/discord/confirm',
   },
 
   github: {
-    authUrl: '/api/github/authUrl',
     confirm: '/api/github/confirm',
   },
 
   twitch: {
-    authUrl: '/api/twitch/authUrl',
     confirm: '/api/twitch/confirm',
   },
 
   telegram: {
-    authUrl: '/api/telegram/authUrl',
     confirm: '/api/telegram/confirm',
   },
 
   youtube: {
-    authUrl: '/api/youtube/authUrl',
     confirm: '/api/youtube/confirm',
   },
 
   authHtml: '/auth/:type(discord|email|github|twitch|youtube)',
+  authUrl: '/auth/:type(discord|github|telegram|twitch|youtube)',
   quote: `/api/quote/:type(${types})`,
   requestAttestation: `/api/request-attestation/:type(${types})`,
   attest: '/api/attest',

@@ -1,7 +1,7 @@
 import { useMemo } from 'react';
 
 import { confirmTwitch } from '../../../backend/twitch/confirmTwitchApi';
-import { authUrlTwitch } from '../../../backend/twitch/authUrlTwitchApi';
+import { authUrl } from '../../../backend/endpoints/authUrlApi';
 import { quote } from '../../../backend/endpoints/quoteApi';
 import { requestAttestation } from '../../../backend/endpoints/requestAttestationApi';
 import { attest } from '../../../backend/endpoints/attestApi';
@@ -12,7 +12,7 @@ export function useTwitchApi(sessionId: string) {
   return useMemo(() => {
     const sessionBound = bindToSession(sessionId);
     return {
-      authUrl: sessionBound(authUrlTwitch),
+      authUrl: sessionBound(authUrl.bind(undefined, 'twitch')),
       confirm: sessionBound(confirmTwitch),
       quote: sessionBound(quote.bind(undefined, 'twitch')),
       requestAttestation: sessionBound(

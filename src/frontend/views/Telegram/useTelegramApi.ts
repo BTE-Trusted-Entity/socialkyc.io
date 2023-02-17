@@ -1,7 +1,7 @@
 import { useMemo } from 'react';
 
 import { confirmTelegram } from '../../../backend/telegram/confirmTelegramApi';
-import { authUrlTelegram } from '../../../backend/telegram/authUrlTelegramApi';
+import { authUrl } from '../../../backend/endpoints/authUrlApi';
 import { quote } from '../../../backend/endpoints/quoteApi';
 import { requestAttestation } from '../../../backend/endpoints/requestAttestationApi';
 import { attest } from '../../../backend/endpoints/attestApi';
@@ -12,7 +12,7 @@ export function useTelegramApi(sessionId: string) {
   return useMemo(() => {
     const sessionBound = bindToSession(sessionId);
     return {
-      authUrl: sessionBound(authUrlTelegram),
+      authUrl: sessionBound(authUrl.bind(undefined, 'telegram')),
       confirm: sessionBound(confirmTelegram),
       quote: sessionBound(quote.bind(undefined, 'telegram')),
       requestAttestation: sessionBound(

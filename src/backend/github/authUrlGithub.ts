@@ -1,23 +1,8 @@
-import { Request, ServerRoute } from '@hapi/hapi';
-
 import { configuration } from '../utilities/configuration';
-import { getSecretForSession, getSession } from '../utilities/sessionStorage';
-import { paths } from '../endpoints/paths';
 
 import { githubEndpoints } from './githubEndpoints';
 
-export type Input = Record<string, never>;
-
-export type Output = string;
-
-async function handler(request: Request): Promise<string> {
-  const { logger } = request;
-  logger.debug('github auth started');
-
-  const session = getSession(request.headers);
-
-  const secret = getSecretForSession(session.sessionId);
-
+export async function authUrlGithub(secret: string): Promise<string> {
   const searchParams = {
     client_id: configuration.github.clientId,
     scope: 'user',
@@ -26,12 +11,5 @@ async function handler(request: Request): Promise<string> {
   };
   const url = new URL(githubEndpoints.authorize);
   url.search = new URLSearchParams(searchParams).toString();
-  logger.debug('Generated github auth URL');
-  return url.toString() as Output;
+  return url.toString();
 }
-
-export const authUrlgithub: ServerRoute = {
-  method: 'POST',
-  path: paths.github.authUrl,
-  handler,
-};
