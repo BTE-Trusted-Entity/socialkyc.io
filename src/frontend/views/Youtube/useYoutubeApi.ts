@@ -2,7 +2,7 @@ import { useMemo } from 'react';
 
 import { confirmYoutube } from '../../../backend/youtube/confirmYoutubeApi';
 import { authUrlYoutube } from '../../../backend/youtube/authUrlYoutubeApi';
-import { quoteYoutube } from '../../../backend/youtube/quoteYoutubeApi';
+import { quote } from '../../../backend/endpoints/quoteApi';
 import { requestAttestationYoutube } from '../../../backend/youtube/requestAttestationYoutubeApi';
 import { attest } from '../../../backend/endpoints/attestApi';
 
@@ -14,7 +14,7 @@ export function useYoutubeApi(sessionId: string) {
     return {
       authUrl: sessionBound(authUrlYoutube),
       confirm: sessionBound(confirmYoutube),
-      quote: sessionBound(quoteYoutube),
+      quote: sessionBound(quote.bind(undefined, 'youtube')),
       requestAttestation: sessionBound(requestAttestationYoutube),
       attest: sessionBound(attest),
     };

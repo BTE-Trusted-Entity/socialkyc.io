@@ -1,6 +1,6 @@
 import { useMemo } from 'react';
 
-import { quoteEmail } from '../../../backend/email/quoteEmailApi';
+import { quote } from '../../../backend/endpoints/quoteApi';
 import { sendEmail } from '../../../backend/email/sendEmailApi';
 import { confirmEmail } from '../../../backend/email/confirmEmailApi';
 import { attest } from '../../../backend/endpoints/attestApi';
@@ -14,7 +14,7 @@ export function useEmailApi(sessionId: string) {
     return {
       send: sessionBound(sendEmail),
       confirm: sessionBound(confirmEmail),
-      quote: sessionBound(quoteEmail),
+      quote: sessionBound(quote.bind(undefined, 'email')),
       requestAttestation: sessionBound(requestAttestationEmail),
       attest: sessionBound(attest),
     };

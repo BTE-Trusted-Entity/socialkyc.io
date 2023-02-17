@@ -2,7 +2,7 @@ import { useMemo } from 'react';
 
 import { confirmGithub } from '../../../backend/github/confirmGithubApi';
 import { authUrlGithub } from '../../../backend/github/authUrlGithubApi';
-import { quoteGithub } from '../../../backend/github/quoteGithubApi';
+import { quote } from '../../../backend/endpoints/quoteApi';
 import { requestAttestationGithub } from '../../../backend/github/requestAttestationGithubApi';
 import { attest } from '../../../backend/endpoints/attestApi';
 
@@ -14,7 +14,7 @@ export function useGithubApi(sessionId: string) {
     return {
       authUrl: sessionBound(authUrlGithub),
       confirm: sessionBound(confirmGithub),
-      quote: sessionBound(quoteGithub),
+      quote: sessionBound(quote.bind(undefined, 'github')),
       requestAttestation: sessionBound(requestAttestationGithub),
       attest: sessionBound(attest),
     };

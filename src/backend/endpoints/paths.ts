@@ -1,3 +1,7 @@
+import { supportedCTypeKeys } from '../utilities/supportedCTypes';
+
+const types = supportedCTypeKeys.join('|');
+
 export const paths = {
   home: '/',
   about: '/about.html',
@@ -10,49 +14,42 @@ export const paths = {
   email: {
     send: '/api/email/send',
     confirm: '/api/email/confirm',
-    quote: '/api/email/quote',
     requestAttestation: '/api/email/request-attestation',
   },
 
   twitter: {
     claim: '/api/twitter/claim',
     confirm: '/api/twitter/confirm',
-    quote: '/api/twitter/quote',
     requestAttestation: '/api/twitter/request-attestation',
   },
 
   discord: {
     authUrl: '/api/discord/authUrl',
     confirm: '/api/discord/confirm',
-    quote: '/api/discord/quote',
     requestAttestation: '/api/discord/request-attestation',
   },
 
   github: {
     authUrl: '/api/github/authUrl',
     confirm: '/api/github/confirm',
-    quote: '/api/github/quote',
     requestAttestation: '/api/github/request-attestation',
   },
 
   twitch: {
     authUrl: '/api/twitch/authUrl',
     confirm: '/api/twitch/confirm',
-    quote: '/api/twitch/quote',
     requestAttestation: '/api/twitch/request-attestation',
   },
 
   telegram: {
     authUrl: '/api/telegram/authUrl',
     confirm: '/api/telegram/confirm',
-    quote: '/api/telegram/quote',
     requestAttestation: '/api/telegram/request-attestation',
   },
 
   youtube: {
     authUrl: '/api/youtube/authUrl',
     confirm: '/api/youtube/confirm',
-    quote: '/api/youtube/quote',
     requestAttestation: '/api/youtube/request-attestation',
   },
 
@@ -64,6 +61,7 @@ export const paths = {
     youtube: '/youtube/auth',
   },
 
+  quote: `/api/quote/:type(${types})`,
   attest: '/api/attest',
 
   verifier: {

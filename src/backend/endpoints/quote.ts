@@ -9,20 +9,24 @@ import { IEncryptedMessage } from '@kiltprotocol/types';
 
 import { encryptMessageBody } from '../utilities/encryptMessage';
 import { getSession } from '../utilities/sessionStorage';
-import { paths } from '../endpoints/paths';
+import { SupportedCTypes, supportedCTypes } from '../utilities/supportedCTypes';
 
-import { discordCType } from './discordCType';
+import { paths } from './paths';
 
 export type Input = Record<string, never>;
 
 export type Output = IEncryptedMessage;
 
 async function handler(
-  request: Request,
+  request: Request<{ Params: { type: SupportedCTypes } }>,
   h: ResponseToolkit,
 ): Promise<ResponseObject> {
-  const { logger } = request;
-  logger.debug('Discord quote started');
+  const {
+    logger,
+    params: { type },
+  } = request;
+
+  logger.debug(`Quote started for ${type}`);
 
   const { encryptionKeyUri, claim, confirmed } = getSession(request.headers);
 
@@ -30,21 +34,22 @@ async function handler(
     throw Boom.notFound('Confirmed claim not found');
   }
 
+  const cType = supportedCTypes[type];
   const output = await encryptMessageBody(encryptionKeyUri, {
     content: {
       claim,
       legitimations: [],
-      cTypes: [discordCType],
+      cTypes: [cType],
     },
     type: 'submit-terms',
   });
 
-  logger.debug('Discord quote completed');
+  logger.debug(`Quote completed for ${type}`);
   return h.response(output as Output);
 }
 
-export const quoteDiscord: ServerRoute = {
+export const quote = {
   method: 'POST',
-  path: paths.discord.quote,
+  path: paths.quote,
   handler,
-};
+} as ServerRoute;
