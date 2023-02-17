@@ -12,7 +12,6 @@ export const paths = {
     confirm: '/api/email/confirm',
     quote: '/api/email/quote',
     requestAttestation: '/api/email/request-attestation',
-    attest: '/api/email/attest',
   },
 
   twitter: {
@@ -20,7 +19,6 @@ export const paths = {
     confirm: '/api/twitter/confirm',
     quote: '/api/twitter/quote',
     requestAttestation: '/api/twitter/request-attestation',
-    attest: '/api/twitter/attest',
   },
 
   discord: {
@@ -28,7 +26,6 @@ export const paths = {
     confirm: '/api/discord/confirm',
     quote: '/api/discord/quote',
     requestAttestation: '/api/discord/request-attestation',
-    attest: '/api/discord/attest',
   },
 
   github: {
@@ -36,7 +33,6 @@ export const paths = {
     confirm: '/api/github/confirm',
     quote: '/api/github/quote',
     requestAttestation: '/api/github/request-attestation',
-    attest: '/api/github/attest',
   },
 
   twitch: {
@@ -44,7 +40,6 @@ export const paths = {
     confirm: '/api/twitch/confirm',
     quote: '/api/twitch/quote',
     requestAttestation: '/api/twitch/request-attestation',
-    attest: '/api/twitch/attest',
   },
 
   telegram: {
@@ -52,7 +47,6 @@ export const paths = {
     confirm: '/api/telegram/confirm',
     quote: '/api/telegram/quote',
     requestAttestation: '/api/telegram/request-attestation',
-    attest: '/api/telegram/attest',
   },
 
   youtube: {
@@ -60,7 +54,6 @@ export const paths = {
     confirm: '/api/youtube/confirm',
     quote: '/api/youtube/quote',
     requestAttestation: '/api/youtube/request-attestation',
-    attest: '/api/youtube/attest',
   },
 
   redirect: {
@@ -70,6 +63,8 @@ export const paths = {
     twitch: '/twitch/auth',
     youtube: '/youtube/auth',
   },
+
+  attest: '/api/attest',
 
   verifier: {
     requestCredential: '/api/request-credential',

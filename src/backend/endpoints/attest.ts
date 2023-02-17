@@ -8,7 +8,8 @@ import {
 
 import { getSession, setSession } from '../utilities/sessionStorage';
 import { getAttestationMessage } from '../utilities/attestClaim';
-import { paths } from '../endpoints/paths';
+
+import { paths } from './paths';
 
 export type Input = Record<string, never>;
 
@@ -23,7 +24,7 @@ async function handler(
   const session = getSession(request.headers);
 
   const response = await getAttestationMessage(session, logger);
-  logger.debug('Telegram attestation completed');
+  logger.debug(`Attestation completed for ${session.claim?.cTypeHash}`);
 
   delete session.claim;
   delete session.credential;
@@ -33,8 +34,8 @@ async function handler(
   return h.response(response as Output);
 }
 
-export const attestTelegram: ServerRoute = {
+export const attest: ServerRoute = {
   method: 'POST',
-  path: paths.telegram.attest,
+  path: paths.attest,
   handler,
 };

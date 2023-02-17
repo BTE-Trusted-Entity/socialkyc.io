@@ -4,7 +4,7 @@ import { confirmTelegram } from '../../../backend/telegram/confirmTelegramApi';
 import { authUrlTelegram } from '../../../backend/telegram/authUrlTelegramApi';
 import { quoteTelegram } from '../../../backend/telegram/quoteTelegramApi';
 import { requestAttestationTelegram } from '../../../backend/telegram/requestAttestationTelegramApi';
-import { attestTelegram } from '../../../backend/telegram/attestTelegramApi';
+import { attest } from '../../../backend/endpoints/attestApi';
 
 import { bindToSession } from '../../utilities/bindToSession';
 
@@ -16,7 +16,7 @@ export function useTelegramApi(sessionId: string) {
       confirm: sessionBound(confirmTelegram),
       quote: sessionBound(quoteTelegram),
       requestAttestation: sessionBound(requestAttestationTelegram),
-      attest: sessionBound(attestTelegram),
+      attest: sessionBound(attest),
     };
   }, [sessionId]);
 }

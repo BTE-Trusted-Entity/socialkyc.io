@@ -4,7 +4,7 @@ import { confirmDiscord } from '../../../backend/discord/confirmDiscordApi';
 import { authUrlDiscord } from '../../../backend/discord/authUrlDiscordApi';
 import { quoteDiscord } from '../../../backend/discord/quoteDiscordApi';
 import { requestAttestationDiscord } from '../../../backend/discord/requestAttestationDiscordApi';
-import { attestDiscord } from '../../../backend/discord/attestDiscordApi';
+import { attest } from '../../../backend/endpoints/attestApi';
 
 import { bindToSession } from '../../utilities/bindToSession';
 
@@ -16,7 +16,7 @@ export function useDiscordApi(sessionId: string) {
       confirm: sessionBound(confirmDiscord),
       quote: sessionBound(quoteDiscord),
       requestAttestation: sessionBound(requestAttestationDiscord),
-      attest: sessionBound(attestDiscord),
+      attest: sessionBound(attest),
     };
   }, [sessionId]);
 }
