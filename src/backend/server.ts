@@ -24,46 +24,39 @@ import { wellKnownDidConfig } from './didConfiguration/wellKnownDidConfig';
 import { sendEmail } from './email/sendEmail';
 import { authHtmlEmail } from './email/authHtmlEmail';
 import { confirmEmail } from './email/confirmEmail';
-import { requestAttestationEmail } from './email/requestAttestationEmail';
 
 import { claimTwitter } from './twitter/claimTwitter';
 import { listenForTweets } from './twitter/tweets';
 import { confirmTwitter } from './twitter/confirmTwitter';
-import { requestAttestationTwitter } from './twitter/requestAttestationTwitter';
 
 import { authUrlDiscord } from './discord/authUrlDiscord';
 import { authHtmlDiscord } from './discord/authHtmlDiscord';
 import { confirmDiscord } from './discord/confirmDiscord';
-import { requestAttestationDiscord } from './discord/requestAttestationDiscord';
 
 import { authHtmlGithub } from './github/authHtmlGithub';
 import { authUrlgithub } from './github/authUrlGithub';
 import { confirmGithub } from './github/confirmGithub';
-import { requestAttestationGithub } from './github/requestAttestationGithub';
 
 import { authUrlTwitch } from './twitch/authUrlTwitch';
 import { authHtmlTwitch } from './twitch/authHtmlTwitch';
 import { confirmTwitch } from './twitch/confirmTwitch';
 
-import { requestAttestationTwitch } from './twitch/requestAttestationTwitch';
-
 import { authUrlTelegram } from './telegram/authUrlTelegram';
 import { confirmTelegram } from './telegram/confirmTelegram';
-import { requestAttestationTelegram } from './telegram/requestAttestationTelegram';
 
 import { authUrlYoutube } from './youtube/authUrlYoutube';
 import { authHtmlYoutube } from './youtube/authHtmlYoutube';
 import { confirmYoutube } from './youtube/confirmYoutube';
-import { requestAttestationYoutube } from './youtube/requestAttestationYoutube';
 
 import { requestCredential } from './verifier/requestCredential';
 import { verify } from './verifier/verify';
 
 import { session } from './endpoints/session';
+import { quote } from './endpoints/quote';
+import { requestAttestation } from './endpoints/requestAttestation';
 import { attest } from './endpoints/attest';
 
 import { staticFiles } from './endpoints/staticFiles';
-import { quote } from './endpoints/quote';
 
 import { liveness, testLiveness } from './endpoints/liveness';
 import { maintenance } from './endpoints/maintenance';
@@ -155,40 +148,34 @@ const logger = {
   }
 
   server.route(quote);
+  server.route(requestAttestation);
   server.route(attest);
 
   server.route(sendEmail);
   server.route(authHtmlEmail);
   server.route(confirmEmail);
-  server.route(requestAttestationEmail);
 
   server.route(claimTwitter);
   server.route(confirmTwitter);
-  server.route(requestAttestationTwitter);
 
   server.route(authHtmlDiscord);
   server.route(authUrlDiscord);
   server.route(confirmDiscord);
-  server.route(requestAttestationDiscord);
 
   server.route(authHtmlGithub);
   server.route(authUrlgithub);
   server.route(confirmGithub);
-  server.route(requestAttestationGithub);
 
   server.route(authHtmlTwitch);
   server.route(authUrlTwitch);
   server.route(confirmTwitch);
-  server.route(requestAttestationTwitch);
 
   server.route(authUrlTelegram);
   server.route(confirmTelegram);
-  server.route(requestAttestationTelegram);
 
   server.route(authHtmlYoutube);
   server.route(authUrlYoutube);
   server.route(confirmYoutube);
-  server.route(requestAttestationYoutube);
 
   server.route(requestCredential);
   server.route(verify);

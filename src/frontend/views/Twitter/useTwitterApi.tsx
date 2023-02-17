@@ -2,7 +2,7 @@ import { useMemo } from 'react';
 
 import { claimTwitter } from '../../../backend/twitter/claimTwitterApi';
 import { quote } from '../../../backend/endpoints/quoteApi';
-import { requestAttestationTwitter } from '../../../backend/twitter/requestAttestationTwitterApi';
+import { requestAttestation } from '../../../backend/endpoints/requestAttestationApi';
 import { confirmTwitter } from '../../../backend/twitter/confirmTwitterApi';
 import { attest } from '../../../backend/endpoints/attestApi';
 
@@ -15,7 +15,9 @@ export function useTwitterApi(sessionId: string) {
       claim: sessionBound(claimTwitter),
       confirm: sessionBound(confirmTwitter),
       quote: sessionBound(quote.bind(undefined, 'twitter')),
-      requestAttestation: sessionBound(requestAttestationTwitter),
+      requestAttestation: sessionBound(
+        requestAttestation.bind(undefined, 'twitter'),
+      ),
       attest: sessionBound(attest),
     };
   }, [sessionId]);

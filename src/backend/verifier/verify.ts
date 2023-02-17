@@ -1,10 +1,14 @@
-import {
+import type {
   Request,
   ResponseObject,
   ResponseToolkit,
   ServerRoute,
 } from '@hapi/hapi';
-import { IAttestation, ICredentialPresentation } from '@kiltprotocol/types';
+import type {
+  IAttestation,
+  ICredentialPresentation,
+} from '@kiltprotocol/types';
+
 import { Attestation, Credential } from '@kiltprotocol/core';
 import * as Boom from '@hapi/boom';
 import { ConfigService } from '@kiltprotocol/config';
@@ -64,7 +68,7 @@ async function handler(
   logger.debug('Verification completed');
 }
 
-export const verify: ServerRoute = {
+export const verify = {
   method: 'POST',
   path: paths.verifier.verify,
   handler,
@@ -73,4 +77,4 @@ export const verify: ServerRoute = {
       payload: validateEncryptedMessage,
     },
   },
-};
+} as ServerRoute;

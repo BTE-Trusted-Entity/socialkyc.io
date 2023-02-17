@@ -1,16 +1,18 @@
-import { Request } from '@hapi/hapi';
-import * as Boom from '@hapi/boom';
-import {
+import type { Request } from '@hapi/hapi';
+import type {
   MessageBodyType,
   IRequestAttestationContent,
 } from '@kiltprotocol/types';
+
+import type { EncryptedMessageInput } from './validateEncryptedMessage';
+
+import * as Boom from '@hapi/boom';
 import * as Message from '@kiltprotocol/messaging';
 
 import { decrypt } from './cryptoCallbacks';
-import { EncryptedMessageInput } from './validateEncryptedMessage';
 
 export async function decryptMessageContent<Result>(
-  request: Request,
+  request: Pick<Request, 'payload' | 'logger'>,
   expectedType: MessageBodyType,
   rejectionType?: MessageBodyType,
 ): Promise<Result> {
@@ -39,7 +41,7 @@ export async function decryptMessageContent<Result>(
 }
 
 export async function decryptRequestAttestation(
-  request: Request,
+  request: Pick<Request, 'payload' | 'logger'>,
 ): Promise<IRequestAttestationContent> {
   return decryptMessageContent<IRequestAttestationContent>(
     request,
