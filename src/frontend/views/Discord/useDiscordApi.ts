@@ -1,6 +1,6 @@
 import { useMemo } from 'react';
 
-import { confirmDiscord } from '../../../backend/discord/confirmDiscordApi';
+import { confirm } from '../../../backend/endpoints/confirmApi';
 import { authUrl } from '../../../backend/endpoints/authUrlApi';
 import { quote } from '../../../backend/endpoints/quoteApi';
 import { requestAttestation } from '../../../backend/endpoints/requestAttestationApi';
@@ -13,7 +13,7 @@ export function useDiscordApi(sessionId: string) {
     const sessionBound = bindToSession(sessionId);
     return {
       authUrl: sessionBound(authUrl.bind(undefined, 'discord')),
-      confirm: sessionBound(confirmDiscord),
+      confirm: sessionBound(confirm.bind(undefined, 'discord')),
       quote: sessionBound(quote.bind(undefined, 'discord')),
       requestAttestation: sessionBound(
         requestAttestation.bind(undefined, 'discord'),

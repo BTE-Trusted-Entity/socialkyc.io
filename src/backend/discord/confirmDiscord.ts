@@ -1,34 +1,13 @@
-import type { IClaim } from '@kiltprotocol/types';
-import type {
-  Request,
-  ResponseObject,
-  ResponseToolkit,
-  ServerRoute,
-} from '@hapi/hapi';
+import type { DidUri, IClaim } from '@kiltprotocol/types';
+import type { BaseLogger } from 'pino';
 
-import { z } from 'zod';
 import got from 'got';
-import * as Boom from '@hapi/boom';
 import { Claim } from '@kiltprotocol/core';
 
-import {
-  deleteSecret,
-  getSessionBySecret,
-  getSession,
-  setSession,
-} from '../utilities/sessionStorage';
-import { paths } from '../endpoints/paths';
 import { configuration } from '../utilities/configuration';
 
 import { discordEndpoints } from './discordEndpoints';
 import { discordCType } from './discordCType';
-
-const zodPayload = z.object({
-  code: z.string(),
-  secret: z.string(),
-});
-
-export type Input = z.infer<typeof zodPayload>;
 
 export interface Output {
   Username: string;
@@ -36,25 +15,11 @@ export interface Output {
   'User ID': string;
 }
 
-async function handler(
-  request: Request,
-  h: ResponseToolkit,
-): Promise<ResponseObject> {
-  const { logger } = request;
-  logger.debug('Discord authorization started');
-
-  const { secret, code } = request.payload as Input;
-
-  // This is the initial session in the first tab the user has open
-  const firstSession = getSessionBySecret(secret);
-  if (!firstSession) {
-    throw Boom.notFound('No session found for secret');
-  }
-  logger.debug('Found session with secret');
-  deleteSecret(secret);
-
-  const session = getSession(request.headers);
-
+export async function confirmDiscord(
+  code: string,
+  did: DidUri,
+  logger: BaseLogger,
+) {
   logger.debug('Exchanging code for access token');
 
   const body = (await got
@@ -91,10 +56,8 @@ async function handler(
   const claim = Claim.fromCTypeAndClaimContents(
     discordCType,
     claimContents,
-    session.did,
+    did,
   ) as IClaim & { contents: Output };
-
-  setSession({ ...session, claim, confirmed: true });
 
   logger.debug('Discord claim created');
 
@@ -108,16 +71,5 @@ async function handler(
 
   logger.debug('Access token revoked');
 
-  return h.response(claim.contents as Output);
+  return claim;
 }
-
-export const confirmDiscord: ServerRoute = {
-  method: 'POST',
-  path: paths.discord.confirm,
-  handler,
-  options: {
-    validate: {
-      payload: async (payload) => zodPayload.parse(payload),
-    },
-  },
-};

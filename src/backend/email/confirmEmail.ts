@@ -65,7 +65,6 @@ async function handler(
 
   logger.debug('Email claim confirmed');
 
-  // TODO: create claim in this handler?
   return h.response(claim.contents as unknown as Output);
 }
 

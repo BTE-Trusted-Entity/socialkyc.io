@@ -56,7 +56,9 @@ export function Twitch({ session }: Props): JSX.Element {
     }
     (async () => {
       try {
-        setProfile(await twitchApi.confirm({ code, secret }));
+        setProfile(
+          (await twitchApi.confirm({ code, secret })) as TwitchProfile,
+        );
         setStatus('authorized');
       } catch {
         setStatus('error');

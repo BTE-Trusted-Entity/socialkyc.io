@@ -28,15 +28,7 @@ import { claimTwitter } from './twitter/claimTwitter';
 import { listenForTweets } from './twitter/tweets';
 import { confirmTwitter } from './twitter/confirmTwitter';
 
-import { confirmDiscord } from './discord/confirmDiscord';
-
-import { confirmGithub } from './github/confirmGithub';
-
-import { confirmTwitch } from './twitch/confirmTwitch';
-
 import { confirmTelegram } from './telegram/confirmTelegram';
-
-import { confirmYoutube } from './youtube/confirmYoutube';
 
 import { requestCredential } from './verifier/requestCredential';
 import { verify } from './verifier/verify';
@@ -44,6 +36,7 @@ import { verify } from './verifier/verify';
 import { session } from './endpoints/session';
 import { authHtml } from './endpoints/authHtml';
 import { authUrl } from './endpoints/authUrl';
+import { confirm } from './endpoints/confirm';
 import { quote } from './endpoints/quote';
 import { requestAttestation } from './endpoints/requestAttestation';
 import { attest } from './endpoints/attest';
@@ -141,6 +134,7 @@ const logger = {
 
   server.route(authHtml);
   server.route(authUrl);
+  server.route(confirm);
   server.route(quote);
   server.route(requestAttestation);
   server.route(attest);
@@ -151,15 +145,7 @@ const logger = {
   server.route(claimTwitter);
   server.route(confirmTwitter);
 
-  server.route(confirmDiscord);
-
-  server.route(confirmGithub);
-
-  server.route(confirmTwitch);
-
   server.route(confirmTelegram);
-
-  server.route(confirmYoutube);
 
   server.route(requestCredential);
   server.route(verify);

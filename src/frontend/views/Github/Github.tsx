@@ -56,7 +56,9 @@ export function Github({ session }: Props): JSX.Element {
     }
     (async () => {
       try {
-        setProfile(await githubApi.confirm({ code, secret }));
+        setProfile(
+          (await githubApi.confirm({ code, secret })) as GithubProfile,
+        );
         setStatus('authorized');
       } catch {
         setStatus('error');

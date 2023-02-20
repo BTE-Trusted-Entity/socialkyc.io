@@ -49,7 +49,6 @@ async function handler(
   tweetsListeners.delete(twitterHandle.toLowerCase());
   setSession({ ...session, confirmed: true });
 
-  // TODO: create claim in this handler?
   return h.response(claim.contents as unknown as Output);
 }
 

@@ -61,7 +61,9 @@ export function Discord({ session }: Props): JSX.Element {
     }
     (async () => {
       try {
-        setProfile(await discordApi.confirm({ code, secret }));
+        setProfile(
+          (await discordApi.confirm({ code, secret })) as DiscordProfile,
+        );
         setStatus('authorized');
       } catch {
         setStatus('error');

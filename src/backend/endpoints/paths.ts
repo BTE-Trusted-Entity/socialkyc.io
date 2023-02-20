@@ -24,28 +24,13 @@ export const paths = {
     confirm: '/api/twitter/confirm',
   },
 
-  discord: {
-    confirm: '/api/discord/confirm',
-  },
-
-  github: {
-    confirm: '/api/github/confirm',
-  },
-
-  twitch: {
-    confirm: '/api/twitch/confirm',
-  },
-
   telegram: {
     confirm: '/api/telegram/confirm',
   },
 
-  youtube: {
-    confirm: '/api/youtube/confirm',
-  },
-
   authHtml: '/auth/:type(discord|email|github|twitch|youtube)',
   authUrl: '/auth/:type(discord|github|telegram|twitch|youtube)',
+  confirm: '/auth/:type(discord|github|twitch|youtube)',
   quote: `/api/quote/:type(${types})`,
   requestAttestation: `/api/request-attestation/:type(${types})`,
   attest: '/api/attest',

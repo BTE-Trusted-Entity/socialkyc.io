@@ -1,59 +1,24 @@
-import type { IClaim } from '@kiltprotocol/types';
-import type {
-  Request,
-  ResponseObject,
-  ResponseToolkit,
-  ServerRoute,
-} from '@hapi/hapi';
+import type { DidUri, IClaim } from '@kiltprotocol/types';
+import type { BaseLogger } from 'pino';
 
-import { z } from 'zod';
 import got from 'got';
-import * as Boom from '@hapi/boom';
 import { Claim } from '@kiltprotocol/core';
 
-import {
-  deleteSecret,
-  getSessionBySecret,
-  getSession,
-  setSession,
-} from '../utilities/sessionStorage';
-import { paths } from '../endpoints/paths';
 import { configuration } from '../utilities/configuration';
 
 import { twitchEndpoints } from './twitchEndpoints';
 import { twitchCType } from './twitchCType';
-
-const zodPayload = z.object({
-  code: z.string(),
-  secret: z.string(),
-});
-
-export type Input = z.infer<typeof zodPayload>;
 
 export interface Output {
   Username: string;
   'User ID': string;
 }
 
-async function handler(
-  request: Request,
-  h: ResponseToolkit,
-): Promise<ResponseObject> {
-  const { logger } = request;
-  logger.debug('Twitch authorization started');
-
-  const { secret, code } = request.payload as Input;
-
-  // This is the initial session in the first tab the user has open
-  const firstSession = getSessionBySecret(secret);
-  if (!firstSession) {
-    throw Boom.notFound('No session found for secret');
-  }
-  logger.debug('Found session with secret');
-  deleteSecret(secret);
-
-  const session = getSession(request.headers);
-
+export async function confirmTwitch(
+  code: string,
+  did: DidUri,
+  logger: BaseLogger,
+) {
   logger.debug('Exchanging code for access token');
 
   const body = (await got
@@ -89,10 +54,8 @@ async function handler(
   const claim = Claim.fromCTypeAndClaimContents(
     twitchCType,
     claimContents,
-    session.did,
+    did,
   ) as IClaim & { contents: Output };
-
-  setSession({ ...session, claim, confirmed: true });
 
   logger.debug('Twitch claim created');
 
@@ -105,16 +68,5 @@ async function handler(
 
   logger.debug('Access token revoked');
 
-  return h.response(claim.contents as Output);
+  return claim;
 }
-
-export const confirmTwitch: ServerRoute = {
-  method: 'POST',
-  path: paths.twitch.confirm,
-  handler,
-  options: {
-    validate: {
-      payload: async (payload) => zodPayload.parse(payload),
-    },
-  },
-};
