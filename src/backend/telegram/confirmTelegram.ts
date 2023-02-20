@@ -1,14 +1,15 @@
 import { createHash, createHmac } from 'node:crypto';
 
-import { z } from 'zod';
-import {
+import type { IClaim } from '@kiltprotocol/types';
+import type {
   Request,
   ResponseObject,
   ResponseToolkit,
   ServerRoute,
 } from '@hapi/hapi';
-import * as Boom from '@hapi/boom';
 
+import { z } from 'zod';
+import * as Boom from '@hapi/boom';
 import { Claim } from '@kiltprotocol/core';
 
 import { getSession, setSession } from '../utilities/sessionStorage';
@@ -23,11 +24,18 @@ const zodPayload = z.object({
 
 export type Input = z.infer<typeof zodPayload>;
 
-export interface Output {
+export interface Profile {
   id: number;
   first_name: string;
   last_name?: string;
   username?: string;
+}
+
+export interface Output {
+  'User ID': number;
+  'First name': string;
+  'Last name'?: string;
+  Username?: string;
 }
 
 function validateAuthData(json: string): void {
@@ -72,7 +80,7 @@ async function handler(
 
   logger.debug('Parsing Telegram profile');
 
-  const profile = JSON.parse(json).auth_data as Output;
+  const profile = JSON.parse(json).auth_data as Profile;
 
   logger.debug('Parsed Telegram profile, creating claim');
 
@@ -86,13 +94,13 @@ async function handler(
     telegramCType,
     claimContents,
     session.did,
-  );
+  ) as IClaim & { contents: Output };
 
   setSession({ ...session, claim, confirmed: true });
 
   logger.debug('Telegram claim created');
 
-  return h.response(profile as Output);
+  return h.response(claim.contents as Output);
 }
 
 export const confirmTelegram: ServerRoute = {

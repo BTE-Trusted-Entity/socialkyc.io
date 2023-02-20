@@ -22,7 +22,7 @@ import { useTwitterApi } from './useTwitterApi';
 import { Twitter, TwitterProfile } from './Twitter';
 
 const profileMock: TwitterProfile = {
-  twitterHandle: 'social_kyc_tech',
+  Twitter: 'social_kyc_tech',
 };
 
 const secret = 'SECRET';

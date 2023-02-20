@@ -25,7 +25,7 @@ const zodPayload = z.object({
 export type Input = z.infer<typeof zodPayload>;
 
 export interface Output {
-  email: string;
+  Email: string;
 }
 
 async function handler(
@@ -65,7 +65,8 @@ async function handler(
 
   logger.debug('Email claim confirmed');
 
-  return h.response({ email: claim.contents['Email'] } as Output);
+  // TODO: create claim in this handler?
+  return h.response(claim.contents as unknown as Output);
 }
 
 export const confirmEmail: ServerRoute = {

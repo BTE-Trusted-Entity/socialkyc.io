@@ -19,7 +19,7 @@ const actions = {
 };
 
 const profileMock: TwitterProfile = {
-  twitterHandle: 'social_kyc_tech',
+  Twitter: 'social_kyc_tech',
 };
 
 const secret = 'SECRET';

@@ -15,8 +15,8 @@ import {
 import { useYoutubeApi } from './useYoutubeApi';
 
 export interface YoutubeChannel {
-  name: string;
-  id: string;
+  'Channel Name': string;
+  'Channel ID': string;
 }
 
 interface Props {

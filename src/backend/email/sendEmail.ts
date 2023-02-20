@@ -3,14 +3,16 @@ import { join } from 'node:path';
 
 import { toUnicode, toASCII } from 'punycode';
 
-import { StatusCodes } from 'http-status-codes';
-import { SendEmailCommand } from '@aws-sdk/client-ses';
-import {
+import type { IClaim } from '@kiltprotocol/types';
+import type {
   Request,
   ResponseObject,
   ResponseToolkit,
   ServerRoute,
 } from '@hapi/hapi';
+
+import { StatusCodes } from 'http-status-codes';
+import { SendEmailCommand } from '@aws-sdk/client-ses';
 import * as Boom from '@hapi/boom';
 import { RateLimiterMemory } from 'rate-limiter-flexible';
 import { z } from 'zod';
@@ -142,7 +144,7 @@ async function handler(
     emailCType,
     claimContents,
     session.did,
-  );
+  ) as IClaim & { contents: Output };
 
   const sessionWithSecret = getSessionBySecret(secret);
 

@@ -118,22 +118,22 @@ export function TelegramTemplate({
         <form onSubmit={handleSubmit}>
           <dl className={styles.profile}>
             <dt>User-ID:</dt>
-            <dd>{profile.id}</dd>
+            <dd>{profile['User ID']}</dd>
 
             <dt>First name:</dt>
-            <dd>{profile.first_name}</dd>
+            <dd>{profile['First name']}</dd>
 
-            {profile.last_name && (
+            {profile['Last name'] && (
               <Fragment>
                 <dt>Last name:</dt>
-                <dd>{profile.last_name}</dd>
+                <dd>{profile['Last name']}</dd>
               </Fragment>
             )}
 
-            {profile.username && (
+            {profile.Username && (
               <Fragment>
                 <dt>Username:</dt>
-                <dd>{profile.username}</dd>
+                <dd>{profile.Username}</dd>
               </Fragment>
             )}
           </dl>

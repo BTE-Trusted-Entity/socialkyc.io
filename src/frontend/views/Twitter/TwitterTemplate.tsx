@@ -209,7 +209,7 @@ export function TwitterTemplate({
           <form onSubmit={handleRequestAttestation}>
             <dl className={styles.profile}>
               <dt>Twitter handle:</dt>
-              <dd>{profile.twitterHandle}</dd>
+              <dd>{profile.Twitter}</dd>
             </dl>
 
             <p>

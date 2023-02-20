@@ -1,15 +1,14 @@
-import { z } from 'zod';
-import {
+import type { IClaim } from '@kiltprotocol/types';
+import type {
   Request,
   ResponseObject,
   ResponseToolkit,
   ServerRoute,
 } from '@hapi/hapi';
 
+import { z } from 'zod';
 import got from 'got';
-
 import * as Boom from '@hapi/boom';
-
 import { Claim } from '@kiltprotocol/core';
 
 import {
@@ -32,8 +31,8 @@ const zodPayload = z.object({
 export type Input = z.infer<typeof zodPayload>;
 
 export interface Output {
-  login: string;
-  id: string;
+  Username: string;
+  'User ID': string;
 }
 
 async function handler(
@@ -91,7 +90,7 @@ async function handler(
     twitchCType,
     claimContents,
     session.did,
-  );
+  ) as IClaim & { contents: Output };
 
   setSession({ ...session, claim, confirmed: true });
 
@@ -106,7 +105,7 @@ async function handler(
 
   logger.debug('Access token revoked');
 
-  return h.response(profile.data[0] as Output);
+  return h.response(claim.contents as Output);
 }
 
 export const confirmTwitch: ServerRoute = {

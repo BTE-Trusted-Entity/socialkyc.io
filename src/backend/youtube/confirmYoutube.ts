@@ -1,16 +1,15 @@
-import { StatusCodes } from 'http-status-codes';
-import { z } from 'zod';
-import {
+import type { IClaim } from '@kiltprotocol/types';
+import type {
   Request,
   ResponseToolkit,
   ResponseObject,
   ServerRoute,
 } from '@hapi/hapi';
 
+import { StatusCodes } from 'http-status-codes';
+import { z } from 'zod';
 import got from 'got';
-
 import * as Boom from '@hapi/boom';
-
 import { Claim } from '@kiltprotocol/core';
 
 import {
@@ -33,8 +32,8 @@ const zodPayload = z.object({
 export type Input = z.infer<typeof zodPayload>;
 
 export interface Output {
-  name: string;
-  id: string;
+  'Channel Name': string;
+  'Channel ID': string;
 }
 
 async function revokeAccessToken(token: string): Promise<void> {
@@ -104,22 +103,17 @@ async function handler(
     );
   }
 
-  const channel: Output = {
-    name: items[0].snippet.title,
-    id: items[0].id,
-  };
-
   logger.debug('Found Youtube channel, creating claim');
 
   const claimContents = {
-    'Channel Name': channel.name,
-    'Channel ID': channel.id,
+    'Channel Name': items[0].snippet.title,
+    'Channel ID': items[0].id,
   };
   const claim = Claim.fromCTypeAndClaimContents(
     youtubeCType,
     claimContents,
     session.did,
-  );
+  ) as IClaim & { contents: Output };
 
   setSession({ ...session, claim, confirmed: true });
   logger.debug('Youtube claim created');
@@ -127,7 +121,7 @@ async function handler(
   await revokeAccessToken(body.access_token);
   logger.debug('Access token revoked');
 
-  return h.response(channel as Output);
+  return h.response(claim.contents as Output);
 }
 
 export const confirmYoutube: ServerRoute = {

@@ -24,7 +24,7 @@ import { useEmailApi } from './useEmailApi';
 import { Email, EmailProfile } from './Email';
 
 const profileMock: EmailProfile = {
-  email: 'user@example.com',
+  Email: 'user@example.com',
 };
 
 const secret = 'SECRET';

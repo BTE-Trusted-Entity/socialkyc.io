@@ -18,7 +18,7 @@ const actions = {
 };
 
 const profileMock: EmailProfile = {
-  email: 'user@example.com',
+  Email: 'user@example.com',
 };
 
 export function Start(): JSX.Element {

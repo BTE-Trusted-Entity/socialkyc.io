@@ -17,8 +17,8 @@ const actions = {
 };
 
 const profileMock: GithubProfile = {
-  login: 'TestUser',
-  id: '1234556789',
+  Username: 'TestUser',
+  'User ID': '1234556789',
 };
 
 describe('GithubTemplate', () => {

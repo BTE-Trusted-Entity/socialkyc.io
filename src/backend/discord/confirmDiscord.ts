@@ -1,15 +1,14 @@
-import { z } from 'zod';
-import {
+import type { IClaim } from '@kiltprotocol/types';
+import type {
   Request,
   ResponseObject,
   ResponseToolkit,
   ServerRoute,
 } from '@hapi/hapi';
 
+import { z } from 'zod';
 import got from 'got';
-
 import * as Boom from '@hapi/boom';
-
 import { Claim } from '@kiltprotocol/core';
 
 import {
@@ -32,9 +31,9 @@ const zodPayload = z.object({
 export type Input = z.infer<typeof zodPayload>;
 
 export interface Output {
-  username: string;
-  discriminator: string;
-  id: string;
+  Username: string;
+  Discriminator: string;
+  'User ID': string;
 }
 
 async function handler(
@@ -93,7 +92,7 @@ async function handler(
     discordCType,
     claimContents,
     session.did,
-  );
+  ) as IClaim & { contents: Output };
 
   setSession({ ...session, claim, confirmed: true });
 
@@ -109,7 +108,7 @@ async function handler(
 
   logger.debug('Access token revoked');
 
-  return h.response(profile as Output);
+  return h.response(claim.contents as Output);
 }
 
 export const confirmDiscord: ServerRoute = {

@@ -23,8 +23,8 @@ import { useGithubApi } from './useGithubApi';
 import { Github, GithubProfile } from './Github';
 
 const profileMock: GithubProfile = {
-  login: 'TestUser',
-  id: '1234556789',
+  Username: 'TestUser',
+  'User ID': '1234556789',
 };
 
 const secret = 'SECRET';

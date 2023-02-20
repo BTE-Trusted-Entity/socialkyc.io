@@ -116,10 +116,10 @@ export function YoutubeTemplate({
         <form onSubmit={handleSubmit}>
           <dl className={styles.channel}>
             <dt>Channel-ID:</dt>
-            <dd>{channel.id}</dd>
+            <dd>{channel['Channel ID']}</dd>
 
             <dt>Channel name:</dt>
-            <dd>{channel.name}</dd>
+            <dd>{channel['Channel Name']}</dd>
           </dl>
 
           <p>

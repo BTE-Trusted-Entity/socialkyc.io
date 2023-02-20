@@ -18,8 +18,8 @@ const actions = {
 };
 
 const profileMock: TwitchProfile = {
-  login: 'TestUser',
-  id: '1234556789',
+  Username: 'TestUser',
+  'User ID': '1234556789',
 };
 
 export function Start(): JSX.Element {

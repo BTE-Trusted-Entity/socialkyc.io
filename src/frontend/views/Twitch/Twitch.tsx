@@ -9,8 +9,8 @@ import { AttestationStatus, FlowError, TwitchTemplate } from './TwitchTemplate';
 import { useTwitchApi } from './useTwitchApi';
 
 export interface TwitchProfile {
-  login: string;
-  id: string;
+  Username: string;
+  'User ID': string;
 }
 
 interface Props {

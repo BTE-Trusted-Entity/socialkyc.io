@@ -9,8 +9,8 @@ import { AttestationStatus, FlowError, GithubTemplate } from './GithubTemplate';
 import { useGithubApi } from './useGithubApi';
 
 export interface GithubProfile {
-  login: string;
-  id: string;
+  Username: string;
+  'User ID': string;
 }
 
 interface Props {

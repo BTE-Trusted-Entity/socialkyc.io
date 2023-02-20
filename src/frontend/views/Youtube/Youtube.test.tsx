@@ -23,8 +23,8 @@ import { useYoutubeApi } from './useYoutubeApi';
 import { Youtube, YoutubeChannel } from './Youtube';
 
 const channelMock: YoutubeChannel = {
-  name: 'TestUser',
-  id: '1234556789',
+  'Channel Name': 'TestUser',
+  'Channel ID': '1234556789',
 };
 
 const secret = 'SECRET';
