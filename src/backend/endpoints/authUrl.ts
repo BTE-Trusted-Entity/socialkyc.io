@@ -1,4 +1,6 @@
-import { Request, ServerRoute } from '@hapi/hapi';
+import type { Request, ServerRoute } from '@hapi/hapi';
+
+import { z } from 'zod';
 
 import { getSecretForSession, getSession } from '../utilities/sessionStorage';
 import { authUrlDiscord as discord } from '../discord/authUrlDiscord';
@@ -9,7 +11,8 @@ import { authUrlYoutube as youtube } from '../youtube/authUrlYoutube';
 
 import { paths } from './paths';
 
-type AuthUrlType = 'discord' | 'github' | 'telegram' | 'twitch' | 'youtube';
+const types = ['discord', 'github', 'telegram', 'twitch', 'youtube'] as const;
+type AuthUrlType = (typeof types)[number];
 
 const generatorsForType: Record<
   AuthUrlType,
@@ -45,8 +48,11 @@ async function handler(
   return url as Output;
 }
 
+const zodParams = z.object({ type: z.enum(types) });
+
 export const authUrl = {
   method: 'POST',
   path: paths.authUrl,
   handler,
+  options: { validate: { params: async (params) => zodParams.parse(params) } },
 } as ServerRoute;

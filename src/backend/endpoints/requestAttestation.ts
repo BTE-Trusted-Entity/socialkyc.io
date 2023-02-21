@@ -8,13 +8,14 @@ import type { SupportedCType } from '../utilities/supportedCType';
 
 import { StatusCodes } from 'http-status-codes';
 import { Credential } from '@kiltprotocol/core';
-
+import { z } from 'zod';
 import * as Boom from '@hapi/boom';
 
 import { getSession, setSession } from '../utilities/sessionStorage';
 import { validateEncryptedMessage } from '../utilities/validateEncryptedMessage';
 import { decryptRequestAttestation } from '../utilities/decryptMessage';
 import { supportedCTypes } from '../utilities/supportedCTypes';
+import { supportedCTypeKeys } from '../utilities/supportedCType';
 
 import { paths } from './paths';
 
@@ -54,12 +55,15 @@ async function handler(
   return h.response().code(StatusCodes.NO_CONTENT);
 }
 
+const zodParams = z.object({ type: z.enum(supportedCTypeKeys) });
+
 export const requestAttestation = {
   method: 'POST',
   path: paths.requestAttestation,
   handler,
   options: {
     validate: {
+      params: async (params) => zodParams.parse(params),
       payload: validateEncryptedMessage,
     },
   },

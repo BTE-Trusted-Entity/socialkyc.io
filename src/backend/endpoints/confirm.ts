@@ -74,12 +74,17 @@ async function handler(
   return h.response(claim.contents);
 }
 
+const zodParams = z.object({
+  type: z.enum(['discord', 'github', 'twitch', 'youtube']),
+});
+
 export const confirm = {
   method: 'POST',
   path: paths.confirm,
   handler,
   options: {
     validate: {
+      params: async (params) => zodParams.parse(params),
       payload: async (payload) => zodPayload.parse(payload),
     },
   },

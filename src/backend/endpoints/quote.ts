@@ -6,10 +6,12 @@ import {
 } from '@hapi/hapi';
 import * as Boom from '@hapi/boom';
 import { IEncryptedMessage } from '@kiltprotocol/types';
+import { z } from 'zod';
 
 import { encryptMessageBody } from '../utilities/encryptMessage';
 import { getSession } from '../utilities/sessionStorage';
 import { supportedCTypes, SupportedCType } from '../utilities/supportedCTypes';
+import { supportedCTypeKeys } from '../utilities/supportedCType';
 
 import { paths } from './paths';
 
@@ -48,8 +50,11 @@ async function handler(
   return h.response(output as Output);
 }
 
+const zodParams = z.object({ type: z.enum(supportedCTypeKeys) });
+
 export const quote = {
   method: 'POST',
   path: paths.quote,
   handler,
+  options: { validate: { params: async (params) => zodParams.parse(params) } },
 } as ServerRoute;

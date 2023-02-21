@@ -1,9 +1,4 @@
-import {
-  SupportedCType,
-  supportedCTypeKeys,
-} from '../utilities/supportedCType';
-
-const types = supportedCTypeKeys.join('|');
+import type { SupportedCType } from '../utilities/supportedCType';
 
 export const paths = {
   home: '/',
@@ -28,11 +23,11 @@ export const paths = {
     confirm: '/api/telegram/confirm',
   },
 
-  authHtml: '/auth/:type(discord|email|github|twitch|youtube)',
-  authUrl: '/auth/:type(discord|github|telegram|twitch|youtube)',
-  confirm: '/auth/:type(discord|github|twitch|youtube)',
-  quote: `/api/quote/:type(${types})`,
-  requestAttestation: `/api/request-attestation/:type(${types})`,
+  authHtml: '/{type}/auth',
+  authUrl: '/api/auth/{type}',
+  confirm: '/api/confirm/{type}',
+  quote: `/api/quote/{type}`,
+  requestAttestation: `/api/request-attestation/{type}`,
   attest: '/api/attest',
 
   verifier: {
@@ -50,5 +45,5 @@ export const paths = {
 };
 
 export function generatePath(path: string, type: SupportedCType) {
-  return path.replace(/:type.*/, type);
+  return path.replace('{type}', type);
 }
