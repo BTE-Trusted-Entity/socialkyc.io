@@ -10,10 +10,8 @@ import { z } from 'zod';
 import { randomAsHex } from '@polkadot/util-crypto';
 import { CType } from '@kiltprotocol/core';
 
-import {
-  supportedCTypeKeys,
-  supportedCTypes,
-} from '../utilities/supportedCTypes';
+import { supportedCTypes } from '../utilities/supportedCTypes';
+import { supportedCTypeKeys } from '../utilities/supportedCType';
 import { encryptMessageBody } from '../utilities/encryptMessage';
 import { paths } from '../endpoints/paths';
 import { getSession, setSession } from '../utilities/sessionStorage';

@@ -1,6 +1,6 @@
 import type { KyInstance } from 'ky/distribution/types/ky';
 
-import type { SupportedCTypes } from '../utilities/supportedCTypes';
+import type { SupportedCType } from '../utilities/supportedCType';
 
 import { EncryptedMessageInput } from '../utilities/validateEncryptedMessage';
 import { maybeRejected } from '../../frontend/utilities/maybeRejected';
@@ -10,7 +10,7 @@ import { generatePath, paths } from './paths';
 import { Output } from './requestAttestation';
 
 export async function requestAttestation(
-  type: SupportedCTypes,
+  type: SupportedCType,
   json: EncryptedMessageInput,
   ky: KyInstance,
 ): Promise<Output> {

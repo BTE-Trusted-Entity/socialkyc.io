@@ -1,12 +1,12 @@
-import { KyInstance } from 'ky/distribution/types/ky';
+import type { KyInstance } from 'ky/distribution/types/ky';
 
-import { SupportedCTypes } from '../utilities/supportedCTypes';
+import type { SupportedCType } from '../utilities/supportedCType';
 
 import { Input } from './confirm';
 import { generatePath, paths } from './paths';
 
 export async function confirm(
-  type: SupportedCTypes,
+  type: SupportedCType,
   json: Input,
   ky: KyInstance,
 ) {

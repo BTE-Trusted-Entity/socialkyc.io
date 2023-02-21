@@ -4,8 +4,7 @@ import type {
   ResponseToolkit,
   ServerRoute,
 } from '@hapi/hapi';
-
-import type { SupportedCTypes } from '../utilities/supportedCTypes';
+import type { SupportedCType } from '../utilities/supportedCType';
 
 import { StatusCodes } from 'http-status-codes';
 import { Credential } from '@kiltprotocol/core';
@@ -22,7 +21,7 @@ import { paths } from './paths';
 export type Output = void;
 
 async function handler(
-  request: Request<{ Params: { type: SupportedCTypes } }>,
+  request: Request<{ Params: { type: SupportedCType } }>,
   h: ResponseToolkit,
 ): Promise<ResponseObject> {
   const {

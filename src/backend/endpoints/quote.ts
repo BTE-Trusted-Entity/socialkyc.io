@@ -9,7 +9,7 @@ import { IEncryptedMessage } from '@kiltprotocol/types';
 
 import { encryptMessageBody } from '../utilities/encryptMessage';
 import { getSession } from '../utilities/sessionStorage';
-import { SupportedCTypes, supportedCTypes } from '../utilities/supportedCTypes';
+import { supportedCTypes, SupportedCType } from '../utilities/supportedCTypes';
 
 import { paths } from './paths';
 
@@ -18,7 +18,7 @@ export type Input = Record<string, never>;
 export type Output = IEncryptedMessage;
 
 async function handler(
-  request: Request<{ Params: { type: SupportedCTypes } }>,
+  request: Request<{ Params: { type: SupportedCType } }>,
   h: ResponseToolkit,
 ): Promise<ResponseObject> {
   const {

@@ -1,5 +1,8 @@
 import type { ICType } from '@kiltprotocol/types';
 
+import type { SupportedCType } from './supportedCType';
+export type { SupportedCType } from './supportedCType';
+
 import { discordCType } from '../discord/discordCType';
 import { emailCType } from '../email/emailCType';
 import { githubCType } from '../github/githubCType';
@@ -8,19 +11,7 @@ import { twitchCType } from '../twitch/twitchCType';
 import { twitterCType } from '../twitter/twitterCType';
 import { youtubeCType } from '../youtube/youtubeCType';
 
-export const supportedCTypeKeys = [
-  'discord',
-  'email',
-  'github',
-  'telegram',
-  'twitch',
-  'twitter',
-  'youtube',
-] as const;
-
-export type SupportedCTypes = (typeof supportedCTypeKeys)[number];
-
-export const supportedCTypes: Record<SupportedCTypes, ICType> = {
+export const supportedCTypes: Record<SupportedCType, ICType> = {
   discord: discordCType,
   email: emailCType,
   github: githubCType,

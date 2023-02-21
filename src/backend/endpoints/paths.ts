@@ -1,7 +1,7 @@
 import {
+  SupportedCType,
   supportedCTypeKeys,
-  SupportedCTypes,
-} from '../utilities/supportedCTypes';
+} from '../utilities/supportedCType';
 
 const types = supportedCTypeKeys.join('|');
 
@@ -49,6 +49,6 @@ export const paths = {
   },
 };
 
-export function generatePath(path: string, type: SupportedCTypes) {
+export function generatePath(path: string, type: SupportedCType) {
   return path.replace(/:type.*/, type);
 }
