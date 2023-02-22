@@ -33,7 +33,7 @@ jest.mock('../../utilities/useValuesFromRedirectUri');
 
 jest.mock('./useEmailApi');
 let mockEmailApi: ReturnType<typeof useEmailApi>;
-let sendEmailPromise: TestPromise<void>;
+let sendEmailPromise: TestPromise<EmailProfile>;
 let confirmPromise: TestPromise<EmailProfile>;
 let quotePromise: TestPromise<IEncryptedMessage>;
 let requestPromise: TestPromise<void>;
@@ -165,7 +165,7 @@ describe('Email', () => {
     expectSendEmailCalled();
 
     await act(async () => {
-      sendEmailPromise.resolve();
+      sendEmailPromise.resolve({ Email: 'user@example.com' });
     });
 
     expectIsNotProcessing(container);
