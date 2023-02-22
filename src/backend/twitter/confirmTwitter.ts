@@ -17,7 +17,7 @@ import { twitterCType } from './twitterCType';
 export type Input = Record<string, never>;
 
 export interface Output {
-  twitterHandle: string;
+  Twitter: string;
 }
 
 async function handler(
@@ -49,7 +49,7 @@ async function handler(
   tweetsListeners.delete(twitterHandle.toLowerCase());
   setSession({ ...session, confirmed: true });
 
-  return h.response({ twitterHandle } as Output);
+  return h.response(claim.contents as unknown as Output);
 }
 
 export const confirmTwitter: ServerRoute = {

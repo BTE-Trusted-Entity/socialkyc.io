@@ -1,11 +1,10 @@
 import { FormEvent, useCallback, useEffect, useState } from 'react';
-
+import { HTTPError } from 'ky';
+import { StatusCodes } from 'http-status-codes';
 import { IEncryptedMessage } from '@kiltprotocol/types';
 
 import { Rejection, Session } from '../../utilities/session';
 import { useValuesFromRedirectUri } from '../../utilities/useValuesFromRedirectUri';
-
-import { exceptionToError } from '../../utilities/exceptionToError';
 
 import {
   AttestationStatus,
@@ -15,8 +14,8 @@ import {
 import { useYoutubeApi } from './useYoutubeApi';
 
 export interface YoutubeChannel {
-  name: string;
-  id: string;
+  'Channel Name': string;
+  'Channel ID': string;
 }
 
 interface Props {
@@ -62,11 +61,15 @@ export function Youtube({ session }: Props): JSX.Element {
     }
     (async () => {
       try {
-        setChannel(await youtubeApi.confirm({ code, secret }));
+        setChannel(
+          (await youtubeApi.confirm({ code, secret })) as YoutubeChannel,
+        );
         setStatus('authorized');
       } catch (exception) {
-        const { message } = exceptionToError(exception);
-        if (message.includes('No channels')) {
+        if (
+          exception instanceof HTTPError &&
+          exception.response.status === StatusCodes.NOT_FOUND
+        ) {
           setStatus('error');
           setFlowError('noChannel');
         } else {

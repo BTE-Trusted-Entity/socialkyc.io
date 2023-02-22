@@ -3,14 +3,16 @@ import { join } from 'node:path';
 
 import { toUnicode, toASCII } from 'punycode';
 
-import { StatusCodes } from 'http-status-codes';
-import { SendEmailCommand } from '@aws-sdk/client-ses';
-import {
+import type { IClaim } from '@kiltprotocol/types';
+import type {
   Request,
   ResponseObject,
   ResponseToolkit,
   ServerRoute,
 } from '@hapi/hapi';
+
+import { StatusCodes } from 'http-status-codes';
+import { SendEmailCommand } from '@aws-sdk/client-ses';
 import * as Boom from '@hapi/boom';
 import { RateLimiterMemory } from 'rate-limiter-flexible';
 import { z } from 'zod';
@@ -27,7 +29,7 @@ import {
 
 import { exceptionToError } from '../../frontend/utilities/exceptionToError';
 import { exitOnError } from '../utilities/exitOnError';
-import { paths } from '../endpoints/paths';
+import { generatePath, paths } from '../endpoints/paths';
 
 import { sesClient } from './sesClient';
 import { sesConnectionState } from './sesConnection';
@@ -127,7 +129,10 @@ async function handler(
   const { sessionId } = session;
   const secret = getSecretForSession(sessionId);
 
-  const url = new URL(paths.redirect.email, configuration.baseUri);
+  const url = new URL(
+    generatePath(paths.authHtml, 'email'),
+    configuration.baseUri,
+  );
   url.search = new URLSearchParams({ state: secret, wallet }).toString();
 
   const email = toUnicode(request.payload.email);
@@ -139,7 +144,7 @@ async function handler(
     emailCType,
     claimContents,
     session.did,
-  );
+  ) as IClaim & { contents: Output };
 
   const sessionWithSecret = getSessionBySecret(secret);
 

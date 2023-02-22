@@ -9,8 +9,8 @@ import { AttestationStatus, FlowError, TwitchTemplate } from './TwitchTemplate';
 import { useTwitchApi } from './useTwitchApi';
 
 export interface TwitchProfile {
-  login: string;
-  id: string;
+  Username: string;
+  'User ID': string;
 }
 
 interface Props {
@@ -56,7 +56,9 @@ export function Twitch({ session }: Props): JSX.Element {
     }
     (async () => {
       try {
-        setProfile(await twitchApi.confirm({ code, secret }));
+        setProfile(
+          (await twitchApi.confirm({ code, secret })) as TwitchProfile,
+        );
         setStatus('authorized');
       } catch {
         setStatus('error');

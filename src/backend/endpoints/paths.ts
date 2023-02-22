@@ -1,3 +1,5 @@
+import type { SupportedCType } from '../utilities/supportedCType';
+
 export const paths = {
   home: '/',
   about: '/about.html',
@@ -10,66 +12,23 @@ export const paths = {
   email: {
     send: '/api/email/send',
     confirm: '/api/email/confirm',
-    quote: '/api/email/quote',
-    requestAttestation: '/api/email/request-attestation',
-    attest: '/api/email/attest',
   },
 
   twitter: {
     claim: '/api/twitter/claim',
     confirm: '/api/twitter/confirm',
-    quote: '/api/twitter/quote',
-    requestAttestation: '/api/twitter/request-attestation',
-    attest: '/api/twitter/attest',
-  },
-
-  discord: {
-    authUrl: '/api/discord/authUrl',
-    confirm: '/api/discord/confirm',
-    quote: '/api/discord/quote',
-    requestAttestation: '/api/discord/request-attestation',
-    attest: '/api/discord/attest',
-  },
-
-  github: {
-    authUrl: '/api/github/authUrl',
-    confirm: '/api/github/confirm',
-    quote: '/api/github/quote',
-    requestAttestation: '/api/github/request-attestation',
-    attest: '/api/github/attest',
-  },
-
-  twitch: {
-    authUrl: '/api/twitch/authUrl',
-    confirm: '/api/twitch/confirm',
-    quote: '/api/twitch/quote',
-    requestAttestation: '/api/twitch/request-attestation',
-    attest: '/api/twitch/attest',
   },
 
   telegram: {
-    authUrl: '/api/telegram/authUrl',
     confirm: '/api/telegram/confirm',
-    quote: '/api/telegram/quote',
-    requestAttestation: '/api/telegram/request-attestation',
-    attest: '/api/telegram/attest',
   },
 
-  youtube: {
-    authUrl: '/api/youtube/authUrl',
-    confirm: '/api/youtube/confirm',
-    quote: '/api/youtube/quote',
-    requestAttestation: '/api/youtube/request-attestation',
-    attest: '/api/youtube/attest',
-  },
-
-  redirect: {
-    email: '/email/auth',
-    discord: '/discord/auth',
-    github: '/github/auth',
-    twitch: '/twitch/auth',
-    youtube: '/youtube/auth',
-  },
+  authHtml: '/{type}/auth',
+  authUrl: '/api/auth/{type}',
+  confirm: '/api/confirm/{type}',
+  quote: `/api/quote/{type}`,
+  requestAttestation: `/api/request-attestation/{type}`,
+  attest: '/api/attest',
 
   verifier: {
     requestCredential: '/api/request-credential',
@@ -84,3 +43,7 @@ export const paths = {
     secret: '/api/test/secret',
   },
 };
+
+export function generatePath(path: string, type: SupportedCType) {
+  return path.replace('{type}', type);
+}

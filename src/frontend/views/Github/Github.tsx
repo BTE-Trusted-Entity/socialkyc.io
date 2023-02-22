@@ -9,8 +9,8 @@ import { AttestationStatus, FlowError, GithubTemplate } from './GithubTemplate';
 import { useGithubApi } from './useGithubApi';
 
 export interface GithubProfile {
-  login: string;
-  id: string;
+  Username: string;
+  'User ID': string;
 }
 
 interface Props {
@@ -56,7 +56,9 @@ export function Github({ session }: Props): JSX.Element {
     }
     (async () => {
       try {
-        setProfile(await githubApi.confirm({ code, secret }));
+        setProfile(
+          (await githubApi.confirm({ code, secret })) as GithubProfile,
+        );
         setStatus('authorized');
       } catch {
         setStatus('error');

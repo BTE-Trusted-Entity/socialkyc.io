@@ -12,10 +12,10 @@ import { useTelegramApi } from './useTelegramApi';
 import { useAuthData } from './useAuthData';
 
 export interface TelegramProfile {
-  id: number;
-  first_name: string;
-  last_name?: string;
-  username?: string;
+  'User ID': number;
+  'First name': string;
+  'Last name'?: string;
+  Username?: string;
 }
 
 interface Props {

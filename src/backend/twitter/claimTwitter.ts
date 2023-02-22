@@ -1,6 +1,7 @@
-import { Request, ResponseObject, ServerRoute } from '@hapi/hapi';
-import { z } from 'zod';
+import type { IClaim } from '@kiltprotocol/types';
+import type { Request, ResponseObject, ServerRoute } from '@hapi/hapi';
 
+import { z } from 'zod';
 import { Claim } from '@kiltprotocol/core';
 
 import {
@@ -43,7 +44,7 @@ async function handler(request: Request): Promise<ResponseObject | string> {
     twitterCType,
     claimContents,
     session.did,
-  );
+  ) as IClaim & { contents: Output };
 
   const sessionWithSecret = getSessionBySecret(secret);
 

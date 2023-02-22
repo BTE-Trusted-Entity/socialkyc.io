@@ -9,7 +9,7 @@ import { useEmailApi } from './useEmailApi';
 import { AttestationStatus, EmailTemplate, FlowError } from './EmailTemplate';
 
 export interface EmailProfile {
-  email: string;
+  Email: string;
 }
 
 interface Props {

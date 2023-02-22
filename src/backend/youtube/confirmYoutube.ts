@@ -1,66 +1,31 @@
-import { StatusCodes } from 'http-status-codes';
-import { z } from 'zod';
-import {
-  Request,
-  ResponseToolkit,
-  ResponseObject,
-  ServerRoute,
-} from '@hapi/hapi';
+import type { DidUri, IClaim } from '@kiltprotocol/types';
+import type { BaseLogger } from 'pino';
 
 import got from 'got';
-
 import * as Boom from '@hapi/boom';
-
 import { Claim } from '@kiltprotocol/core';
 
-import {
-  deleteSecret,
-  getSessionBySecret,
-  getSession,
-  setSession,
-} from '../utilities/sessionStorage';
-import { paths } from '../endpoints/paths';
 import { configuration } from '../utilities/configuration';
 
 import { youtubeEndpoints } from './youtubeEndpoints';
 import { youtubeCType } from './youtubeCType';
 
-const zodPayload = z.object({
-  code: z.string(),
-  secret: z.string(),
-});
-
-export type Input = z.infer<typeof zodPayload>;
-
 export interface Output {
-  name: string;
-  id: string;
+  'Channel Name': string;
+  'Channel ID': string;
 }
 
 async function revokeAccessToken(token: string): Promise<void> {
   await got.post(youtubeEndpoints.revoke, { form: { token } });
 }
 
-async function handler(
-  request: Request,
-  h: ResponseToolkit,
-): Promise<ResponseObject> {
-  const { logger } = request;
-  logger.debug('Youtube authorization started');
-
-  const { secret, code } = request.payload as Input;
-
-  // This is the initial session in the first tab the user has open
-  const firstSession = getSessionBySecret(secret);
-  if (!firstSession) {
-    throw Boom.notFound('No session found for secret');
-  }
-  logger.debug('Found session with secret');
-  deleteSecret(secret);
-
-  const session = getSession(request.headers);
-
+export async function confirmYoutube(
+  code: string,
+  did: DidUri,
+  logger: BaseLogger,
+) {
   logger.debug('Exchanging code for access token');
+
   const body = (await got
     .post(youtubeEndpoints.token, {
       form: {
@@ -72,6 +37,7 @@ async function handler(
       },
     })
     .json()) as { access_token: string };
+
   logger.debug('Access token granted, fetching youtube channel');
 
   const headers = {
@@ -94,7 +60,7 @@ async function handler(
     await revokeAccessToken(body.access_token);
     logger.debug('Access token revoked');
 
-    return h.response().code(StatusCodes.NO_CONTENT);
+    throw Boom.notFound('No Youtube channel found');
   }
 
   if (items.length > 1) {
@@ -104,39 +70,22 @@ async function handler(
     );
   }
 
-  const channel: Output = {
-    name: items[0].snippet.title,
-    id: items[0].id,
-  };
-
   logger.debug('Found Youtube channel, creating claim');
 
   const claimContents = {
-    'Channel Name': channel.name,
-    'Channel ID': channel.id,
+    'Channel Name': items[0].snippet.title,
+    'Channel ID': items[0].id,
   };
   const claim = Claim.fromCTypeAndClaimContents(
     youtubeCType,
     claimContents,
-    session.did,
-  );
+    did,
+  ) as IClaim & { contents: Output };
 
-  setSession({ ...session, claim, confirmed: true });
   logger.debug('Youtube claim created');
 
   await revokeAccessToken(body.access_token);
   logger.debug('Access token revoked');
 
-  return h.response(channel as Output);
+  return claim;
 }
-
-export const confirmYoutube: ServerRoute = {
-  method: 'POST',
-  path: paths.youtube.confirm,
-  handler,
-  options: {
-    validate: {
-      payload: async (payload) => zodPayload.parse(payload),
-    },
-  },
-};

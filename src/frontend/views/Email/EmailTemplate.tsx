@@ -172,7 +172,7 @@ export function EmailTemplate({
         <form onSubmit={handleRequestAttestation}>
           <dl className={styles.profile}>
             <dt>Email:</dt>
-            <dd>{profile.email}</dd>
+            <dd>{profile.Email}</dd>
           </dl>
 
           <p>

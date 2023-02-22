@@ -17,9 +17,9 @@ const actions = {
 };
 
 const profileMock: DiscordProfile = {
-  username: 'TestUser',
-  discriminator: '1234',
-  id: '1234556789',
+  Username: 'TestUser',
+  Discriminator: '1234',
+  'User ID': '1234556789',
 };
 
 describe('DiscordTemplate', () => {

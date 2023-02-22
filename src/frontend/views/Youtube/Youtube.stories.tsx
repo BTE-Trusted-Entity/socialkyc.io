@@ -18,8 +18,8 @@ const actions = {
 };
 
 const channelMock: YoutubeChannel = {
-  name: 'TestUser',
-  id: '1234556789',
+  'Channel Name': 'TestUser',
+  'Channel ID': '1234556789',
 };
 
 export function Start(): JSX.Element {

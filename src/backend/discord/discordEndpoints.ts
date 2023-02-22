@@ -1,5 +1,5 @@
 import { configuration } from '../utilities/configuration';
-import { paths } from '../endpoints/paths';
+import { generatePath, paths } from '../endpoints/paths';
 
 // TODO: discord app icon, description, etc
 
@@ -9,5 +9,8 @@ export const discordEndpoints = {
   profile: 'https://discord.com/api/users/@me',
   revoke: 'https://discord.com/api/oauth2/token/revoke',
 
-  redirectUri: `${configuration.baseUri}${paths.redirect.discord}`,
+  redirectUri: `${configuration.baseUri}${generatePath(
+    paths.authHtml,
+    'discord',
+  )}`,
 };

@@ -17,8 +17,8 @@ const actions = {
 };
 
 const profileMock: TelegramProfile = {
-  first_name: 'TestUser',
-  id: 1234556789,
+  'First name': 'TestUser',
+  'User ID': 1234556789,
 };
 
 describe('TelegramTemplate', () => {

@@ -13,9 +13,9 @@ import {
 import { useDiscordApi } from './useDiscordApi';
 
 export interface DiscordProfile {
-  username: string;
-  discriminator: string;
-  id: string;
+  Username: string;
+  Discriminator: string;
+  'User ID': string;
 }
 
 interface Props {
@@ -61,7 +61,9 @@ export function Discord({ session }: Props): JSX.Element {
     }
     (async () => {
       try {
-        setProfile(await discordApi.confirm({ code, secret }));
+        setProfile(
+          (await discordApi.confirm({ code, secret })) as DiscordProfile,
+        );
         setStatus('authorized');
       } catch {
         setStatus('error');

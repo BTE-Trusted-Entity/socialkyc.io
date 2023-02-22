@@ -1,60 +1,24 @@
-import { z } from 'zod';
-import {
-  Request,
-  ResponseObject,
-  ResponseToolkit,
-  ServerRoute,
-} from '@hapi/hapi';
+import type { DidUri, IClaim } from '@kiltprotocol/types';
+import type { BaseLogger } from 'pino';
 
 import got from 'got';
-
-import * as Boom from '@hapi/boom';
-
 import { Claim } from '@kiltprotocol/core';
 
-import {
-  deleteSecret,
-  getSessionBySecret,
-  getSession,
-  setSession,
-} from '../utilities/sessionStorage';
-import { paths } from '../endpoints/paths';
 import { configuration } from '../utilities/configuration';
 
 import { githubEndpoints } from './githubEndpoints';
 import { githubCType } from './githubCType';
 
-const zodPayload = z.object({
-  code: z.string(),
-  secret: z.string(),
-});
-
-export type Input = z.infer<typeof zodPayload>;
-
 export interface Output {
-  login: string;
-  id: string;
+  Username: string;
+  'User ID': string;
 }
 
-async function handler(
-  request: Request,
-  h: ResponseToolkit,
-): Promise<ResponseObject> {
-  const { logger } = request;
-  logger.debug('Github authorization started');
-
-  const { secret, code } = request.payload as Input;
-
-  // This is the initial session in the first tab the user has open
-  const firstSession = getSessionBySecret(secret);
-  if (!firstSession) {
-    throw Boom.notFound('No session found for secret');
-  }
-  logger.debug('Found session with secret');
-  deleteSecret(secret);
-
-  const session = getSession(request.headers);
-
+export async function confirmGithub(
+  code: string,
+  did: DidUri,
+  logger: BaseLogger,
+) {
   logger.debug('Exchanging code for access token');
 
   const formatHeader = {
@@ -91,26 +55,10 @@ async function handler(
     Username: login,
     'User ID': id.toString(),
   };
-  const claim = Claim.fromCTypeAndClaimContents(
+
+  return Claim.fromCTypeAndClaimContents(
     githubCType,
     claimContents,
-    session.did,
-  );
-
-  setSession({ ...session, claim, confirmed: true });
-
-  logger.debug('Github claim created');
-
-  return h.response(profile as Output);
+    did,
+  ) as IClaim & { contents: Output };
 }
-
-export const confirmGithub: ServerRoute = {
-  method: 'POST',
-  path: paths.github.confirm,
-  handler,
-  options: {
-    validate: {
-      payload: async (payload) => zodPayload.parse(payload),
-    },
-  },
-};

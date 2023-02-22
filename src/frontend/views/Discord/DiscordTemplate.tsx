@@ -109,11 +109,11 @@ export function DiscordTemplate({
         <form onSubmit={handleSubmit}>
           <dl className={styles.profile}>
             <dt>User-ID:</dt>
-            <dd>{profile.id}</dd>
+            <dd>{profile['User ID']}</dd>
 
             <dt>Username:</dt>
             <dd>
-              {profile.username}#{profile.discriminator}
+              {profile.Username}#{profile.Discriminator}
             </dd>
           </dl>
 

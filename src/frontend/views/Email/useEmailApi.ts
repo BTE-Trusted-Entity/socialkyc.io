@@ -1,10 +1,10 @@
 import { useMemo } from 'react';
 
-import { quoteEmail } from '../../../backend/email/quoteEmailApi';
+import { quote } from '../../../backend/endpoints/quoteApi';
 import { sendEmail } from '../../../backend/email/sendEmailApi';
 import { confirmEmail } from '../../../backend/email/confirmEmailApi';
-import { attestEmail } from '../../../backend/email/attestEmailApi';
-import { requestAttestationEmail } from '../../../backend/email/requestAttestationEmailApi';
+import { attest } from '../../../backend/endpoints/attestApi';
+import { requestAttestation } from '../../../backend/endpoints/requestAttestationApi';
 
 import { bindToSession } from '../../utilities/bindToSession';
 
@@ -14,9 +14,11 @@ export function useEmailApi(sessionId: string) {
     return {
       send: sessionBound(sendEmail),
       confirm: sessionBound(confirmEmail),
-      quote: sessionBound(quoteEmail),
-      requestAttestation: sessionBound(requestAttestationEmail),
-      attest: sessionBound(attestEmail),
+      quote: sessionBound(quote.bind(undefined, 'email')),
+      requestAttestation: sessionBound(
+        requestAttestation.bind(undefined, 'email'),
+      ),
+      attest: sessionBound(attest),
     };
   }, [sessionId]);
 }

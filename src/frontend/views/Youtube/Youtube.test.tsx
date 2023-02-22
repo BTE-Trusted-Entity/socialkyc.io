@@ -23,12 +23,14 @@ import { useYoutubeApi } from './useYoutubeApi';
 import { Youtube, YoutubeChannel } from './Youtube';
 
 const channelMock: YoutubeChannel = {
-  name: 'TestUser',
-  id: '1234556789',
+  'Channel Name': 'TestUser',
+  'Channel ID': '1234556789',
 };
 
 const secret = 'SECRET';
 const code = 'CODE';
+
+jest.mock('ky', () => ({ HTTPError: Error }));
 
 jest.mock('../../utilities/useValuesFromRedirectUri');
 
@@ -238,7 +240,11 @@ describe('Youtube', () => {
     expectConfirmCalledWith({ secret, code });
 
     await act(async () => {
-      confirmPromise.reject(new Error('authorization'));
+      const error = new Error('authorization') as Error & {
+        response: { status: number };
+      };
+      error.response = { status: 400 };
+      confirmPromise.reject(error);
     });
 
     expect(
@@ -265,7 +271,11 @@ describe('Youtube', () => {
     expectConfirmCalledWith({ secret, code });
 
     await act(async () => {
-      confirmPromise.reject(new Error('No channels'));
+      const error = new Error('No channels') as Error & {
+        response: { status: number };
+      };
+      error.response = { status: 404 };
+      confirmPromise.reject(error);
     });
 
     expect(
