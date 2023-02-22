@@ -48,7 +48,7 @@
     "ky": "^0.33.2",
     "lodash-es": "^4.17.21",
     "node-cache": "^5.1.2",
-    "pino": "^8.10.0",
+    "pino": "^8.11.0",
     "prom-client": "^14.1.1",
     "punycode": "^2.3.0",
     "rate-limiter-flexible": "^2.4.1",
