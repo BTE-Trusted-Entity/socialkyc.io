@@ -11,7 +11,6 @@ import type {
   ServerRoute,
 } from '@hapi/hapi';
 
-import { StatusCodes } from 'http-status-codes';
 import { SendEmailCommand } from '@aws-sdk/client-ses';
 import * as Boom from '@hapi/boom';
 import { RateLimiterMemory } from 'rate-limiter-flexible';
@@ -105,7 +104,9 @@ const zodPayload = z.object({
 
 export type Input = z.infer<typeof zodPayload>;
 
-export type Output = void;
+export interface Output {
+  Email: string;
+}
 
 async function handler(
   request: Request<{ Payload: Input }>,
@@ -158,7 +159,7 @@ async function handler(
       logger.debug('Email request attestation message sent');
     }
 
-    return h.response().code(StatusCodes.NO_CONTENT);
+    return h.response(claimContents as Output);
   } catch (exception) {
     throw Boom.boomify(exceptionToError(exception), {
       statusCode: 400,

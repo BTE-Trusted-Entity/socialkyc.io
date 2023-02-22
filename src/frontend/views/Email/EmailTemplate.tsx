@@ -63,6 +63,7 @@ export function EmailTemplate({
   profile,
 }: Props): JSX.Element {
   const [emailInput, setEmailInput] = useState('');
+  const unicodeEmail = profile?.Email || emailInput;
 
   const handleInput = useCallback(
     (event: FormEvent<HTMLInputElement>) => {
@@ -155,7 +156,7 @@ export function EmailTemplate({
           icon="spinner"
           heading="Attestation process:"
           message="Email sent"
-          details={`Email sent to ${emailInput}. Please check your inbox and spam folder and click the link.`}
+          details={`Email sent to ${unicodeEmail}. Please check your inbox and spam folder and click the link.`}
         />
       )}
 
