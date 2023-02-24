@@ -8,17 +8,6 @@ import {
 import { keypairsPromise } from './keypairs';
 import { fullDidPromise } from './fullDid';
 
-export async function signWithAuthentication({ data }: { data: Uint8Array }) {
-  const { authentication } = await keypairsPromise;
-  const { fullDid } = await fullDidPromise;
-
-  return {
-    signature: authentication.sign(data, { withType: false }),
-    keyType: authentication.type,
-    keyUri: `${fullDid.uri}${fullDid.authentication[0].id}`,
-  };
-}
-
 export async function signWithAssertionMethod({ data }: { data: Uint8Array }) {
   const { assertionMethod } = await keypairsPromise;
   const { fullDid } = await fullDidPromise;

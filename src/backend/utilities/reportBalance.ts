@@ -52,25 +52,29 @@ This is an automatically generated email.`;
   await sesClient.send(command);
 }
 
-export function reportBalance() {
-  setInterval(async () => {
+export async function reportBalance() {
+  async function check() {
     try {
       const { identity } = await keypairsPromise;
+      const { address } = identity;
       const api = ConfigService.get('api');
-      const balances = (await api.query.system.account(identity.address)).data;
+      const balances = (await api.query.system.account(address)).data;
 
       const free = BalanceUtils.formatKiltBalance(balances.free);
       const reserved = BalanceUtils.formatKiltBalance(balances.reserved);
 
-      logger.info(`Free: ${free}, bonded: ${reserved}`);
+      logger.info(`Free: ${free}, bonded: ${reserved}, address: ${address}`);
 
       const { blockchainEndpoint } = configuration;
 
       if (balances.free.lt(REPORT_THRESHOLD)) {
-        await sendLowBalanceAlert(free, blockchainEndpoint, identity.address);
+        await sendLowBalanceAlert(free, blockchainEndpoint, address);
       }
     } catch (error) {
       logger.error(error, 'Error getting attester balance');
     }
-  }, REPORT_FREQUENCY);
+  }
+
+  await check();
+  setInterval(check, REPORT_FREQUENCY);
 }

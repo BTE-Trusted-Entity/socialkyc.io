@@ -13,7 +13,6 @@ import * as Did from '@kiltprotocol/did';
 import { initKilt } from './initKilt';
 import { keypairsPromise } from './keypairs';
 import { configuration } from './configuration';
-import { signWithAuthentication } from './cryptoCallbacks';
 import { exitOnError } from './exitOnError';
 import { logger } from './logger';
 
@@ -29,7 +28,10 @@ export async function createFullDid(): Promise<DidUri> {
       keyAgreement: [keyAgreement],
     },
     identity.address,
-    signWithAuthentication,
+    async ({ data }) => ({
+      signature: authentication.sign(data, { withType: false }),
+      keyType: authentication.type,
+    }),
   );
 
   await Blockchain.signAndSubmitTx(extrinsic, identity);
