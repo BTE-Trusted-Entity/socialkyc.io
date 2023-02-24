@@ -38,7 +38,7 @@ import { paths } from './paths';
 
 export async function testLiveness() {
   await initKilt();
-  reportBalance();
+  await reportBalance();
 
   await canAccessTwitter();
 
