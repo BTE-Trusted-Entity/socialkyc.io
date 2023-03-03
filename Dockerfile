@@ -32,10 +32,6 @@ COPY package.json yarn.lock ./
 # install the production dependencies only (depends on NODE_ENV)
 RUN yarn install --frozen-lockfile --ignore-optional && yarn cache clean --all
 
-# FIXME: a workaround for missing import type assertion
-COPY scripts/patchVCExport.js .
-RUN node /app/patchVCExport.js
-
 # carry over the built code
 COPY --from=builder /app/dist dist
 
