@@ -7,7 +7,7 @@
   },
   "scripts": {
     "prettify": "prettier --write \"src/**/*.ts*\" \"src/**/*.css*\"",
-    "lint": "yarn run lint-css --format github && yarn run lint-js",
+    "lint": "yarn run lint-css --formatter github && yarn run lint-js",
     "lint-js": "eslint --max-warnings 0 --config ./.eslintrc.json \"src/**/*.ts*\"",
     "lint-css": "stylelint --max-warnings 0 --fix \"src/**/*.css\"",
     "css": "tcm --namedExports --pattern 'src/frontend/**/*.module.css' && eslint --fix --config ./.eslintrc.json \"src/**/*.css.d.ts\"",
