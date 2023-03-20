@@ -4,7 +4,6 @@
     "stylelint-config-css-modules"
   ],
   "rules": {
-    "string-quotes": "single",
     "value-keyword-case": null,
     "declaration-block-no-duplicate-properties": [
       true,

@@ -35,8 +35,7 @@ html,
   border-radius: 15px;
 
   /* Absolutely position the image for header, because the header cannot have negative margin in webmails */
-  background:
-    url('../views/Attester/email.png') no-repeat left -10rem top 2.125rem/2.375rem,
+  background: url('../views/Attester/email.png') no-repeat left -10rem top 2.125rem/2.375rem,
     #3a1a4c url('../images/background-email.svg') no-repeat center bottom;
   padding: 2rem;
   font-size: 0.875rem;
