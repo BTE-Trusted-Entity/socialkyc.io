@@ -1,11 +1,4 @@
-import {
-  FormEvent,
-  Fragment,
-  useCallback,
-  useEffect,
-  useMemo,
-  useState,
-} from 'react';
+import { FormEvent, Fragment, useCallback, useEffect, useState } from 'react';
 import { Link, Route, Switch, useHistory, useLocation } from 'react-router-dom';
 import cx from 'classnames';
 import { detect } from 'detect-browser';
@@ -59,6 +52,8 @@ function useHasExtension(): HasExtension {
         setHasExtension(false);
       }
     }, 500);
+
+    window.dispatchEvent(new CustomEvent('kilt-dapp#initialized'));
 
     return () => {
       clearInterval(intervalId);
@@ -206,7 +201,16 @@ function Connect({ setSession }: { setSession: (s: Session) => void }) {
   const [error, setError] = useState<'closed' | 'rejected' | 'unknown'>();
 
   const { kilt } = apiWindow;
-  const extensions = useMemo(getCompatibleExtensions, [kilt]);
+  const [extensions, setExtensions] = useState(getCompatibleExtensions());
+  useEffect(() => {
+    function handler() {
+      setExtensions(getCompatibleExtensions());
+    }
+
+    window.addEventListener('kilt-extension#initialized', handler);
+    return () =>
+      window.removeEventListener('kilt-extension#initialized', handler);
+  }, []);
 
   const [extension, setExtension] = useState<string>(extensions[0]);
 
