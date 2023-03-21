@@ -1,4 +1,4 @@
-import { connect } from '@kiltprotocol/core';
+import { connect } from '@kiltprotocol/sdk-js';
 
 import { configuration } from './configuration';
 import { logger } from './logger';

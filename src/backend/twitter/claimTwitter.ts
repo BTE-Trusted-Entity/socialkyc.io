@@ -1,8 +1,7 @@
-import type { IClaim } from '@kiltprotocol/types';
 import type { Request, ResponseObject, ServerRoute } from '@hapi/hapi';
 
 import { z } from 'zod';
-import { Claim } from '@kiltprotocol/core';
+import { Claim, IClaim } from '@kiltprotocol/sdk-js';
 
 import {
   getSecretForSession,

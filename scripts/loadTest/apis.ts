@@ -1,6 +1,6 @@
 import got from 'got';
 
-import { DidResourceUri, IEncryptedMessage } from '@kiltprotocol/types';
+import { DidResourceUri, IEncryptedMessage } from '@kiltprotocol/sdk-js';
 
 import { CheckSessionInput } from './loadTest';
 

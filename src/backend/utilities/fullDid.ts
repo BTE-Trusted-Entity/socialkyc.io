@@ -1,14 +1,14 @@
 import { Keypair } from '@polkadot/util-crypto/types';
 import {
+  Blockchain,
+  Did,
   DidDocument,
   DidKey,
   DidUri,
   KeyRelationship,
   KeyringPair,
-} from '@kiltprotocol/types';
-import { Crypto } from '@kiltprotocol/utils';
-import { Blockchain } from '@kiltprotocol/chain-helpers';
-import * as Did from '@kiltprotocol/did';
+  Utils,
+} from '@kiltprotocol/sdk-js';
 
 import { initKilt } from './initKilt';
 import { keypairsPromise } from './keypairs';
@@ -49,8 +49,8 @@ async function compareKeys(
   if (!resolved) {
     throw new Error(`Resolved key for ${relationship} is undefined`);
   }
-  const derivedHex = Crypto.u8aToHex(derived.publicKey);
-  const resolvedHex = Crypto.u8aToHex(resolved.publicKey);
+  const derivedHex = Utils.Crypto.u8aToHex(derived.publicKey);
+  const resolvedHex = Utils.Crypto.u8aToHex(resolved.publicKey);
   if (derivedHex !== resolvedHex) {
     throw new Error(
       `Derived key for ${relationship} does not match resolved one ${resolved.id}`,

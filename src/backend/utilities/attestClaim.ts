@@ -1,12 +1,12 @@
 import * as Boom from '@hapi/boom';
 import { Logger } from 'pino';
 import {
+  Attestation,
+  ConfigService,
   IAttestation,
   ICredential,
   IEncryptedMessage,
-} from '@kiltprotocol/types';
-import { Attestation } from '@kiltprotocol/core';
-import { ConfigService } from '@kiltprotocol/config';
+} from '@kiltprotocol/sdk-js';
 
 import {
   attestSuccess,

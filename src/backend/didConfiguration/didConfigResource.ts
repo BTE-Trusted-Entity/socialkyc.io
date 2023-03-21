@@ -1,5 +1,8 @@
-import { Claim, Credential } from '@kiltprotocol/core';
-import { ICredentialPresentation } from '@kiltprotocol/types';
+import {
+  Claim,
+  Credential,
+  ICredentialPresentation,
+} from '@kiltprotocol/sdk-js';
 
 import { configuration } from '../utilities/configuration';
 import { fullDidPromise } from '../utilities/fullDid';

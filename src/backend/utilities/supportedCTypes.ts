@@ -1,4 +1,4 @@
-import type { ICType } from '@kiltprotocol/types';
+import type { ICType } from '@kiltprotocol/sdk-js';
 
 import type { SupportedCType } from './supportedCType';
 export type { SupportedCType } from './supportedCType';

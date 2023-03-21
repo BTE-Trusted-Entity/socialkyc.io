@@ -1,5 +1,4 @@
-import * as Did from '@kiltprotocol/did';
-import { DidResourceUri } from '@kiltprotocol/types';
+import { Did, DidResourceUri } from '@kiltprotocol/sdk-js';
 
 export function isDidResourceUri(input: string): input is DidResourceUri {
   try {

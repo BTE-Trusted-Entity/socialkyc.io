@@ -1,14 +1,16 @@
 import { naclSeal, randomAsNumber } from '@polkadot/util-crypto';
 import { HexString } from '@polkadot/util/types';
-import { Crypto } from '@kiltprotocol/utils';
 import {
-  DidResourceUri,
+  Claim,
+  connect,
+  Did,
   DidDocument,
   DidEncryptionKey,
+  DidResourceUri,
+  disconnect,
   ICType,
-} from '@kiltprotocol/types';
-import { Claim, connect, disconnect } from '@kiltprotocol/core';
-import * as Did from '@kiltprotocol/did';
+  Utils,
+} from '@kiltprotocol/sdk-js';
 
 import { getEncryptedMessage } from './encryptedMessage.js';
 import {
@@ -49,8 +51,8 @@ function getDidEncryptionKey(details: DidDocument): DidEncryptionKey {
 }
 
 export function createDid() {
-  const authentication = Crypto.makeKeypairFromSeed();
-  const keyAgreement = Crypto.makeEncryptionKeypairFromSeed();
+  const authentication = Utils.Crypto.makeKeypairFromSeed();
+  const keyAgreement = Utils.Crypto.makeEncryptionKeypairFromSeed();
 
   const document = Did.createLightDidDocument({
     authentication: [authentication],
@@ -76,15 +78,15 @@ async function produceEncryptedChallenge(
   const { keyAgreementKeyUri, keyAgreement } = temporaryChannelDid;
 
   const { sealed, nonce } = naclSeal(
-    Crypto.coToUInt8(challenge),
+    Utils.Crypto.coToUInt8(challenge),
     keyAgreement.secretKey,
     dAppEncryptionDidKey.publicKey,
   );
 
   return {
     encryptionKeyUri: keyAgreementKeyUri,
-    encryptedChallenge: Crypto.u8aToHex(sealed),
-    nonce: Crypto.u8aToHex(nonce),
+    encryptedChallenge: Utils.Crypto.u8aToHex(sealed),
+    nonce: Utils.Crypto.u8aToHex(nonce),
   };
 }
 

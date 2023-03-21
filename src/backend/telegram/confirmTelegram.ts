@@ -1,6 +1,5 @@
 import { createHash, createHmac } from 'node:crypto';
 
-import type { IClaim } from '@kiltprotocol/types';
 import type {
   Request,
   ResponseObject,
@@ -10,7 +9,7 @@ import type {
 
 import { z } from 'zod';
 import * as Boom from '@hapi/boom';
-import { Claim } from '@kiltprotocol/core';
+import { Claim, IClaim } from '@kiltprotocol/sdk-js';
 
 import { getSession, setSession } from '../utilities/sessionStorage';
 import { paths } from '../endpoints/paths';

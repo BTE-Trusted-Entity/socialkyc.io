@@ -1,7 +1,9 @@
-import { Blockchain } from '@kiltprotocol/chain-helpers';
-import * as Did from '@kiltprotocol/did';
-import { ConfigService } from '@kiltprotocol/config';
-import { IAttestation } from '@kiltprotocol/types';
+import {
+  Blockchain,
+  Did,
+  ConfigService,
+  IAttestation,
+} from '@kiltprotocol/sdk-js';
 
 import { logger } from './logger';
 import { fullDidPromise } from './fullDid';

@@ -1,4 +1,4 @@
-import { DidResourceUri } from '@kiltprotocol/types';
+import { DidResourceUri } from '@kiltprotocol/sdk-js';
 import { z } from 'zod';
 
 import { isDidResourceUri } from './isDidResourceUri';

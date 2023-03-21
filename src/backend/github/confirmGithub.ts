@@ -1,8 +1,7 @@
-import type { DidUri, IClaim } from '@kiltprotocol/types';
 import type { BaseLogger } from 'pino';
 
 import got from 'got';
-import { Claim } from '@kiltprotocol/core';
+import { Claim, DidUri, IClaim } from '@kiltprotocol/sdk-js';
 
 import { configuration } from '../utilities/configuration';
 

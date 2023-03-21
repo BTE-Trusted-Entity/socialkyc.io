@@ -1,11 +1,10 @@
 import {
+  Did,
   DidResourceUri,
   IEncryptedMessage,
+  Message,
   MessageBody,
-} from '@kiltprotocol/types';
-import * as Message from '@kiltprotocol/messaging';
-
-import * as Did from '@kiltprotocol/did';
+} from '@kiltprotocol/sdk-js';
 
 import { encrypt } from './cryptoCallbacks';
 import { configuration } from './configuration';
