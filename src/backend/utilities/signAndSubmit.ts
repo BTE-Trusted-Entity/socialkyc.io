@@ -1,6 +1,4 @@
-import { SubmittableExtrinsic } from '@kiltprotocol/types';
-import { Blockchain } from '@kiltprotocol/chain-helpers';
-import * as Did from '@kiltprotocol/did';
+import { Blockchain, Did, SubmittableExtrinsic } from '@kiltprotocol/sdk-js';
 
 import { fullDidPromise } from './fullDid';
 import { keypairsPromise } from './keypairs';

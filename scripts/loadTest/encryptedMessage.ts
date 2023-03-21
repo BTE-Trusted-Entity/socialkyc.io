@@ -1,12 +1,12 @@
-import { Credential } from '@kiltprotocol/core';
-import * as Did from '@kiltprotocol/did';
-import * as Message from '@kiltprotocol/messaging';
 import {
+  Credential,
+  Did,
   DidResourceUri,
   IClaim,
   IRequestAttestation,
   KiltEncryptionKeypair,
-} from '@kiltprotocol/types';
+  Message,
+} from '@kiltprotocol/sdk-js';
 
 import { naclSeal } from '@polkadot/util-crypto';
 

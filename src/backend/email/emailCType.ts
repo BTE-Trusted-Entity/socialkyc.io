@@ -1,6 +1,4 @@
-import { CType } from '@kiltprotocol/core';
-import { ICType } from '@kiltprotocol/types';
-import { ConfigService } from '@kiltprotocol/config';
+import { ConfigService, CType, ICType } from '@kiltprotocol/sdk-js';
 
 import { signAndSubmit } from '../utilities/signAndSubmit';
 import { logger } from '../utilities/logger';

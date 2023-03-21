@@ -7,7 +7,7 @@ import type {
 import type { SupportedCType } from '../utilities/supportedCType';
 
 import { StatusCodes } from 'http-status-codes';
-import { Credential } from '@kiltprotocol/core';
+import { Credential } from '@kiltprotocol/sdk-js';
 import { z } from 'zod';
 import * as Boom from '@hapi/boom';
 

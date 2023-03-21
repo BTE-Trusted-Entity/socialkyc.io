@@ -1,13 +1,13 @@
 import type { Request } from '@hapi/hapi';
-import type {
-  MessageBodyType,
-  IRequestAttestationContent,
-} from '@kiltprotocol/types';
 
 import type { EncryptedMessageInput } from './validateEncryptedMessage';
 
 import * as Boom from '@hapi/boom';
-import * as Message from '@kiltprotocol/messaging';
+import {
+  Message,
+  MessageBodyType,
+  IRequestAttestationContent,
+} from '@kiltprotocol/sdk-js';
 
 import { decrypt } from './cryptoCallbacks';
 

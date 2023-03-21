@@ -1,4 +1,4 @@
-import { IEncryptedMessage } from '@kiltprotocol/types';
+import { IEncryptedMessage } from '@kiltprotocol/sdk-js';
 import {
   Request,
   ResponseObject,

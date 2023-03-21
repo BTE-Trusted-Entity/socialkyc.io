@@ -1,5 +1,5 @@
 import { FormEvent, useCallback, useEffect, useState } from 'react';
-import { IEncryptedMessage } from '@kiltprotocol/types';
+import { IEncryptedMessage } from '@kiltprotocol/sdk-js';
 
 import { Rejection, Session } from '../../utilities/session';
 

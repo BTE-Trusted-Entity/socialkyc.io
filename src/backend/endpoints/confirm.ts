@@ -1,4 +1,4 @@
-import type { DidUri, IClaim } from '@kiltprotocol/types';
+import type { DidUri, IClaim } from '@kiltprotocol/sdk-js';
 import type {
   Request,
   ResponseObject,

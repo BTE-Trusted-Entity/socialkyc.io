@@ -3,7 +3,6 @@ import { join } from 'node:path';
 
 import { toUnicode, toASCII } from 'punycode';
 
-import type { IClaim } from '@kiltprotocol/types';
 import type {
   Request,
   ResponseObject,
@@ -16,7 +15,7 @@ import * as Boom from '@hapi/boom';
 import { RateLimiterMemory } from 'rate-limiter-flexible';
 import { z } from 'zod';
 
-import { Claim } from '@kiltprotocol/core';
+import { Claim, IClaim } from '@kiltprotocol/sdk-js';
 
 import { configuration } from '../utilities/configuration';
 import {

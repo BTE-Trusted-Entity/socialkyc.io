@@ -1,4 +1,4 @@
-import { IClaimContents, ICredentialPresentation } from '@kiltprotocol/types';
+import { IClaimContents, ICredentialPresentation } from '@kiltprotocol/sdk-js';
 import {
   constants,
   Proof,

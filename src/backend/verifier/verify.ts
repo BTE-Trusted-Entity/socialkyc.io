@@ -4,14 +4,15 @@ import type {
   ResponseToolkit,
   ServerRoute,
 } from '@hapi/hapi';
-import type {
+
+import * as Boom from '@hapi/boom';
+import {
+  Attestation,
+  ConfigService,
+  Credential,
   IAttestation,
   ICredentialPresentation,
-} from '@kiltprotocol/types';
-
-import { Attestation, Credential } from '@kiltprotocol/core';
-import * as Boom from '@hapi/boom';
-import { ConfigService } from '@kiltprotocol/config';
+} from '@kiltprotocol/sdk-js';
 
 import { decryptMessageContent } from '../utilities/decryptMessage';
 import { validateEncryptedMessage } from '../utilities/validateEncryptedMessage';

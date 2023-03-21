@@ -8,9 +8,7 @@ import * as Boom from '@hapi/boom';
 import { z } from 'zod';
 import { StatusCodes } from 'http-status-codes';
 
-import * as Did from '@kiltprotocol/did';
-import { Crypto } from '@kiltprotocol/utils';
-import { DidResourceUri } from '@kiltprotocol/types';
+import { Did, DidResourceUri, Utils } from '@kiltprotocol/sdk-js';
 import { randomAsHex } from '@polkadot/util-crypto';
 
 import { fullDidPromise } from '../utilities/fullDid';
@@ -55,14 +53,14 @@ async function handler(
   const { keyAgreementKey, fullDid } = await fullDidPromise;
 
   const { data } = await decrypt({
-    data: Crypto.coToUInt8(encryptedChallenge),
-    nonce: Crypto.coToUInt8(nonce),
+    data: Utils.Crypto.coToUInt8(encryptedChallenge),
+    nonce: Utils.Crypto.coToUInt8(nonce),
     keyUri: `${fullDid.uri}${keyAgreementKey.id}`,
     peerPublicKey: encryptionKey.publicKey,
   });
   logger.debug('Session confirmation decrypted challenge');
 
-  const decryptedChallenge = Crypto.u8aToHex(data);
+  const decryptedChallenge = Utils.Crypto.u8aToHex(data);
   const originalChallenge = session.didChallenge;
 
   if (decryptedChallenge !== originalChallenge) {

@@ -6,7 +6,7 @@ import {
   IAttestation,
   IClaim,
   ICredential,
-} from '@kiltprotocol/types';
+} from '@kiltprotocol/sdk-js';
 import { randomAsNumber } from '@polkadot/util-crypto';
 
 import { sessionHeader } from '../endpoints/sessionHeader';

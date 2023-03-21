@@ -5,7 +5,7 @@ import {
   ServerRoute,
 } from '@hapi/hapi';
 import * as Boom from '@hapi/boom';
-import { CType } from '@kiltprotocol/core';
+import { CType } from '@kiltprotocol/sdk-js';
 import { z } from 'zod';
 
 import {

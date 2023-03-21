@@ -2609,6 +2609,19 @@
     "@kiltprotocol/utils" "0.31.1"
     "@polkadot/util" "^10.2.1"
 
+"@kiltprotocol/sdk-js@^0.31.1":
+  version "0.31.1"
+  resolved "https://registry.yarnpkg.com/@kiltprotocol/sdk-js/-/sdk-js-0.31.1.tgz#0ae3a2652a56e059db7b8be8b859be13fe30bedf"
+  integrity sha512-uYkdXYRCTMlxyJ/zaLY5MrEUnVfr+rbSuy94yFwpQnbnwgr5gTMypbi8+FIqy4pCbh+32O/HUAUy0Nwhf886Ug==
+  dependencies:
+    "@kiltprotocol/chain-helpers" "0.31.1"
+    "@kiltprotocol/config" "0.31.1"
+    "@kiltprotocol/core" "0.31.1"
+    "@kiltprotocol/did" "0.31.1"
+    "@kiltprotocol/messaging" "0.31.1"
+    "@kiltprotocol/types" "0.31.1"
+    "@kiltprotocol/utils" "0.31.1"
+
 "@kiltprotocol/type-definitions@0.31.1":
   version "0.31.1"
   resolved "https://registry.yarnpkg.com/@kiltprotocol/type-definitions/-/type-definitions-0.31.1.tgz#0d3cd94ee6cd0a034bba667e2f6b39e6daacaa20"
@@ -2638,7 +2651,7 @@
     tweetnacl "^1.0.3"
     uuid "^9.0.0"
 
-"@kiltprotocol/vc-export@0.31.1":
+"@kiltprotocol/vc-export@^0.31.1":
   version "0.31.1"
   resolved "https://registry.yarnpkg.com/@kiltprotocol/vc-export/-/vc-export-0.31.1.tgz#317e36bf14453537e0062b13ef8c77a2fe594591"
   integrity sha512-xozFyyHzsGld6aJS17ov03iuux3kG9ktEQIHScFdAhzaI/LL3xZfVCelaFCk4DjqHSSPPLOdz7R8FEnWyMnRxw==

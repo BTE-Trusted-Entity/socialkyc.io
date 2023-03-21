@@ -3,7 +3,7 @@ import {
   DecryptCallback,
   DidResourceUri,
   EncryptCallback,
-} from '@kiltprotocol/types';
+} from '@kiltprotocol/sdk-js';
 
 import { keypairsPromise } from './keypairs';
 import { fullDidPromise } from './fullDid';

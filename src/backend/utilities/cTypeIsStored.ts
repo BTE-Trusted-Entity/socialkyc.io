@@ -1,6 +1,4 @@
-import { ICType } from '@kiltprotocol/types';
-import { ConfigService } from '@kiltprotocol/config';
-import { CType } from '@kiltprotocol/core';
+import { ConfigService, CType, ICType } from '@kiltprotocol/sdk-js';
 
 export async function cTypeIsStored({ $id }: ICType): Promise<boolean> {
   const api = ConfigService.get('api');

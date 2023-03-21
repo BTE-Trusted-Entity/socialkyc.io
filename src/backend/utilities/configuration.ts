@@ -3,7 +3,7 @@ import path from 'node:path';
 
 import dotenv from 'dotenv';
 import { pino } from 'pino';
-import { DidUri } from '@kiltprotocol/types';
+import { DidUri } from '@kiltprotocol/sdk-js';
 
 dotenv.config();
 

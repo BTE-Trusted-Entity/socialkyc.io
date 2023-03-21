@@ -1,4 +1,3 @@
-import type { IEncryptedMessage } from '@kiltprotocol/types';
 import type {
   Request,
   ResponseObject,
@@ -8,7 +7,7 @@ import type {
 
 import { z } from 'zod';
 import { randomAsHex } from '@polkadot/util-crypto';
-import { CType } from '@kiltprotocol/core';
+import { CType, IEncryptedMessage } from '@kiltprotocol/sdk-js';
 
 import { supportedCTypes } from '../utilities/supportedCTypes';
 import { supportedCTypeKeys } from '../utilities/supportedCType';

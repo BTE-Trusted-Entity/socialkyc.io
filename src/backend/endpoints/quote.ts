@@ -5,7 +5,7 @@ import {
   ServerRoute,
 } from '@hapi/hapi';
 import * as Boom from '@hapi/boom';
-import { IEncryptedMessage } from '@kiltprotocol/types';
+import { IEncryptedMessage } from '@kiltprotocol/sdk-js';
 import { z } from 'zod';
 
 import { encryptMessageBody } from '../utilities/encryptMessage';
