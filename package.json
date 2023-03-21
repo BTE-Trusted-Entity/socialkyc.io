@@ -102,7 +102,7 @@
     "pino-pretty": "^10.0.0",
     "postcss": "^8.4.21",
     "postcss-modules": "^6.0.0",
-    "prettier": "^2.8.5",
+    "prettier": "^2.8.6",
     "react-router": "^5.3.4",
     "stylelint": "^15.3.0",
     "stylelint-config-css-modules": "^4.2.0",
