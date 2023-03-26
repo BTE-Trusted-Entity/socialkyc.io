@@ -76,7 +76,7 @@
     "@types/hapi__inert": "^5.2.6",
     "@types/jest": "^29.5.0",
     "@types/lodash-es": "^4.17.7",
-    "@types/node": "^18.15.7",
+    "@types/node": "^18.15.10",
     "@types/react": "^18.0.28",
     "@types/react-dom": "^18.0.11",
     "@types/react-router-dom": "^5.3.3",
