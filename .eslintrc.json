@@ -7,7 +7,8 @@
     "plugin:react/recommended",
     "plugin:react-hooks/recommended",
     "plugin:prettier/recommended",
-    "plugin:jest/recommended"
+    "plugin:jest/recommended",
+    "plugin:storybook/recommended"
   ],
   "parserOptions": {
     "ecmaVersion": 2020,
@@ -17,24 +18,52 @@
     }
   },
   "rules": {
-    "no-restricted-globals": ["error", "describe", "it", "jest", "beforeEach", "afterEach"],
+    "no-restricted-globals": [
+      "error",
+      "describe",
+      "it",
+      "jest",
+      "beforeEach",
+      "afterEach"
+    ],
     "react/jsx-uses-react": "off",
     "react/react-in-jsx-scope": "off",
     "react-hooks/exhaustive-deps": "error",
     "import/no-extraneous-dependencies": "error",
-    "import/no-unresolved": ["error", { "ignore": ["\\.js$"] }],
-    "import/order": ["error", {
-      "newlines-between": "always-and-inside-groups",
-      "groups": ["builtin", "type", "external", "internal", "parent", "sibling", "index", "object"],
-      "pathGroups": [
-        {
-          "patternOptions": { "matchBase": true },
-          "pattern": "*.module.css",
-          "group": "internal",
-          "position": "before"
-        }
-      ]
-    }],
+    "import/no-unresolved": [
+      "error",
+      {
+        "ignore": [
+          "\\.js$"
+        ]
+      }
+    ],
+    "import/order": [
+      "error",
+      {
+        "newlines-between": "always-and-inside-groups",
+        "groups": [
+          "builtin",
+          "type",
+          "external",
+          "internal",
+          "parent",
+          "sibling",
+          "index",
+          "object"
+        ],
+        "pathGroups": [
+          {
+            "patternOptions": {
+              "matchBase": true
+            },
+            "pattern": "*.module.css",
+            "group": "internal",
+            "position": "before"
+          }
+        ]
+      }
+    ],
     "@typescript-eslint/no-unused-vars": "error"
   },
   "settings": {
