@@ -1,4 +1,4 @@
-import type { DidUri, IClaim } from '@kiltprotocol/sdk-js';
+import type { DidUri } from '@kiltprotocol/sdk-js';
 import type {
   Request,
   ResponseObject,
@@ -11,6 +11,7 @@ import { z } from 'zod';
 import * as Boom from '@hapi/boom';
 
 import {
+  ContentfulClaim,
   deleteSecret,
   getSession,
   getSessionBySecret,
@@ -27,7 +28,7 @@ type ConfirmType = 'discord' | 'github' | 'twitch' | 'youtube';
 
 const confirmationsForType: Record<
   ConfirmType,
-  (code: string, did: DidUri, logger: BaseLogger) => Promise<IClaim>
+  (code: string, did: DidUri, logger: BaseLogger) => Promise<ContentfulClaim>
 > = {
   github,
   discord,

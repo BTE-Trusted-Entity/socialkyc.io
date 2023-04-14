@@ -2,21 +2,22 @@ import {
   Credential,
   Did,
   DidResourceUri,
-  IClaim,
   IRequestAttestation,
   KiltEncryptionKeypair,
   Message,
+  PartialClaim,
 } from '@kiltprotocol/sdk-js';
 
 import { naclSeal } from '@polkadot/util-crypto';
 
 export async function getEncryptedMessage(
-  claim: IClaim,
+  claim: PartialClaim & Required<Pick<PartialClaim, 'contents'>>,
   dAppEncryptionKeyUri: DidResourceUri,
   keyAgreementKeyUri: DidResourceUri,
   keyAgreement: KiltEncryptionKeypair,
 ) {
-  const credential = Credential.fromClaim(claim);
+  const owner = Did.parse(keyAgreementKeyUri).did;
+  const credential = Credential.fromClaim({ ...claim, owner });
 
   const requestForAttestationBody: IRequestAttestation = {
     content: { credential },
@@ -25,7 +26,7 @@ export async function getEncryptedMessage(
 
   const message = Message.fromBody(
     requestForAttestationBody,
-    claim.owner,
+    owner,
     Did.parse(dAppEncryptionKeyUri).did,
   );
 

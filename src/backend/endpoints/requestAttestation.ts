@@ -43,8 +43,10 @@ async function handler(
     );
   }
 
-  session.claim.owner = credential.claim.owner;
-  credential.claim = session.claim;
+  credential.claim = {
+    ...session.claim,
+    owner: credential.claim.owner,
+  };
 
   const ctype = supportedCTypes[type];
   await Credential.verifyCredential(credential, { ctype });

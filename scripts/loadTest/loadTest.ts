@@ -1,8 +1,8 @@
 import { naclSeal, randomAsNumber } from '@polkadot/util-crypto';
 import { HexString } from '@polkadot/util/types';
 import {
-  Claim,
   connect,
+  CType,
   Did,
   DidDocument,
   DidEncryptionKey,
@@ -134,11 +134,10 @@ async function createSession() {
 
   const sporran = createDid();
 
-  const claim = Claim.fromCTypeAndClaimContents(
-    emailCType,
-    { Email: email },
-    sporran.document.uri,
-  );
+  const claim = {
+    cTypeHash: CType.idToHash(emailCType.$id),
+    contents: { Email: email },
+  };
 
   const encryptedMessage = await getEncryptedMessage(
     claim,

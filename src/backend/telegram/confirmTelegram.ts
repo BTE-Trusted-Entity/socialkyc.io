@@ -9,9 +9,13 @@ import type {
 
 import { z } from 'zod';
 import * as Boom from '@hapi/boom';
-import { Claim, IClaim } from '@kiltprotocol/sdk-js';
+import { CType } from '@kiltprotocol/sdk-js';
 
-import { getSession, setSession } from '../utilities/sessionStorage';
+import {
+  ContentfulClaim,
+  getSession,
+  setSession,
+} from '../utilities/sessionStorage';
 import { paths } from '../endpoints/paths';
 import { configuration } from '../utilities/configuration';
 
@@ -89,11 +93,10 @@ async function handler(
     ...(profile.last_name && { 'Last name': profile.last_name }),
     ...(profile.username && { Username: profile.username }),
   };
-  const claim = Claim.fromCTypeAndClaimContents(
-    telegramCType,
-    claimContents,
-    session.did,
-  ) as IClaim & { contents: Output };
+  const claim: ContentfulClaim & { contents: Output } = {
+    cTypeHash: CType.idToHash(telegramCType.$id),
+    contents: claimContents,
+  };
 
   setSession({ ...session, claim, confirmed: true });
 
