@@ -1,9 +1,10 @@
 import type { BaseLogger } from 'pino';
 
 import got from 'got';
-import { Claim, DidUri, IClaim } from '@kiltprotocol/sdk-js';
+import { CType, DidUri } from '@kiltprotocol/sdk-js';
 
 import { configuration } from '../utilities/configuration';
+import { ContentfulClaim } from '../utilities/sessionStorage';
 
 import { twitchEndpoints } from './twitchEndpoints';
 import { twitchCType } from './twitchCType';
@@ -50,11 +51,10 @@ export async function confirmTwitch(
     Username: login,
     'User ID': id,
   };
-  const claim = Claim.fromCTypeAndClaimContents(
-    twitchCType,
-    claimContents,
-    did,
-  ) as IClaim & { contents: Output };
+  const claim: ContentfulClaim & { contents: Output } = {
+    cTypeHash: CType.idToHash(twitchCType.$id),
+    contents: claimContents,
+  };
 
   logger.debug('Twitch claim created');
 

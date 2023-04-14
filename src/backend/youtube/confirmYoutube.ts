@@ -2,9 +2,10 @@ import type { BaseLogger } from 'pino';
 
 import got from 'got';
 import * as Boom from '@hapi/boom';
-import { Claim, DidUri, IClaim } from '@kiltprotocol/sdk-js';
+import { CType, DidUri } from '@kiltprotocol/sdk-js';
 
 import { configuration } from '../utilities/configuration';
+import { ContentfulClaim } from '../utilities/sessionStorage';
 
 import { youtubeEndpoints } from './youtubeEndpoints';
 import { youtubeCType } from './youtubeCType';
@@ -75,11 +76,10 @@ export async function confirmYoutube(
     'Channel Name': items[0].snippet.title,
     'Channel ID': items[0].id,
   };
-  const claim = Claim.fromCTypeAndClaimContents(
-    youtubeCType,
-    claimContents,
-    did,
-  ) as IClaim & { contents: Output };
+  const claim: ContentfulClaim & { contents: Output } = {
+    cTypeHash: CType.idToHash(youtubeCType.$id),
+    contents: claimContents,
+  };
 
   logger.debug('Youtube claim created');
 

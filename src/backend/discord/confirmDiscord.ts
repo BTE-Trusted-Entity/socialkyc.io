@@ -1,9 +1,10 @@
 import type { BaseLogger } from 'pino';
 
 import got from 'got';
-import { Claim, DidUri, IClaim } from '@kiltprotocol/sdk-js';
+import { CType, DidUri } from '@kiltprotocol/sdk-js';
 
 import { configuration } from '../utilities/configuration';
+import { ContentfulClaim } from '../utilities/sessionStorage';
 
 import { discordEndpoints } from './discordEndpoints';
 import { discordCType } from './discordCType';
@@ -52,11 +53,10 @@ export async function confirmDiscord(
     Discriminator: discriminator,
     'User ID': id,
   };
-  const claim = Claim.fromCTypeAndClaimContents(
-    discordCType,
-    claimContents,
-    did,
-  ) as IClaim & { contents: Output };
+  const claim: ContentfulClaim & { contents: Output } = {
+    cTypeHash: CType.idToHash(discordCType.$id),
+    contents: claimContents,
+  };
 
   logger.debug('Discord claim created');
 

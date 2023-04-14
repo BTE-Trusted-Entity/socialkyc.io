@@ -1,7 +1,7 @@
 import { readFile } from 'node:fs/promises';
 import { join } from 'node:path';
 
-import { toUnicode, toASCII } from 'punycode';
+import { toASCII, toUnicode } from 'punycode';
 
 import type {
   Request,
@@ -15,10 +15,11 @@ import * as Boom from '@hapi/boom';
 import { RateLimiterMemory } from 'rate-limiter-flexible';
 import { z } from 'zod';
 
-import { Claim, IClaim } from '@kiltprotocol/sdk-js';
+import { CType } from '@kiltprotocol/sdk-js';
 
 import { configuration } from '../utilities/configuration';
 import {
+  ContentfulClaim,
   getSecretForSession,
   getSession,
   getSessionBySecret,
@@ -140,11 +141,10 @@ async function handler(
     Email: email,
   };
 
-  const claim = Claim.fromCTypeAndClaimContents(
-    emailCType,
-    claimContents,
-    session.did,
-  ) as IClaim & { contents: Output };
+  const claim: ContentfulClaim = {
+    cTypeHash: CType.idToHash(emailCType.$id),
+    contents: claimContents,
+  };
 
   const sessionWithSecret = getSessionBySecret(secret);
 

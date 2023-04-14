@@ -1,9 +1,10 @@
 import type { BaseLogger } from 'pino';
 
 import got from 'got';
-import { Claim, DidUri, IClaim } from '@kiltprotocol/sdk-js';
+import { CType, DidUri } from '@kiltprotocol/sdk-js';
 
 import { configuration } from '../utilities/configuration';
+import { ContentfulClaim } from '../utilities/sessionStorage';
 
 import { githubEndpoints } from './githubEndpoints';
 import { githubCType } from './githubCType';
@@ -55,9 +56,8 @@ export async function confirmGithub(
     'User ID': id.toString(),
   };
 
-  return Claim.fromCTypeAndClaimContents(
-    githubCType,
-    claimContents,
-    did,
-  ) as IClaim & { contents: Output };
+  return <ContentfulClaim & { contents: Output }>{
+    cTypeHash: CType.idToHash(githubCType.$id),
+    contents: claimContents,
+  };
 }

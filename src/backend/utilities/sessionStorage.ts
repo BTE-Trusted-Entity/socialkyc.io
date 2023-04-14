@@ -4,12 +4,15 @@ import {
   DidResourceUri,
   DidUri,
   IAttestation,
-  IClaim,
   ICredential,
+  PartialClaim,
 } from '@kiltprotocol/sdk-js';
 import { randomAsNumber } from '@polkadot/util-crypto';
 
 import { sessionHeader } from '../endpoints/sessionHeader';
+
+export type ContentfulClaim = PartialClaim &
+  Required<Pick<PartialClaim, 'contents'>>;
 
 export interface BasicSession {
   sessionId: string;
@@ -17,7 +20,7 @@ export interface BasicSession {
   encryptionKeyUri?: DidResourceUri;
   didChallenge?: string;
   didConfirmed?: boolean;
-  claim?: IClaim;
+  claim?: ContentfulClaim;
   secret?: string;
   confirmed?: boolean;
   credential?: ICredential;

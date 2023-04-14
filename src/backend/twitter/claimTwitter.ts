@@ -1,9 +1,10 @@
 import type { Request, ResponseObject, ServerRoute } from '@hapi/hapi';
 
 import { z } from 'zod';
-import { Claim, IClaim } from '@kiltprotocol/sdk-js';
+import { CType } from '@kiltprotocol/sdk-js';
 
 import {
+  ContentfulClaim,
   getSecretForSession,
   getSession,
   getSessionBySecret,
@@ -39,11 +40,10 @@ async function handler(request: Request): Promise<ResponseObject | string> {
     Twitter: twitterHandle,
   };
 
-  const claim = Claim.fromCTypeAndClaimContents(
-    twitterCType,
-    claimContents,
-    session.did,
-  ) as IClaim & { contents: Output };
+  const claim: ContentfulClaim = {
+    cTypeHash: CType.idToHash(twitterCType.$id),
+    contents: claimContents,
+  };
 
   const sessionWithSecret = getSessionBySecret(secret);
 
