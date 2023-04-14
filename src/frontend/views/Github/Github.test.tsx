@@ -236,7 +236,7 @@ describe('Github', () => {
 
     expect(
       await screen.findByText(
-        'There was an error authorizing your Github account.',
+        'There was an error authorizing your GitHub account.',
       ),
     ).toBeInTheDocument();
 

@@ -1,15 +1,16 @@
-import { FormEvent, useCallback, useEffect, useState } from 'react';
+import { FormEvent, Fragment, useCallback, useEffect, useState } from 'react';
 import { IEncryptedMessage } from '@kiltprotocol/sdk-js';
 
 import * as styles from './Telegram.module.css';
 
 import { Rejection, Session } from '../../utilities/session';
-
 import {
   AttestationStatus,
   FlowError,
-  TelegramTemplate,
-} from './TelegramTemplate';
+  OAuthTemplate,
+} from '../../components/OAuthTemplate/OAuthTemplate';
+import backgroundImage from '../Attester/telegram.svg';
+
 import { useTelegramApi } from './useTelegramApi';
 import { useAuthData } from './useAuthData';
 
@@ -141,14 +142,40 @@ export function Telegram({ session }: Props): JSX.Element {
   );
 
   return (
-    <TelegramTemplate
+    <OAuthTemplate
+      service="Telegram"
+      backgroundImage={backgroundImage}
       status={status}
       processing={processing}
       handleSubmit={handleSubmit}
       handleBackup={handleBackup}
       handleTryAgainClick={handleTryAgainClick}
       authUrlLoader={authUrlLoader}
-      profile={profile}
+      profile={
+        profile && (
+          <Fragment>
+            <dt>User-ID:</dt>
+            <dd>{profile['User ID']}</dd>
+
+            <dt>First name:</dt>
+            <dd>{profile['First name']}</dd>
+
+            {profile['Last name'] && (
+              <Fragment>
+                <dt>Last name:</dt>
+                <dd>{profile['Last name']}</dd>
+              </Fragment>
+            )}
+
+            {profile.Username && (
+              <Fragment>
+                <dt>Username:</dt>
+                <dd>{profile.Username}</dd>
+              </Fragment>
+            )}
+          </Fragment>
+        )
+      }
       flowError={flowError}
     />
   );

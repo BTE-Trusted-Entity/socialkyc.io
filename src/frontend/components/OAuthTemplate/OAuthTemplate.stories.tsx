@@ -1,44 +1,62 @@
 import { Meta } from '@storybook/react';
+import { Fragment } from 'react';
 
 import { action } from '@storybook/addon-actions';
 
-import { TwitchTemplate } from './TwitchTemplate';
-import { TwitchProfile } from './Twitch';
+import backgroundImage from '../../views/Attester/twitch.svg';
+
+import { OAuthTemplate } from './OAuthTemplate';
 
 export default {
-  title: 'Views/Twitch',
-  component: TwitchTemplate,
+  title: 'Components/OAuthTemplate',
+  component: OAuthTemplate,
 } as Meta;
 
 const actions = {
+  service: 'Twitch',
+  backgroundImage,
   handleSignInClick: action('Sign in'),
   handleSubmit: action('submit'),
   handleBackup: action('backup'),
   handleTryAgainClick: action('tryAgain'),
 };
 
-const profileMock: TwitchProfile = {
-  Username: 'TestUser',
-  'User ID': '1234556789',
-};
+const profileMock = (
+  <Fragment>
+    <dt>User-ID:</dt>
+    <dd>1234556789</dd>
+
+    <dt>Username:</dt>
+    <dd>TestUser</dd>
+  </Fragment>
+);
 
 export function Start(): JSX.Element {
-  return <TwitchTemplate status="none" processing={false} {...actions} />;
+  return <OAuthTemplate status="none" processing={false} {...actions} />;
 }
 
 export function UrlReady(): JSX.Element {
-  return <TwitchTemplate status="urlReady" processing={false} {...actions} />;
+  return <OAuthTemplate status="urlReady" processing={false} {...actions} />;
+}
+
+export function AuthUrlLoader(): JSX.Element {
+  return (
+    <OAuthTemplate
+      status="urlReady"
+      processing={false}
+      {...actions}
+      authUrlLoader={<iframe>Test iframe</iframe>}
+    />
+  );
 }
 
 export function Authorizing(): JSX.Element {
-  return (
-    <TwitchTemplate status="authorizing" processing={false} {...actions} />
-  );
+  return <OAuthTemplate status="authorizing" processing={false} {...actions} />;
 }
 
 export function Authorized(): JSX.Element {
   return (
-    <TwitchTemplate
+    <OAuthTemplate
       status="authorized"
       processing={false}
       profile={profileMock}
@@ -49,7 +67,7 @@ export function Authorized(): JSX.Element {
 
 export function QuoteOpen(): JSX.Element {
   return (
-    <TwitchTemplate
+    <OAuthTemplate
       status="authorized"
       processing={true}
       profile={profileMock}
@@ -59,16 +77,16 @@ export function QuoteOpen(): JSX.Element {
 }
 
 export function Attesting(): JSX.Element {
-  return <TwitchTemplate status="attesting" processing={false} {...actions} />;
+  return <OAuthTemplate status="attesting" processing={false} {...actions} />;
 }
 
 export function Ready(): JSX.Element {
-  return <TwitchTemplate status="ready" processing={false} {...actions} />;
+  return <OAuthTemplate status="ready" processing={false} {...actions} />;
 }
 
 export function UnexpectedError(): JSX.Element {
   return (
-    <TwitchTemplate
+    <OAuthTemplate
       status="error"
       processing={false}
       flowError="unknown"
@@ -80,7 +98,7 @@ export function UnexpectedError(): JSX.Element {
 
 export function Closed(): JSX.Element {
   return (
-    <TwitchTemplate
+    <OAuthTemplate
       status="authorized"
       processing={false}
       flowError="closed"
@@ -92,7 +110,7 @@ export function Closed(): JSX.Element {
 
 export function Unauthorized(): JSX.Element {
   return (
-    <TwitchTemplate
+    <OAuthTemplate
       status="error"
       processing={false}
       flowError="unauthorized"

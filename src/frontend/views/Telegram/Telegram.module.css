@@ -1,12 +1,3 @@
-.heading {
-  composes: heading from '../../components/CredentialFlow/CredentialFlow.module.css';
-  background-image: url('../Attester/telegram.svg');
-}
-
-.buttonsLine {
-  text-align: center;
-}
-
 .iframe {
   overflow: hidden;
   border: medium none;
@@ -16,12 +7,4 @@
 .iframeLoading {
   composes: iframe;
   visibility: hidden;
-}
-
-.profile {
-  display: grid;
-  grid-template-areas: 'key value' 'key value';
-  width: calc(250rem / 16);
-  gap: 0.5rem;
-  margin-bottom: 2rem;
 }

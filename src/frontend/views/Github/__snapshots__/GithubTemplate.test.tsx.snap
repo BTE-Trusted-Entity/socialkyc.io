@@ -9,7 +9,8 @@ exports[`GithubTemplate should match snapshot with flowError=closed 1`] = `
     <h1
       class="heading"
     >
-      Github Account Attestation
+      GitHub
+       Account Attestation
     </h1>
     <div
       class="explainerContainer"
@@ -81,7 +82,8 @@ exports[`GithubTemplate should match snapshot with flowError=unknown 1`] = `
     <h1
       class="heading"
     >
-      Github Account Attestation
+      GitHub
+       Account Attestation
     </h1>
     <div
       class="explainerContainer"
@@ -137,7 +139,8 @@ exports[`GithubTemplate should match snapshot with flowerror=unauthorized 1`] = 
     <h1
       class="heading"
     >
-      Github Account Attestation
+      GitHub
+       Account Attestation
     </h1>
     <div
       class="explainerContainer"
@@ -162,7 +165,7 @@ exports[`GithubTemplate should match snapshot with flowerror=unauthorized 1`] = 
       <p
         class="message"
       >
-        There was an error authorizing your Github account.
+        There was an error authorizing your GitHub account.
       </p>
       <p>
         Click “Try Again” or reload the page or restart your browser.
@@ -193,7 +196,8 @@ exports[`GithubTemplate should match snapshot with status=attesting 1`] = `
     <h1
       class="heading"
     >
-      Github Account Attestation
+      GitHub
+       Account Attestation
     </h1>
     <div
       class="explainerContainer"
@@ -237,7 +241,8 @@ exports[`GithubTemplate should match snapshot with status=authorized 1`] = `
     <h1
       class="heading"
     >
-      Github Account Attestation
+      GitHub
+       Account Attestation
     </h1>
     <div
       class="explainerContainer"
@@ -289,7 +294,8 @@ exports[`GithubTemplate should match snapshot with status=authorizing 1`] = `
     <h1
       class="heading"
     >
-      Github Account Attestation
+      GitHub
+       Account Attestation
     </h1>
     <div
       class="explainerContainer"
@@ -317,7 +323,7 @@ exports[`GithubTemplate should match snapshot with status=authorizing 1`] = `
         Authorizing
       </p>
       <p>
-        Please wait, accessing Github account details.
+        Please wait, accessing GitHub account details.
       </p>
     </section>
   </section>
@@ -333,7 +339,8 @@ exports[`GithubTemplate should match snapshot with status=none 1`] = `
     <h1
       class="heading"
     >
-      Github Account Attestation
+      GitHub
+       Account Attestation
     </h1>
     <div
       class="explainerContainer"
@@ -383,7 +390,8 @@ exports[`GithubTemplate should match snapshot with status=ready 1`] = `
     <h1
       class="heading"
     >
-      Github Account Attestation
+      GitHub
+       Account Attestation
     </h1>
     <div
       class="explainerContainer"
@@ -439,7 +447,8 @@ exports[`GithubTemplate should match snapshot with status=urlReady 1`] = `
     <h1
       class="heading"
     >
-      Github Account Attestation
+      GitHub
+       Account Attestation
     </h1>
     <div
       class="explainerContainer"
@@ -456,7 +465,8 @@ exports[`GithubTemplate should match snapshot with status=urlReady 1`] = `
       <a
         class="ctaButton"
       >
-        Sign in with GitHub
+        Sign in with 
+        GitHub
       </a>
     </p>
     <a

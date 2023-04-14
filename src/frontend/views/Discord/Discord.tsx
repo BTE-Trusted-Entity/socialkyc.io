@@ -1,15 +1,16 @@
-import { FormEvent, useCallback, useEffect, useState } from 'react';
+import { FormEvent, Fragment, useCallback, useEffect, useState } from 'react';
 
 import { IEncryptedMessage } from '@kiltprotocol/sdk-js';
 
 import { Rejection, Session } from '../../utilities/session';
 import { useValuesFromRedirectUri } from '../../utilities/useValuesFromRedirectUri';
-
 import {
+  OAuthTemplate,
   AttestationStatus,
-  DiscordTemplate,
   FlowError,
-} from './DiscordTemplate';
+} from '../../components/OAuthTemplate/OAuthTemplate';
+import backgroundImage from '../Attester/discord.svg';
+
 import { useDiscordApi } from './useDiscordApi';
 
 export interface DiscordProfile {
@@ -132,14 +133,28 @@ export function Discord({ session }: Props): JSX.Element {
   }, []);
 
   return (
-    <DiscordTemplate
+    <OAuthTemplate
+      service="Discord"
+      backgroundImage={backgroundImage}
       status={status}
       processing={processing}
       handleSubmit={handleSubmit}
       handleBackup={handleBackup}
       handleTryAgainClick={handleTryAgainClick}
       authUrl={authUrl}
-      profile={profile}
+      profile={
+        profile && (
+          <Fragment>
+            <dt>User-ID:</dt>
+            <dd>{profile['User ID']}</dd>
+
+            <dt>Username:</dt>
+            <dd>
+              {profile.Username}#{profile.Discriminator}
+            </dd>
+          </Fragment>
+        )
+      }
       flowError={flowError}
     />
   );

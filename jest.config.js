@@ -3,6 +3,7 @@ export default {
   // A map from regular expressions to module names that allow to stub out resources with a single module
   moduleNameMapper: {
     '\\.css$': '<rootDir>/src/testing/identity-obj-proxy.js',
+    '\\.svg$': '<rootDir>/src/testing/image.js',
   },
   // Use this configuration option to add custom reporters to Jest
   reporters: ['default', 'github-actions'],

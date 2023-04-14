@@ -1,11 +1,16 @@
-import { FormEvent, useCallback, useEffect, useState } from 'react';
+import { FormEvent, Fragment, useCallback, useEffect, useState } from 'react';
 
 import { IEncryptedMessage } from '@kiltprotocol/sdk-js';
 
 import { Rejection, Session } from '../../utilities/session';
 import { useValuesFromRedirectUri } from '../../utilities/useValuesFromRedirectUri';
+import {
+  AttestationStatus,
+  FlowError,
+  OAuthTemplate,
+} from '../../components/OAuthTemplate/OAuthTemplate';
+import backgroundImage from '../Attester/twitch.svg';
 
-import { AttestationStatus, FlowError, TwitchTemplate } from './TwitchTemplate';
 import { useTwitchApi } from './useTwitchApi';
 
 export interface TwitchProfile {
@@ -127,14 +132,26 @@ export function Twitch({ session }: Props): JSX.Element {
   }, []);
 
   return (
-    <TwitchTemplate
+    <OAuthTemplate
+      service="Twitch"
+      backgroundImage={backgroundImage}
       status={status}
       processing={processing}
       handleSubmit={handleSubmit}
       handleBackup={handleBackup}
       handleTryAgainClick={handleTryAgainClick}
       authUrl={authUrl}
-      profile={profile}
+      profile={
+        profile && (
+          <Fragment>
+            <dt>User-ID:</dt>
+            <dd>{profile['User ID']}</dd>
+
+            <dt>Username:</dt>
+            <dd>{profile.Username}</dd>
+          </Fragment>
+        )
+      }
       flowError={flowError}
     />
   );

@@ -9,7 +9,8 @@ exports[`TelegramTemplate should match snapshot with flowError=closed 1`] = `
     <h1
       class="heading"
     >
-      Telegram Account Attestation
+      Telegram
+       Account Attestation
     </h1>
     <div
       class="explainerContainer"
@@ -81,7 +82,8 @@ exports[`TelegramTemplate should match snapshot with flowError=unknown 1`] = `
     <h1
       class="heading"
     >
-      Telegram Account Attestation
+      Telegram
+       Account Attestation
     </h1>
     <div
       class="explainerContainer"
@@ -137,7 +139,8 @@ exports[`TelegramTemplate should match snapshot with flowerror=unauthorized 1`] 
     <h1
       class="heading"
     >
-      Telegram Account Attestation
+      Telegram
+       Account Attestation
     </h1>
     <div
       class="explainerContainer"
@@ -193,7 +196,8 @@ exports[`TelegramTemplate should match snapshot with status=attesting 1`] = `
     <h1
       class="heading"
     >
-      Telegram Account Attestation
+      Telegram
+       Account Attestation
     </h1>
     <div
       class="explainerContainer"
@@ -237,7 +241,8 @@ exports[`TelegramTemplate should match snapshot with status=authorized 1`] = `
     <h1
       class="heading"
     >
-      Telegram Account Attestation
+      Telegram
+       Account Attestation
     </h1>
     <div
       class="explainerContainer"
@@ -289,7 +294,8 @@ exports[`TelegramTemplate should match snapshot with status=authorizing 1`] = `
     <h1
       class="heading"
     >
-      Telegram Account Attestation
+      Telegram
+       Account Attestation
     </h1>
     <div
       class="explainerContainer"
@@ -333,7 +339,8 @@ exports[`TelegramTemplate should match snapshot with status=none 1`] = `
     <h1
       class="heading"
     >
-      Telegram Account Attestation
+      Telegram
+       Account Attestation
     </h1>
     <div
       class="explainerContainer"
@@ -383,7 +390,8 @@ exports[`TelegramTemplate should match snapshot with status=ready 1`] = `
     <h1
       class="heading"
     >
-      Telegram Account Attestation
+      Telegram
+       Account Attestation
     </h1>
     <div
       class="explainerContainer"
@@ -439,7 +447,8 @@ exports[`TelegramTemplate should match snapshot with status=urlReady 1`] = `
     <h1
       class="heading"
     >
-      Telegram Account Attestation
+      Telegram
+       Account Attestation
     </h1>
     <div
       class="explainerContainer"
@@ -497,7 +506,8 @@ exports[`TelegramTemplate should match snapshot with status=urlReady for real 1`
     <h1
       class="heading"
     >
-      Telegram Account Attestation
+      Telegram
+       Account Attestation
     </h1>
     <div
       class="explainerContainer"
