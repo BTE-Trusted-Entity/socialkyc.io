@@ -2,14 +2,14 @@ import cx from 'classnames';
 
 import { Prompt } from 'react-router-dom';
 
-import { FormEventHandler, MouseEventHandler, Fragment } from 'react';
+import { FormEventHandler, Fragment, MouseEventHandler } from 'react';
 
 import * as flowStyles from '../../components/CredentialFlow/CredentialFlow.module.css';
 import * as styles from './Github.module.css';
 
 import { Spinner } from '../../components/Spinner/Spinner';
 import { usePreventNavigation } from '../../utilities/usePreventNavigation';
-import { Explainer } from '../../components/Explainer/Explainer';
+import { OAuthExplainer } from '../../components/OAuthExplainer/OAuthExplainer';
 import { LinkBack } from '../../components/LinkBack/LinkBack';
 import { AttestationErrorUnknown } from '../../components/AttestationErrorUnknown/AttestationErrorUnknown';
 import { ExpiryDate } from '../../components/ExpiryDate/ExpiryDate';
@@ -72,12 +72,7 @@ export function GithubTemplate({
         message="The Github attestation process has already started. Are you sure you want to leave?"
       />
 
-      <Explainer>
-        After you sign into your GitHub account and give SocialKYC permission,
-        SocialKYC requests your GitHub information for the credential. You can
-        then sign the data with one of your identities in Sporran, and SocialKYC
-        will create the credential.
-      </Explainer>
+      <OAuthExplainer service="GitHub" />
 
       {status === 'none' && (
         <DetailedMessage

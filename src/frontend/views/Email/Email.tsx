@@ -61,7 +61,7 @@ export function Email({ session }: Props): JSX.Element {
 
       try {
         const email = emailInput.trim();
-        setProfile((await emailApi.send({ wallet, email })) as EmailProfile);
+        setProfile(await emailApi.send({ wallet, email }));
         setStatus('emailSent');
       } catch (exception) {
         if (exception instanceof InvalidEmail) {

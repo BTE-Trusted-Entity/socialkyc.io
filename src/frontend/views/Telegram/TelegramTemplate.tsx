@@ -13,7 +13,7 @@ import * as styles from './Telegram.module.css';
 
 import { Spinner } from '../../components/Spinner/Spinner';
 import { usePreventNavigation } from '../../utilities/usePreventNavigation';
-import { Explainer } from '../../components/Explainer/Explainer';
+import { OAuthExplainer } from '../../components/OAuthExplainer/OAuthExplainer';
 import { LinkBack } from '../../components/LinkBack/LinkBack';
 import { AttestationErrorUnknown } from '../../components/AttestationErrorUnknown/AttestationErrorUnknown';
 import { ExpiryDate } from '../../components/ExpiryDate/ExpiryDate';
@@ -79,12 +79,7 @@ export function TelegramTemplate({
         message="The Telegram attestation process has already started. Are you sure you want to leave?"
       />
 
-      <Explainer>
-        After you sign into your Telegram account and give SocialKYC a one-time
-        permission, SocialKYC requests your Telegram information for the
-        credential. You can then sign the data with one of your identities in
-        Sporran, and SocialKYC will create the credential.
-      </Explainer>
+      <OAuthExplainer service="Telegram" />
 
       {(status === 'none' || (status === 'urlReady' && !loaded)) && (
         <DetailedMessage

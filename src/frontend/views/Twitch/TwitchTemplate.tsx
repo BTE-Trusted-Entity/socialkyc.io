@@ -9,7 +9,7 @@ import * as styles from './Twitch.module.css';
 
 import { Spinner } from '../../components/Spinner/Spinner';
 import { usePreventNavigation } from '../../utilities/usePreventNavigation';
-import { Explainer } from '../../components/Explainer/Explainer';
+import { OAuthExplainer } from '../../components/OAuthExplainer/OAuthExplainer';
 import { LinkBack } from '../../components/LinkBack/LinkBack';
 import { AttestationErrorUnknown } from '../../components/AttestationErrorUnknown/AttestationErrorUnknown';
 import { ExpiryDate } from '../../components/ExpiryDate/ExpiryDate';
@@ -72,12 +72,7 @@ export function TwitchTemplate({
         message="The Twitch attestation process has already started. Are you sure you want to leave?"
       />
 
-      <Explainer>
-        After you sign into your Twitch account and give SocialKYC permission,
-        SocialKYC requests your Twitch information for the credential. You can
-        then sign the data with one of your identities in Sporran, and SocialKYC
-        will create the credential.
-      </Explainer>
+      <OAuthExplainer service="Twitch" />
 
       {status === 'none' && (
         <DetailedMessage
