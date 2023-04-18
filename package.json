@@ -19,7 +19,7 @@
     "dev-start": "echo '{\"type\":\"commonjs\"}' > dist/package.json && supervisor --watch dist/backend/ -- --enable-source-maps dist/backend/server.js"
   },
   "dependencies": {
-    "@aws-sdk/client-ses": "^3.312.0",
+    "@aws-sdk/client-ses": "^3.315.0",
     "@hapi/basic": "^7.0.1",
     "@hapi/boom": "^10.0.1",
     "@hapi/hapi": "^21.3.1",
