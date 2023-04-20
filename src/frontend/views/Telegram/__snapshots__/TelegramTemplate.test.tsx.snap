@@ -487,3 +487,41 @@ exports[`TelegramTemplate should match snapshot with status=urlReady 1`] = `
   </section>
 </div>
 `;
+
+exports[`TelegramTemplate should match snapshot with status=urlReady for real 1`] = `
+<div>
+  <section
+    aria-busy="false"
+    class="container"
+  >
+    <h1
+      class="heading"
+    >
+      Telegram Account Attestation
+    </h1>
+    <div
+      class="explainerContainer"
+    >
+      <button
+        aria-label="Toggle explanation"
+        class="showExplainer"
+        type="button"
+      />
+    </div>
+    <p
+      class="buttonsLine"
+    >
+      <iframe
+        class="iframe"
+        src="/auth-url"
+      />
+    </p>
+    <a
+      class="link"
+      href="/"
+    >
+      Back to list
+    </a>
+  </section>
+</div>
+`;

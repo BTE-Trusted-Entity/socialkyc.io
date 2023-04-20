@@ -32,10 +32,22 @@ describe('TelegramTemplate', () => {
   it('should match snapshot with status=urlReady', async () => {
     const { container } = render(
       <TelegramTemplate
+        status="none"
+        processing={false}
+        {...actions}
+        authUrlLoader={<iframe src="/auth-url" className="iframeLoading" />}
+      />,
+    );
+    expect(container).toMatchSnapshot();
+  });
+
+  it('should match snapshot with status=urlReady for real', async () => {
+    const { container } = render(
+      <TelegramTemplate
         status="urlReady"
         processing={false}
         {...actions}
-        authUrl="/auth-url"
+        authUrlLoader={<iframe src="/auth-url" className="iframe" />}
       />,
     );
     expect(container).toMatchSnapshot();

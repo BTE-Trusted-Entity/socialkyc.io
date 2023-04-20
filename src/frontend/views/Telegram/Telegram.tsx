@@ -1,6 +1,8 @@
 import { FormEvent, useCallback, useEffect, useState } from 'react';
 import { IEncryptedMessage } from '@kiltprotocol/sdk-js';
 
+import * as styles from './Telegram.module.css';
+
 import { Rejection, Session } from '../../utilities/session';
 
 import {
@@ -43,7 +45,6 @@ export function Telegram({ session }: Props): JSX.Element {
       try {
         const url = await telegramApi.authUrl({});
         setAuthUrl(url);
-        setStatus('urlReady');
       } catch (error) {
         console.error(error);
         setStatus('error');
@@ -129,6 +130,16 @@ export function Telegram({ session }: Props): JSX.Element {
     setFlowError(undefined);
   }, []);
 
+  const handleLoaded = useCallback(() => setStatus('urlReady'), []);
+  const showLoader = ['none', 'urlReady'].includes(status) && authUrl;
+  const authUrlLoader = !showLoader ? undefined : (
+    <iframe
+      src={authUrl}
+      className={status === 'urlReady' ? styles.iframe : styles.iframeLoading}
+      onLoad={handleLoaded}
+    />
+  );
+
   return (
     <TelegramTemplate
       status={status}
@@ -136,7 +147,7 @@ export function Telegram({ session }: Props): JSX.Element {
       handleSubmit={handleSubmit}
       handleBackup={handleBackup}
       handleTryAgainClick={handleTryAgainClick}
-      authUrl={authUrl}
+      authUrlLoader={authUrlLoader}
       profile={profile}
       flowError={flowError}
     />

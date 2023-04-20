@@ -2,8 +2,7 @@ import {
   FormEventHandler,
   Fragment,
   MouseEventHandler,
-  useCallback,
-  useState,
+  ReactNode,
 } from 'react';
 import { Prompt } from 'react-router-dom';
 import cx from 'classnames';
@@ -41,7 +40,7 @@ interface Props {
   handleSubmit: FormEventHandler;
   handleBackup: MouseEventHandler;
   handleTryAgainClick: MouseEventHandler;
-  authUrl?: string;
+  authUrlLoader?: ReactNode;
   flowError?: FlowError;
   profile?: TelegramProfile;
 }
@@ -52,16 +51,13 @@ export function TelegramTemplate({
   handleSubmit,
   handleBackup,
   handleTryAgainClick,
-  authUrl,
+  authUrlLoader,
   flowError,
   profile,
 }: Props): JSX.Element {
   const preventNavigation = usePreventNavigation(
     processing || ['authorizing', 'authorized', 'attesting'].includes(status),
   );
-
-  const [loaded, setLoaded] = useState(false);
-  const handleLoaded = useCallback(() => setLoaded(true), []);
 
   return (
     <section
@@ -81,7 +77,7 @@ export function TelegramTemplate({
 
       <OAuthExplainer service="Telegram" />
 
-      {(status === 'none' || (status === 'urlReady' && !loaded)) && (
+      {status === 'none' && (
         <DetailedMessage
           icon="spinner"
           heading="Attestation process:"
@@ -90,15 +86,7 @@ export function TelegramTemplate({
         />
       )}
 
-      {status === 'urlReady' && (
-        <p className={styles.buttonsLine}>
-          <iframe
-            src={authUrl}
-            className={loaded ? styles.iframe : styles.iframeLoading}
-            onLoad={handleLoaded}
-          />
-        </p>
-      )}
+      {authUrlLoader && <p className={styles.buttonsLine}>{authUrlLoader}</p>}
 
       {status === 'authorizing' && (
         <DetailedMessage

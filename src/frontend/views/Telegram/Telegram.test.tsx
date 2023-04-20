@@ -37,7 +37,6 @@ let attestPromise: TestPromise<IEncryptedMessage>;
 
 jest.mock('./useAuthData');
 const authData = '{"auth": "data"}';
-jest.mocked(useAuthData).mockReturnValue(authData);
 
 function expectQuoteRequested() {
   expect(mockTelegramApi.quote).toHaveBeenCalledWith({});
@@ -125,6 +124,7 @@ describe('Telegram', () => {
       attest: attestPromise.jestFn,
     };
     jest.mocked(useTelegramApi).mockReturnValue(mockTelegramApi);
+    jest.mocked(useAuthData).mockReturnValue(authData);
 
     sessionMockReset();
 
@@ -136,6 +136,7 @@ describe('Telegram', () => {
   });
 
   it('should go through the happy path until Telegram is shown', async () => {
+    jest.mocked(useAuthData).mockReturnValue(undefined);
     const { container } = render(<Telegram session={sessionMock} />);
 
     expectAuthUrlCalled();
