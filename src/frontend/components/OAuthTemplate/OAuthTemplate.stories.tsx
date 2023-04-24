@@ -13,7 +13,7 @@ export default {
 } as Meta;
 
 const actions = {
-  service: 'Twitch',
+  service: 'TestOAuth',
   backgroundImage,
   handleSignInClick: action('Sign in'),
   handleSubmit: action('submit'),

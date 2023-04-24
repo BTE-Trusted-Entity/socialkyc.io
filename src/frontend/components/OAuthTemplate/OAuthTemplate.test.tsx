@@ -1,6 +1,5 @@
 // expect cannot be imported because of https://github.com/testing-library/jest-dom/issues/426
 import { describe, it, jest } from '@jest/globals';
-import { Fragment } from 'react';
 
 import { render } from '../../../testing/testing';
 
@@ -10,24 +9,16 @@ jest.useFakeTimers();
 jest.setSystemTime(new Date('2022-01-03T12:00:00'));
 
 const actions = {
-  service: 'Twitch',
+  service: 'TestOAuth',
   handleSignInClick: jest.fn(),
   handleSubmit: jest.fn(),
   handleBackup: jest.fn(),
   handleTryAgainClick: jest.fn(),
 };
 
-const profileMock = (
-  <Fragment>
-    <dt>User-ID:</dt>
-    <dd>1234556789</dd>
+const profileMock = <p>User-ID: 1234556789</p>;
 
-    <dt>Username:</dt>
-    <dd>TestUser</dd>
-  </Fragment>
-);
-
-describe('TwitchTemplate', () => {
+describe('OAuthTemplate', () => {
   it('should match snapshot with status=none', async () => {
     const { container } = render(
       <OAuthTemplate status="none" processing={false} {...actions} />,
@@ -35,9 +26,33 @@ describe('TwitchTemplate', () => {
     expect(container).toMatchSnapshot();
   });
 
+  it('should match snapshot with status=none for loader', async () => {
+    const { container } = render(
+      <OAuthTemplate
+        status="none"
+        processing={false}
+        {...actions}
+        authUrlLoader={<iframe src="/auth-url" className="iframeLoading" />}
+      />,
+    );
+    expect(container).toMatchSnapshot();
+  });
+
   it('should match snapshot with status=urlReady', async () => {
     const { container } = render(
       <OAuthTemplate status="urlReady" processing={false} {...actions} />,
+    );
+    expect(container).toMatchSnapshot();
+  });
+
+  it('should match snapshot with status=urlReady for loader', async () => {
+    const { container } = render(
+      <OAuthTemplate
+        status="urlReady"
+        processing={false}
+        {...actions}
+        authUrlLoader={<iframe src="/auth-url" className="iframe" />}
+      />,
     );
     expect(container).toMatchSnapshot();
   });
