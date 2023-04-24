@@ -1,8 +1,6 @@
-import cx from 'classnames';
-
 import { Prompt } from 'react-router-dom';
 
-import { FormEventHandler, MouseEventHandler, Fragment } from 'react';
+import { FormEventHandler, Fragment, MouseEventHandler } from 'react';
 
 import * as flowStyles from '../../components/CredentialFlow/CredentialFlow.module.css';
 import * as styles from './Youtube.module.css';
@@ -57,12 +55,7 @@ export function YoutubeTemplate({
   );
 
   return (
-    <section
-      className={cx(flowStyles.container, {
-        [flowStyles.processing]: processing,
-      })}
-      aria-busy={processing}
-    >
+    <section className={flowStyles.container} aria-busy={processing}>
       {processing && <Spinner />}
 
       <h1 className={styles.heading}>YouTube Channel Attestation</h1>

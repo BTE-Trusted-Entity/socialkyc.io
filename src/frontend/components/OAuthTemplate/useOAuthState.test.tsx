@@ -10,7 +10,7 @@ import {
   screen,
   TestPromise,
 } from '../../../testing/testing';
-import '../../components/useCopyButton/useCopyButton.mock';
+import '../useCopyButton/useCopyButton.mock';
 import {
   sessionMock,
   sessionMockReset,
@@ -19,11 +19,14 @@ import {
 import { ClosedRejection } from '../../utilities/session';
 import { useValuesFromRedirectUri } from '../../utilities/useValuesFromRedirectUri';
 
-import { useTwitchApi } from './useTwitchApi';
-import { Twitch, TwitchProfile } from './Twitch';
+import { useOAuthState } from './useOAuthState';
+import { OAuthTemplate } from './OAuthTemplate';
 
-const profileMock: TwitchProfile = {
-  Username: 'TestUser',
+interface Profile {
+  'User ID': string;
+}
+
+const profileMock: Profile = {
   'User ID': '1234556789',
 };
 
@@ -32,23 +35,22 @@ const code = 'CODE';
 
 jest.mock('../../utilities/useValuesFromRedirectUri');
 
-jest.mock('./useTwitchApi');
-let mockTwitchApi: ReturnType<typeof useTwitchApi>;
+let TestComponent: () => JSX.Element;
 let authUrlPromise: TestPromise<string>;
-let confirmPromise: TestPromise<TwitchProfile>;
+let confirmPromise: TestPromise<Profile>;
 let quotePromise: TestPromise<IEncryptedMessage>;
 let requestPromise: TestPromise<void>;
 let attestPromise: TestPromise<IEncryptedMessage>;
 
-async function signInWithTwitch() {
+async function signInWithIt() {
   const signInLink = await screen.findByRole('link', {
-    name: 'Sign in with Twitch',
+    name: 'Sign in with TestOAuth',
   });
   await userEvent.click(signInLink);
 }
 
 function expectQuoteRequested() {
-  expect(mockTwitchApi.quote).toHaveBeenCalledWith({});
+  expect(quotePromise.jestFn).toHaveBeenCalledWith({});
 }
 
 async function continueInWallet() {
@@ -78,14 +80,14 @@ async function expectSomethingWrong() {
 }
 
 function expectAuthUrlCalled() {
-  expect(mockTwitchApi.authUrl).toHaveBeenCalledWith({});
+  expect(authUrlPromise.jestFn).toHaveBeenCalledWith({});
 }
 
 function expectConfirmCalledWith(routeParams: {
   secret: string;
   code: string;
 }) {
-  expect(mockTwitchApi.confirm).toHaveBeenCalledWith(routeParams);
+  expect(confirmPromise.jestFn).toHaveBeenCalledWith(routeParams);
 }
 
 function expectQuoteIsSent() {
@@ -105,13 +107,13 @@ async function tryAgain() {
 }
 
 function expectAttestationRequested() {
-  expect(mockTwitchApi.requestAttestation).toHaveBeenCalledWith({
+  expect(requestPromise.jestFn).toHaveBeenCalledWith({
     message: { signed: 'quote' },
   });
 }
 
 function expectStartOver() {
-  expect(mockTwitchApi.authUrl).toHaveBeenCalled();
+  expect(authUrlPromise.jestFn).toHaveBeenCalled();
 }
 
 async function respondWithQuote() {
@@ -120,7 +122,7 @@ async function respondWithQuote() {
   });
 }
 
-describe('Twitch', () => {
+describe('useOAuthState', () => {
   beforeEach(() => {
     jest.mocked(useValuesFromRedirectUri).mockReturnValue({});
 
@@ -130,39 +132,66 @@ describe('Twitch', () => {
     requestPromise = makeTestPromise();
     attestPromise = makeTestPromise();
 
-    mockTwitchApi = {
-      authUrl: authUrlPromise.jestFn,
-      confirm: confirmPromise.jestFn,
-      quote: quotePromise.jestFn,
-      requestAttestation: requestPromise.jestFn,
-      attest: attestPromise.jestFn,
-    };
-    jest.mocked(useTwitchApi).mockReturnValue(mockTwitchApi);
-
     sessionMockReset();
 
     jest.spyOn(console, 'error').mockImplementation(() => undefined);
+
+    TestComponent = function TestComponent() {
+      const {
+        status,
+        processing,
+        handleSubmit,
+        handleBackup,
+        handleTryAgainClick,
+        authUrl,
+        profile,
+        flowError,
+      } = useOAuthState<Profile>({
+        session: sessionMock,
+        getAuthUrl: authUrlPromise.jestFn,
+        getProfile: confirmPromise.jestFn,
+        requestAttestation: requestPromise.jestFn,
+        quote: quotePromise.jestFn,
+        attest: attestPromise.jestFn,
+      });
+
+      return (
+        <OAuthTemplate
+          service="TestOAuth"
+          status={status}
+          processing={processing}
+          handleSubmit={handleSubmit}
+          handleBackup={handleBackup}
+          handleTryAgainClick={handleTryAgainClick}
+          authUrl={authUrl}
+          profile={profile && <p>User-ID: {profile['User ID']}</p>}
+          flowError={flowError}
+        />
+      );
+    };
   });
 
   afterEach(() => {
     jest.mocked(console.error).mockRestore();
   });
 
-  it('should go through the happy path until redirected to Twitch', async () => {
-    render(<Twitch session={sessionMock} />);
+  it('should go through the happy path until redirected to it', async () => {
+    render(<TestComponent />);
 
     expectAuthUrlCalled();
 
     await act(async () => {
-      authUrlPromise.resolve('https://twitch-auth-url.example');
+      authUrlPromise.resolve('https://auth-url.example');
     });
 
-    await signInWithTwitch();
-    expect(await screen.findByText('Sign in with Twitch')).toBeInTheDocument();
+    await signInWithIt();
+    expect(
+      await screen.findByText('Sign in with TestOAuth'),
+    ).toBeInTheDocument();
   });
 
   it('should show an error when authUrl fails', async () => {
-    render(<Twitch session={sessionMock} />);
+    render(<TestComponent />);
 
     expectAuthUrlCalled();
 
@@ -172,15 +201,15 @@ describe('Twitch', () => {
 
     await expectSomethingWrong();
 
-    expect(mockTwitchApi.authUrl).toHaveBeenCalledTimes(1);
+    expect(authUrlPromise.jestFn).toHaveBeenCalledTimes(1);
     await tryAgain();
-    expect(mockTwitchApi.authUrl).toHaveBeenCalledTimes(2);
+    expect(authUrlPromise.jestFn).toHaveBeenCalledTimes(2);
   });
 
   it('should finish the happy path after authorization', async () => {
     jest.mocked(useValuesFromRedirectUri).mockReturnValue({ secret, code });
 
-    const { container } = render(<Twitch session={sessionMock} />);
+    const { container } = render(<TestComponent />);
 
     expectIsNotProcessing(container);
     expectConfirmCalledWith({ secret, code });
@@ -224,7 +253,7 @@ describe('Twitch', () => {
   it('should show authorization error', async () => {
     jest.mocked(useValuesFromRedirectUri).mockReturnValue({ secret, code });
 
-    const { container } = render(<Twitch session={sessionMock} />);
+    const { container } = render(<TestComponent />);
 
     expectIsNotProcessing(container);
 
@@ -236,7 +265,7 @@ describe('Twitch', () => {
 
     expect(
       await screen.findByText(
-        'There was an error authorizing your Twitch account.',
+        'There was an error authorizing your TestOAuth account.',
       ),
     ).toBeInTheDocument();
 
@@ -251,7 +280,7 @@ describe('Twitch', () => {
   it('should show error when quote fails', async () => {
     jest.mocked(useValuesFromRedirectUri).mockReturnValue({ secret, code });
 
-    const { container } = render(<Twitch session={sessionMock} />);
+    const { container } = render(<TestComponent />);
 
     expectIsNotProcessing(container);
     expectConfirmCalledWith({ secret, code });
@@ -280,7 +309,7 @@ describe('Twitch', () => {
   it('should show an error when the wallet communication fails', async () => {
     jest.mocked(useValuesFromRedirectUri).mockReturnValue({ secret, code });
 
-    const { container } = render(<Twitch session={sessionMock} />);
+    const { container } = render(<TestComponent />);
 
     expectIsNotProcessing(container);
     expectConfirmCalledWith({ secret, code });
@@ -310,7 +339,7 @@ describe('Twitch', () => {
   it('should show an error when there’s an error in Sporran', async () => {
     jest.mocked(useValuesFromRedirectUri).mockReturnValue({ secret, code });
 
-    const { container } = render(<Twitch session={sessionMock} />);
+    const { container } = render(<TestComponent />);
 
     expectIsNotProcessing(container);
     expectConfirmCalledWith({ secret, code });
@@ -344,7 +373,7 @@ describe('Twitch', () => {
   it('should advice when the popup is closed', async () => {
     jest.mocked(useValuesFromRedirectUri).mockReturnValue({ secret, code });
 
-    const { container } = render(<Twitch session={sessionMock} />);
+    const { container } = render(<TestComponent />);
 
     expectIsNotProcessing(container);
     expectConfirmCalledWith({ secret, code });
@@ -361,7 +390,7 @@ describe('Twitch', () => {
     expectQuoteIsSent();
 
     const listenerPromise = callSessionListenerWith({ popup: 'closed' });
-    expect(mockTwitchApi.requestAttestation).toHaveBeenCalledWith({
+    expect(requestPromise.jestFn).toHaveBeenCalledWith({
       message: { popup: 'closed' },
     });
 
@@ -379,13 +408,13 @@ describe('Twitch', () => {
     ).toBeInTheDocument();
 
     await continueInWallet();
-    expect(mockTwitchApi.quote).toHaveBeenCalledTimes(2);
+    expect(quotePromise.jestFn).toHaveBeenCalledTimes(2);
   });
 
   it('should advice about the slow attestation', async () => {
     jest.mocked(useValuesFromRedirectUri).mockReturnValue({ secret, code });
 
-    const { container } = render(<Twitch session={sessionMock} />);
+    const { container } = render(<TestComponent />);
 
     expectIsNotProcessing(container);
     expectConfirmCalledWith({ secret, code });

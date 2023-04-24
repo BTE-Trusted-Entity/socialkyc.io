@@ -1,24 +1,26 @@
-import cx from 'classnames';
-
 import { Prompt } from 'react-router-dom';
 
-import { FormEventHandler, MouseEventHandler, Fragment } from 'react';
+import {
+  FormEventHandler,
+  Fragment,
+  MouseEventHandler,
+  ReactNode,
+  useMemo,
+} from 'react';
 
-import * as flowStyles from '../../components/CredentialFlow/CredentialFlow.module.css';
-import * as styles from './Discord.module.css';
+import * as flowStyles from '../CredentialFlow/CredentialFlow.module.css';
+import * as styles from './OAuthTemplate.module.css';
 
-import { Spinner } from '../../components/Spinner/Spinner';
+import { Spinner } from '../Spinner/Spinner';
 import { usePreventNavigation } from '../../utilities/usePreventNavigation';
-import { Explainer } from '../../components/Explainer/Explainer';
-import { LinkBack } from '../../components/LinkBack/LinkBack';
-import { AttestationErrorUnknown } from '../../components/AttestationErrorUnknown/AttestationErrorUnknown';
-import { ExpiryDate } from '../../components/ExpiryDate/ExpiryDate';
-import { DetailedMessage } from '../../components/DetailedMessage/DetailedMessage';
-import { AttestationProcessAnchoring } from '../../components/AttestationProcessAnchoring/AttestationProcessAnchoring';
-import { AttestationProcessReady } from '../../components/AttestationProcessReady/AttestationProcessReady';
-import { SigningErrorClosed } from '../../components/SigningErrorClosed/SigningErrorClosed';
-
-import { DiscordProfile } from './Discord';
+import { OAuthExplainer } from '../OAuthExplainer/OAuthExplainer';
+import { LinkBack } from '../LinkBack/LinkBack';
+import { AttestationErrorUnknown } from '../AttestationErrorUnknown/AttestationErrorUnknown';
+import { ExpiryDate } from '../ExpiryDate/ExpiryDate';
+import { DetailedMessage } from '../DetailedMessage/DetailedMessage';
+import { AttestationProcessAnchoring } from '../AttestationProcessAnchoring/AttestationProcessAnchoring';
+import { AttestationProcessReady } from '../AttestationProcessReady/AttestationProcessReady';
+import { SigningErrorClosed } from '../SigningErrorClosed/SigningErrorClosed';
 
 export type AttestationStatus =
   | 'none'
@@ -32,23 +34,29 @@ export type AttestationStatus =
 export type FlowError = 'unauthorized' | 'closed' | 'unknown';
 
 interface Props {
+  service: string;
+  backgroundImage?: string;
   status: AttestationStatus;
   processing: boolean;
   handleSubmit: FormEventHandler;
   handleBackup: MouseEventHandler;
   handleTryAgainClick: MouseEventHandler;
   authUrl?: string;
+  authUrlLoader?: ReactNode;
   flowError?: FlowError;
-  profile?: DiscordProfile;
+  profile?: ReactNode;
 }
 
-export function DiscordTemplate({
+export function OAuthTemplate({
+  service,
+  backgroundImage,
   status,
   processing,
   handleSubmit,
   handleBackup,
   handleTryAgainClick,
   authUrl,
+  authUrlLoader,
   flowError,
   profile,
 }: Props): JSX.Element {
@@ -56,42 +64,44 @@ export function DiscordTemplate({
     processing || ['authorizing', 'authorized', 'attesting'].includes(status),
   );
 
+  const style = useMemo(
+    () =>
+      backgroundImage
+        ? { backgroundImage: `url(${backgroundImage})` }
+        : undefined,
+    [backgroundImage],
+  );
+
   return (
-    <section
-      className={cx(flowStyles.container, {
-        [flowStyles.processing]: processing,
-      })}
-      aria-busy={processing}
-    >
+    <section className={flowStyles.container} aria-busy={processing}>
       {processing && <Spinner />}
 
-      <h1 className={styles.heading}>Discord Account Attestation</h1>
+      <h1 className={styles.heading} style={style}>
+        {service} Account Attestation
+      </h1>
 
       <Prompt
         when={preventNavigation}
-        message="The Discord attestation process has already started. Are you sure you want to leave?"
+        message={`The ${service} attestation process has already started. Are you sure you want to leave?`}
       />
 
-      <Explainer>
-        After you sign into your Discord account and give SocialKYC a one-time
-        permission, SocialKYC requests your Discord information for the
-        credential. You can then sign the data with one of your identities in
-        Sporran, and SocialKYC will create the credential.
-      </Explainer>
+      <OAuthExplainer service={service} />
 
       {status === 'none' && (
         <DetailedMessage
           icon="spinner"
           heading="Attestation process:"
           message="Generating link"
-          details="Please wait, generating Discord authorization link."
+          details={`Please wait, generating ${service} authorization link.`}
         />
       )}
 
-      {status === 'urlReady' && (
+      {authUrlLoader && <p className={styles.buttonsLine}>{authUrlLoader}</p>}
+
+      {status === 'urlReady' && !authUrlLoader && (
         <p className={styles.buttonsLine}>
           <a className={styles.ctaButton} href={authUrl}>
-            Sign in with Discord
+            Sign in with {service}
           </a>
         </p>
       )}
@@ -101,21 +111,13 @@ export function DiscordTemplate({
           icon="spinner"
           heading="Attestation process:"
           message="Authorizing"
-          details="Please wait, accessing Discord account details."
+          details={`Please wait, accessing ${service} account details.`}
         />
       )}
 
       {status === 'authorized' && profile && (
         <form onSubmit={handleSubmit}>
-          <dl className={styles.profile}>
-            <dt>User-ID:</dt>
-            <dd>{profile['User ID']}</dd>
-
-            <dt>Username:</dt>
-            <dd>
-              {profile.Username}#{profile.Discriminator}
-            </dd>
-          </dl>
+          <dl className={styles.profile}>{profile}</dl>
 
           <p>
             Validity: one year (<ExpiryDate />)
@@ -148,7 +150,7 @@ export function DiscordTemplate({
         <DetailedMessage
           icon="exclamation"
           heading="Authorization error:"
-          message="There was an error authorizing your Discord account."
+          message={`There was an error authorizing your ${service} account.`}
           details="Click “Try Again” or reload the page or restart your browser."
         />
       )}

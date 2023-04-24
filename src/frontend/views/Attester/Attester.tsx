@@ -1,6 +1,5 @@
 import { FormEvent, Fragment, useCallback, useEffect, useState } from 'react';
 import { Link, Route, Switch, useHistory, useLocation } from 'react-router-dom';
-import cx from 'classnames';
 import { detect } from 'detect-browser';
 
 import * as styles from './Attester.module.css';
@@ -264,11 +263,7 @@ function Connect({ setSession }: { setSession: (s: Session) => void }) {
 
   return (
     <form onSubmit={handleConnect} className={styles.connectContainer}>
-      <div
-        className={cx(styles.connect, {
-          [styles.processing]: processing,
-        })}
-      >
+      <div className={styles.connect} aria-busy={processing}>
         {!error && isRedirected && (
           <p className={styles.authorize}>
             Please authorize access to your wallet.

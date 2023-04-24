@@ -8,7 +8,6 @@ import {
   useState,
 } from 'react';
 import { Prompt } from 'react-router-dom';
-import cx from 'classnames';
 
 import * as flowStyles from '../../components/CredentialFlow/CredentialFlow.module.css';
 import * as styles from './Email.module.css';
@@ -95,12 +94,7 @@ export function EmailTemplate({
   );
 
   return (
-    <section
-      className={cx(flowStyles.container, {
-        [flowStyles.processing]: processing,
-      })}
-      aria-busy={processing}
-    >
+    <section className={flowStyles.container} aria-busy={processing}>
       {processing && <Spinner />}
 
       <h1 className={styles.heading}>Email Address Attestation</h1>

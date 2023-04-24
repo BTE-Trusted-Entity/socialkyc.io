@@ -127,8 +127,9 @@
   height: 100%;
 }
 
-.processing {
-  composes: processing from '../../components/processing/processing.module.css';
+.connect[aria-busy='true'] {
+  filter: blur(5px);
+  pointer-events: none;
 }
 
 .extension {

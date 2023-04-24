@@ -1,6 +1,6 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
-exports[`DiscordTemplate should match snapshot with flowError=closed 1`] = `
+exports[`OAuthTemplate should match snapshot with flowError=closed 1`] = `
 <div>
   <section
     aria-busy="false"
@@ -9,7 +9,8 @@ exports[`DiscordTemplate should match snapshot with flowError=closed 1`] = `
     <h1
       class="heading"
     >
-      Discord Account Attestation
+      TestOAuth
+       Account Attestation
     </h1>
     <div
       class="explainerContainer"
@@ -24,20 +25,9 @@ exports[`DiscordTemplate should match snapshot with flowError=closed 1`] = `
       <dl
         class="profile"
       >
-        <dt>
-          User-ID:
-        </dt>
-        <dd>
-          1234556789
-        </dd>
-        <dt>
-          Username:
-        </dt>
-        <dd>
-          TestUser
-          #
-          1234
-        </dd>
+        <p>
+          User-ID: 1234556789
+        </p>
       </dl>
       <p>
         Validity: one year (
@@ -74,7 +64,7 @@ exports[`DiscordTemplate should match snapshot with flowError=closed 1`] = `
 </div>
 `;
 
-exports[`DiscordTemplate should match snapshot with flowError=unknown 1`] = `
+exports[`OAuthTemplate should match snapshot with flowError=unknown 1`] = `
 <div>
   <section
     aria-busy="false"
@@ -83,7 +73,8 @@ exports[`DiscordTemplate should match snapshot with flowError=unknown 1`] = `
     <h1
       class="heading"
     >
-      Discord Account Attestation
+      TestOAuth
+       Account Attestation
     </h1>
     <div
       class="explainerContainer"
@@ -130,7 +121,7 @@ exports[`DiscordTemplate should match snapshot with flowError=unknown 1`] = `
 </div>
 `;
 
-exports[`DiscordTemplate should match snapshot with flowerror=unauthorized 1`] = `
+exports[`OAuthTemplate should match snapshot with flowerror=unauthorized 1`] = `
 <div>
   <section
     aria-busy="false"
@@ -139,7 +130,8 @@ exports[`DiscordTemplate should match snapshot with flowerror=unauthorized 1`] =
     <h1
       class="heading"
     >
-      Discord Account Attestation
+      TestOAuth
+       Account Attestation
     </h1>
     <div
       class="explainerContainer"
@@ -164,7 +156,7 @@ exports[`DiscordTemplate should match snapshot with flowerror=unauthorized 1`] =
       <p
         class="message"
       >
-        There was an error authorizing your Discord account.
+        There was an error authorizing your TestOAuth account.
       </p>
       <p>
         Click “Try Again” or reload the page or restart your browser.
@@ -186,7 +178,7 @@ exports[`DiscordTemplate should match snapshot with flowerror=unauthorized 1`] =
 </div>
 `;
 
-exports[`DiscordTemplate should match snapshot with status=attesting 1`] = `
+exports[`OAuthTemplate should match snapshot with status=attesting 1`] = `
 <div>
   <section
     aria-busy="false"
@@ -195,7 +187,8 @@ exports[`DiscordTemplate should match snapshot with status=attesting 1`] = `
     <h1
       class="heading"
     >
-      Discord Account Attestation
+      TestOAuth
+       Account Attestation
     </h1>
     <div
       class="explainerContainer"
@@ -230,7 +223,7 @@ exports[`DiscordTemplate should match snapshot with status=attesting 1`] = `
 </div>
 `;
 
-exports[`DiscordTemplate should match snapshot with status=authorized 1`] = `
+exports[`OAuthTemplate should match snapshot with status=authorized 1`] = `
 <div>
   <section
     aria-busy="false"
@@ -239,7 +232,8 @@ exports[`DiscordTemplate should match snapshot with status=authorized 1`] = `
     <h1
       class="heading"
     >
-      Discord Account Attestation
+      TestOAuth
+       Account Attestation
     </h1>
     <div
       class="explainerContainer"
@@ -254,20 +248,9 @@ exports[`DiscordTemplate should match snapshot with status=authorized 1`] = `
       <dl
         class="profile"
       >
-        <dt>
-          User-ID:
-        </dt>
-        <dd>
-          1234556789
-        </dd>
-        <dt>
-          Username:
-        </dt>
-        <dd>
-          TestUser
-          #
-          1234
-        </dd>
+        <p>
+          User-ID: 1234556789
+        </p>
       </dl>
       <p>
         Validity: one year (
@@ -284,7 +267,7 @@ exports[`DiscordTemplate should match snapshot with status=authorized 1`] = `
 </div>
 `;
 
-exports[`DiscordTemplate should match snapshot with status=authorizing 1`] = `
+exports[`OAuthTemplate should match snapshot with status=authorizing 1`] = `
 <div>
   <section
     aria-busy="false"
@@ -293,7 +276,8 @@ exports[`DiscordTemplate should match snapshot with status=authorizing 1`] = `
     <h1
       class="heading"
     >
-      Discord Account Attestation
+      TestOAuth
+       Account Attestation
     </h1>
     <div
       class="explainerContainer"
@@ -321,14 +305,14 @@ exports[`DiscordTemplate should match snapshot with status=authorizing 1`] = `
         Authorizing
       </p>
       <p>
-        Please wait, accessing Discord account details.
+        Please wait, accessing TestOAuth account details.
       </p>
     </section>
   </section>
 </div>
 `;
 
-exports[`DiscordTemplate should match snapshot with status=none 1`] = `
+exports[`OAuthTemplate should match snapshot with status=none 1`] = `
 <div>
   <section
     aria-busy="false"
@@ -337,7 +321,8 @@ exports[`DiscordTemplate should match snapshot with status=none 1`] = `
     <h1
       class="heading"
     >
-      Discord Account Attestation
+      TestOAuth
+       Account Attestation
     </h1>
     <div
       class="explainerContainer"
@@ -365,7 +350,7 @@ exports[`DiscordTemplate should match snapshot with status=none 1`] = `
         Generating link
       </p>
       <p>
-        Please wait, generating Discord authorization link.
+        Please wait, generating TestOAuth authorization link.
       </p>
     </section>
     <a
@@ -378,7 +363,7 @@ exports[`DiscordTemplate should match snapshot with status=none 1`] = `
 </div>
 `;
 
-exports[`DiscordTemplate should match snapshot with status=ready 1`] = `
+exports[`OAuthTemplate should match snapshot with status=none for loader 1`] = `
 <div>
   <section
     aria-busy="false"
@@ -387,7 +372,67 @@ exports[`DiscordTemplate should match snapshot with status=ready 1`] = `
     <h1
       class="heading"
     >
-      Discord Account Attestation
+      TestOAuth
+       Account Attestation
+    </h1>
+    <div
+      class="explainerContainer"
+    >
+      <button
+        aria-label="Toggle explanation"
+        class="showExplainer"
+        type="button"
+      />
+    </div>
+    <section
+      class="container"
+    >
+      <div
+        class="spinner"
+      />
+      <h2
+        class="heading"
+      >
+        Attestation process:
+      </h2>
+      <p
+        class="message"
+      >
+        Generating link
+      </p>
+      <p>
+        Please wait, generating TestOAuth authorization link.
+      </p>
+    </section>
+    <p
+      class="buttonsLine"
+    >
+      <iframe
+        class="iframeLoading"
+        src="/auth-url"
+      />
+    </p>
+    <a
+      class="link"
+      href="/"
+    >
+      Back to list
+    </a>
+  </section>
+</div>
+`;
+
+exports[`OAuthTemplate should match snapshot with status=ready 1`] = `
+<div>
+  <section
+    aria-busy="false"
+    class="container"
+  >
+    <h1
+      class="heading"
+    >
+      TestOAuth
+       Account Attestation
     </h1>
     <div
       class="explainerContainer"
@@ -434,7 +479,7 @@ exports[`DiscordTemplate should match snapshot with status=ready 1`] = `
 </div>
 `;
 
-exports[`DiscordTemplate should match snapshot with status=urlReady 1`] = `
+exports[`OAuthTemplate should match snapshot with status=urlReady 1`] = `
 <div>
   <section
     aria-busy="false"
@@ -443,7 +488,8 @@ exports[`DiscordTemplate should match snapshot with status=urlReady 1`] = `
     <h1
       class="heading"
     >
-      Discord Account Attestation
+      TestOAuth
+       Account Attestation
     </h1>
     <div
       class="explainerContainer"
@@ -460,8 +506,48 @@ exports[`DiscordTemplate should match snapshot with status=urlReady 1`] = `
       <a
         class="ctaButton"
       >
-        Sign in with Discord
+        Sign in with 
+        TestOAuth
       </a>
+    </p>
+    <a
+      class="link"
+      href="/"
+    >
+      Back to list
+    </a>
+  </section>
+</div>
+`;
+
+exports[`OAuthTemplate should match snapshot with status=urlReady for loader 1`] = `
+<div>
+  <section
+    aria-busy="false"
+    class="container"
+  >
+    <h1
+      class="heading"
+    >
+      TestOAuth
+       Account Attestation
+    </h1>
+    <div
+      class="explainerContainer"
+    >
+      <button
+        aria-label="Toggle explanation"
+        class="showExplainer"
+        type="button"
+      />
+    </div>
+    <p
+      class="buttonsLine"
+    >
+      <iframe
+        class="iframe"
+        src="/auth-url"
+      />
     </p>
     <a
       class="link"
