@@ -9,7 +9,6 @@ import {
   useState,
 } from 'react';
 import { Prompt } from 'react-router-dom';
-import cx from 'classnames';
 
 import * as flowStyles from '../../components/CredentialFlow/CredentialFlow.module.css';
 import * as styles from './Twitter.module.css';
@@ -100,12 +99,7 @@ export function TwitterTemplate({
   const copy = useCopyButton(messageRef);
 
   return (
-    <section
-      className={cx(flowStyles.container, {
-        [flowStyles.processing]: processing,
-      })}
-      aria-busy={processing}
-    >
+    <section className={flowStyles.container} aria-busy={processing}>
       {processing && <Spinner />}
 
       <h1 className={styles.heading}>Twitter Account Attestation</h1>

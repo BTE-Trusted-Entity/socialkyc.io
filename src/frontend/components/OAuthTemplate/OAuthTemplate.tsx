@@ -1,11 +1,9 @@
-import cx from 'classnames';
-
 import { Prompt } from 'react-router-dom';
 
 import {
   FormEventHandler,
-  MouseEventHandler,
   Fragment,
+  MouseEventHandler,
   ReactNode,
   useMemo,
 } from 'react';
@@ -75,12 +73,7 @@ export function OAuthTemplate({
   );
 
   return (
-    <section
-      className={cx(flowStyles.container, {
-        [flowStyles.processing]: processing,
-      })}
-      aria-busy={processing}
-    >
+    <section className={flowStyles.container} aria-busy={processing}>
       {processing && <Spinner />}
 
       <h1 className={styles.heading} style={style}>

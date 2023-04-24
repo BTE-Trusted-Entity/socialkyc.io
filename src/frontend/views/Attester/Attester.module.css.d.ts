@@ -19,7 +19,6 @@ export const chrome: string;
 export const firefox: string;
 export const connectContainer: string;
 export const connect: string;
-export const processing: string;
 export const extension: string;
 export const extensionInput: string;
 export const authorize: string;
