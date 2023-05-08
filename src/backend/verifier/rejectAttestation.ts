@@ -17,9 +17,7 @@ const zodPayload = z.object({
   rootHash: z
     .string()
     .trim()
-    .refine<HexString>((input: string): input is HexString =>
-      input.startsWith('0x'),
-    ),
+    .refine((input: string): input is HexString => input.startsWith('0x')),
 });
 
 export type Input = z.infer<typeof zodPayload>;
