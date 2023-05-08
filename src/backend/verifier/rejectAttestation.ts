@@ -14,9 +14,12 @@ import { paths } from '../endpoints/paths';
 import { getSession } from '../utilities/sessionStorage';
 
 const zodPayload = z.object({
-  rootHash: z.custom<HexString>(
-    (input: unknown) => typeof input === 'string' && input.startsWith('0x'),
-  ),
+  rootHash: z
+    .string()
+    .trim()
+    .refine<HexString>((input: string): input is HexString =>
+      input.startsWith('0x'),
+    ),
 });
 
 export type Input = z.infer<typeof zodPayload>;
