@@ -33,6 +33,7 @@ export const paths = {
   verifier: {
     requestCredential: '/api/request-credential',
     verify: '/api/verify',
+    rejectAttestation: '/api/reject-attestation',
   },
 
   staticFiles: '/{param*}',

@@ -32,6 +32,7 @@ import { confirmTelegram } from './telegram/confirmTelegram';
 
 import { requestCredential } from './verifier/requestCredential';
 import { verify } from './verifier/verify';
+import { rejectAttestation } from './verifier/rejectAttestation';
 
 import { session } from './endpoints/session';
 import { authHtml } from './endpoints/authHtml';
@@ -149,6 +150,7 @@ const logger = {
 
   server.route(requestCredential);
   server.route(verify);
+  server.route(rejectAttestation);
 
   server.route(home);
 

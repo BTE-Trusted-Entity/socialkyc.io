@@ -1,13 +1,16 @@
+import type { HexString } from '@polkadot/util/types';
 import type { SupportedCType } from '../backend/utilities/supportedCType';
 
 import { requestCredential } from '../backend/verifier/requestCredentialApi';
 import { verifyCredential } from '../backend/verifier/verifyApi';
+import { rejectAttestation } from '../backend/verifier/rejectAttestationApi';
 
 import { apiWindow, getSession } from './utilities/session';
 
 const credentialForm = document.getElementById(
   'credentialForm',
 ) as HTMLFormElement;
+const rejectForm = document.getElementById('rejectForm') as HTMLFormElement;
 const shared = document.getElementById('shared') as HTMLElement;
 
 const claimerDid = document.getElementById('claimer-did') as HTMLOutputElement;
@@ -40,7 +43,7 @@ function handleBeforeUnload(event: Event) {
   event.returnValue = false;
 }
 
-async function handleSubmit(event: Event) {
+async function handleRequestSubmit(event: Event) {
   event.preventDefault();
 
   window.addEventListener('beforeunload', handleBeforeUnload);
@@ -114,4 +117,18 @@ async function handleSubmit(event: Event) {
   }
 }
 
-credentialForm.addEventListener('submit', handleSubmit);
+async function handleRejectSubmit(event: SubmitEvent) {
+  event.preventDefault();
+
+  const form = event.currentTarget as HTMLFormElement;
+  const rootHash = new FormData(form).get('rootHash') as HexString;
+
+  const session = await getSession(apiWindow.kilt.sporran, 'sporran');
+  const { sessionId } = session;
+
+  const message = await rejectAttestation({ rootHash }, sessionId);
+  await session.send(message);
+}
+
+credentialForm.addEventListener('submit', handleRequestSubmit);
+rejectForm.addEventListener('submit', handleRejectSubmit);
