@@ -7,10 +7,8 @@ import type {
 
 import * as Boom from '@hapi/boom';
 import {
-  Attestation,
-  ConfigService,
   Credential,
-  IAttestation,
+  DidUri,
   ICredentialPresentation,
 } from '@kiltprotocol/sdk-js';
 
@@ -22,7 +20,8 @@ import { getSession } from '../utilities/sessionStorage';
 export interface Output {
   presentation: ICredentialPresentation;
   isAttested: boolean;
-  attestation?: IAttestation;
+  revoked?: boolean;
+  attester?: DidUri;
 }
 
 async function handler(
@@ -47,26 +46,24 @@ async function handler(
   logger.debug('Verification credential constructed');
 
   try {
-    await Credential.verifyPresentation(presentation, { challenge });
-
-    const api = ConfigService.get('api');
-    const attestation = Attestation.fromChain(
-      await api.query.attestation.attestations(presentation.rootHash),
-      presentation.rootHash,
+    const { revoked, attester } = await Credential.verifyPresentation(
+      presentation,
+      { challenge },
     );
 
-    const isAttested =
-      !attestation.revoked &&
-      attestation.cTypeHash === presentation.claim.cTypeHash;
+    const isAttested = !revoked;
 
-    return h.response({ presentation, isAttested, attestation } as Output);
+    return h.response({
+      presentation,
+      isAttested,
+      revoked,
+      attester,
+    } as Output);
   } catch {
     return h.response({ presentation, isAttested: false } as Output);
   } finally {
     logger.debug('Verification completed');
   }
-
-  logger.debug('Verification completed');
 }
 
 export const verify = {
