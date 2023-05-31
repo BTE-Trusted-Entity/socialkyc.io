@@ -7,14 +7,18 @@ import { cTypeIsStored } from '../utilities/cTypeIsStored';
 
 /** Run this function once to store the CType */
 export async function testDomainLinkageCType(): Promise<void> {
-  const draft = CType.fromProperties('Domain Linkage Credential', {
-    id: {
-      type: 'string',
+  const draft = CType.fromProperties(
+    'Domain Linkage Credential',
+    {
+      id: {
+        type: 'string',
+      },
+      origin: {
+        type: 'string',
+      },
     },
-    origin: {
-      type: 'string',
-    },
-  });
+    'draft-01',
+  );
 
   if (await cTypeIsStored(draft)) {
     if (configuration.storeDidAndCTypes) {

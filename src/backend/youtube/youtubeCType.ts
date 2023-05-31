@@ -7,14 +7,18 @@ import { cTypeIsStored } from '../utilities/cTypeIsStored';
 
 /** Run this function once to store the CType */
 export async function testYoutubeCType(): Promise<void> {
-  const draft = CType.fromProperties('YoutubeChannel', {
-    'Channel Name': {
-      type: 'string',
+  const draft = CType.fromProperties(
+    'YoutubeChannel',
+    {
+      'Channel Name': {
+        type: 'string',
+      },
+      'Channel ID': {
+        type: 'string',
+      },
     },
-    'Channel ID': {
-      type: 'string',
-    },
-  });
+    'draft-01',
+  );
 
   if (await cTypeIsStored(draft)) {
     if (configuration.storeDidAndCTypes) {

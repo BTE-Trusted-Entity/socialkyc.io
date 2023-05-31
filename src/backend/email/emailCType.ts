@@ -7,11 +7,15 @@ import { cTypeIsStored } from '../utilities/cTypeIsStored';
 
 /** Run this function once to store the CType */
 export async function testEmailCType(): Promise<void> {
-  const draft = CType.fromProperties('Email', {
-    Email: {
-      type: 'string',
+  const draft = CType.fromProperties(
+    'Email',
+    {
+      Email: {
+        type: 'string',
+      },
     },
-  });
+    'draft-01',
+  );
 
   if (await cTypeIsStored(draft)) {
     if (configuration.storeDidAndCTypes) {

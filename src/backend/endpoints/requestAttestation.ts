@@ -49,7 +49,7 @@ async function handler(
   };
 
   const ctype = supportedCTypes[type];
-  await Credential.verifyCredential(credential, { ctype });
+  Credential.verifyWellFormed(credential, { ctype });
   logger.debug(`Request attestation verified for ${type}`);
 
   setSession({ ...session, credential });

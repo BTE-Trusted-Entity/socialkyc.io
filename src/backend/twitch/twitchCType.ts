@@ -7,14 +7,18 @@ import { cTypeIsStored } from '../utilities/cTypeIsStored';
 
 /** Run this function once to store the CType */
 export async function testTwitchCType(): Promise<void> {
-  const draft = CType.fromProperties('Twitch', {
-    Username: {
-      type: 'string',
+  const draft = CType.fromProperties(
+    'Twitch',
+    {
+      Username: {
+        type: 'string',
+      },
+      'User ID': {
+        type: 'string',
+      },
     },
-    'User ID': {
-      type: 'string',
-    },
-  });
+    'draft-01',
+  );
 
   if (await cTypeIsStored(draft)) {
     if (configuration.storeDidAndCTypes) {
