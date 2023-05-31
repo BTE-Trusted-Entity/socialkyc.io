@@ -1,11 +1,11 @@
 import { cwd } from 'node:process';
 import path from 'node:path';
 
-import dotenv from 'dotenv';
+import { config } from 'dotenv';
 import { pino } from 'pino';
 import { DidUri } from '@kiltprotocol/sdk-js';
 
-dotenv.config();
+config();
 
 class ConfigurationError extends Error {
   constructor(message: string) {
