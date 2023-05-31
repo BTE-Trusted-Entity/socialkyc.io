@@ -1,84 +1,9 @@
 <!DOCTYPE html>
 
 <html lang="en">
-  <head>
-    <meta charset="utf-8" />
-    <link
-      rel="icon"
-      type="image/svg+xml"
-      href="components/Branding/favicon.svg"
-    />
-    <link rel="icon" type="image/png" href="components/Branding/favicon.png" />
-    <link rel="stylesheet" type="text/css" href="./css/styles.css" />
-    <title>SocialKYC</title>
-    <script>
-      window.kilt = {};
-      Object.defineProperty(window.kilt, 'meta', {
-        value: { versions: { credentials: '3.0' } },
-        enumerable: false,
-      });
-    </script>
-
-    <meta name="twitter:card" content="summary_large_image">
-    <meta name="twitter:site" content="@socialkyc.io">
-    <meta name="twitter:creator" content="@social_kyc">
-    <meta name="twitter:title" content="Take back control of your personal data.">
-    <meta name="twitter:description" content="You decide where and when to share your credentials.">
-    <meta name="twitter:image" content="components/Branding/card.png">
-    <meta name="twitter:image" content="https://socialkyc.io/components/Branding/card.png">
-    <meta name="viewport" content="width=device-width, viewport-fit=cover">
-  </head>
-
-  <body class="hexagon1">
-    <header>
-      <a href="/" class="logo">
-        <img alt="SocialKYC logo" height="64" src="./components/Branding/logo.svg" width="210" />
-      </a>
-    </header>
-    <main class="left">
-      <div class="leftContainer">
-        <h1>Your Identity, back in your hands!</h1>
-        <p>
-          Create your decentralized social credentials here. Your personal data
-          will be anchored on the KILT blockchain and only you will decide who can
-          access it.
-        </p>
-        <p>
-          SocialKYC does not store, share or sell any of your data. The service
-          forgets about you after attesting your identity.
-        </p>
-      </div>
-    </main>
-    <aside class="right">
-      <div class="rightContainer">
-        <h2 class="rightHeadline">
-          <span class="rightHeadlineTop"></span>
-          <span class="rightHeadlineCenter"></span>
-          <span class="rightHeadlineBottom"></span>
-        </h2>
-      </div>
-    </aside>
-    <footer class="footer">
-      <div class="content">
-
-      <nav class="navMenu">
-
-          <a class="navLink" href="./about.html">Imprint</a>
-         <a class="navLink" href="./terms.html">Terms</a>
-          <a class="navLink" href="./privacy.html">Privacy</a>
-          <a class="navLink" href="https://github.com/BTE-Trusted-Entity/socialkyc.io/" target="_blank" rel="noreferrer">GitHub</a>
-
-          <a class="navLink" href="https://support.kilt.io/" target="_blank" rel="noreferrer">Support</a>
-      </nav>
-      <p class="copyright">
-        © 2023 BOTLabs GmbH
-      </p>
-      </div>
-    </footer>
-    <script
-      src="views/Attester/renderAttester.tsx"
-      type="module"
-      defer
-    ></script>
-  </body>
+<script
+  src="views/Attester/renderAttester.tsx"
+  type="module"
+  defer
+></script>
 </html>

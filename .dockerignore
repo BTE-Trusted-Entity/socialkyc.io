@@ -1,7 +1,0 @@
-/.git
-/.idea
-/.parcel-cache
-/node_modules
-/dist
-/.dockerignore
-/Dockerfile
