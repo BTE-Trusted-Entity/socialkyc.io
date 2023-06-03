@@ -97,7 +97,7 @@
     "prettier": "^2.8.8",
     "react-router": "^5.3.4",
     "storybook": "^7.0.18",
-    "stylelint": "^15.6.2",
+    "stylelint": "^15.6.3",
     "stylelint-config-css-modules": "^4.2.0",
     "stylelint-config-standard": "^33.0.0",
     "supervisor": "^0.12.0",
