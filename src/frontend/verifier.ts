@@ -60,7 +60,7 @@ async function handleRequestSubmit(event: Event) {
 
     await session.listen(async (message) => {
       try {
-        const { presentation, isAttested, attestation } =
+        const { presentation, isAttested, revoked, attester } =
           await verifyCredential({ message }, sessionId);
 
         cType.textContent = cTypes[presentation.claim.cTypeHash] || 'Unknown';
@@ -79,18 +79,18 @@ async function handleRequestSubmit(event: Event) {
         }
 
         attesterDid.textContent =
-          attestation?.owner &&
+          attester &&
           [
             'did:kilt:4pehddkhEanexVTTzWAtrrfo2R7xPnePpuiJLC7shQU894aY', // peregrine
             'did:kilt:4pnfkRn5UurBJTW92d9TaVLR2CqJdY4z5HPjrEbpGyBykare', // spiritnet
-          ].includes(attestation.owner)
+          ].includes(attester)
             ? 'SocialKYC ✅'
             : 'Unknown';
 
         claimerDid.textContent = `✅ ${presentation.claim.owner}`;
         claimerDid.title = presentation.claim.owner;
 
-        if (attestation?.revoked) {
+        if (revoked) {
           status.textContent = 'Revoked ❌';
         } else if (isAttested) {
           status.textContent = 'Attested ✅';

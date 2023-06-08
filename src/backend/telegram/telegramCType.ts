@@ -7,20 +7,24 @@ import { cTypeIsStored } from '../utilities/cTypeIsStored';
 
 /** Run this function once to store the CType */
 export async function testTelegramCType(): Promise<void> {
-  const draft = CType.fromProperties('Telegram', {
-    'First name': {
-      type: 'string',
+  const draft = CType.fromProperties(
+    'Telegram',
+    {
+      'First name': {
+        type: 'string',
+      },
+      'Last name': {
+        type: 'string',
+      },
+      Username: {
+        type: 'string',
+      },
+      'User ID': {
+        type: 'number',
+      },
     },
-    'Last name': {
-      type: 'string',
-    },
-    Username: {
-      type: 'string',
-    },
-    'User ID': {
-      type: 'number',
-    },
-  });
+    'draft-01',
+  );
 
   if (await cTypeIsStored(draft)) {
     if (configuration.storeDidAndCTypes) {

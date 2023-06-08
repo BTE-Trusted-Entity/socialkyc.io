@@ -7,17 +7,21 @@ import { cTypeIsStored } from '../utilities/cTypeIsStored';
 
 /** Run this function once to store the CType */
 export async function testDiscordCType(): Promise<void> {
-  const draft = CType.fromProperties('Discord', {
-    Username: {
-      type: 'string',
+  const draft = CType.fromProperties(
+    'Discord',
+    {
+      Username: {
+        type: 'string',
+      },
+      Discriminator: {
+        type: 'string',
+      },
+      'User ID': {
+        type: 'string',
+      },
     },
-    Discriminator: {
-      type: 'string',
-    },
-    'User ID': {
-      type: 'string',
-    },
-  });
+    'draft-01',
+  );
 
   if (await cTypeIsStored(draft)) {
     if (configuration.storeDidAndCTypes) {
