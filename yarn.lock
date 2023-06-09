@@ -2316,10 +2316,10 @@
   dependencies:
     "@hapi/hoek" "^11.0.2"
 
-"@hapi/basic@^7.0.1":
-  version "7.0.1"
-  resolved "https://registry.yarnpkg.com/@hapi/basic/-/basic-7.0.1.tgz#cafc8895cb393bc61b5ce93be45882c0dd6df3da"
-  integrity sha512-m7102bMrx/xDHi/saFEgQAzpffimzgsypbHOxYA/pzWjP7ZMTja0pJedz19WswHBVrZAcS9WyMAiDCBmfo5cVw==
+"@hapi/basic@^7.0.2":
+  version "7.0.2"
+  resolved "https://registry.yarnpkg.com/@hapi/basic/-/basic-7.0.2.tgz#297bd5a7cb6d09daeb4bc5114d6862c7ed9ed0d0"
+  integrity sha512-kdpsmCEHVDlIYStRbszSyy/9+dq5KkfWLX5AjuHGPwtzuuZopZnhkVvMZV45hQ8hA8V/weCoMs0nzXJ7JCA2ow==
   dependencies:
     "@hapi/boom" "^10.0.1"
     "@hapi/hoek" "^11.0.2"
