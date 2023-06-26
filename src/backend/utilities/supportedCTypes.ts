@@ -8,7 +8,6 @@ import { emailCType } from '../email/emailCType';
 import { githubCType } from '../github/githubCType';
 import { telegramCType } from '../telegram/telegramCType';
 import { twitchCType } from '../twitch/twitchCType';
-import { twitterCType } from '../twitter/twitterCType';
 import { youtubeCType } from '../youtube/youtubeCType';
 
 export const supportedCTypes: Record<SupportedCType, ICType> = {
@@ -17,6 +16,5 @@ export const supportedCTypes: Record<SupportedCType, ICType> = {
   github: githubCType,
   telegram: telegramCType,
   twitch: twitchCType,
-  twitter: twitterCType,
   youtube: youtubeCType,
 };

@@ -894,42 +894,6 @@
             </li>
           </ul>
 
-          <p><u>When issuing a credential for Twitter username:</u></p>
-
-          <ul>
-            <li>Our server receives the username from the user.</li>
-            <li>
-              The server prepares a Request for attestation object for the user
-              to sign and sends it to the user. This object contains the
-              username but is not stored anywhere.
-            </li>
-            <li>
-              Our server receives the signed Request for attestation object from
-              the user and temporarily stores it until the user confirmation,
-              but no longer than 1 hour after the last user activity. The object
-              contains the username and the DID. SocialKYC asks the user to
-              Tweet a predefined text. The text contains a confirmation code: a
-              random number that references the user data but does not contain
-              it. The server stores the username and starts periodically
-              checking public tweets of this username looking for the
-              confirmation code.
-            </li>
-            <li>
-              If the user is inactive for one hour, all their stored data, the
-              username, and the confirmation code are deleted.
-            </li>
-            <li>
-              If the user tweets the predefined text containing the confirmation
-              code, then our server detects this and stops checking the tweets
-              of this username. The server signs the stored Request for
-              attestation object. Only the signature is then stored on the
-              public KILT blockchain, but the signature itself does not contain
-              any of the personal information, and this information is not
-              recoverable from the signature. After that all the information
-              stored about this user is immediately deleted from the server.
-            </li>
-          </ul>
-
           <p><u>When issuing a credential for a Discord account:</u></p>
 
           <ul>

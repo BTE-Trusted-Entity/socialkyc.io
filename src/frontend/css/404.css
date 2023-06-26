@@ -18,37 +18,37 @@
   background: url('../images/404.svg') no-repeat center top/contain;
 }
 
-@media screen and (min-width: 800px) {
+@media screen and (width >= 800px) {
   .leftHeadline {
     font-size: 2.125rem;
   }
 }
 
-@media screen and (min-width: 950px) {
+@media screen and (width >= 950px) {
   .leftHeadline {
     font-size: 2.625rem;
   }
 }
 
-@media screen and (min-width: 1200px) {
+@media screen and (width >= 1200px) {
   .leftHeadline {
     font-size: 3.25rem;
   }
 }
 
-@media screen and (min-width: 1300px) {
+@media screen and (width >= 1300px) {
   .leftHeadline {
     font-size: 3.625rem;
   }
 }
 
-@media screen and (min-width: 1400px) {
+@media screen and (width >= 1400px) {
   .leftHeadline {
     font-size: 4rem;
   }
 }
 
-@media screen and (min-width: 1500px) {
+@media screen and (width >= 1500px) {
   .leftHeadline {
     font-size: 4.25rem;
   }

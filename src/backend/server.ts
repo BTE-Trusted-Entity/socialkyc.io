@@ -5,7 +5,6 @@ import gate from 'hapi-gate';
 import { getSecret } from './endpoints/getSecret';
 
 import { fullDidPromise } from './utilities/fullDid';
-import { testTwitterCType } from './twitter/twitterCType';
 import { testEmailCType } from './email/emailCType';
 import { testDomainLinkageCType } from './didConfiguration/domainLinkageCType';
 import { testDiscordCType } from './discord/discordCType';
@@ -23,10 +22,6 @@ import { wellKnownDidConfig } from './didConfiguration/wellKnownDidConfig';
 
 import { sendEmail } from './email/sendEmail';
 import { confirmEmail } from './email/confirmEmail';
-
-import { claimTwitter } from './twitter/claimTwitter';
-import { listenForTweets } from './twitter/tweets';
-import { confirmTwitter } from './twitter/confirmTwitter';
 
 import { confirmTelegram } from './telegram/confirmTelegram';
 
@@ -113,7 +108,6 @@ const logger = {
 
   await testDomainLinkageCType();
   await testEmailCType();
-  await testTwitterCType();
   await testDiscordCType();
   await testGithubCType();
   await testTwitchCType();
@@ -121,9 +115,6 @@ const logger = {
   await testYoutubeCType();
 
   server.logger.info('CTypes tested');
-
-  await listenForTweets();
-  server.logger.info('Twitter connection initialized');
 
   server.route(wellKnownDidConfig);
 
@@ -142,9 +133,6 @@ const logger = {
 
   server.route(sendEmail);
   server.route(confirmEmail);
-
-  server.route(claimTwitter);
-  server.route(confirmTwitter);
 
   server.route(confirmTelegram);
 

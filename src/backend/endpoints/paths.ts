@@ -14,11 +14,6 @@ export const paths = {
     confirm: '/api/email/confirm',
   },
 
-  twitter: {
-    claim: '/api/twitter/claim',
-    confirm: '/api/twitter/confirm',
-  },
-
   telegram: {
     confirm: '/api/telegram/confirm',
   },

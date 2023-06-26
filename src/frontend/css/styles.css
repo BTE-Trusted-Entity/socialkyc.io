@@ -44,7 +44,7 @@ body {
   --hexagon-content-bottom: 'over your digital identity.';
 }
 
-@media screen and (min-width: 800px) {
+@media screen and (width >= 800px) {
   .logo {
     margin-left: calc(50% - 207px - 1.5rem);
   }
@@ -54,7 +54,7 @@ p {
   margin-block: 1.25rem;
 }
 
-@media screen and (min-width: 800px) {
+@media screen and (width >= 800px) {
   .right,
   .left {
     width: 50%;
@@ -68,7 +68,7 @@ p {
   padding-inline: 3rem;
 }
 
-@media screen and (min-width: 800px) {
+@media screen and (width >= 800px) {
   .left {
     margin-right: 50%;
     padding-right: 0;
@@ -84,7 +84,7 @@ p {
   justify-content: center;
 }
 
-@media screen and (min-width: 800px) {
+@media screen and (width >= 800px) {
   .right {
     display: flex;
   }
@@ -105,7 +105,7 @@ p {
   margin-bottom: 5rem;
 }
 
-@media screen and (min-width: 800px) {
+@media screen and (width >= 800px) {
   .leftContainer {
     min-height: calc(100vh - 10rem);
     margin-bottom: auto;
@@ -181,31 +181,31 @@ p {
   margin: 0.2rem auto;
 }
 
-@media screen and (min-width: 950px) {
+@media screen and (width >= 950px) {
   .rightHeadline {
     font-size: 0.6rem;
   }
 }
 
-@media screen and (min-width: 1200px) {
+@media screen and (width >= 1200px) {
   .rightHeadline {
     font-size: 0.7rem;
   }
 }
 
-@media screen and (min-width: 1300px) {
+@media screen and (width >= 1300px) {
   .rightHeadline {
     font-size: 0.8rem;
   }
 }
 
-@media screen and (min-width: 1400px) {
+@media screen and (width >= 1400px) {
   .rightHeadline {
     font-size: 0.9rem;
   }
 }
 
-@media screen and (min-width: 1500px) {
+@media screen and (width >= 1500px) {
   .rightHeadline {
     font-size: 1rem;
   }
@@ -280,7 +280,7 @@ p {
   margin: 0 5rem;
 }
 
-@media screen and (min-width: 700px) {
+@media screen and (width >= 700px) {
   .content {
     flex-direction: row;
   }
@@ -295,7 +295,7 @@ p {
   font-size: 0.875rem;
 }
 
-@media screen and (min-width: 700px) {
+@media screen and (width >= 700px) {
   .navMenu {
     width: auto;
     border: 0;

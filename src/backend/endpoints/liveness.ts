@@ -1,7 +1,6 @@
 import { ServerRoute } from '@hapi/hapi';
 
 import { initKilt, blockchainConnectionState } from '../utilities/initKilt';
-import { canAccessTwitter } from '../twitter/tweets';
 import {
   canAccessAmazonSES,
   checkSesConnection,
@@ -39,8 +38,6 @@ import { paths } from './paths';
 export async function testLiveness() {
   await initKilt();
   await reportBalance();
-
-  await canAccessTwitter();
 
   await canAccessDiscord();
   checkDiscordConnection();

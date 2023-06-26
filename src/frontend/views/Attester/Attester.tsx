@@ -20,7 +20,6 @@ import { paths } from '../../paths';
 import { DetailedMessage } from '../../components/DetailedMessage/DetailedMessage';
 import { Spinner } from '../../components/Spinner/Spinner';
 import { Email } from '../Email/Email';
-import { Twitter } from '../Twitter/Twitter';
 import { Discord } from '../Discord/Discord';
 import { Github } from '../Github/Github';
 import { Twitch } from '../Twitch/Twitch';
@@ -155,11 +154,6 @@ function GetCredentials() {
       <p>Get verifiable credentials for your:</p>
 
       <ul className={styles.credentials}>
-        <li>
-          <Link to={paths.twitter} className={styles.twitter}>
-            Twitter Account
-          </Link>
-        </li>
         <li>
           <Link to={paths.email} className={styles.email}>
             Email Address
@@ -411,9 +405,6 @@ export function Attester(): JSX.Element {
       <Disconnect session={session} onDisconnect={clearSession} />
 
       <Switch>
-        <Route path={paths.twitter}>
-          <Twitter session={session} />
-        </Route>
         <Route path={paths.email}>
           <Email session={session} />
         </Route>

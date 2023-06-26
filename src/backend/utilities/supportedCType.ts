@@ -4,7 +4,6 @@ export const supportedCTypeKeys = [
   'github',
   'telegram',
   'twitch',
-  'twitter',
   'youtube',
 ] as const;
 
