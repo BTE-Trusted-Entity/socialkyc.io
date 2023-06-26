@@ -38,7 +38,6 @@
     "hapi-pino": "^12.1.0",
     "http-status-codes": "^2.2.0",
     "ky": "^0.33.3",
-    "lodash-es": "^4.17.21",
     "node-cache": "^5.1.2",
     "pino": "^8.14.1",
     "prom-client": "^14.2.0",

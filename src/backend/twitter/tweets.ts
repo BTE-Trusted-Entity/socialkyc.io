@@ -1,7 +1,5 @@
 import { ApiResponseError, TwitterApi } from 'twitter-api-v2';
 
-import { find } from 'lodash-es';
-
 import { configuration } from '../utilities/configuration';
 import { ControlledPromise } from '../utilities/makeControlledPromise';
 import { logger } from '../utilities/logger';
@@ -38,8 +36,11 @@ async function getTweets() {
       'tweet.fields': ['author_id', 'text'],
       'user.fields': ['id', 'username'],
     });
+    if (!includes?.users) {
+      throw new Error('Tweet authors missing');
+    }
     twitterConnectionState.on();
-    return { tweets, includes };
+    return { tweets, authors: includes.users };
   } catch (error) {
     twitterConnectionState.off();
     throw error;
@@ -62,10 +63,10 @@ async function rateLimitToBeReset(error: ApiResponseError) {
 async function onTweet(handleTweet: (text: string, username: string) => void) {
   while (true) {
     try {
-      const { tweets, includes } = await getTweets();
+      const { tweets, authors } = await getTweets();
       for (const { text, author_id, id } of tweets) {
         try {
-          const author = find(includes?.users, { id: author_id });
+          const author = authors.find(({ id }) => id === author_id);
           if (!author) {
             throw new Error('Cannot find author for tweet');
           }
