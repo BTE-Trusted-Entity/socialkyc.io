@@ -1,4 +1,6 @@
-import { ApiResponseError, TweetV1, TwitterApi } from 'twitter-api-v2';
+import { ApiResponseError, TwitterApi } from 'twitter-api-v2';
+
+import { find } from 'lodash-es';
 
 import { configuration } from '../utilities/configuration';
 import { ControlledPromise } from '../utilities/makeControlledPromise';
@@ -7,9 +9,9 @@ import { trackConnectionState } from '../utilities/trackConnectionState';
 import { sleep } from '../utilities/sleep';
 
 const screen_name = 'social_kyc_tech';
-const searchQuery = '@social_kyc_tech';
+const query = '@social_kyc_tech';
 
-const requestsFrequencyMs = 10 * 1000;
+const requestsFrequencyMs = 15 * 1000;
 
 export const twitterConnectionState = trackConnectionState(3 * 60 * 1000);
 
@@ -17,23 +19,27 @@ const client = new TwitterApi(configuration.twitterSecretBearerToken);
 
 export async function canAccessTwitter() {
   try {
-    await client.v1.user({ screen_name });
+    await client.v2.userByUsername(screen_name);
     twitterConnectionState.on();
   } catch (error) {
     twitterConnectionState.off();
     logger.error(error, 'Error connecting to Twitter');
+    throw error;
   }
 }
 
 async function getTweets() {
   try {
-    const { statuses } = await client.v1.get('search/tweets.json', {
-      q: searchQuery,
-      result_type: 'recent',
-      tweet_mode: 'extended',
+    const {
+      data: { data: tweets, includes },
+    } = await client.v2.search({
+      query,
+      expansions: ['author_id'],
+      'tweet.fields': ['author_id', 'text'],
+      'user.fields': ['id', 'username'],
     });
     twitterConnectionState.on();
-    return statuses as TweetV1[];
+    return { tweets, includes };
   } catch (error) {
     twitterConnectionState.off();
     throw error;
@@ -53,15 +59,19 @@ async function rateLimitToBeReset(error: ApiResponseError) {
   await sleep(timeToWaitMs);
 }
 
-async function onTweet(handleTweet: (tweet: TweetV1) => void) {
+async function onTweet(handleTweet: (text: string, username: string) => void) {
   while (true) {
     try {
-      const tweets = await getTweets();
-      for (const tweet of tweets) {
+      const { tweets, includes } = await getTweets();
+      for (const { text, author_id, id } of tweets) {
         try {
-          handleTweet(tweet);
+          const author = find(includes?.users, { id: author_id });
+          if (!author) {
+            throw new Error('Cannot find author for tweet');
+          }
+          handleTweet(text, author.username);
         } catch (error) {
-          logger.error(error, 'Error handling tweet', tweet.id);
+          logger.error(error, 'Error handling tweet', id);
         }
       }
     } catch (error) {
@@ -88,13 +98,13 @@ export const tweetsListeners: Map<string, [string, ControlledPromise<void>]> =
 
 export async function listenForTweets(): Promise<void> {
   // do not await, it runs forever
-  onTweet(({ user: { screen_name }, full_text }) => {
-    const userListeners = tweetsListeners.get(screen_name.toLowerCase());
+  onTweet((text, username) => {
+    const userListeners = tweetsListeners.get(username.toLowerCase());
     if (!userListeners) {
       return;
     }
     const [secret, { resolve }] = userListeners;
-    if (full_text?.includes(secret)) {
+    if (text.includes(secret)) {
       logger.debug('Tweet includes the secret!');
       resolve();
     } else {

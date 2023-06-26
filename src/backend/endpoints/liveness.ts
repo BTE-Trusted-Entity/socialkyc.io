@@ -1,7 +1,7 @@
 import { ServerRoute } from '@hapi/hapi';
 
 import { initKilt, blockchainConnectionState } from '../utilities/initKilt';
-import { canAccessTwitter } from '../twitter/tweets';
+import { canAccessTwitter, twitterConnectionState } from '../twitter/tweets';
 import {
   canAccessAmazonSES,
   checkSesConnection,
@@ -63,6 +63,7 @@ export async function testLiveness() {
 
 function handler() {
   const kiltOk = !blockchainConnectionState.isOffForTooLong();
+  const twitterOk = !twitterConnectionState.isOffForTooLong();
   const sesOk = !sesConnectionState.isOffForTooLong();
   const discordOk = !discordConnectionState.isOffForTooLong();
   const githubOk = !githubConnectionState.isOffForTooLong();
@@ -72,6 +73,7 @@ function handler() {
 
   return (
     kiltOk &&
+    twitterOk &&
     sesOk &&
     discordOk &&
     githubOk &&
