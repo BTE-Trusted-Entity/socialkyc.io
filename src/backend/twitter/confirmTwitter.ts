@@ -11,7 +11,7 @@ import { getSession, setSession } from '../utilities/sessionStorage';
 
 import { paths } from '../endpoints/paths';
 
-import { tweetsListeners } from './tweets';
+import { getTwitterUserId, tweetsListeners } from './tweets';
 import { twitterCType } from './twitterCType';
 
 export type Input = Record<string, never>;
@@ -38,7 +38,9 @@ async function handler(
   }
 
   const twitterHandle = claim.contents['Twitter'] as string;
-  const userListeners = tweetsListeners.get(twitterHandle.toLowerCase());
+  const id = await getTwitterUserId(twitterHandle);
+
+  const userListeners = tweetsListeners.get(id);
   if (!userListeners) {
     throw Boom.notFound(`Twitter handle not found: ${twitterHandle}`);
   }
@@ -46,7 +48,7 @@ async function handler(
   logger.debug('Twitter confirmation waiting for tweet');
   const confirmation = userListeners[1];
   await confirmation.promise;
-  tweetsListeners.delete(twitterHandle.toLowerCase());
+  tweetsListeners.delete(id);
   setSession({ ...session, confirmed: true });
 
   return h.response(claim.contents as unknown as Output);
