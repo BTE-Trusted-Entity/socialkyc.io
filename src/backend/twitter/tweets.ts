@@ -8,10 +8,9 @@ import { trackConnectionState } from '../utilities/trackConnectionState';
 import { sleep } from '../utilities/sleep';
 
 const screen_name = 'social_kyc_tech';
-const mention = '@social_kyc_tech';
 
 const requestsFrequencyMs = 60 * 1000;
-const maxRequests = 2;
+const timeout = requestsFrequencyMs * 2;
 
 export const twitterConnectionState = trackConnectionState(3 * 60 * 1000);
 
@@ -39,13 +38,19 @@ export async function canAccessTwitter() {
   }
 }
 
-async function getLatestUserTweets(userId: string) {
+async function getMentions(userId: string) {
+  logger.trace('Getting Twitter mentions');
   try {
     const {
       data: { data: tweets },
-    } = await client.v2.userTimeline(userId, { max_results: 5 });
-    return tweets;
+    } = await client.v2.userMentionTimeline(userId, {
+      expansions: ['author_id'],
+      max_results: 5,
+    });
+    twitterConnectionState.on();
+    return { tweets };
   } catch (error) {
+    twitterConnectionState.off();
     throw error;
   }
 }
@@ -63,40 +68,44 @@ async function rateLimitToBeReset(error: ApiResponseError) {
   await sleep(timeToWaitMs);
 }
 
-/** Map of Twitter user IDs to the codes and promises waiting for the tweet */
-export const tweetsListeners: Map<string, [string, ControlledPromise<void>]> =
-  new Map();
+/** Map of Twitter user IDs to the codes, timestamps, and promises waiting for the tweet */
+export const tweetsListeners: Map<
+  string,
+  { secret: string; confirmation: ControlledPromise<void>; created: Date }
+> = new Map();
 
-export async function listenForUserTweets(userId: string): Promise<void> {
-  let requests = 0;
-
-  const userListeners = tweetsListeners.get(userId);
-  if (!userListeners) {
-    return;
+function allListenersHaveExpired() {
+  for (const [id, { created }] of tweetsListeners.entries()) {
+    const expiresOn = created.getTime() + timeout;
+    if (expiresOn < Date.now()) {
+      tweetsListeners.delete(id);
+      logger.trace(`Twitter listener for ${id} has expired`);
+    }
   }
-  const [secret, { resolve }] = userListeners;
+  return tweetsListeners.size === 0;
+}
 
-  while (requests < maxRequests) {
-    // wait before the next request
+async function onTweet(handleTweet: (text: string, userId: string) => void) {
+  const myId = await getTwitterUserId(screen_name);
+
+  while (true) {
+    // wait before the request
     await sleep(requestsFrequencyMs);
 
-    try {
-      const tweets = await getLatestUserTweets(userId);
-      for (const { text } of tweets) {
-        if (!text.includes(mention)) {
-          logger.trace(`Tweet does not mention ${mention}`);
-          continue;
-        }
-        if (!text.includes(secret)) {
-          logger.trace(`Tweet does not include the secret: ${secret}`);
-          continue;
-        }
-        logger.debug('Tweet includes the secret!');
-        resolve();
-        return;
-      }
+    if (allListenersHaveExpired()) {
+      logger.trace('Skipping Twitter check');
+      continue;
+    }
 
-      requests++;
+    try {
+      const { tweets } = await getMentions(myId);
+      for (const { text, author_id, id } of tweets) {
+        try {
+          handleTweet(text, author_id as string);
+        } catch (error) {
+          logger.error(error, 'Error handling tweet', id);
+        }
+      }
     } catch (error) {
       if (error instanceof ApiResponseError && error.rateLimitError) {
         try {
@@ -110,6 +119,22 @@ export async function listenForUserTweets(userId: string): Promise<void> {
       logger.error(error, 'Unexpected TwitterAPI error');
     }
   }
+}
 
-  logger.trace('Tweet not found');
+export async function listenForTweets(): Promise<void> {
+  // do not await, it runs forever
+  onTweet((text, userId) => {
+    const userListeners = tweetsListeners.get(userId);
+    if (!userListeners) {
+      return;
+    }
+    const { secret, confirmation } = userListeners;
+    if (text.includes(secret)) {
+      logger.debug('Tweet includes the secret!');
+      tweetsListeners.delete(userId);
+      confirmation.resolve();
+    } else {
+      logger.trace(`Tweet does not include the secret: ${secret}`);
+    }
+  });
 }

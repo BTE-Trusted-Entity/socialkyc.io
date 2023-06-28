@@ -46,9 +46,8 @@ async function handler(
   }
 
   logger.debug('Twitter confirmation waiting for tweet');
-  const confirmation = userListeners[1];
+  const { confirmation } = userListeners;
   await confirmation.promise;
-  tweetsListeners.delete(id);
   setSession({ ...session, confirmed: true });
 
   return h.response(claim.contents as unknown as Output);
