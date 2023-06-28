@@ -22,7 +22,8 @@ export async function getTwitterUserId(username: string) {
       data: { id },
     } = await client.v2.userByUsername(username);
     return id;
-  } catch {
+  } catch (error) {
+    logger.debug(error);
     throw Boom.notFound('Twitter username not found');
   }
 }
