@@ -16,7 +16,7 @@ import { paths } from '../endpoints/paths';
 import { makeControlledPromise } from '../utilities/makeControlledPromise';
 
 import { twitterCType } from './twitterCType';
-import { tweetsListeners } from './tweets';
+import { getTwitterUserId, tweetsListeners } from './tweets';
 
 const zodPayload = z.object({
   twitterHandle: z.string(),
@@ -51,7 +51,10 @@ async function handler(request: Request): Promise<ResponseObject | string> {
 
   const confirmation = makeControlledPromise<void>();
   confirmation.promise.catch((error) => logger.error(error));
-  tweetsListeners.set(twitterHandle.toLowerCase(), [secret, confirmation]);
+
+  const id = await getTwitterUserId(twitterHandle);
+  tweetsListeners.set(id, { secret, confirmation, created: new Date() });
+
   logger.debug('Tweets listener added');
 
   return secret as Output;

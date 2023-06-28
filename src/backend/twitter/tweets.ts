@@ -1,4 +1,5 @@
 import { ApiResponseError, TwitterApi } from 'twitter-api-v2';
+import * as Boom from '@hapi/boom';
 
 import { configuration } from '../utilities/configuration';
 import { ControlledPromise } from '../utilities/makeControlledPromise';
@@ -7,17 +8,28 @@ import { trackConnectionState } from '../utilities/trackConnectionState';
 import { sleep } from '../utilities/sleep';
 
 const screen_name = 'social_kyc_tech';
-const query = '@social_kyc_tech';
 
-const requestsFrequencyMs = 15 * 1000;
+const requestsFrequencyMs = 60 * 1000;
+const timeout = requestsFrequencyMs * 2;
 
 export const twitterConnectionState = trackConnectionState(3 * 60 * 1000);
 
 const client = new TwitterApi(configuration.twitterSecretBearerToken);
 
+export async function getTwitterUserId(username: string) {
+  try {
+    const {
+      data: { id },
+    } = await client.v2.userByUsername(username);
+    return id;
+  } catch {
+    throw Boom.notFound('Twitter username not found');
+  }
+}
+
 export async function canAccessTwitter() {
   try {
-    await client.v2.userByUsername(screen_name);
+    await getTwitterUserId(screen_name);
     twitterConnectionState.on();
   } catch (error) {
     twitterConnectionState.off();
@@ -26,21 +38,17 @@ export async function canAccessTwitter() {
   }
 }
 
-async function getTweets() {
+async function getMentions(userId: string) {
+  logger.trace('Getting Twitter mentions');
   try {
     const {
-      data: { data: tweets, includes },
-    } = await client.v2.search({
-      query,
+      data: { data: tweets },
+    } = await client.v2.userMentionTimeline(userId, {
       expansions: ['author_id'],
-      'tweet.fields': ['author_id', 'text'],
-      'user.fields': ['id', 'username'],
+      max_results: 5,
     });
-    if (!includes?.users) {
-      throw new Error('Tweet authors missing');
-    }
     twitterConnectionState.on();
-    return { tweets, authors: includes.users };
+    return { tweets };
   } catch (error) {
     twitterConnectionState.off();
     throw error;
@@ -60,17 +68,40 @@ async function rateLimitToBeReset(error: ApiResponseError) {
   await sleep(timeToWaitMs);
 }
 
-async function onTweet(handleTweet: (text: string, username: string) => void) {
+/** Map of Twitter user IDs to the codes, timestamps, and promises waiting for the tweet */
+export const tweetsListeners: Map<
+  string,
+  { secret: string; confirmation: ControlledPromise<void>; created: Date }
+> = new Map();
+
+function allListenersHaveExpired() {
+  for (const [id, { created }] of tweetsListeners.entries()) {
+    const expiresOn = created.getTime() + timeout;
+    if (expiresOn < Date.now()) {
+      tweetsListeners.delete(id);
+      logger.trace(`Twitter listener for ${id} has expired`);
+    }
+  }
+  return tweetsListeners.size === 0;
+}
+
+async function onTweet(handleTweet: (text: string, userId: string) => void) {
+  const myId = await getTwitterUserId(screen_name);
+
   while (true) {
+    // wait before the request
+    await sleep(requestsFrequencyMs);
+
+    if (allListenersHaveExpired()) {
+      logger.trace('Skipping Twitter check');
+      continue;
+    }
+
     try {
-      const { tweets, authors } = await getTweets();
+      const { tweets } = await getMentions(myId);
       for (const { text, author_id, id } of tweets) {
         try {
-          const author = authors.find(({ id }) => id === author_id);
-          if (!author) {
-            throw new Error('Cannot find author for tweet');
-          }
-          handleTweet(text, author.username);
+          handleTweet(text, author_id as string);
         } catch (error) {
           logger.error(error, 'Error handling tweet', id);
         }
@@ -87,27 +118,21 @@ async function onTweet(handleTweet: (text: string, username: string) => void) {
 
       logger.error(error, 'Unexpected TwitterAPI error');
     }
-
-    // wait before the next request
-    await sleep(requestsFrequencyMs);
   }
 }
 
-/** Map of Twitter usernames to the codes and promises waiting for the tweet */
-export const tweetsListeners: Map<string, [string, ControlledPromise<void>]> =
-  new Map();
-
 export async function listenForTweets(): Promise<void> {
   // do not await, it runs forever
-  onTweet((text, username) => {
-    const userListeners = tweetsListeners.get(username.toLowerCase());
+  onTweet((text, userId) => {
+    const userListeners = tweetsListeners.get(userId);
     if (!userListeners) {
       return;
     }
-    const [secret, { resolve }] = userListeners;
+    const { secret, confirmation } = userListeners;
     if (text.includes(secret)) {
       logger.debug('Tweet includes the secret!');
-      resolve();
+      tweetsListeners.delete(userId);
+      confirmation.resolve();
     } else {
       logger.trace(`Tweet does not include the secret: ${secret}`);
     }
