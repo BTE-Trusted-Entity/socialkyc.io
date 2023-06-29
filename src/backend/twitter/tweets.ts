@@ -39,11 +39,9 @@ export async function canAccessTwitter() {
   }
 }
 
-async function getMentions() {
+async function getMentions(userId: string) {
   logger.trace('Getting Twitter mentions');
   try {
-    // TODO: revert this commit to only fetch ID once
-    const userId = await getTwitterUserId(screen_name);
     const {
       data: { data: tweets },
     } = await client.v2.userMentionTimeline(userId, {
@@ -89,6 +87,8 @@ function allListenersHaveExpired() {
 }
 
 async function onTweet(handleTweet: (text: string, userId: string) => void) {
+  const myId = await getTwitterUserId(screen_name);
+
   while (true) {
     // wait before the request
     await sleep(requestsFrequencyMs);
@@ -99,7 +99,7 @@ async function onTweet(handleTweet: (text: string, userId: string) => void) {
     }
 
     try {
-      const { tweets } = await getMentions();
+      const { tweets } = await getMentions(myId);
       for (const { text, author_id, id } of tweets) {
         try {
           handleTweet(text, author_id as string);
