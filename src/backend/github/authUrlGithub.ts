@@ -5,7 +5,7 @@ import { githubEndpoints } from './githubEndpoints';
 export async function authUrlGithub(secret: string): Promise<string> {
   const searchParams = {
     client_id: configuration.github.clientId,
-    scope: 'user',
+    scope: 'read:user',
     state: secret,
     redirect_uri: githubEndpoints.redirectUri,
   };
