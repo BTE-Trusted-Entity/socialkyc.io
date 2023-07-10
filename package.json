@@ -70,7 +70,7 @@
     "@types/hapi__basic": "^5.1.3",
     "@types/hapi__hapi": "^20.0.13",
     "@types/hapi__inert": "^5.2.6",
-    "@types/jest": "^29.5.2",
+    "@types/jest": "^29.5.3",
     "@types/lodash-es": "^4.17.7",
     "@types/node": "^18.16.19",
     "@types/react": "^18.2.14",
