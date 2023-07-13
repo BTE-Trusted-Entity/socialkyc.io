@@ -35,7 +35,8 @@ html,
   border-radius: 15px;
 
   /* Absolutely position the image for header, because the header cannot have negative margin in webmails */
-  background: url('../views/Attester/email.png') no-repeat left -10rem top 2.125rem/2.375rem,
+  background:
+    url('../views/Attester/email.png') no-repeat left -10rem top 2.125rem/2.375rem,
     #3a1a4c url('../images/background-email.svg') no-repeat center bottom;
   padding: 2rem;
   font-size: 0.875rem;
@@ -92,7 +93,9 @@ html,
   .main {
     padding-left: 4rem;
     padding-right: 4rem;
-    background-position: left 1.25rem top 2.125rem, center bottom;
+    background-position:
+      left 1.25rem top 2.125rem,
+      center bottom;
   }
 }
 
@@ -104,6 +107,8 @@ html,
   .main {
     padding-left: 6rem;
     padding-right: 6rem;
-    background-position: left 3.25rem top 2.125rem, center bottom;
+    background-position:
+      left 3.25rem top 2.125rem,
+      center bottom;
   }
 }

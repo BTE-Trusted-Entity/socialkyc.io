@@ -27,9 +27,12 @@ export async function canAccessTwitch() {
 }
 
 export function checkTwitchConnection() {
-  setInterval(async () => {
-    try {
-      await canAccessTwitch();
-    } catch {}
-  }, 5 * 60 * 1000);
+  setInterval(
+    async () => {
+      try {
+        await canAccessTwitch();
+      } catch {}
+    },
+    5 * 60 * 1000,
+  );
 }

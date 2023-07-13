@@ -31,9 +31,12 @@ export async function canAccessTelegram() {
 }
 
 export function checkTelegramConnection() {
-  setInterval(async () => {
-    try {
-      await canAccessTelegram();
-    } catch {}
-  }, 5 * 60 * 1000);
+  setInterval(
+    async () => {
+      try {
+        await canAccessTelegram();
+      } catch {}
+    },
+    5 * 60 * 1000,
+  );
 }

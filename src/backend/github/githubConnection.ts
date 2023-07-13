@@ -26,9 +26,12 @@ export async function canAccessGitHub() {
 }
 
 export function checkGitHubConnection() {
-  setInterval(async () => {
-    try {
-      await canAccessGitHub();
-    } catch {}
-  }, 5 * 60 * 1000);
+  setInterval(
+    async () => {
+      try {
+        await canAccessGitHub();
+      } catch {}
+    },
+    5 * 60 * 1000,
+  );
 }

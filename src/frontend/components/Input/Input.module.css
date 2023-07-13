@@ -7,7 +7,8 @@
   border-radius: 0.625rem;
   background: rgb(193 84 118 / 50%);
   color: var(--color-white);
-  box-shadow: 2px 2px 4px 0 rgb(var(--color-black-rgb) / 30%),
+  box-shadow:
+    2px 2px 4px 0 rgb(var(--color-black-rgb) / 30%),
     -2px -2px 4px 0 rgb(var(--color-white-rgb) / 30%);
   margin-bottom: 1.25rem;
   margin-top: 0.25rem;

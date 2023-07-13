@@ -36,9 +36,12 @@ export async function canAccessAmazonSES() {
 }
 
 export function checkSesConnection() {
-  setInterval(async () => {
-    try {
-      await canAccessAmazonSES();
-    } catch {}
-  }, 10 * 60 * 1000);
+  setInterval(
+    async () => {
+      try {
+        await canAccessAmazonSES();
+      } catch {}
+    },
+    10 * 60 * 1000,
+  );
 }
