@@ -29,9 +29,12 @@ export async function canAccessDiscord() {
 }
 
 export function checkDiscordConnection() {
-  setInterval(async () => {
-    try {
-      await canAccessDiscord();
-    } catch {}
-  }, 5 * 60 * 1000);
+  setInterval(
+    async () => {
+      try {
+        await canAccessDiscord();
+      } catch {}
+    },
+    5 * 60 * 1000,
+  );
 }

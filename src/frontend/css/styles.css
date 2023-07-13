@@ -100,7 +100,8 @@ p {
     ),
     rgb(32 1 49 / 60%);
   padding: 2rem;
-  box-shadow: -2px -2px 9px 0 rgb(var(--color-white-rgb) / 20%),
+  box-shadow:
+    -2px -2px 9px 0 rgb(var(--color-white-rgb) / 20%),
     2px 2px 9px 0 rgb(var(--color-black-rgb) / 20%);
   margin-bottom: 5rem;
 }
@@ -175,7 +176,8 @@ p {
   text-transform: uppercase;
   color: var(--color-white);
   background-color: var(--color-magenta);
-  box-shadow: 2px 2px 3px 1px rgb(var(--color-black-rgb) / 15%),
+  box-shadow:
+    2px 2px 3px 1px rgb(var(--color-black-rgb) / 15%),
     -2px -2px 3px 1px rgb(var(--color-white-rgb) / 30%);
   text-decoration: none;
   margin: 0.2rem auto;

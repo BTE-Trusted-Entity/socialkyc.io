@@ -32,9 +32,12 @@ export async function canAccessYoutube() {
 }
 
 export function checkYoutubeConnection() {
-  setInterval(async () => {
-    try {
-      await canAccessYoutube();
-    } catch {}
-  }, 5 * 60 * 1000);
+  setInterval(
+    async () => {
+      try {
+        await canAccessYoutube();
+      } catch {}
+    },
+    5 * 60 * 1000,
+  );
 }
