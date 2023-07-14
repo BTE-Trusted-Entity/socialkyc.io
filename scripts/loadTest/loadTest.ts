@@ -107,7 +107,7 @@ async function createSession() {
 }
 
 (async () => {
-  await connect('wss://peregrine.kilt.io/parachain-public-ws');
+  await connect('wss://peregrine.kilt.io');
 
   const { sessionId: firstSessionId, dAppEncryptionKeyUri } =
     await createSession();
