@@ -9,9 +9,15 @@ const htmlVariants: Record<string, string[]> = {};
 
 export async function getHtmlVariant(file: string): Promise<string> {
   if (!htmlVariants[file] || htmlVariants[file].length === 0) {
-    const template = await readFile(join(configuration.distFolder, file), {
+    const baseTemplate = await readFile(join(configuration.distFolder, file), {
       encoding: 'utf-8',
     });
+    const template = !configuration.isTestEnvironment
+      ? baseTemplate
+      : baseTemplate.replace(
+          'data-test-environment=""',
+          'data-test-environment="true"',
+        );
     htmlVariants[file] = [
       template,
       template.replace('hexagon1', 'hexagon2'),

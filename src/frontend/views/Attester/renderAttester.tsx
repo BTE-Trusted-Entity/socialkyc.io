@@ -1,6 +1,8 @@
 import { createRoot } from 'react-dom/client';
 import { MemoryRouter } from 'react-router-dom';
 
+import { checkTestEnvironment } from '../../utilities/checkTestEnvironment';
+
 import { Attester } from './Attester';
 
 function getConfirmation(message: string, callback: (ok: boolean) => void) {
@@ -29,4 +31,5 @@ function renderAttester() {
   );
 }
 
+checkTestEnvironment();
 renderAttester();
