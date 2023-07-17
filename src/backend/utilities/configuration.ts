@@ -114,6 +114,7 @@ export const configuration = {
   port: env.PORT || 3000,
   blockchainEndpoint,
   isProduction: env.NODE_ENV === 'production',
+  isTestEnvironment: env.IS_TEST_ENV === 'true',
   maintenanceMode,
   baseUri,
   distFolder: path.join(cwd(), 'dist', 'frontend'),
