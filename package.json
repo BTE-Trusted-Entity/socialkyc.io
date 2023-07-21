@@ -129,5 +129,6 @@
       "distDir": "dist/backend",
       "outputFormat": "esmodule"
     }
-  }
+  },
+  "packageManager": "yarn@3.6.1"
 }
