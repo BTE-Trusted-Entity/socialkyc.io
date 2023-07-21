@@ -9,8 +9,10 @@ RUN apk add --update --no-cache python3 g++ make && ln -sf python3 /usr/bin/pyth
 
 # install build dependencies
 # @parcel/css-linux-x64-musl is not optional but marked so
-COPY package.json yarn.lock ./
-RUN yarn install --frozen-lockfile --ignore-optional && yarn add --ignore-optional --dev @parcel/css-linux-x64-musl && yarn cache clean --all
+COPY package.json yarn.lock .yarnrc.yml ./
+COPY .yarn ./.yarn/
+
+RUN yarn install --immutable && yarn add --dev @parcel/css-linux-x64-musl && yarn cache clean --all
 
 # get the sources and build the app
 COPY src ./src
@@ -28,12 +30,14 @@ ENV PORT 4000
 ENV NODE_ENV production
 
 # get the dependencies and sources
-COPY package.json yarn.lock ./
+COPY package.json yarn.lock .yarnrc.yml ./
+COPY .yarn ./.yarn/
+
 # install the production dependencies only (depends on NODE_ENV)
-RUN yarn install --frozen-lockfile --ignore-optional && yarn cache clean --all
+RUN yarn install --immutable && yarn cache clean --all
 
 # carry over the built code
 COPY --from=builder /app/dist dist
 
 EXPOSE 3000
-ENTRYPOINT nginx; exec yarn --silent start
+ENTRYPOINT nginx; exec yarn start
