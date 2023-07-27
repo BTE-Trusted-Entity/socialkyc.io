@@ -42,7 +42,7 @@
     "pino": "^8.14.1",
     "prom-client": "^14.2.0",
     "punycode": "^2.3.0",
-    "rate-limiter-flexible": "^2.4.1",
+    "rate-limiter-flexible": "^2.4.2",
     "react": "^18.2.0",
     "react-dom": "^18.2.0",
     "react-router-dom": "^5.3.4",
