@@ -107,9 +107,9 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@aws-sdk/client-ses@npm:^3.388.0":
-  version: 3.388.0
-  resolution: "@aws-sdk/client-ses@npm:3.388.0"
+"@aws-sdk/client-ses@npm:^3.390.0":
+  version: 3.390.0
+  resolution: "@aws-sdk/client-ses@npm:3.390.0"
   dependencies:
     "@aws-crypto/sha256-browser": 3.0.0
     "@aws-crypto/sha256-js": 3.0.0
@@ -149,7 +149,7 @@ __metadata:
     "@smithy/util-waiter": ^2.0.2
     fast-xml-parser: 4.2.5
     tslib: ^2.5.0
-  checksum: 4cdff7192546d6c241b9e655d9f3e2bed064e9e7f204f3f3638f9a5048b4b2012a9f39edec732b629ea51f0897b980fb35cfcf8529c7c2af2059dcc00654e682
+  checksum: 882cf30c6250340b71cac509517b35344387c512075acf71a7c8173c97bc5f9a04af48ca5fee8088b863088f978a218c5e19ebfd83f7584165dba00f6503fbde
   languageName: node
   linkType: hard
 
@@ -16837,7 +16837,7 @@ __metadata:
   version: 0.0.0-use.local
   resolution: "root-workspace-0b6124@workspace:."
   dependencies:
-    "@aws-sdk/client-ses": ^3.388.0
+    "@aws-sdk/client-ses": ^3.390.0
     "@babel/core": ^7.22.10
     "@babel/preset-env": ^7.22.10
     "@hapi/basic": ^7.0.2
