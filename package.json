@@ -3,7 +3,7 @@
   "license": "UNLICENSED",
   "type": "module",
   "engines": {
-    "node": ">= v18.17.0"
+    "node": ">= v18.17.1"
   },
   "scripts": {
     "prettify": "prettier --write \"src/**/*.ts*\" \"src/**/*.css*\"",
