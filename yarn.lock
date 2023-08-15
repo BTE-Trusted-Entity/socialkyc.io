@@ -5798,32 +5798,6 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@storybook/addon-links@npm:^7.3.0":
-  version: 7.3.0
-  resolution: "@storybook/addon-links@npm:7.3.0"
-  dependencies:
-    "@storybook/client-logger": 7.3.0
-    "@storybook/core-events": 7.3.0
-    "@storybook/csf": ^0.1.0
-    "@storybook/global": ^5.0.0
-    "@storybook/manager-api": 7.3.0
-    "@storybook/preview-api": 7.3.0
-    "@storybook/router": 7.3.0
-    "@storybook/types": 7.3.0
-    prop-types: ^15.7.2
-    ts-dedent: ^2.0.0
-  peerDependencies:
-    react: ^16.8.0 || ^17.0.0 || ^18.0.0
-    react-dom: ^16.8.0 || ^17.0.0 || ^18.0.0
-  peerDependenciesMeta:
-    react:
-      optional: true
-    react-dom:
-      optional: true
-  checksum: 3447d39c08a369f93e00122282d3f85a604fd40b55c5c01065e925717af6fc317c0f2c12ef1936eeef4b460c379ca327cb86b23d53b32fd1f035ee225707470d
-  languageName: node
-  linkType: hard
-
 "@storybook/addon-toolbars@npm:^7.3.0":
   version: 7.3.0
   resolution: "@storybook/addon-toolbars@npm:7.3.0"
@@ -5867,20 +5841,6 @@ __metadata:
     react-dom:
       optional: true
   checksum: c4ca316d039149189c28d4f74fd4cda2a0d975a66a2e336edaa26d0f317f4521e7c9fdc2a7cf11656a6ccd1cf99a16683d70deedfd1ce8d72d731d503c27312b
-  languageName: node
-  linkType: hard
-
-"@storybook/addons@npm:^7.3.0":
-  version: 7.3.0
-  resolution: "@storybook/addons@npm:7.3.0"
-  dependencies:
-    "@storybook/manager-api": 7.3.0
-    "@storybook/preview-api": 7.3.0
-    "@storybook/types": 7.3.0
-  peerDependencies:
-    react: ^16.8.0 || ^17.0.0 || ^18.0.0
-    react-dom: ^16.8.0 || ^17.0.0 || ^18.0.0
-  checksum: d86443b2c0bfed653ca58e53215e4d2eb481c7eaba0ac57ca9f10cc6463f86698934f846f9a77269a4a235a49c618cbf96e52d2ea6bb5ae138f7cccfa43d441f
   languageName: node
   linkType: hard
 
@@ -16570,10 +16530,8 @@ __metadata:
     "@polkadot/util-crypto": ^12.2.2
     "@storybook/addon-actions": ^7.3.0
     "@storybook/addon-controls": ^7.3.0
-    "@storybook/addon-links": ^7.3.0
     "@storybook/addon-toolbars": ^7.3.0
     "@storybook/addon-viewport": ^7.3.0
-    "@storybook/addons": ^7.3.0
     "@storybook/react": ^7.3.0
     "@storybook/react-webpack5": ^7.3.0
     "@testing-library/dom": ^9.3.1
