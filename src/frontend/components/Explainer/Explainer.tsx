@@ -1,14 +1,10 @@
-import { useState, useCallback, useRef, ReactNode } from 'react';
+import { PropsWithChildren, useCallback, useRef, useState } from 'react';
 
 import * as styles from './Explainer.module.css';
 
 import { useHandleOutsideClick } from '../../utilities/useHandleOutsideClick';
 
-interface Props {
-  children: ReactNode;
-}
-
-export function Explainer({ children }: Props): JSX.Element {
+export function Explainer({ children }: PropsWithChildren) {
   const [showExplainer, setShowExplainer] = useState(false);
 
   const hideExplainer = useCallback(() => setShowExplainer(false), []);

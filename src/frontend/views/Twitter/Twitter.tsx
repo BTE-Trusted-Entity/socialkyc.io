@@ -20,7 +20,7 @@ interface Props {
   session: Session;
 }
 
-export function Twitter({ session }: Props): JSX.Element {
+export function Twitter({ session }: Props) {
   const [processing, setProcessing] = useState(false);
   const [status, setStatus] = useState<AttestationStatus>('none');
   const [flowError, setFlowError] = useState<FlowError>();

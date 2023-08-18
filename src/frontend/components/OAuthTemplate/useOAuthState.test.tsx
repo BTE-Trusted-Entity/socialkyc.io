@@ -2,6 +2,7 @@
 import { afterEach, beforeEach, describe, it, jest } from '@jest/globals';
 import userEvent from '@testing-library/user-event';
 import { IEncryptedMessage } from '@kiltprotocol/sdk-js';
+import { JSX } from 'react';
 
 import {
   act,

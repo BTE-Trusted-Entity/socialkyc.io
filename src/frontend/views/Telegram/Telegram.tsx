@@ -25,7 +25,7 @@ interface Props {
   session: Session;
 }
 
-export function Telegram({ session }: Props): JSX.Element {
+export function Telegram({ session }: Props) {
   const [flowError, setFlowError] = useState<FlowError>();
   const [status, setStatus] = useState<AttestationStatus>('none');
   const [processing, setProcessing] = useState(false);

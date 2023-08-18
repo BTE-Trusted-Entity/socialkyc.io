@@ -15,12 +15,7 @@ const classNames = {
   checkmark: styles.checkmark,
 };
 
-export function DetailedMessage({
-  icon,
-  heading,
-  message,
-  details,
-}: Props): JSX.Element {
+export function DetailedMessage({ icon, heading, message, details }: Props) {
   const iconClassName = icon && classNames[icon];
 
   return (

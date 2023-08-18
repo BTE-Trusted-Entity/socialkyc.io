@@ -16,7 +16,7 @@ interface Props {
   session: Session;
 }
 
-export function Email({ session }: Props): JSX.Element {
+export function Email({ session }: Props) {
   const [inputError, setInputError] = useState<string>();
 
   const { secret } = useValuesFromRedirectUri(true);

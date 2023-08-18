@@ -4,7 +4,7 @@ import * as styles from './LinkBack.module.css';
 
 import { paths } from '../../paths';
 
-export function LinkBack(): JSX.Element {
+export function LinkBack() {
   return (
     <Link to={paths.home} className={styles.link}>
       Back to list

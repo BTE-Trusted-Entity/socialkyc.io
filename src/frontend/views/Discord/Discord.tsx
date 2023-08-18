@@ -17,7 +17,7 @@ interface Props {
   session: Session;
 }
 
-export function Discord({ session }: Props): JSX.Element {
+export function Discord({ session }: Props) {
   const discordApi = useDiscordApi(session.sessionId);
 
   const {

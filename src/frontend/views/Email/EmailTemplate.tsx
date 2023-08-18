@@ -60,7 +60,7 @@ export function EmailTemplate({
   inputError,
   flowError,
   profile,
-}: Props): JSX.Element {
+}: Props) {
   const [emailInput, setEmailInput] = useState('');
   const unicodeEmail = profile?.Email || emailInput;
 

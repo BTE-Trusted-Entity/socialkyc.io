@@ -22,7 +22,7 @@ interface Props {
   session: Session;
 }
 
-export function Youtube({ session }: Props): JSX.Element {
+export function Youtube({ session }: Props) {
   const { code, secret } = useValuesFromRedirectUri();
   const initialStatus = code && secret ? 'authorizing' : 'none';
 

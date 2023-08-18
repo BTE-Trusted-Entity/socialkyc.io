@@ -21,11 +21,11 @@ const profileMock: TwitterProfile = {
   Twitter: 'social_kyc_tech',
 };
 
-export function Start(): JSX.Element {
+export function Start() {
   return <TwitterTemplate status="none" processing={false} {...actions} />;
 }
 
-export function Authenticating(): JSX.Element {
+export function Authenticating() {
   return (
     <TwitterTemplate
       status="authenticating"
@@ -36,7 +36,7 @@ export function Authenticating(): JSX.Element {
   );
 }
 
-export function Authenticated(): JSX.Element {
+export function Authenticated() {
   return (
     <TwitterTemplate
       status="authenticated"
@@ -47,7 +47,7 @@ export function Authenticated(): JSX.Element {
   );
 }
 
-export function QuoteOpen(): JSX.Element {
+export function QuoteOpen() {
   return (
     <TwitterTemplate
       status="authenticated"
@@ -58,15 +58,15 @@ export function QuoteOpen(): JSX.Element {
   );
 }
 
-export function Attesting(): JSX.Element {
+export function Attesting() {
   return <TwitterTemplate status="attesting" processing={false} {...actions} />;
 }
 
-export function Ready(): JSX.Element {
+export function Ready() {
   return <TwitterTemplate status="ready" processing={false} {...actions} />;
 }
 
-export function Closed(): JSX.Element {
+export function Closed() {
   return (
     <TwitterTemplate
       status="authenticated"
@@ -78,7 +78,7 @@ export function Closed(): JSX.Element {
   );
 }
 
-export function UnexpectedError(): JSX.Element {
+export function UnexpectedError() {
   return (
     <TwitterTemplate
       status="error"
@@ -90,7 +90,7 @@ export function UnexpectedError(): JSX.Element {
   );
 }
 
-export function Timeout(): JSX.Element {
+export function Timeout() {
   return (
     <TwitterTemplate
       status="error"

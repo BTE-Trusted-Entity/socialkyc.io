@@ -1,6 +1,6 @@
 import { DetailedMessage } from '../DetailedMessage/DetailedMessage';
 
-export function SigningErrorClosed(): JSX.Element {
+export function SigningErrorClosed() {
   return (
     <DetailedMessage
       icon="exclamation"
