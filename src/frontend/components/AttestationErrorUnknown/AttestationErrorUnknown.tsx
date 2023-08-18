@@ -1,6 +1,6 @@
 import { DetailedMessage } from '../DetailedMessage/DetailedMessage';
 
-export function AttestationErrorUnknown(): JSX.Element {
+export function AttestationErrorUnknown() {
   return (
     <DetailedMessage
       icon="exclamation"

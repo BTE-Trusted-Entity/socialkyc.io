@@ -3,7 +3,7 @@ import { Fragment } from 'react';
 import { DetailedMessage } from '../DetailedMessage/DetailedMessage';
 import { SlowAttestation } from '../SlowAttestation/SlowAttestation';
 
-export function AttestationProcessAnchoring(): JSX.Element {
+export function AttestationProcessAnchoring() {
   return (
     <Fragment>
       <DetailedMessage

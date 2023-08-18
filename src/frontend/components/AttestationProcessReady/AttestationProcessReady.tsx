@@ -1,6 +1,6 @@
 import { DetailedMessage } from '../DetailedMessage/DetailedMessage';
 
-export function AttestationProcessReady(): JSX.Element {
+export function AttestationProcessReady() {
   return (
     <DetailedMessage
       icon="checkmark"

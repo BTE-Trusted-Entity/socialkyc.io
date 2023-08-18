@@ -16,7 +16,7 @@ interface Props {
   session: Session;
 }
 
-export function Twitch({ session }: Props): JSX.Element {
+export function Twitch({ session }: Props) {
   const twitchApi = useTwitchApi(session.sessionId);
 
   const {

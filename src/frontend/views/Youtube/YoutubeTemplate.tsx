@@ -49,7 +49,7 @@ export function YoutubeTemplate({
   authUrl,
   flowError,
   channel,
-}: Props): JSX.Element {
+}: Props) {
   const preventNavigation = usePreventNavigation(
     processing || ['authorizing', 'authorized', 'attesting'].includes(status),
   );

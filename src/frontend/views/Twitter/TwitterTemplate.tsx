@@ -63,7 +63,7 @@ export function TwitterTemplate({
   flowError,
   secret,
   profile,
-}: Props): JSX.Element {
+}: Props) {
   const [twitterHandle, setTwitterHandle] = useState('');
 
   const handleInput = useCallback(

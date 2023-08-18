@@ -4,7 +4,7 @@ import { DetailedMessage } from '../DetailedMessage/DetailedMessage';
 
 const expectedDuration = 40 * 1000;
 
-export function SlowAttestation(): JSX.Element | null {
+export function SlowAttestation() {
   const [slow, setSlow] = useState(false);
 
   useEffect(() => {

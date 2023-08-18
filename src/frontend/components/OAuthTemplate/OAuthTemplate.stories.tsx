@@ -31,15 +31,15 @@ const profileMock = (
   </Fragment>
 );
 
-export function Start(): JSX.Element {
+export function Start() {
   return <OAuthTemplate status="none" processing={false} {...actions} />;
 }
 
-export function UrlReady(): JSX.Element {
+export function UrlReady() {
   return <OAuthTemplate status="urlReady" processing={false} {...actions} />;
 }
 
-export function AuthUrlLoader(): JSX.Element {
+export function AuthUrlLoader() {
   return (
     <OAuthTemplate
       status="urlReady"
@@ -50,11 +50,11 @@ export function AuthUrlLoader(): JSX.Element {
   );
 }
 
-export function Authorizing(): JSX.Element {
+export function Authorizing() {
   return <OAuthTemplate status="authorizing" processing={false} {...actions} />;
 }
 
-export function Authorized(): JSX.Element {
+export function Authorized() {
   return (
     <OAuthTemplate
       status="authorized"
@@ -65,7 +65,7 @@ export function Authorized(): JSX.Element {
   );
 }
 
-export function QuoteOpen(): JSX.Element {
+export function QuoteOpen() {
   return (
     <OAuthTemplate
       status="authorized"
@@ -76,15 +76,15 @@ export function QuoteOpen(): JSX.Element {
   );
 }
 
-export function Attesting(): JSX.Element {
+export function Attesting() {
   return <OAuthTemplate status="attesting" processing={false} {...actions} />;
 }
 
-export function Ready(): JSX.Element {
+export function Ready() {
   return <OAuthTemplate status="ready" processing={false} {...actions} />;
 }
 
-export function UnexpectedError(): JSX.Element {
+export function UnexpectedError() {
   return (
     <OAuthTemplate
       status="error"
@@ -96,7 +96,7 @@ export function UnexpectedError(): JSX.Element {
   );
 }
 
-export function Closed(): JSX.Element {
+export function Closed() {
   return (
     <OAuthTemplate
       status="authorized"
@@ -108,7 +108,7 @@ export function Closed(): JSX.Element {
   );
 }
 
-export function Unauthorized(): JSX.Element {
+export function Unauthorized() {
   return (
     <OAuthTemplate
       status="error"

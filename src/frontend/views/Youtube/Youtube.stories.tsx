@@ -22,21 +22,21 @@ const channelMock: YoutubeChannel = {
   'Channel ID': '1234556789',
 };
 
-export function Start(): JSX.Element {
+export function Start() {
   return <YoutubeTemplate status="none" processing={false} {...actions} />;
 }
 
-export function UrlReady(): JSX.Element {
+export function UrlReady() {
   return <YoutubeTemplate status="urlReady" processing={false} {...actions} />;
 }
 
-export function Authorizing(): JSX.Element {
+export function Authorizing() {
   return (
     <YoutubeTemplate status="authorizing" processing={false} {...actions} />
   );
 }
 
-export function Authorized(): JSX.Element {
+export function Authorized() {
   return (
     <YoutubeTemplate
       status="authorized"
@@ -47,7 +47,7 @@ export function Authorized(): JSX.Element {
   );
 }
 
-export function QuoteOpen(): JSX.Element {
+export function QuoteOpen() {
   return (
     <YoutubeTemplate
       status="authorized"
@@ -58,15 +58,15 @@ export function QuoteOpen(): JSX.Element {
   );
 }
 
-export function Attesting(): JSX.Element {
+export function Attesting() {
   return <YoutubeTemplate status="attesting" processing={false} {...actions} />;
 }
 
-export function Ready(): JSX.Element {
+export function Ready() {
   return <YoutubeTemplate status="ready" processing={false} {...actions} />;
 }
 
-export function UnexpectedError(): JSX.Element {
+export function UnexpectedError() {
   return (
     <YoutubeTemplate
       status="error"
@@ -78,7 +78,7 @@ export function UnexpectedError(): JSX.Element {
   );
 }
 
-export function Closed(): JSX.Element {
+export function Closed() {
   return (
     <YoutubeTemplate
       status="authorized"
@@ -90,7 +90,7 @@ export function Closed(): JSX.Element {
   );
 }
 
-export function Unauthorized(): JSX.Element {
+export function Unauthorized() {
   return (
     <YoutubeTemplate
       status="error"
@@ -101,7 +101,7 @@ export function Unauthorized(): JSX.Element {
   );
 }
 
-export function NoChannel(): JSX.Element {
+export function NoChannel() {
   return (
     <YoutubeTemplate
       status="error"

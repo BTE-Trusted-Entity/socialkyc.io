@@ -16,7 +16,7 @@ interface Props {
   session: Session;
 }
 
-export function Github({ session }: Props): JSX.Element {
+export function Github({ session }: Props) {
   const githubApi = useGithubApi(session.sessionId);
 
   const {

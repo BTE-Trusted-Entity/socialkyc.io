@@ -346,7 +346,7 @@ function Connect({ setSession }: { setSession: (s: Session) => void }) {
   );
 }
 
-function AlmostThere(): JSX.Element {
+function AlmostThere() {
   return (
     <Fragment>
       <h1 className={styles.heading}>Almost there!</h1>
@@ -368,7 +368,7 @@ function useLogoNavigation() {
   }, [history]);
 }
 
-export function Attester(): JSX.Element {
+export function Attester() {
   useLogoNavigation();
 
   const { data } = useHasExtension();

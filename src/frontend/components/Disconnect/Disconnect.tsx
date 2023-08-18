@@ -12,7 +12,7 @@ interface Props {
   onDisconnect: () => void;
 }
 
-export function Disconnect({ session, onDisconnect }: Props): JSX.Element {
+export function Disconnect({ session, onDisconnect }: Props) {
   const history = useHistory();
 
   const handleClick = useCallback(async () => {

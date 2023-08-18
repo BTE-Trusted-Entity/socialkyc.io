@@ -21,21 +21,21 @@ const profileMock: EmailProfile = {
   Email: 'user@example.com',
 };
 
-export function Start(): JSX.Element {
+export function Start() {
   return <EmailTemplate status="none" processing={false} {...actions} />;
 }
 
-export function EmailSent(): JSX.Element {
+export function EmailSent() {
   return <EmailTemplate status="emailSent" processing={false} {...actions} />;
 }
 
-export function Authenticating(): JSX.Element {
+export function Authenticating() {
   return (
     <EmailTemplate status="authenticating" processing={false} {...actions} />
   );
 }
 
-export function Authenticated(): JSX.Element {
+export function Authenticated() {
   return (
     <EmailTemplate
       status="authenticated"
@@ -46,7 +46,7 @@ export function Authenticated(): JSX.Element {
   );
 }
 
-export function QuoteOpen(): JSX.Element {
+export function QuoteOpen() {
   return (
     <EmailTemplate
       status="authenticated"
@@ -57,15 +57,15 @@ export function QuoteOpen(): JSX.Element {
   );
 }
 
-export function Attesting(): JSX.Element {
+export function Attesting() {
   return <EmailTemplate status="attesting" processing={false} {...actions} />;
 }
 
-export function Ready(): JSX.Element {
+export function Ready() {
   return <EmailTemplate status="ready" processing={false} {...actions} />;
 }
 
-export function Expired(): JSX.Element {
+export function Expired() {
   return (
     <EmailTemplate
       status="error"
@@ -76,7 +76,7 @@ export function Expired(): JSX.Element {
   );
 }
 
-export function Closed(): JSX.Element {
+export function Closed() {
   return (
     <EmailTemplate
       status="authenticated"
@@ -88,7 +88,7 @@ export function Closed(): JSX.Element {
   );
 }
 
-export function UnexpectedError(): JSX.Element {
+export function UnexpectedError() {
   return (
     <EmailTemplate
       status="error"

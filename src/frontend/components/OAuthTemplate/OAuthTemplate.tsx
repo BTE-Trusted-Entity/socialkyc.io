@@ -59,7 +59,7 @@ export function OAuthTemplate({
   authUrlLoader,
   flowError,
   profile,
-}: Props): JSX.Element {
+}: Props) {
   const preventNavigation = usePreventNavigation(
     processing || ['authorizing', 'authorized', 'attesting'].includes(status),
   );
