@@ -96,7 +96,7 @@ export async function prepareRevocations(
     condemnations.push(newCondemnation);
   }
 
-//   disconnect();
+  //   disconnect();
 
   return condemnations;
 }

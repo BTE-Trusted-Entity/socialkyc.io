@@ -7,12 +7,12 @@ import { trackConnectionState } from './trackConnectionState';
 export async function initKilt(): Promise<void> {
   // shouldn't this check first if it is already connected?
 
-  // something like: 
+  // something like:
   // const api = ConfigService.isSet('api')
   //   ? ConfigService.get('api')
   //   : await connect(configuration.blockchainEndpoint);
 
-  const api = await connect(configuration.blockchainEndpoint)
+  const api = await connect(configuration.blockchainEndpoint);
   api.on('disconnected', disconnectHandler);
   api.on('connected', () => blockchainConnectionState.on());
   api.on('error', (error) => logger.error(error));
