@@ -85,7 +85,6 @@ async function scanForOldCredentialsOnOnePage(
   const chainFlag =
     configuration.blockchainEndpoint === 'wss://peregrine.kilt.io' ? 'p' : 's';
   const subscan = setupSubscanApi(chainFlag);
-  console.log('SubscanObject: ', subscan);
   const subscanApiUrl = subscan.apiUrl;
   const eventsURL = `${subscanApiUrl}/api/scan/events`;
 
