@@ -17,7 +17,7 @@ import { twitterCType } from './twitterCType';
 export type Input = Record<string, never>;
 
 export interface Output {
-  Twitter: string;
+  Username: string;
 }
 
 async function handler(
@@ -25,7 +25,7 @@ async function handler(
   h: ResponseToolkit,
 ): Promise<ResponseObject> {
   const { logger } = request;
-  logger.debug('Twitter confirmation started');
+  logger.debug('X confirmation started');
 
   const session = getSession(request.headers);
   const { claim } = session;
@@ -37,15 +37,15 @@ async function handler(
     throw Boom.notFound('Claim cType mismatch');
   }
 
-  const twitterHandle = claim.contents['Twitter'] as string;
+  const twitterHandle = claim.contents['Username'] as string;
   const id = await getTwitterUserId(twitterHandle);
 
   const userListeners = tweetsListeners.get(id);
   if (!userListeners) {
-    throw Boom.notFound(`Twitter handle not found: ${twitterHandle}`);
+    throw Boom.notFound(`X username not found: ${twitterHandle}`);
   }
 
-  logger.debug('Twitter confirmation waiting for tweet');
+  logger.debug('X confirmation waiting for post');
   const { confirmation } = userListeners;
   await confirmation.promise;
   setSession({ ...session, confirmed: true });

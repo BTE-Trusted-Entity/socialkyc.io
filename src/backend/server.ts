@@ -123,7 +123,7 @@ const logger = {
   server.logger.info('CTypes tested');
 
   await listenForTweets();
-  server.logger.info('Twitter connection initialized');
+  server.logger.info('X connection initialized');
 
   server.route(wellKnownDidConfig);
 

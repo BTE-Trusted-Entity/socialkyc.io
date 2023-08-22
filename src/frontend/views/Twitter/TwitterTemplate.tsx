@@ -102,16 +102,16 @@ export function TwitterTemplate({
     <section className={flowStyles.container} aria-busy={processing}>
       {processing && <Spinner />}
 
-      <h1 className={styles.heading}>Twitter Account Attestation</h1>
+      <h1 className={styles.heading}>X Account Attestation</h1>
 
       <Prompt
         when={preventNavigation}
-        message="The Twitter attestation process has already started. Are you sure you want to leave?"
+        message="The X attestation process has already started. Are you sure you want to leave?"
       />
 
       <Explainer>
-        After entering your Twitter handle, we will prompt you to make an
-        authentication Tweet with text we provide. When the authentication is
+        After entering your X username, we will prompt you to make an
+        authentication post with text we provide. When the authentication is
         complete, you can sign with one of your identities in Sporran, and
         SocialKYC will create the credential.
       </Explainer>
@@ -120,7 +120,7 @@ export function TwitterTemplate({
         {status === 'none' && (
           <form onSubmit={handleClaim}>
             <label>
-              Your Twitter handle
+              Your X username
               <span
                 className={styles.twitterInputContainer}
                 data-invalid={inputError}
@@ -163,10 +163,10 @@ export function TwitterTemplate({
               icon="spinner"
               heading="Attestation process:"
               message="Starting"
-              details="To continue the attestation process, please Tweet the text below and then return to this page. It may take SocialKYC a moment to complete the process."
+              details="To continue the attestation process, please post the text below and then return to this page. It may take SocialKYC a moment to complete the process."
             />
             <div>
-              <label htmlFor="tweet">Please tweet this message:</label>
+              <label htmlFor="tweet">Please post this message:</label>
               <p className={styles.tweetContainer}>
                 <textarea
                   className={styles.tweetInput}
@@ -192,7 +192,7 @@ export function TwitterTemplate({
                   target="_blank"
                   rel="noreferrer"
                 >
-                  Go to Twitter
+                  Go to X
                 </a>
               </p>
             </div>
@@ -202,8 +202,8 @@ export function TwitterTemplate({
         {status === 'authenticated' && profile && (
           <form onSubmit={handleRequestAttestation}>
             <dl className={styles.profile}>
-              <dt>Twitter handle:</dt>
-              <dd>{profile.Twitter}</dd>
+              <dt>X username:</dt>
+              <dd>{profile.Username}</dd>
             </dl>
 
             <p>
@@ -237,8 +237,8 @@ export function TwitterTemplate({
           <DetailedMessage
             icon="exclamation"
             heading="Attestation error:"
-            message="Tweet not found"
-            details="SocialKYC could not find your tweet. Please make sure you tweet the text exactly as provided. You can use the copy button to avoid any typos."
+            message="Post not found"
+            details="SocialKYC could not find your post. Please make sure you post the text exactly as provided. You can use the copy button to avoid any typos."
           />
         )}
 

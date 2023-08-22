@@ -13,7 +13,7 @@ import {
 const confirmingTimeout = 2 * 60 * 1000;
 
 export interface TwitterProfile {
-  Twitter: string;
+  Username: string;
 }
 
 interface Props {

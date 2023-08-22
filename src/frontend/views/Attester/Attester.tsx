@@ -157,7 +157,7 @@ function GetCredentials() {
       <ul className={styles.credentials}>
         <li>
           <Link to={paths.twitter} className={styles.twitter}>
-            Twitter Account
+            X Account
           </Link>
         </li>
         <li>

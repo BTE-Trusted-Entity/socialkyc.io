@@ -22,7 +22,7 @@ import { useTwitterApi } from './useTwitterApi';
 import { Twitter, TwitterProfile } from './Twitter';
 
 const profileMock: TwitterProfile = {
-  Twitter: 'social_kyc_tech',
+  Username: 'social_kyc_tech',
 };
 
 const secret = 'SECRET';
@@ -36,7 +36,7 @@ let requestPromise: TestPromise<void>;
 let attestPromise: TestPromise<IEncryptedMessage>;
 
 async function enterTwitter() {
-  const input = await screen.findByLabelText('Your Twitter handle');
+  const input = await screen.findByLabelText('Your X username');
   await userEvent.type(input, 'social_kyc_tech');
 }
 
@@ -100,13 +100,13 @@ async function tryAgain() {
 
 async function expectStartOver() {
   expect(
-    await screen.findByLabelText('Your Twitter handle'),
+    await screen.findByLabelText('Your X username'),
   ).toBeInTheDocument();
 }
 
 async function expectSecretInMessage() {
   const messageOutput = (await screen.findByLabelText(
-    'Please tweet this message:',
+    'Please post this message:',
   )) as HTMLTextAreaElement;
   expect(messageOutput.value).toContain('SECRET');
 }
@@ -174,7 +174,7 @@ describe('Twitter', () => {
 
     expectSecretInMessage();
 
-    expect(await screen.findByText('Go to Twitter')).toBeInTheDocument();
+    expect(await screen.findByText('Go to X')).toBeInTheDocument();
 
     await confirmOwnership();
 
@@ -213,7 +213,7 @@ describe('Twitter', () => {
   it('should show an error when the username is invalid', async () => {
     const { container } = render(<Twitter session={sessionMock} />);
 
-    const input = await screen.findByLabelText('Your Twitter handle');
+    const input = await screen.findByLabelText('Your X username');
     await userEvent.type(input, 'social_ kyc_tech');
     await clickContinue();
 
@@ -276,7 +276,7 @@ describe('Twitter', () => {
 
     jest.runAllTimers();
 
-    expect(await screen.findByText('Tweet not found')).toBeInTheDocument();
+    expect(await screen.findByText('Post not found')).toBeInTheDocument();
 
     jest.useRealTimers();
 
@@ -303,7 +303,7 @@ describe('Twitter', () => {
 
     expectSecretInMessage();
 
-    expect(await screen.findByText('Go to Twitter')).toBeInTheDocument();
+    expect(await screen.findByText('Go to X')).toBeInTheDocument();
 
     await confirmOwnership();
 
@@ -343,7 +343,7 @@ describe('Twitter', () => {
 
     expectSecretInMessage();
 
-    expect(await screen.findByText('Go to Twitter')).toBeInTheDocument();
+    expect(await screen.findByText('Go to X')).toBeInTheDocument();
 
     await confirmOwnership();
 
@@ -385,7 +385,7 @@ describe('Twitter', () => {
 
     expectSecretInMessage();
 
-    expect(await screen.findByText('Go to Twitter')).toBeInTheDocument();
+    expect(await screen.findByText('Go to X')).toBeInTheDocument();
 
     await confirmOwnership();
 
@@ -430,7 +430,7 @@ describe('Twitter', () => {
 
     expectSecretInMessage();
 
-    expect(await screen.findByText('Go to Twitter')).toBeInTheDocument();
+    expect(await screen.findByText('Go to X')).toBeInTheDocument();
 
     await confirmOwnership();
 
@@ -482,7 +482,7 @@ describe('Twitter', () => {
 
     expectSecretInMessage();
 
-    expect(await screen.findByText('Go to Twitter')).toBeInTheDocument();
+    expect(await screen.findByText('Go to X')).toBeInTheDocument();
 
     await confirmOwnership();
 

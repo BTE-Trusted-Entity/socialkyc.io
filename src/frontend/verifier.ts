@@ -24,8 +24,7 @@ const values = document.getElementById('values') as HTMLPreElement;
 
 const cTypes: Record<string, string> = {
   '0x3291bb126e33b4862d421bfaa1d2f272e6cdfc4f96658988fbcffea8914bd9ac': 'Email',
-  '0x47d04c42bdf7fdd3fc5a194bcaa367b2f4766a6b16ae3df628927656d818f420':
-    'Twitter',
+  '0xca31efddb0378f137b096a5084b0aa00c0bf47836127007cc61e0e3c9937889b': 'X',
   '0xd8c61a235204cb9e3c6acb1898d78880488846a7247d325b833243b46d923abe':
     'Discord',
   '0xad52bd7a8bd8a52e03181a99d2743e00d0a5e96fdc0182626655fcf0c0a776d0':

@@ -28,7 +28,7 @@ export type Output = string;
 
 async function handler(request: Request): Promise<ResponseObject | string> {
   const { logger } = request;
-  logger.debug('Twitter claim started');
+  logger.debug('X claim started');
 
   const session = getSession(request.headers);
 
@@ -37,7 +37,7 @@ async function handler(request: Request): Promise<ResponseObject | string> {
   const secret = getSecretForSession(sessionId);
 
   const claimContents = {
-    Twitter: twitterHandle,
+    Username: twitterHandle,
   };
 
   const claim: ContentfulClaim = {

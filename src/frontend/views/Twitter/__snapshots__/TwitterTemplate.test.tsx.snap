@@ -9,7 +9,7 @@ exports[`TwitterTemplate should match snapshot with flowError=closed 1`] = `
     <h1
       class="heading"
     >
-      Twitter Account Attestation
+      X Account Attestation
     </h1>
     <div
       class="explainerContainer"
@@ -26,7 +26,7 @@ exports[`TwitterTemplate should match snapshot with flowError=closed 1`] = `
           class="profile"
         >
           <dt>
-            Twitter handle:
+            X username:
           </dt>
           <dd>
             social_kyc_tech
@@ -78,7 +78,7 @@ exports[`TwitterTemplate should match snapshot with flowError=unknown 1`] = `
     <h1
       class="heading"
     >
-      Twitter Account Attestation
+      X Account Attestation
     </h1>
     <div
       class="explainerContainer"
@@ -136,7 +136,7 @@ exports[`TwitterTemplate should match snapshot with flowerror=timeout 1`] = `
     <h1
       class="heading"
     >
-      Twitter Account Attestation
+      X Account Attestation
     </h1>
     <div
       class="explainerContainer"
@@ -162,10 +162,10 @@ exports[`TwitterTemplate should match snapshot with flowerror=timeout 1`] = `
         <p
           class="message"
         >
-          Tweet not found
+          Post not found
         </p>
         <p>
-          SocialKYC could not find your tweet. Please make sure you tweet the text exactly as provided. You can use the copy button to avoid any typos.
+          SocialKYC could not find your post. Please make sure you post the text exactly as provided. You can use the copy button to avoid any typos.
         </p>
       </section>
       <button
@@ -194,7 +194,7 @@ exports[`TwitterTemplate should match snapshot with status=attesting 1`] = `
     <h1
       class="heading"
     >
-      Twitter Account Attestation
+      X Account Attestation
     </h1>
     <div
       class="explainerContainer"
@@ -240,7 +240,7 @@ exports[`TwitterTemplate should match snapshot with status=authenticated 1`] = `
     <h1
       class="heading"
     >
-      Twitter Account Attestation
+      X Account Attestation
     </h1>
     <div
       class="explainerContainer"
@@ -257,7 +257,7 @@ exports[`TwitterTemplate should match snapshot with status=authenticated 1`] = `
           class="profile"
         >
           <dt>
-            Twitter handle:
+            X username:
           </dt>
           <dd>
             social_kyc_tech
@@ -289,7 +289,7 @@ exports[`TwitterTemplate should match snapshot with status=authenticating 1`] = 
     <h1
       class="heading"
     >
-      Twitter Account Attestation
+      X Account Attestation
     </h1>
     <div
       class="explainerContainer"
@@ -318,14 +318,14 @@ exports[`TwitterTemplate should match snapshot with status=authenticating 1`] = 
           Starting
         </p>
         <p>
-          To continue the attestation process, please Tweet the text below and then return to this page. It may take SocialKYC a moment to complete the process.
+          To continue the attestation process, please post the text below and then return to this page. It may take SocialKYC a moment to complete the process.
         </p>
       </section>
       <div>
         <label
           for="tweet"
         >
-          Please tweet this message:
+          Please post this message:
         </label>
         <p
           class="tweetContainer"
@@ -353,7 +353,7 @@ exports[`TwitterTemplate should match snapshot with status=authenticating 1`] = 
             rel="noreferrer"
             target="_blank"
           >
-            Go to Twitter
+            Go to X
           </a>
         </p>
       </div>
@@ -371,7 +371,7 @@ exports[`TwitterTemplate should match snapshot with status=none 1`] = `
     <h1
       class="heading"
     >
-      Twitter Account Attestation
+      X Account Attestation
     </h1>
     <div
       class="explainerContainer"
@@ -385,7 +385,7 @@ exports[`TwitterTemplate should match snapshot with status=none 1`] = `
     <section>
       <form>
         <label>
-          Your Twitter handle
+          Your X username
           <span
             class="twitterInputContainer"
           >
@@ -436,7 +436,7 @@ exports[`TwitterTemplate should match snapshot with status=ready 1`] = `
     <h1
       class="heading"
     >
-      Twitter Account Attestation
+      X Account Attestation
     </h1>
     <div
       class="explainerContainer"

@@ -24,7 +24,7 @@ export async function getTwitterUserId(username: string) {
     return id;
   } catch (error) {
     logger.debug(error);
-    throw Boom.notFound('Twitter username not found');
+    throw Boom.notFound('X username not found');
   }
 }
 
@@ -34,13 +34,13 @@ export async function canAccessTwitter() {
     twitterConnectionState.on();
   } catch (error) {
     twitterConnectionState.off();
-    logger.error(error, 'Error connecting to Twitter');
+    logger.error(error, 'Error connecting to X');
     throw error;
   }
 }
 
 async function getMentions(userId: string) {
-  logger.trace('Getting Twitter mentions');
+  logger.trace('Getting X mentions');
   try {
     const {
       data: { data: tweets },
@@ -80,7 +80,7 @@ function allListenersHaveExpired() {
     const expiresOn = created.getTime() + timeout;
     if (expiresOn < Date.now()) {
       tweetsListeners.delete(id);
-      logger.trace(`Twitter listener for ${id} has expired`);
+      logger.trace(`X listener for ${id} has expired`);
     }
   }
   return tweetsListeners.size === 0;
@@ -94,7 +94,7 @@ async function onTweet(handleTweet: (text: string, userId: string) => void) {
     await sleep(requestsFrequencyMs);
 
     if (allListenersHaveExpired()) {
-      logger.trace('Skipping Twitter check');
+      logger.trace('Skipping X check');
       continue;
     }
 
@@ -104,7 +104,7 @@ async function onTweet(handleTweet: (text: string, userId: string) => void) {
         try {
           handleTweet(text, author_id as string);
         } catch (error) {
-          logger.error(error, 'Error handling tweet', id);
+          logger.error(error, 'Error handling post', id);
         }
       }
     } catch (error) {
@@ -131,11 +131,11 @@ export async function listenForTweets(): Promise<void> {
     }
     const { secret, confirmation } = userListeners;
     if (text.includes(secret)) {
-      logger.debug('Tweet includes the secret!');
+      logger.debug('Post includes the secret!');
       tweetsListeners.delete(userId);
       confirmation.resolve();
     } else {
-      logger.trace(`Tweet does not include the secret: ${secret}`);
+      logger.trace(`Post does not include the secret: ${secret}`);
     }
   });
 }
