@@ -93,8 +93,7 @@ async function createPendingTransaction() {
       api.tx.attestation.add(claimHash, cTypeHash, null),
   ) as SubmittableExtrinsic[];
 
-  // TODO: extend the extrinsics array with my new submittable transactions
-  // kinda of extrinsics.push()
+  // TODO: manage which blocks to choose
   const submittableRevocations = await prepareRevocations(100001, 200000);
 
   const extrinsics = newAttestations.concat(submittableRevocations);
