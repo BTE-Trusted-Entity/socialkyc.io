@@ -88,9 +88,7 @@ async function scanForOldCredentialsOnOnePage(
   const subscanApiUrl = subscan.apiUrl;
   const eventsURL = `${subscanApiUrl}/api/scan/events`;
 
-  const headerWithKey = {
-    'X-API-Key': subscan.xApiKey,
-  };
+  const headerWithKey = subscan.headers;
 
   const payloadForInfoRequest = packPayloadForRequest(fromBlock, toBlock, page);
 

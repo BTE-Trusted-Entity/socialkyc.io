@@ -162,7 +162,7 @@ export function setupSubscanApi(chain?: 'p' | 's') {
     apiUrl,
     network,
     xApiKey,
-    headers: { 'Content-Type': 'application/json', 'X-API-Key': xApiKey },
+    headers: { 'X-API-Key': xApiKey },
     isCrawlingFrom:
       network === spiritnetNetwork ? 'Kilt Spiritnet' : 'Kilt Peregrine',
     socialKYCAddress:
