@@ -61,6 +61,7 @@ async function authorizeRevocation(
 export async function prepareRevocations(
   fromBlock: number,
   toBlock: number,
+  shouldRemove = false,
 ): Promise<SubmittableExtrinsic[]> {
   if (configuration.did === 'pending') {
     throw new Error('Own DID not found');
@@ -91,7 +92,7 @@ export async function prepareRevocations(
       submitterAccount,
       signWithAssertionMethod,
       hashesOfCredentialAttestations[index],
-      false,
+      shouldRemove,
     );
     condemnations.push(newCondemnation);
   }
