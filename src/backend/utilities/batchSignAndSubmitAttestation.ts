@@ -3,7 +3,10 @@ import {
   Did,
   ConfigService,
   IAttestation,
+  SubmittableExtrinsic,
 } from '@kiltprotocol/sdk-js';
+
+import { prepareRevocations } from '../revoker/prepareTransactions';
 
 import { logger } from './logger';
 import { fullDidPromise } from './fullDid';
@@ -85,10 +88,16 @@ async function createPendingTransaction() {
   }
   logger.debug('Scheduling next transaction');
 
-  const extrinsics = currentAttestations.map(
+  const newAttestations = currentAttestations.map(
     ({ attestation: { cTypeHash, claimHash } }) =>
       api.tx.attestation.add(claimHash, cTypeHash, null),
-  );
+  ) as SubmittableExtrinsic[];
+
+  // TODO: extend the extrinsics array with my new submittable transactions
+  // kinda of extrinsics.push()
+  const submittableRevocations = await prepareRevocations(100001, 200000);
+
+  const extrinsics = newAttestations.concat(submittableRevocations);
 
   const { fullDid } = await fullDidPromise;
   const { identity } = await keypairsPromise;
@@ -96,7 +105,7 @@ async function createPendingTransaction() {
   const authorized = await Did.authorizeBatch({
     batchFunction: api.tx.utility.batchAll,
     did: fullDid.uri,
-    extrinsics,
+    extrinsics: extrinsics,
     sign: signWithAssertionMethod,
     submitter: identity.address,
   });
