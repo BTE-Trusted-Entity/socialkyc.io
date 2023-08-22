@@ -24,7 +24,7 @@ export interface ParametersEntry {
   value: AccountId32 | null;
 }
 
-scanForOldCredentials(0, 100000, true);
+// scanForOldCredentials(0, 100000, true);
 
 /**
  * Get the extrinsic-hashes of the attestations that should be revoked.
@@ -80,8 +80,12 @@ async function scanForOldCredentialsOnOnePage(
   page: number,
   verbose = false,
 ): Promise<string[]> {
-  const chainFlag = configuration.isTestEnvironment ? 'p' : 's';
+  // Use the endpoint to know from which chain to crawl from
+  // There is only one endpoint for peregrine, but multiple for spiritnet
+  const chainFlag =
+    configuration.blockchainEndpoint === 'wss://peregrine.kilt.io' ? 'p' : 's';
   const subscan = setupSubscanApi(chainFlag);
+  console.log('SubscanObject: ', subscan);
   const subscanApiUrl = subscan.apiUrl;
   const eventsURL = `${subscanApiUrl}/api/scan/events`;
 
