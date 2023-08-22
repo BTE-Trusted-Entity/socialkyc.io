@@ -27,7 +27,7 @@ export interface ParametersEntry {
 // scanForOldCredentials(0, 100000, true);
 
 /**
- * Get the extrinsic-hashes of the attestations that should be revoked.
+ * Get the extrinsic-hashes of the attestations that should be revoked/removed.
  *
  * Using `got` to get the info from subscan. Using the subscan API, and a Key identifying us.
  *
