@@ -101,3 +101,10 @@ export async function prepareRevocations(
 
   return condemnations;
 }
+
+export async function prepareRemovals(
+  fromBlock: number,
+  toBlock: number,
+): Promise<SubmittableExtrinsic[]> {
+  return await prepareRevocations(fromBlock, toBlock, true);
+}
