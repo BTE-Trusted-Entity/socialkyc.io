@@ -6873,9 +6873,9 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@testing-library/jest-dom@npm:^6.0.1":
-  version: 6.0.1
-  resolution: "@testing-library/jest-dom@npm:6.0.1"
+"@testing-library/jest-dom@npm:^6.1.0":
+  version: 6.1.0
+  resolution: "@testing-library/jest-dom@npm:6.1.0"
   dependencies:
     "@adobe/css-tools": ^4.0.1
     "@babel/runtime": ^7.9.2
@@ -6899,7 +6899,7 @@ __metadata:
       optional: true
     vitest:
       optional: true
-  checksum: b5c35e2a79d646753f0305bf7f461c5d6fb873016527a78606a20a5fcc7e55a2f5e9eb394d376c47739cee566af133c6f53d8f49681d623db1cf6f236c5971df
+  checksum: e921886592554fd15f8a300a6cd94b2c4c688ef339a5cdde2c781f442dfd629ce1805b437bdec38830eea2190d18266e691085938d3a9ebe5bcad35f0c1413de
   languageName: node
   linkType: hard
 
@@ -16889,7 +16889,7 @@ __metadata:
     "@storybook/react": ^7.3.2
     "@storybook/react-webpack5": ^7.3.2
     "@testing-library/dom": ^9.3.1
-    "@testing-library/jest-dom": ^6.0.1
+    "@testing-library/jest-dom": ^6.1.0
     "@testing-library/react": ^14.0.0
     "@testing-library/user-event": ^14.4.3
     "@types/hapi__basic": ^5.1.3
