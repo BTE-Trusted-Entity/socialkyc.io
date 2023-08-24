@@ -52,7 +52,7 @@
   "devDependencies": {
     "@babel/core": "^7.22.10",
     "@babel/preset-env": "^7.22.10",
-    "@jest/globals": "^29.6.3",
+    "@jest/globals": "^29.6.4",
     "@parcel/optimizer-data-url": "^2.7.0",
     "@parcel/transformer-inline-string": "^2.7.0",
     "@storybook/addon-actions": "^7.3.2",
