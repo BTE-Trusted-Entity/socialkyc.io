@@ -4618,22 +4618,13 @@ __metadata:
   linkType: hard
 
 "@polkadot/x-fetch@npm:^12.3.1":
-  version: 12.4.1
-  resolution: "@polkadot/x-fetch@npm:12.4.1"
+  version: 12.4.2
+  resolution: "@polkadot/x-fetch@npm:12.4.2"
   dependencies:
-    "@polkadot/x-global": 12.4.1
+    "@polkadot/x-global": 12.4.2
     node-fetch: ^3.3.2
-    tslib: ^2.6.1
-  checksum: 537bd5c0756ade124be349036feb0406dadb25f35a0432c507012404104185e56e101d06498376034022e5c5a46ff1b94b7538ee51104d5f1ab4bd2d396c9e8c
-  languageName: node
-  linkType: hard
-
-"@polkadot/x-global@npm:12.4.1":
-  version: 12.4.1
-  resolution: "@polkadot/x-global@npm:12.4.1"
-  dependencies:
-    tslib: ^2.6.1
-  checksum: 5dcc5a536be2ab0bade23536785c586f30344564fa3f997df3cfa73eae2960308ffdaa4dd37c87675f94f605fbde8b4d78e5bc5fc10a8b876ae0b1994acfa154
+    tslib: ^2.6.2
+  checksum: 7f0a5263172bcb97f837b7efdeceffdc9dd1caeabb058ec718b26d367779aa5f248ebd0373c1eb09850a87b34ae8dadf96237412e7e0b940d750aa4b5b634d9a
   languageName: node
   linkType: hard
 
@@ -4680,13 +4671,13 @@ __metadata:
   linkType: hard
 
 "@polkadot/x-ws@npm:^12.3.1":
-  version: 12.4.1
-  resolution: "@polkadot/x-ws@npm:12.4.1"
+  version: 12.4.2
+  resolution: "@polkadot/x-ws@npm:12.4.2"
   dependencies:
-    "@polkadot/x-global": 12.4.1
-    tslib: ^2.6.1
+    "@polkadot/x-global": 12.4.2
+    tslib: ^2.6.2
     ws: ^8.13.0
-  checksum: ac330cd4560c4d764fe345d5f2d7c9b1aac83194f7ddc22b56a9bdf7be3ba9d21a5af0da0b0ea36d671f15d250a67bd9100940bbae7156aa70ccd936d5f5b72d
+  checksum: 28a415d84780cbf2912f7b94c93dc85a7fea75564995cbc97b9a03cc2e1c0c93222f1e99c6d5add78cb1d9971e4605b36e23ae526b22ce3357619de26d9b15a6
   languageName: node
   linkType: hard
 
