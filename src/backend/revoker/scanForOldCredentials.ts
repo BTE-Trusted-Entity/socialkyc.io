@@ -4,7 +4,7 @@ import got from 'got';
 
 import { Did, DidUri } from '@kiltprotocol/sdk-js';
 
-import { configuration, setupSubscanApi } from '../utilities/configuration';
+import { configuration } from '../utilities/configuration';
 
 export interface EventsResponseJson {
   data: {
@@ -80,11 +80,7 @@ async function scanForOldCredentialsOnOnePage(
   page: number,
   verbose = false,
 ): Promise<string[]> {
-  // Use the endpoint to know from which chain to crawl from
-  // There is only one endpoint for peregrine, but multiple for spiritnet
-  const chainFlag =
-    configuration.blockchainEndpoint === 'wss://peregrine.kilt.io' ? 'p' : 's';
-  const subscan = setupSubscanApi(chainFlag);
+  const subscan = configuration.subscan;
   const subscanApiUrl = subscan.apiUrl;
   const eventsURL = `${subscanApiUrl}/api/scan/events`;
 
