@@ -1,19 +1,17 @@
-import got from "got";
+import got from 'got';
 
-import { configuration } from "./configuration";
-import { logger } from "./logger";
-import { sleep } from "./sleep";
+import { configuration } from '../utilities/configuration';
+import { logger } from '../utilities/logger';
+import { sleep } from '../utilities/sleep';
 
 const { subscan } = configuration;
 
 const SUBSCAN_MAX_ROWS = 100;
 const QUERY_INTERVAL_MS = 1000;
 
-const eventsApi = `https://${subscan.network}.api.subscan.io/api/scan/events`;
-
-const headers = {
-  "X-API-Key": subscan.secret,
-};
+const subscanApiUrl = subscan.apiUrl;
+const eventsURL = `${subscanApiUrl}/api/scan/events`;
+const headers = subscan.headers;
 
 export interface EventsResponseJson {
   data: {
@@ -47,7 +45,7 @@ export async function getEvents({
 
   const {
     data: { count, events },
-  } = await got.post(eventsApi, { headers, json }).json<EventsResponseJson>();
+  } = await got.post(eventsURL, { headers, json }).json<EventsResponseJson>();
 
   if (!events) {
     return { count };
@@ -60,7 +58,7 @@ export async function getEvents({
       blockTimestampMs: block_timestamp * 1000,
       params: JSON.parse(params),
       extrinsicHash: extrinsic_hash,
-    })
+    }),
   );
 
   return { count, events: parsedEvents };
@@ -69,7 +67,7 @@ export async function getEvents({
 export async function* subScanEventGenerator(
   module: string,
   call: string,
-  fromBlock: number
+  fromBlock: number,
 ) {
   const parameters = {
     module,
@@ -84,7 +82,7 @@ export async function* subScanEventGenerator(
   }
 
   logger.debug(
-    `Found ${count} (really ${count - 1}?) new SubScan events for ${call}`
+    `Found ${count} (really ${count - 1}?) new SubScan events for ${call}`,
   );
 
   // 10001 items should be split into 101 pages (0 to 100 inclusive)
@@ -98,7 +96,7 @@ export async function* subScanEventGenerator(
   for (let page = pages - ignoredPages; page >= 0; page--) {
     const { events } = await getEvents({ ...parameters, page });
     if (!events) {
-      throw new Error("No events");
+      throw new Error('No events');
     }
 
     logger.debug(`Loaded events page ${page} for ${call}`);
