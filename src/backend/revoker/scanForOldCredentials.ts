@@ -21,7 +21,7 @@ export interface EventsResponseJson {
 export interface ParametersEntry {
   type: string;
   type_name: string;
-  value: AccountId32 | null;
+  value: AccountId32 | `0x${string}` | null;
 }
 
 // scanForOldCredentials(0, 100000, true);
@@ -112,10 +112,8 @@ async function scanForOldCredentialsOnOnePage(
     subscan.socialKYCDidUri,
   );
 
-  const extrinsicHashesOfAttestations = eventsAttestedBySocialKYC.map(
-    (event) => {
-      return event.extrinsic_hash;
-    },
+  const extrinsicHashesOfAttestations = plugClaimHashes(
+    eventsAttestedBySocialKYC,
   );
 
   return extrinsicHashesOfAttestations;
@@ -197,7 +195,7 @@ function filterByAttester(
     const relevantParameter = parametersArray.find((element) => {
       return element.type_name === 'AttesterOf';
     });
-    const attesterDidAsHex = relevantParameter?.value;
+    const attesterDidAsHex = relevantParameter?.value as AccountId32;
 
     if (!attesterDidAsHex) {
       return false;
@@ -209,4 +207,35 @@ function filterByAttester(
   });
 
   return interestingEvents;
+}
+
+/**
+ * Extract the Claim hashes of the events listed on the subscan response.
+ *
+ * @param subscanResponse
+ * @returns
+ */
+function plugClaimHashes(events: EventsResponseJson['data']['events']) {
+  if (!events) {
+    throw new Error('No events passed.');
+  }
+  const claimHashes = events
+    .map((event) => {
+      const paramsObject = JSON.parse(event.params);
+      const parametersArray: ParametersEntry[] = [...paramsObject];
+      const parameterClaimHashOf = parametersArray.find((element) => {
+        return element.type_name === 'ClaimHashOf';
+      });
+      const claimHashOfAttestation = parameterClaimHashOf?.value as string;
+
+      // not throwing if the claim hash is undefined.
+      // that would mean that there is no attestation to revoke/remove.
+
+      return claimHashOfAttestation;
+    })
+    .filter((value) => {
+      return value !== undefined;
+    });
+
+  return claimHashes;
 }
