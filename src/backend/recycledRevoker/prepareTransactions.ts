@@ -40,10 +40,6 @@ export async function* prepareTransactions(
     const dateNow = Date.now();
     const secondsInAYear = new Date('1971').getTime();
 
-    console.log('dateOfIssuance: ', dateOfIssuance);
-    console.log('dateNow: ', dateNow);
-    console.log('secondsInAYear: ', secondsInAYear);
-
     // if younger than a year
     if (dateOfIssuance > dateNow - 1 * secondsInAYear) {
       console.log(
@@ -104,9 +100,6 @@ async function assignState(
   }
   const api = ConfigService.get('api');
 
-  // debugger:
-  console.log('claimHashToQuery: ', attestationInfo.claimHash);
-
   const attestationEncoded = await api.query.attestation.attestations(
     attestationInfo.claimHash,
   );
@@ -119,9 +112,6 @@ async function assignState(
     attestationEncoded,
     attestationInfo.claimHash,
   );
-
-  // debugger
-  console.log('attestation', attestationDecoded);
 
   if (attestationDecoded.revoked === false) {
     attestationInfo.state = 'valid';
