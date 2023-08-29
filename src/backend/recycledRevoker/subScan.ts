@@ -74,7 +74,11 @@ export async function* subScanEventGenerator(
     call,
     fromBlock,
   };
-  const { count } = await getEvents({ ...parameters, page: 0, row: 1 });
+  const { count } = await getEvents({
+    ...parameters,
+    page: 0,
+    row: 1,
+  });
 
   if (count === 0) {
     logger.debug(`No new SubScan events found for ${call}`);
@@ -95,11 +99,6 @@ export async function* subScanEventGenerator(
   const pages = Math.ceil(count / SUBSCAN_MAX_ROWS);
 
   for (let page = pages - ignoredPages; page > 0; page--) {
-    //debugger
-    console.log('count: ', count);
-    console.log('pages: ', pages);
-    console.log('page: ', page);
-
     const { events } = await getEvents({ ...parameters, page });
     if (!events) {
       throw new Error('No events');
