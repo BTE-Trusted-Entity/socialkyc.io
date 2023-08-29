@@ -9,7 +9,7 @@
     "prettify": "prettier --write \"src/**/*.ts*\" \"src/**/*.css*\"",
     "lint": "yarn run lint-css --formatter github && yarn run lint-js",
     "lint-js": "eslint --max-warnings 0 --config ./.eslintrc.json \"src/**/*.ts*\"",
-    "lint-css": "stylelint --max-warnings 0 --fix \"src/**/*.css\"",
+    "lint-css": "stylelint --max-warnings 0 \"src/**/*.css\"",
     "css": "tcm --namedExports --pattern 'src/frontend/**/*.module.css' && eslint --fix --config ./.eslintrc.json \"src/**/*.css.d.ts\"",
     "test": "tsc --noEmit && LC_ALL=en_US.UTF-8 jest",
     "storybook": "storybook dev --port 6007",
