@@ -36,8 +36,6 @@ export async function* scanAttestations(fromBlock: number) {
 
     const parametersArray: ParametersEntry[] = [...paramsObject];
 
-    console.log('parametersArray: ', parametersArray);
-
     const attesterOf = parametersArray.find((element) => {
       return element.type_name === 'AttesterOf';
     })?.value as AccountId32;
