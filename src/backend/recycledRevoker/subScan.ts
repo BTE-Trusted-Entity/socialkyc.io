@@ -85,15 +85,21 @@ export async function* subScanEventGenerator(
     `Found ${count} (really ${count - 1}?) new SubScan events for ${call}`,
   );
 
-  // 10001 items should be split into 101 pages (0 to 100 inclusive)
+  // 10001 items should be split into 101 pages (1 to 101 inclusive)
   // of 100 items each except the last one with 1 item,
   // but SubScan seems to have a bug and returns page 100 without items.
+  // The pages are not 0-indexed.
   const remainder = count % SUBSCAN_MAX_ROWS;
   const ignoreLastPage = count > SUBSCAN_MAX_ROWS && remainder === 1;
   const ignoredPages = ignoreLastPage ? 1 : 0;
-  const pages = Math.ceil(count / SUBSCAN_MAX_ROWS) - 1;
+  const pages = Math.ceil(count / SUBSCAN_MAX_ROWS);
 
-  for (let page = pages - ignoredPages; page >= 0; page--) {
+  for (let page = pages - ignoredPages; page > 0; page--) {
+    //debugger
+    console.log('count: ', count);
+    console.log('pages: ', pages);
+    console.log('page: ', page);
+
     const { events } = await getEvents({ ...parameters, page });
     if (!events) {
       throw new Error('No events');
