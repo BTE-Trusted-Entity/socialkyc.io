@@ -4,8 +4,13 @@
 
 import { describe, it } from '@jest/globals';
 
+import { SubmittableExtrinsic } from '@kiltprotocol/sdk-js';
+
+import { configuration } from '../utilities/configuration';
+
 import { subScanEventGenerator } from './subScan';
 import { scanAttestations } from './scanAttestations';
+import { prepareTransactions } from './prepareTransactions';
 
 describe('scan for first event on chain through subscan', () => {
   it('should always be the same on peregrine. Can not change the past.', async () => {
@@ -53,7 +58,7 @@ describe('scan for first event on chain through subscan', () => {
   });
 });
 
-describe('get the first attestation as an info-ob from the chain', () => {
+describe('get the first attestation as an info-object from the chain', () => {
   it('should always be the same on peregrine. Can not change the past.', async () => {
     const attestationsGenerator = scanAttestations(0);
 
@@ -73,5 +78,28 @@ describe('get the first attestation as an info-ob from the chain', () => {
     const oneAttestationInfo = await attestationsGenerator.next();
 
     expect(oneAttestationInfo.value).toMatchObject(firstAttestationInfo);
+  });
+});
+
+describe('get the first submittable extrinsic for a revocation/removal', () => {
+  it('should have the correct identity and account', async () => {
+    const submittableExtrinsicsGenerator = prepareTransactions(0);
+
+    const firstCondemnation = (await submittableExtrinsicsGenerator.next())
+      .value as SubmittableExtrinsic;
+
+    interface keyableObject {
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
+      [key: string]: any;
+    }
+
+    const someInnerInfo =
+      firstCondemnation.inner.method.args[0].toJSON() as keyableObject;
+
+    const did = `did:kilt:${someInnerInfo['did']}`;
+    const submitter = someInnerInfo['submitter'];
+
+    expect(did).toEqual(configuration.subscan.socialKYCDidUri);
+    expect(submitter).toBe(configuration.subscan.socialKYCAddress);
   });
 });
