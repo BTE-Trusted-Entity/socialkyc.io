@@ -53,6 +53,7 @@ import { terms } from './endpoints/terms';
 import { privacy } from './endpoints/privacy';
 import { sessionHeader } from './endpoints/sessionHeader';
 import { metrics } from './endpoints/metrics';
+import { fillBlackList } from './recycledRevoker/blackList';
 
 const { isProduction, maintenanceMode, baseUri } = configuration;
 
@@ -162,4 +163,7 @@ const logger = {
   server.logger.info('Routes configured');
 
   await manager.start();
+
+  // start filling up the list of Revocations/Removals
+  fillBlackList(0);
 })().catch(exitOnError);
