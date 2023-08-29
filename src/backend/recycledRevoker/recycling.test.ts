@@ -9,17 +9,15 @@ import { scanAttestations } from './scanAttestations';
 
 describe('scan for first event on chain through subscan', () => {
   it('should always be the same on peregrine. Can not change the past.', async () => {
-    const aSubscanEvent = subScanEventGenerator(
+    const subscanAttestationsEvents = subScanEventGenerator(
       'attestation',
       'AttestationCreated',
       0,
     );
 
-    const firstEvent = {
-      block: 34704,
-      blockTimestampMs: 1644921078000,
-      extrinsicHash:
-        '0x664338b7226842d232d5f20c0881c79816e11f15175babb7cf86c15df04ad817',
+    const firstEventHardCoded = {
+      block: 28500,
+      blockTimestampMs: 1644844776000,
       params: [
         {
           type: '[U8; 32]',
@@ -31,7 +29,7 @@ describe('scan for first event on chain through subscan', () => {
           type: 'H256',
           type_name: 'ClaimHashOf',
           value:
-            '0x8c0b0cfeb3ab74af38c2a65e6e6e1bd7437d508c66bf627c23e2b969c9e62129',
+            '0xc11239b76188eab173db38c253b462a087388cab49fbdcb16357d6130d7d7be1',
         },
         {
           type: 'H256',
@@ -45,30 +43,35 @@ describe('scan for first event on chain through subscan', () => {
           value: null,
         },
       ],
+      extrinsicHash:
+        '0x4e406574dcdadef6e742d9a8d41bbe699840110b21f5ae83d45d4e44ae3638a7',
     };
 
-    expect((await aSubscanEvent.next()).value).toMatchObject(firstEvent);
+    const firstEventGenerated = await subscanAttestationsEvents.next();
+
+    expect(firstEventGenerated.value).toMatchObject(firstEventHardCoded);
   });
 });
 
-describe('get the first attestation as an info-object from the chain', () => {
+describe('get the first attestation as an info-ob from the chain', () => {
   it('should always be the same on peregrine. Can not change the past.', async () => {
-    const oneAttestationInfo = scanAttestations(0);
+    const attestationsGenerator = scanAttestations(0);
 
     const firstAttestationInfo = {
-      block: 34704,
+      block: 28500,
       cTypeId:
         'kilt:ctype:0x3291bb126e33b4862d421bfaa1d2f272e6cdfc4f96658988fbcffea8914bd9ac',
       claimHash:
-        '0x8c0b0cfeb3ab74af38c2a65e6e6e1bd7437d508c66bf627c23e2b969c9e62129',
-      createdAt: new Date('2022-02-15T10:31:18.000Z'),
+        '0xc11239b76188eab173db38c253b462a087388cab49fbdcb16357d6130d7d7be1',
+      createdAt: new Date('2022-02-14T13:19:36.000Z'),
       extrinsicHash:
-        '0x664338b7226842d232d5f20c0881c79816e11f15175babb7cf86c15df04ad817',
+        '0x4e406574dcdadef6e742d9a8d41bbe699840110b21f5ae83d45d4e44ae3638a7',
       owner: 'did:kilt:4pehddkhEanexVTTzWAtrrfo2R7xPnePpuiJLC7shQU894aY',
+      state: undefined,
     };
 
-    expect((await oneAttestationInfo.next()).value).toMatchObject(
-      firstAttestationInfo,
-    );
+    const oneAttestationInfo = await attestationsGenerator.next();
+
+    expect(oneAttestationInfo.value).toMatchObject(firstAttestationInfo);
   });
 });

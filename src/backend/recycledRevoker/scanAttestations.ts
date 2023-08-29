@@ -1,6 +1,6 @@
 import type { AccountId32 } from '@polkadot/types/interfaces';
 
-import { CType, Did } from '@kiltprotocol/sdk-js';
+import { CType, Did, DidUri } from '@kiltprotocol/sdk-js';
 
 // import { logger } from '../utilities/logger';
 
@@ -17,6 +17,16 @@ export interface ParametersEntry {
   type: string;
   type_name: string;
   value: AccountId32 | `0x${string}` | null;
+}
+
+export interface AttestationInfo {
+  owner: DidUri;
+  claimHash: `0x${string}`;
+  cTypeId: `kilt:ctype:0x${string}`;
+  block: number;
+  createdAt: Date;
+  extrinsicHash: `0x${string}`;
+  state: 'valid' | 'revoked' | 'removed' | undefined;
 }
 export async function* scanAttestations(fromBlock: number) {
   const eventGenerator = subScanEventGenerator(
@@ -45,7 +55,7 @@ export async function* scanAttestations(fromBlock: number) {
 
     const claimHash = parametersArray.find((element) => {
       return element.type_name === 'ClaimHashOf';
-    })?.value;
+    })?.value as `0x${string}`;
 
     const owner = Did.fromChain(attesterOf);
     const cTypeId = CType.hashToId(cTypeHash);
@@ -57,7 +67,8 @@ export async function* scanAttestations(fromBlock: number) {
       block,
       createdAt,
       extrinsicHash,
-    };
+      state: undefined,
+    } as AttestationInfo;
     yield attestationInfo;
   }
 }
