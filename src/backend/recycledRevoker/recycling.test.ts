@@ -10,7 +10,7 @@ import { configuration } from '../utilities/configuration';
 
 import { subScanEventGenerator } from './subScan';
 import { scanAttestations } from './scanAttestations';
-import { prepareTransactions } from './prepareTransactions';
+import { generateTransactions } from './generateTransactions';
 
 describe('scan for first event on chain through subscan', () => {
   it('should always be the same on peregrine. Can not change the past.', async () => {
@@ -83,7 +83,7 @@ describe('get the first attestation as an info-object from the chain', () => {
 
 describe('get the first submittable extrinsic for a revocation/removal', () => {
   it('should have the correct identity and account', async () => {
-    const submittableExtrinsicsGenerator = prepareTransactions(0);
+    const submittableExtrinsicsGenerator = generateTransactions(0);
 
     const firstCondemnation = (await submittableExtrinsicsGenerator.next())
       .value as SubmittableExtrinsic;

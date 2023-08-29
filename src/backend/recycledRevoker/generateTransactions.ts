@@ -19,7 +19,7 @@ import { scanAttestations, AttestationInfo } from './scanAttestations';
  * Generates `SubmittableExtrinsic`s to revoke or remove old attestations issued by SocialKYC.
  *
  */
-export async function* prepareTransactions(
+export async function* generateTransactions(
   fromBlock = 0,
 ): AsyncGenerator<SubmittableExtrinsic> {
   // Generator for attestationInfos of credentials issued by socialKYC
