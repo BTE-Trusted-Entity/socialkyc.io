@@ -6,7 +6,7 @@ import {
   SubmittableExtrinsic,
 } from '@kiltprotocol/sdk-js';
 
-import { prepareRevocations } from '../revoker/prepareTransactions';
+import { blackList, removeFromBlackList } from '../recycledRevoker/blackList';
 
 import { logger } from './logger';
 import { fullDidPromise } from './fullDid';
@@ -94,8 +94,7 @@ async function createPendingTransaction() {
   ) as SubmittableExtrinsic[];
 
   // TODO: manage which blocks to choose
-  const submittableRevocations = await prepareRevocations(100001, 200000);
-
+  const submittableRevocations = blackList.slice(0, 100);
   const extrinsics = newAttestations.concat(submittableRevocations);
 
   const { fullDid } = await fullDidPromise;
@@ -114,6 +113,9 @@ async function createPendingTransaction() {
     Blockchain.signAndSubmitTx(authorized, identity),
   );
   logger.debug('Transaction submitted');
+
+  // Not sure if this is the right place
+  removeFromBlackList(submittableRevocations);
 }
 
 function alreadyAddedTo(

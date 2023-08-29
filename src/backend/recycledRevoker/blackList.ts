@@ -1,5 +1,7 @@
 import { SubmittableExtrinsic } from '@kiltprotocol/sdk-js';
 
+import { logger } from '../utilities/logger';
+
 import { generateTransactions } from './generateTransactions';
 
 /**
@@ -14,5 +16,18 @@ export async function fillBlackList(fromBlock: number) {
 
   for await (const extrinsicToSubmit of transactionGenerator) {
     blackList.push(extrinsicToSubmit);
+  }
+}
+
+export async function removeFromBlackList(
+  successfulTransactions: SubmittableExtrinsic[],
+) {
+  for (const extrinsicSubmitted of successfulTransactions) {
+    const blackIndex = blackList.findIndex((entry) => {
+      return extrinsicSubmitted === entry;
+    });
+
+    blackList.splice(blackIndex, 1);
+    logger.debug('`SubmittableExtrinsic` removed from the `blackList`');
   }
 }
