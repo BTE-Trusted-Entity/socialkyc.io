@@ -36,18 +36,20 @@ export async function* scanAttestations(fromBlock: number) {
 
     const parametersArray: ParametersEntry[] = [...paramsObject];
 
+    console.log('parametersArray: ', parametersArray);
+
     const attesterOf = parametersArray.find((element) => {
       return element.type_name === 'AttesterOf';
     })?.value as AccountId32;
-    const owner = Did.fromChain(attesterOf);
-
-    const claimHash = parametersArray.find((element) => {
-      return element.type_name === 'ClaimHashOf';
-    })?.value;
     const cTypeHash = parametersArray.find((element) => {
       return element.type_name === 'CtypeHashOf';
     })?.value as `0x${string}`;
 
+    const claimHash = parametersArray.find((element) => {
+      return element.type_name === 'ClaimHashOf';
+    })?.value;
+
+    const owner = Did.fromChain(attesterOf);
     const cTypeId = CType.hashToId(cTypeHash);
 
     const attestationInfo = {
