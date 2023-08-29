@@ -5,13 +5,11 @@ import {
   SubmittableExtrinsic,
   ConfigService,
   Did,
-  DidResourceUri,
   connect,
 } from '@kiltprotocol/sdk-js';
 
 import { configuration } from '../utilities/configuration';
 
-import { fullDidPromise } from '../utilities/fullDid';
 import { signWithAssertionMethod } from '../utilities/cryptoCallbacks';
 import { keypairsPromise } from '../utilities/keypairs';
 
@@ -78,13 +76,6 @@ export async function prepareRevocations(
   const condemnations: SubmittableExtrinsic[] = [];
 
   const { identity: submitterAccount } = await keypairsPromise;
-
-  const { fullDid: didDocument } = await fullDidPromise;
-
-  const keyUri = didDocument.assertionMethod?.toString() as DidResourceUri;
-  if (!keyUri) {
-    throw new Error('Key not found');
-  }
 
   for (let index = 0; index < hashesOfCredentialAttestations.length; index++) {
     const newCondemnation = await authorizeRevocation(
