@@ -1,18 +1,16 @@
-import { SubmittableExtrinsic } from '@kiltprotocol/sdk-js';
-
 import { logger } from '../utilities/logger';
 
-import { generateTransactions } from './generateTransactions';
+import { expiredCredentialsGetter } from './generateTransactions';
+import { AttestationInfo } from './scanAttestations';
 
 /**
- * List of `SubmittableExtrinsic`s to be gradually signed and submitted on batches.
+ * List of attestations that need to be revoked or removed.
  *
- * `SubmittableExtrinsic` are **transactions**, in this case, they could either be **Revocations** or **Removals**.
  */
-export const expiredInventory: SubmittableExtrinsic[] = [];
+export const expiredInventory: AttestationInfo[] = [];
 
 export async function fillExpiredInventory(fromBlock: number) {
-  const transactionGenerator = generateTransactions(fromBlock);
+  const transactionGenerator = expiredCredentialsGetter(fromBlock);
 
   for await (const transactionToSubmit of transactionGenerator) {
     expiredInventory.push(transactionToSubmit);
@@ -20,17 +18,19 @@ export async function fillExpiredInventory(fromBlock: number) {
 }
 
 export async function removeFromExpiredInventory(
-  successfulTransactions: SubmittableExtrinsic[],
+  processedAttestations: AttestationInfo[],
 ) {
-  for (const transactionSubmitted of successfulTransactions) {
+  for (const attestation of processedAttestations) {
     const inventoryIndex = expiredInventory.findIndex(
-      (entry) => transactionSubmitted === entry,
+      (entry) => attestation === entry,
     );
     if (inventoryIndex < 0) {
       continue;
     }
 
     expiredInventory.splice(inventoryIndex, 1);
-    logger.trace('`SubmittableExtrinsic` removed from the `ExpiredInventory`');
+    logger.trace(
+      `\`AttestationInfo\` removed from the \`ExpiredInventory\`: ${attestation.claimHash}`,
+    );
   }
 }
