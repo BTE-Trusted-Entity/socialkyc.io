@@ -103,7 +103,7 @@ async function createPendingTransaction() {
   const authorized = await Did.authorizeBatch({
     batchFunction: api.tx.utility.batchAll,
     did: fullDid.uri,
-    extrinsics: extrinsics,
+    extrinsics,
     sign: signWithAssertionMethod,
     submitter: identity.address,
   });
