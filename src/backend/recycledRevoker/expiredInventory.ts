@@ -1,6 +1,6 @@
 import { logger } from '../utilities/logger';
 
-import { expiredCredentialsGetter } from './generateTransactions';
+import { expiredCredentialsGetter } from './getExpiredCredentials';
 import { AttestationInfo } from './scanAttestations';
 
 /**
