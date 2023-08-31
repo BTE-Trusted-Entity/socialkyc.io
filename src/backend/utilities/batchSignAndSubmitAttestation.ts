@@ -11,6 +11,12 @@ import {
   removeFromExpiredInventory,
 } from '../recycledRevoker/expiredInventory';
 
+import { generateTransactions } from '../recycledRevoker/generateTransactions';
+
+import { AttestationInfo } from '../recycledRevoker/scanAttestations';
+
+import { successChecker } from '../recycledRevoker/successChecker';
+
 import { logger } from './logger';
 import { fullDidPromise } from './fullDid';
 import { keypairsPromise } from './keypairs';
@@ -31,6 +37,9 @@ let currentTransaction: Promise<void> | undefined = undefined;
 let pendingAttestations: AttemptedAttestation[] = [];
 let pendingTransaction: Promise<void> | undefined = undefined;
 
+let pendingExpiredCredentials: AttestationInfo[];
+let currentExpiredCredentials: AttestationInfo[];
+
 function syncExitAfterUpdatingReferences(): boolean {
   const noNextTransactionNeeded = pendingAttestations.length === 0;
   if (noNextTransactionNeeded) {
@@ -43,8 +52,10 @@ function syncExitAfterUpdatingReferences(): boolean {
 
   currentAttestations = pendingAttestations;
   currentTransaction = pendingTransaction;
+  currentExpiredCredentials = pendingExpiredCredentials;
   pendingAttestations = [];
   pendingTransaction = createPendingTransaction();
+  pendingExpiredCredentials = expiredInventory.slice(0, REVOCATION_BATCH_SIZE);
   return false;
 }
 
@@ -86,6 +97,14 @@ async function createPendingTransaction() {
     });
   });
 
+  currentExpiredCredentials.filter(
+    async (expiredCredential) => await successChecker(expiredCredential),
+  );
+
+  removeFromExpiredInventory(currentExpiredCredentials);
+
+  // check for success of old revocations/removals here
+
   if (syncExitAfterUpdatingReferences()) {
     logger.debug('No next transaction scheduled');
     return;
@@ -97,11 +116,10 @@ async function createPendingTransaction() {
       api.tx.attestation.add(claimHash, cTypeHash, null),
   ) as SubmittableExtrinsic[];
 
-  // TODO: manage which blocks to choose
-  const submittableRevocations = expiredInventory.slice(
-    0,
-    REVOCATION_BATCH_SIZE,
+  const submittableRevocations = await generateTransactions(
+    pendingExpiredCredentials,
   );
+
   const extrinsics = newAttestations.concat(submittableRevocations);
 
   const { fullDid } = await fullDidPromise;
@@ -120,9 +138,6 @@ async function createPendingTransaction() {
     Blockchain.signAndSubmitTx(authorized, identity),
   );
   logger.debug('Transaction submitted');
-
-  // Not sure if this is the right place
-  removeFromExpiredInventory(submittableRevocations);
 }
 
 function alreadyAddedTo(
