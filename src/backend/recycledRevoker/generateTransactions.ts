@@ -38,10 +38,10 @@ export async function* generateTransactions(
 
     const dateOfIssuance = attestationInfo.createdAt.getTime();
     const dateNow = Date.now();
-    const secondsInAYear = new Date('1971').getTime();
+    const millisecondsInAYear = new Date('1971').getTime();
 
     // if younger than a year
-    if (dateOfIssuance > dateNow - 1 * secondsInAYear) {
+    if (dateOfIssuance > dateNow - 1 * millisecondsInAYear) {
       console.log(
         'No more credentials younger than a year attested by SocialKYC.',
       );
@@ -53,7 +53,7 @@ export async function* generateTransactions(
     let shouldRemove: boolean = false;
 
     // if older than 2 years
-    if (dateOfIssuance < dateNow - 2 * secondsInAYear) {
+    if (dateOfIssuance < dateNow - 2 * millisecondsInAYear) {
       // either "valid" or "removed" should be removed after 2 years
       shouldRemove = true;
     }
