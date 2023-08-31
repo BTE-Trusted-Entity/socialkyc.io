@@ -14,17 +14,17 @@ export const expiredInventory: SubmittableExtrinsic[] = [];
 export async function fillExpiredInventory(fromBlock: number) {
   const transactionGenerator = generateTransactions(fromBlock);
 
-  for await (const extrinsicToSubmit of transactionGenerator) {
-    expiredInventory.push(extrinsicToSubmit);
+  for await (const transactionToSubmit of transactionGenerator) {
+    expiredInventory.push(transactionToSubmit);
   }
 }
 
 export async function removeFromExpiredInventory(
   successfulTransactions: SubmittableExtrinsic[],
 ) {
-  for (const extrinsicSubmitted of successfulTransactions) {
+  for (const transactionSubmitted of successfulTransactions) {
     const inventoryIndex = expiredInventory.findIndex(
-      (entry) => extrinsicSubmitted === entry,
+      (entry) => transactionSubmitted === entry,
     );
 
     expiredInventory.splice(inventoryIndex, 1);
