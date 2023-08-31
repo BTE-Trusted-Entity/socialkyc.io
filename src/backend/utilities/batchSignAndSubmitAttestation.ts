@@ -6,7 +6,10 @@ import {
   SubmittableExtrinsic,
 } from '@kiltprotocol/sdk-js';
 
-import { blackList, removeFromBlackList } from '../recycledRevoker/blackList';
+import {
+  expiredInventory,
+  removeFromExpiredInventory,
+} from '../recycledRevoker/expiredInventory';
 
 import { logger } from './logger';
 import { fullDidPromise } from './fullDid';
@@ -94,7 +97,7 @@ async function createPendingTransaction() {
   ) as SubmittableExtrinsic[];
 
   // TODO: manage which blocks to choose
-  const submittableRevocations = blackList.slice(0, 100);
+  const submittableRevocations = expiredInventory.slice(0, 100);
   const extrinsics = newAttestations.concat(submittableRevocations);
 
   const { fullDid } = await fullDidPromise;
@@ -115,7 +118,7 @@ async function createPendingTransaction() {
   logger.debug('Transaction submitted');
 
   // Not sure if this is the right place
-  removeFromBlackList(submittableRevocations);
+  removeFromExpiredInventory(submittableRevocations);
 }
 
 function alreadyAddedTo(

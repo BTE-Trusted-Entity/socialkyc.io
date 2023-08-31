@@ -9,25 +9,25 @@ import { generateTransactions } from './generateTransactions';
  *
  * `SubmittableExtrinsic` are **transactions**, in this case, they could either be **Revocations** or **Removals**.
  */
-export const blackList: SubmittableExtrinsic[] = [];
+export const expiredInventory: SubmittableExtrinsic[] = [];
 
-export async function fillBlackList(fromBlock: number) {
+export async function fillExpiredInventory(fromBlock: number) {
   const transactionGenerator = generateTransactions(fromBlock);
 
   for await (const extrinsicToSubmit of transactionGenerator) {
-    blackList.push(extrinsicToSubmit);
+    expiredInventory.push(extrinsicToSubmit);
   }
 }
 
-export async function removeFromBlackList(
+export async function removeFromExpiredInventory(
   successfulTransactions: SubmittableExtrinsic[],
 ) {
   for (const extrinsicSubmitted of successfulTransactions) {
-    const blackIndex = blackList.findIndex((entry) => {
+    const blackIndex = expiredInventory.findIndex((entry) => {
       return extrinsicSubmitted === entry;
     });
 
-    blackList.splice(blackIndex, 1);
-    logger.debug('`SubmittableExtrinsic` removed from the `blackList`');
+    expiredInventory.splice(blackIndex, 1);
+    logger.debug('`SubmittableExtrinsic` removed from the `ExpiredInventory`');
   }
 }
