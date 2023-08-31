@@ -19,6 +19,7 @@ import { signAndSubmit } from './signAndSubmit';
 
 const TRANSACTION_TIMEOUT = 5 * 60 * 1000;
 const MAXIMUM_FAILURES = 3;
+const REVOCATION_BATCH_SIZE = 2;
 
 interface AttemptedAttestation {
   attestation: IAttestation;
@@ -97,7 +98,10 @@ async function createPendingTransaction() {
   ) as SubmittableExtrinsic[];
 
   // TODO: manage which blocks to choose
-  const submittableRevocations = expiredInventory.slice(0, 100);
+  const submittableRevocations = expiredInventory.slice(
+    0,
+    REVOCATION_BATCH_SIZE,
+  );
   const extrinsics = newAttestations.concat(submittableRevocations);
 
   const { fullDid } = await fullDidPromise;
