@@ -83,6 +83,9 @@ const logger = {
   },
 };
 
+// For the revocations and removals:
+const SCAN_FROM_BLOCK = 0;
+
 (async () => {
   await server.register(noWww);
   await server.register(inert);
@@ -164,5 +167,5 @@ const logger = {
 
   await manager.start();
 
-  fillExpiredInventory(0);
+  fillExpiredInventory(SCAN_FROM_BLOCK);
 })().catch(exitOnError);
