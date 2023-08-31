@@ -3,6 +3,8 @@ import { Attestation, ConfigService, DidUri } from '@kiltprotocol/sdk-js';
 import { logger } from '../utilities/logger';
 import { configuration } from '../utilities/configuration';
 
+import { initKilt } from '../utilities/initKilt';
+
 import { scanAttestations, AttestationInfo } from './scanAttestations';
 
 /**
@@ -78,6 +80,7 @@ async function assignState(
   if (!attestationInfo) {
     throw new Error('attestation is empty');
   }
+  await initKilt();
   const api = ConfigService.get('api');
 
   const attestationEncoded = await api.query.attestation.attestations(
