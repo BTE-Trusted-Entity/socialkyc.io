@@ -23,11 +23,11 @@ export async function removeFromExpiredInventory(
   successfulTransactions: SubmittableExtrinsic[],
 ) {
   for (const extrinsicSubmitted of successfulTransactions) {
-    const blackIndex = expiredInventory.findIndex((entry) => {
-      return extrinsicSubmitted === entry;
-    });
+    const inventoryIndex = expiredInventory.findIndex(
+      (entry) => extrinsicSubmitted === entry,
+    );
 
-    expiredInventory.splice(blackIndex, 1);
+    expiredInventory.splice(inventoryIndex, 1);
     logger.trace('`SubmittableExtrinsic` removed from the `ExpiredInventory`');
   }
 }
