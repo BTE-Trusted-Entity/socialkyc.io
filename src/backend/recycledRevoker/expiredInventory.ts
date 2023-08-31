@@ -28,6 +28,6 @@ export async function removeFromExpiredInventory(
     });
 
     expiredInventory.splice(blackIndex, 1);
-    logger.debug('`SubmittableExtrinsic` removed from the `ExpiredInventory`');
+    logger.trace('`SubmittableExtrinsic` removed from the `ExpiredInventory`');
   }
 }
