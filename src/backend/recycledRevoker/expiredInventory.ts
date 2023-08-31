@@ -26,6 +26,9 @@ export async function removeFromExpiredInventory(
     const inventoryIndex = expiredInventory.findIndex(
       (entry) => transactionSubmitted === entry,
     );
+    if (inventoryIndex < 0) {
+      continue;
+    }
 
     expiredInventory.splice(inventoryIndex, 1);
     logger.trace('`SubmittableExtrinsic` removed from the `ExpiredInventory`');
