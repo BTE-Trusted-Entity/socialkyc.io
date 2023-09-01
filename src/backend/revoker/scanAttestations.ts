@@ -2,16 +2,7 @@ import type { AccountId32 } from '@polkadot/types/interfaces';
 
 import { CType, Did, DidUri } from '@kiltprotocol/sdk-js';
 
-// import { logger } from '../utilities/logger';
-
 import { subScanEventGenerator } from './subScan';
-
-// export type EventParams = [
-//   { type_name: 'AttesterOf'; value: `0x${string}` },
-//   { type_name: 'ClaimHashOf'; value: `0x${string}` },
-//   { type_name: 'CTypeHashOf'; value: `0x${string}` },
-//   { type_name: 'DelegationNodeIdOf'; value: `0x${string}` | null },
-// ];
 
 export interface ParametersEntry {
   type: string;
