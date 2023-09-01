@@ -1,4 +1,4 @@
-import { Attestation, ConfigService, DidUri } from '@kiltprotocol/sdk-js';
+import { Attestation, ConfigService } from '@kiltprotocol/sdk-js';
 
 import { logger } from '../utilities/logger';
 import { configuration } from '../utilities/configuration';
@@ -24,9 +24,8 @@ export async function* expiredCredentialsGetter(
   fromBlock = 0,
 ): AsyncGenerator<AttestationInfo> {
   // Generator for attestationInfos of credentials issued by socialKYC
-  const ourAttestationsGenerator = filterByAttester(
+  const ourAttestationsGenerator = filterOnlyAttestedByUs(
     scanAttestations(fromBlock),
-    configuration.subscan.socialKYCDidUri,
   );
 
   for await (const attestationInfoStateless of ourAttestationsGenerator) {
@@ -58,9 +57,8 @@ export async function* expiredCredentialsGetter(
   }
 }
 
-async function* filterByAttester(
+async function* filterOnlyAttestedByUs(
   attestationGenerator: AsyncGenerator<AttestationInfo>,
-  wishedDID: DidUri,
 ) {
   for await (const attestation of attestationGenerator) {
     if (!attestation) {
@@ -68,9 +66,10 @@ async function* filterByAttester(
     }
 
     const didOfAttester = attestation.owner;
-    if (wishedDID === didOfAttester) {
+    if (configuration.did === didOfAttester) {
       yield attestation;
     }
+    // do nothing if DID not provided or wrong
   }
 }
 

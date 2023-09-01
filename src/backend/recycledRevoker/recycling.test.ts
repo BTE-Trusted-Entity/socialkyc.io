@@ -91,7 +91,7 @@ describe('get the first attestationInfo for a revocation/removal', () => {
     const did = firstAttestation.owner;
     const validityState = firstAttestation.state;
 
-    expect(did).toEqual(configuration.subscan.socialKYCDidUri);
+    expect(did).toEqual(configuration.did);
     expect(['valid', 'revoked']).toContain(validityState);
   });
 });

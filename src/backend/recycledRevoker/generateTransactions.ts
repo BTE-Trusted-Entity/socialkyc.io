@@ -1,7 +1,6 @@
 import {
   ConfigService,
   Did,
-  DidUri,
   KiltKeyringPair,
   SignExtrinsicCallback,
   SubmittableExtrinsic,
@@ -54,7 +53,6 @@ export async function generateTransactions(
     const { identity: submitterAccount } = await keypairsPromise;
 
     const newCondemnation = await authorizeRevocation(
-      configuration.subscan.socialKYCDidUri,
       submitterAccount,
       signWithAssertionMethod,
       attestationInfo.claimHash,
@@ -69,7 +67,7 @@ export async function generateTransactions(
 
 /**
  * Authorizes the revocation or the removal of one attested credential.
- * @param attester
+ *
  * @param submitterAccount
  * @param signCallback
  * @param claimHash
@@ -77,13 +75,16 @@ export async function generateTransactions(
  * @returns  The authorized transaction. Ready to sign and submit.
  */
 async function authorizeRevocation(
-  attester: DidUri,
   submitterAccount: KiltKeyringPair,
   signCallback: SignExtrinsicCallback,
   claimHash: `0x${string}`,
   shouldRemove = false,
 ): Promise<SubmittableExtrinsic> {
   const api = ConfigService.get('api');
+
+  if (configuration.did === 'pending') {
+    throw new Error('No DID of the website provided');
+  }
 
   const transaction = shouldRemove
     ? // If the attestation is to be removed, create a `remove` tx,
@@ -94,7 +95,7 @@ async function authorizeRevocation(
       api.tx.attestation.revoke(claimHash, null);
 
   const authorizedTx = await Did.authorizeTx(
-    attester,
+    configuration.did,
     transaction,
     signCallback,
     submitterAccount.address,

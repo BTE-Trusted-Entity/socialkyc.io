@@ -21,9 +21,8 @@ export async function removeFromExpiredInventory(
   processedAttestations: AttestationInfo[],
 ) {
   for (const attestation of processedAttestations) {
-    const inventoryIndex = expiredInventory.findIndex(
-      (entry) => attestation === entry,
-    );
+    const inventoryIndex = expiredInventory.indexOf(attestation);
+
     if (inventoryIndex < 0) {
       continue;
     }

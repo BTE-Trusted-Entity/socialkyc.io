@@ -105,61 +105,23 @@ if (!lowBalanceAlertRecipients) {
   throw new ConfigurationError('No email recipients for low balance alerts');
 }
 
-function setupSubscanApi() {
-  // `did`is the DID that was read from the .env file previously on this file
-  if (did === 'pending') {
-    throw new ConfigurationError('No DID of the website provided');
-  }
-
-  const xApiKey = env.SECRET_SUBSCAN_API_KEY;
-  if (!xApiKey) {
-    throw new ConfigurationError('No SubScan Api Key provided');
-  }
-  const peregrineNetwork = 'kilt-testnet';
-  const spiritnetNetwork = 'spiritnet';
-
-  const socialKYCPeregrineAddress =
-    '4sQR3dfZrrxobV69jQmLvArxyUto5eJtmyc2f9xs1Hc4quu3';
-
-  const socialKYCSpiritnetAddress =
-    '4qEmG7bexsWtG1LiPFj95GL38xGcNfBz83LYeErixgHB47PW';
-
-  const socialKYCPeregrineDidUri: DidUri =
-    'did:kilt:4pehddkhEanexVTTzWAtrrfo2R7xPnePpuiJLC7shQU894aY';
-
-  const socialKYCSpiritnetDidUri: DidUri =
-    'did:kilt:4pnfkRn5UurBJTW92d9TaVLR2CqJdY4z5HPjrEbpGyBykare';
-
-  const socialKYCDidUri =
-    did === socialKYCSpiritnetDidUri
-      ? socialKYCSpiritnetDidUri
-      : socialKYCPeregrineDidUri;
-
-  const network =
-    socialKYCDidUri === socialKYCSpiritnetDidUri
-      ? spiritnetNetwork
-      : peregrineNetwork;
-
-  const apiUrl = `https://${network}.api.subscan.io`;
-
-  const subscan = {
-    apiUrl,
-    network,
-    xApiKey,
-    headers: { 'X-API-Key': xApiKey },
-    isCrawlingFrom:
-      network === spiritnetNetwork ? 'Kilt Spiritnet' : 'Kilt Peregrine',
-    socialKYCAddress:
-      network === spiritnetNetwork
-        ? socialKYCSpiritnetAddress
-        : socialKYCPeregrineAddress,
-    socialKYCDidUri,
-  };
-
-  return subscan;
+const xApiKey = env.SECRET_SUBSCAN_API_KEY;
+if (!xApiKey) {
+  throw new ConfigurationError('No SubScan Api Key provided');
+}
+const network = env.SUBSCAN_NETWORK;
+if (!network) {
+  throw new ConfigurationError('No SubScan Network provided');
 }
 
-const subscan = setupSubscanApi();
+const apiUrl = `https://${network}.api.subscan.io`;
+
+const subscan = {
+  apiUrl,
+  network,
+  xApiKey,
+  headers: { 'X-API-Key': xApiKey },
+};
 
 export const configuration = {
   aws: {
