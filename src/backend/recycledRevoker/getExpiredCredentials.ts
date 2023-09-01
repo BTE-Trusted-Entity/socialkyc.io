@@ -14,7 +14,7 @@ import { scanAttestations, AttestationInfo } from './scanAttestations';
  *
  * Their validity `state` and the their creation date `createdAt` let us know, if they are to be revoked or removed.
  *
- * If they are older than a year, they should be revoked.
+ * If they are older than 1 year, they should be revoked.
  * If they are older than 2 years, they should be removed.
  *
  * @param fromBlock decides where to start the blockchain scan.

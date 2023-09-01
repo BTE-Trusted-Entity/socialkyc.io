@@ -17,6 +17,8 @@ import { AttestationInfo } from './scanAttestations';
 /**
  * Generates `SubmittableExtrinsic`s to revoke or remove old attestations issued by SocialKYC.
  *
+ * If they are older than 1 year, they should be revoked.
+ * If they are older than 2 years, they should be removed.
  */
 export async function generateTransactions(
   arrayOfAttestationsInfo: AttestationInfo[],
