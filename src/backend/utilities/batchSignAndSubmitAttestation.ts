@@ -15,7 +15,7 @@ import { generateTransactions } from '../recycledRevoker/generateTransactions';
 
 import { AttestationInfo } from '../recycledRevoker/scanAttestations';
 
-import { revocationSuccessChecker } from '../recycledRevoker/successChecker';
+import { revocationSuccessChecker } from '../recycledRevoker/revocationSuccessChecker';
 
 import { logger } from './logger';
 import { fullDidPromise } from './fullDid';
