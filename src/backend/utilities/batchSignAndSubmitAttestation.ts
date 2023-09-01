@@ -6,16 +6,13 @@ import {
   SubmittableExtrinsic,
 } from '@kiltprotocol/sdk-js';
 
-import {
-  expiredInventory,
-  removeFromExpiredInventory,
-} from '../recycledRevoker/expiredInventory';
+import { expiredInventory } from '../recycledRevoker/expiredInventory';
 
 import { generateTransactions } from '../recycledRevoker/generateTransactions';
 
 import { AttestationInfo } from '../recycledRevoker/scanAttestations';
 
-import { revocationSuccessChecker } from '../recycledRevoker/revocationSuccessChecker';
+import { updateExpiredInventory } from '../recycledRevoker/updateExpiredInventory';
 
 import { logger } from './logger';
 import { fullDidPromise } from './fullDid';
@@ -37,8 +34,8 @@ let currentTransaction: Promise<void> | undefined = undefined;
 let pendingAttestations: AttemptedAttestation[] = [];
 let pendingTransaction: Promise<void> | undefined = undefined;
 
-let pendingExpiredCredentials: AttestationInfo[];
-let currentExpiredCredentials: AttestationInfo[];
+let pendingExpiredAttestations: AttestationInfo[];
+let currentExpiredAttestations: AttestationInfo[];
 
 function syncExitAfterUpdatingReferences(): boolean {
   const noNextTransactionNeeded = pendingAttestations.length === 0;
@@ -52,10 +49,10 @@ function syncExitAfterUpdatingReferences(): boolean {
 
   currentAttestations = pendingAttestations;
   currentTransaction = pendingTransaction;
-  currentExpiredCredentials = pendingExpiredCredentials;
+  currentExpiredAttestations = pendingExpiredAttestations;
   pendingAttestations = [];
   pendingTransaction = createPendingTransaction();
-  pendingExpiredCredentials = expiredInventory.slice(0, REVOCATION_BATCH_SIZE);
+  pendingExpiredAttestations = expiredInventory.slice(0, REVOCATION_BATCH_SIZE);
   return false;
 }
 
@@ -96,14 +93,8 @@ async function createPendingTransaction() {
       failures: failures + 1,
     });
   });
-  // check for success of old revocations/removals here
 
-  currentExpiredCredentials.filter(
-    async (expiredCredential) =>
-      await revocationSuccessChecker(expiredCredential),
-  );
-
-  removeFromExpiredInventory(currentExpiredCredentials);
+  await updateExpiredInventory(currentExpiredAttestations);
 
   if (syncExitAfterUpdatingReferences()) {
     logger.debug('No next transaction scheduled');
@@ -117,7 +108,7 @@ async function createPendingTransaction() {
   ) as SubmittableExtrinsic[];
 
   const submittableRevocations = await generateTransactions(
-    pendingExpiredCredentials,
+    pendingExpiredAttestations,
   );
 
   const extrinsics = newAttestations.concat(submittableRevocations);
