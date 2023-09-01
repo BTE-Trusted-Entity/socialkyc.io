@@ -15,7 +15,7 @@ import { generateTransactions } from '../recycledRevoker/generateTransactions';
 
 import { AttestationInfo } from '../recycledRevoker/scanAttestations';
 
-import { successChecker } from '../recycledRevoker/successChecker';
+import { revocationSuccessChecker } from '../recycledRevoker/successChecker';
 
 import { logger } from './logger';
 import { fullDidPromise } from './fullDid';
@@ -98,7 +98,8 @@ async function createPendingTransaction() {
   });
 
   currentExpiredCredentials.filter(
-    async (expiredCredential) => await successChecker(expiredCredential),
+    async (expiredCredential) =>
+      await revocationSuccessChecker(expiredCredential),
   );
 
   removeFromExpiredInventory(currentExpiredCredentials);
