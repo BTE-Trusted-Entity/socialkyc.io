@@ -53,7 +53,7 @@ import { terms } from './endpoints/terms';
 import { privacy } from './endpoints/privacy';
 import { sessionHeader } from './endpoints/sessionHeader';
 import { metrics } from './endpoints/metrics';
-import { fillExpiredInventory } from './recycledRevoker/expiredInventory';
+import { fillExpiredInventory } from './revoker/expiredInventory';
 
 const { isProduction, maintenanceMode, baseUri } = configuration;
 

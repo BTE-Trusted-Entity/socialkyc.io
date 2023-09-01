@@ -6,13 +6,13 @@ import {
   SubmittableExtrinsic,
 } from '@kiltprotocol/sdk-js';
 
-import { expiredInventory } from '../recycledRevoker/expiredInventory';
+import { expiredInventory } from '../revoker/expiredInventory';
 
-import { generateTransactions } from '../recycledRevoker/generateTransactions';
+import { generateTransactions } from '../revoker/generateTransactions';
 
-import { AttestationInfo } from '../recycledRevoker/scanAttestations';
+import { AttestationInfo } from '../revoker/scanAttestations';
 
-import { updateExpiredInventory } from '../recycledRevoker/updateExpiredInventory';
+import { updateExpiredInventory } from '../revoker/updateExpiredInventory';
 
 import { logger } from './logger';
 import { fullDidPromise } from './fullDid';
