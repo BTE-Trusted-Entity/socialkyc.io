@@ -96,6 +96,7 @@ async function createPendingTransaction() {
       failures: failures + 1,
     });
   });
+  // check for success of old revocations/removals here
 
   currentExpiredCredentials.filter(
     async (expiredCredential) =>
@@ -103,8 +104,6 @@ async function createPendingTransaction() {
   );
 
   removeFromExpiredInventory(currentExpiredCredentials);
-
-  // check for success of old revocations/removals here
 
   if (syncExitAfterUpdatingReferences()) {
     logger.debug('No next transaction scheduled');
