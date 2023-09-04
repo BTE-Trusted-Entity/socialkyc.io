@@ -18,20 +18,25 @@ export async function updateExpiredInventory(
     attestationsInfo.map(({ claimHash }) => claimHash),
   );
 
+  const dateNow = Date.now();
+  const millisecondsInAYear = new Date('1971').getTime();
+
+  // We keep attestations on chain that are younger than 2 years
+  const dateToKeepOnChain = dateNow - 2 * millisecondsInAYear;
+
+  // Attestations stay valid, if they are younger than 1 years
+  const dateToKeepValid = dateNow - 1 * millisecondsInAYear;
+
   for (const [index, attestationEncoded] of allAttestationsEncoded.entries()) {
     const attestation = attestationsInfo[index];
     let stateWishedAfterProcess: AttestationInfo['state'] = undefined;
     let realCurrentState: AttestationInfo['state'] = undefined;
 
     const dateOfIssuance = attestation.createdAt.getTime();
-    const dateNow = Date.now();
-    const millisecondsInAYear = new Date('1971').getTime();
 
-    if (dateOfIssuance < dateNow - 2 * millisecondsInAYear) {
-      // if older than 2 years
+    if (dateOfIssuance < dateToKeepOnChain) {
       stateWishedAfterProcess = 'removed';
-    } else if (dateOfIssuance < dateNow - 1 * millisecondsInAYear) {
-      // if older than a year and younger than 1 year
+    } else if (dateOfIssuance < dateToKeepValid) {
       stateWishedAfterProcess = 'revoked';
     } else {
       throw new Error(`This credential should not be revoked or removed yet!
