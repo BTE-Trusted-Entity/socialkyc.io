@@ -72,10 +72,6 @@ async function* filterOnlyAttestedByUs(
   }
 }
 
-// TODO:
-// readCurrentState
-// deduceWishedState
-
 async function assignState(
   attestationInfo: AttestationInfo | void,
 ): Promise<AttestationInfo> {
