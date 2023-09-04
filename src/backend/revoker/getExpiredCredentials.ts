@@ -63,6 +63,8 @@ async function* filterOnlyAttestedByUs(
   for await (const attestation of attestationGenerator) {
     if (!attestation) {
       logger.debug('No more attestations found.');
+      // end the generator
+      return;
     }
 
     const didOfAttester = attestation.owner;
@@ -73,12 +75,35 @@ async function* filterOnlyAttestedByUs(
   }
 }
 
+// TODO:
+// readCurrentState
+// deduceWishedState
+
 async function assignState(
   attestationInfo: AttestationInfo | void,
 ): Promise<AttestationInfo> {
   if (!attestationInfo) {
     throw new Error('attestation is empty');
   }
+
+  attestationInfo.state = await readCurrentState(attestationInfo);
+
+  if (!attestationInfo.state) {
+    throw new Error(
+      `Could not assign any state to the attestation: ${attestationInfo.claimHash}`,
+    );
+  }
+  return attestationInfo;
+}
+
+/**
+ * Reads the current state from an attestation on the blockchain.
+ * @param attestationInfo
+ * @returns one of the validity states: 'valid' | 'revoked' | 'removed'
+ */
+export async function readCurrentState(
+  attestationInfo: AttestationInfo,
+): Promise<AttestationInfo['state']> {
   await initKilt();
   const api = ConfigService.get('api');
 
@@ -86,8 +111,7 @@ async function assignState(
     attestationInfo.claimHash,
   );
   if (attestationEncoded.isNone) {
-    attestationInfo.state = 'removed';
-    return attestationInfo;
+    return 'removed';
   }
 
   const attestationDecoded = Attestation.fromChain(
@@ -96,16 +120,13 @@ async function assignState(
   );
 
   if (attestationDecoded.revoked === false) {
-    attestationInfo.state = 'valid';
-    return attestationInfo;
+    return 'valid';
   }
   if (attestationDecoded.revoked === true) {
-    attestationInfo.state = 'revoked';
-    return attestationInfo;
+    return 'revoked';
   }
 
   // Else:
-  // including  attestationInfo.state === undefined
   throw new Error(
     `Could not assign any state to the attestation: ${attestationInfo.claimHash}`,
   );
