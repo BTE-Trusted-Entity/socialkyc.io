@@ -1,3 +1,6 @@
+import type { Option } from '@polkadot/types-codec';
+import type { AttestationAttestationsAttestationDetails } from '@polkadot/types/lookup';
+
 import { ConfigService, Attestation } from '@kiltprotocol/sdk-js';
 
 import { initKilt } from '../utilities/initKilt';
@@ -39,6 +42,64 @@ export async function readCurrentState(
   throw new Error(
     `Could not assign any state to the attestation: ${attestationInfo.claimHash}`,
   );
+}
+/**
+ * Reads on the blockchain the current states of an Array of Attestations.
+ * @param attestationInfo
+ * @returns array the validity states: 'valid' | 'revoked' | 'removed'
+ */
+export async function readCurrentStates(
+  attestationsInfo: AttestationInfo[],
+): Promise<AttestationInfo['state'][]> {
+  await initKilt();
+  const api = ConfigService.get('api');
+
+  const allAttestationsEncoded = await api.query.attestation.attestations.multi(
+    attestationsInfo.map(({ claimHash }) => claimHash),
+  );
+
+  const attestationsTuples: [
+    AttestationInfo,
+    Option<AttestationAttestationsAttestationDetails>,
+  ][] = allAttestationsEncoded.map((encodedAttestation, index) => [
+    attestationsInfo[index],
+    encodedAttestation,
+  ]);
+
+  const arrayOfStates: AttestationInfo['state'][] = [];
+
+  for (const [attestationInfo, attestationEncoded] of attestationsTuples) {
+    if (attestationEncoded.isNone) {
+      arrayOfStates.push('removed');
+      continue;
+    }
+
+    const attestationDecoded = Attestation.fromChain(
+      attestationEncoded,
+      attestationInfo.claimHash,
+    );
+
+    if (attestationDecoded.revoked === false) {
+      arrayOfStates.push('valid');
+      continue;
+    }
+    if (attestationDecoded.revoked === true) {
+      arrayOfStates.push('revoked');
+      continue;
+    }
+
+    // Else:
+    // including attestationInfo.state === undefined
+    throw new Error(
+      `Could not assign any state to the attestation: ${attestationInfo.claimHash}`,
+    );
+
+    // should I throw??
+
+    arrayOfStates.push(undefined);
+    continue;
+  }
+  return arrayOfStates;
 }
 
 /**
