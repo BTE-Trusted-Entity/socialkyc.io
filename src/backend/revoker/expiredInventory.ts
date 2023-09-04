@@ -23,6 +23,7 @@ export function removeFromExpiredInventory(
   for (const attestation of processedAttestations) {
     const inventoryIndex = expiredInventory.indexOf(attestation);
 
+    // if already removed from the inventory
     if (inventoryIndex < 0) {
       continue;
     }
