@@ -8,42 +8,6 @@ import { initKilt } from '../utilities/initKilt';
 import { AttestationInfo } from './scanAttestations';
 
 /**
- * Reads the current state from an Attestation on the blockchain.
- * @param attestationInfo
- * @returns one of the validity states: 'valid' | 'revoked' | 'removed'
- */
-export async function readCurrentState(
-  attestationInfo: AttestationInfo,
-): Promise<AttestationInfo['state']> {
-  await initKilt();
-  const api = ConfigService.get('api');
-
-  const attestationEncoded = await api.query.attestation.attestations(
-    attestationInfo.claimHash,
-  );
-  if (attestationEncoded.isNone) {
-    return 'removed';
-  }
-
-  const attestationDecoded = Attestation.fromChain(
-    attestationEncoded,
-    attestationInfo.claimHash,
-  );
-
-  if (attestationDecoded.revoked === false) {
-    return 'valid';
-  }
-  if (attestationDecoded.revoked === true) {
-    return 'revoked';
-  }
-
-  // Else:
-  // including attestationInfo.state === undefined
-  throw new Error(
-    `Could not assign any state to the attestation: ${attestationInfo.claimHash}`,
-  );
-}
-/**
  * Reads on the blockchain the current states of an Array of Attestations.
  * @param attestationInfo
  * @returns array the validity states: 'valid' | 'revoked' | 'removed'

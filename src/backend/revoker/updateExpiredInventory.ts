@@ -2,7 +2,7 @@ import { logger } from '../utilities/logger';
 
 import { AttestationInfo } from './scanAttestations';
 import { removeFromExpiredInventory } from './expiredInventory';
-import { deduceWishedState, readCurrentState } from './stateIdentifiers';
+import { deduceWishedState, readCurrentStates } from './stateIdentifiers';
 
 /**
  * Checks if the attestation were successfully revoked or removed.
@@ -13,9 +13,11 @@ import { deduceWishedState, readCurrentState } from './stateIdentifiers';
 export async function updateExpiredInventory(
   attestationsInfo: AttestationInfo[],
 ) {
-  for (const attestation of attestationsInfo) {
+  const currentStates = await readCurrentStates(attestationsInfo);
+
+  for (const [index, attestation] of attestationsInfo.entries()) {
     const stateWishedAfterProcess = deduceWishedState(attestation);
-    const realCurrentState = await readCurrentState(attestation);
+    const realCurrentState = currentStates[index];
 
     if (!realCurrentState || !stateWishedAfterProcess) {
       throw new Error('State could not be assigned');

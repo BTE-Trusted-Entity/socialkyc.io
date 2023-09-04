@@ -2,7 +2,7 @@ import { logger } from '../utilities/logger';
 import { configuration } from '../utilities/configuration';
 
 import { scanAttestations, AttestationInfo } from './scanAttestations';
-import { deduceWishedState, readCurrentState } from './stateIdentifiers';
+import { deduceWishedState, readCurrentStates } from './stateIdentifiers';
 
 /**
  * Generator function to gather the old attestations issued by SocialKYC and assigns validity states.
@@ -76,7 +76,7 @@ async function assignState(
     throw new Error('attestation is empty');
   }
 
-  attestationInfo.state = await readCurrentState(attestationInfo);
+  attestationInfo.state = (await readCurrentStates([attestationInfo]))[0];
 
   return attestationInfo;
 }
