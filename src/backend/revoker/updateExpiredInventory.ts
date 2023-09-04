@@ -1,6 +1,8 @@
+import { logger } from '../utilities/logger';
+
 import { AttestationInfo } from './scanAttestations';
 import { removeFromExpiredInventory } from './expiredInventory';
-import { deduceWishedState, readCurrentState } from './getExpiredCredentials';
+import { deduceWishedState, readCurrentState } from './stateIdentifiers';
 
 /**
  * Checks if the attestation were successfully revoked or removed.
@@ -17,6 +19,11 @@ export async function updateExpiredInventory(
 
     if (!realCurrentState || !stateWishedAfterProcess) {
       throw new Error('State could not be assigned');
+    }
+    if (stateWishedAfterProcess === 'valid') {
+      logger.error(
+        `This credential is to young to be here:  ${attestation.claimHash}`,
+      );
     }
 
     if (realCurrentState === stateWishedAfterProcess) {

@@ -5,7 +5,7 @@ import { logger } from '../utilities/logger';
 import { initKilt } from '../utilities/initKilt';
 
 import { AttestationInfo } from './scanAttestations';
-import { deduceWishedState } from './getExpiredCredentials';
+import { deduceWishedState } from './stateIdentifiers';
 
 /**
  * Generates `SubmittableExtrinsic`s to revoke or remove old attestations issued by SocialKYC.

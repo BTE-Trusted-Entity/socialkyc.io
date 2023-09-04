@@ -1,11 +1,8 @@
-import { Attestation, ConfigService } from '@kiltprotocol/sdk-js';
-
 import { logger } from '../utilities/logger';
 import { configuration } from '../utilities/configuration';
 
-import { initKilt } from '../utilities/initKilt';
-
 import { scanAttestations, AttestationInfo } from './scanAttestations';
+import { deduceWishedState, readCurrentState } from './stateIdentifiers';
 
 /**
  * Generator function to gather the old attestations issued by SocialKYC and assigns validity states.
@@ -82,69 +79,4 @@ async function assignState(
   attestationInfo.state = await readCurrentState(attestationInfo);
 
   return attestationInfo;
-}
-
-/**
- * Reads the current state from an attestation on the blockchain.
- * @param attestationInfo
- * @returns one of the validity states: 'valid' | 'revoked' | 'removed'
- */
-export async function readCurrentState(
-  attestationInfo: AttestationInfo,
-): Promise<AttestationInfo['state']> {
-  await initKilt();
-  const api = ConfigService.get('api');
-
-  const attestationEncoded = await api.query.attestation.attestations(
-    attestationInfo.claimHash,
-  );
-  if (attestationEncoded.isNone) {
-    return 'removed';
-  }
-
-  const attestationDecoded = Attestation.fromChain(
-    attestationEncoded,
-    attestationInfo.claimHash,
-  );
-
-  if (attestationDecoded.revoked === false) {
-    return 'valid';
-  }
-  if (attestationDecoded.revoked === true) {
-    return 'revoked';
-  }
-
-  // Else:
-  // including attestationInfo.state === undefined
-  throw new Error(
-    `Could not assign any state to the attestation: ${attestationInfo.claimHash}`,
-  );
-}
-
-/**
- * Decides which state an Attestation should have based on time.
- *
- * If it is younger than 1 year, it can still be valid.
- * If it is older than 1 year, it should be revoked.
- * If it is older than 2 years, it should be removed.
- *
- * @param attestationInfo
- * @returns one of the validity states: 'valid' | 'revoked' | 'removed'
- */
-export function deduceWishedState(
-  attestationInfo: AttestationInfo,
-): AttestationInfo['state'] {
-  const dateNow = Date.now();
-  const millisecondsInAYear = new Date('1971').getTime();
-
-  const removalCutoffDate = new Date(dateNow - 2 * millisecondsInAYear);
-  const revocationCutoffDate = new Date(dateNow - 1 * millisecondsInAYear);
-
-  if (attestationInfo.createdAt < removalCutoffDate) {
-    return 'removed';
-  }
-  if (attestationInfo.createdAt < revocationCutoffDate) {
-    return 'revoked';
-  }
-  return 'valid';
 }
