@@ -1,15 +1,6 @@
-import {
-  ConfigService,
-  Did,
-  KiltKeyringPair,
-  SignExtrinsicCallback,
-  SubmittableExtrinsic,
-} from '@kiltprotocol/sdk-js';
+import { ConfigService, SubmittableExtrinsic } from '@kiltprotocol/sdk-js';
 
 import { logger } from '../utilities/logger';
-import { configuration } from '../utilities/configuration';
-import { signWithAssertionMethod } from '../utilities/cryptoCallbacks';
-import { keypairsPromise } from '../utilities/keypairs';
 
 import { AttestationInfo } from './scanAttestations';
 
@@ -22,7 +13,8 @@ import { AttestationInfo } from './scanAttestations';
 export async function generateTransactions(
   arrayOfAttestationsInfo: AttestationInfo[],
 ): Promise<SubmittableExtrinsic[]> {
-  const condemnations: SubmittableExtrinsic[] = [];
+  const transactions: SubmittableExtrinsic[] = [];
+  const api = ConfigService.get('api');
 
   for (const attestationInfo of arrayOfAttestationsInfo) {
     const dateOfIssuance = attestationInfo.createdAt.getTime();
@@ -50,56 +42,16 @@ export async function generateTransactions(
       continue;
     }
 
-    const { identity: submitterAccount } = await keypairsPromise;
+    const transaction = shouldRemove
+      ? // If the attestation is to be removed, create a `remove` tx,
+        // which revokes and removes the attestation in one go.
+        api.tx.attestation.remove(attestationInfo.claimHash, null)
+      : // Otherwise, simply revoke the attestation but leave it on chain.
+        // Hence, the storage is not cleared and the deposit not returned.
+        api.tx.attestation.revoke(attestationInfo.claimHash, null);
 
-    const newCondemnation = await authorizeRevocation(
-      submitterAccount,
-      signWithAssertionMethod,
-      attestationInfo.claimHash,
-      shouldRemove,
-    );
-
-    condemnations.push(newCondemnation);
+    transactions.push(transaction);
   }
 
-  return condemnations;
-}
-
-/**
- * Authorizes the revocation or the removal of one attested credential.
- *
- * @param submitterAccount
- * @param signCallback
- * @param claimHash
- * @param shouldRemove
- * @returns  The authorized transaction. Ready to sign and submit.
- */
-async function authorizeRevocation(
-  submitterAccount: KiltKeyringPair,
-  signCallback: SignExtrinsicCallback,
-  claimHash: `0x${string}`,
-  shouldRemove = false,
-): Promise<SubmittableExtrinsic> {
-  const api = ConfigService.get('api');
-
-  if (configuration.did === 'pending') {
-    throw new Error('No DID of the website provided');
-  }
-
-  const transaction = shouldRemove
-    ? // If the attestation is to be removed, create a `remove` tx,
-      // which revokes and removes the attestation in one go.
-      api.tx.attestation.remove(claimHash, null)
-    : // Otherwise, simply revoke the attestation but leave it on chain.
-      // Hence, the storage is not cleared and the deposit not returned.
-      api.tx.attestation.revoke(claimHash, null);
-
-  const authorizedTx = await Did.authorizeTx(
-    configuration.did,
-    transaction,
-    signCallback,
-    submitterAccount.address,
-  );
-
-  return authorizedTx;
+  return transactions;
 }
