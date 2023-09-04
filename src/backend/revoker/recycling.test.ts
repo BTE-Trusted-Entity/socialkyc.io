@@ -10,7 +10,7 @@ import { configuration } from '../utilities/configuration';
 
 import { subScanEventGenerator } from './subScan';
 import { AttestationInfo, scanAttestations } from './scanAttestations';
-import { expiredCredentialsGetter } from './getExpiredCredentials';
+import { getExpiredCredentials } from './getExpiredCredentials';
 
 describe('scan for first event on chain through subscan', () => {
   it('should always be the same on peregrine. Can not change the past.', async () => {
@@ -83,7 +83,7 @@ describe('get the first attestation as an info-object from the chain', () => {
 
 describe('get the first attestationInfo for a revocation/removal', () => {
   it('should have the correct identity and validity state', async () => {
-    const expiredCredentialGenerator = expiredCredentialsGetter(0);
+    const expiredCredentialGenerator = getExpiredCredentials(0);
 
     const firstAttestation = (await expiredCredentialGenerator.next())
       .value as AttestationInfo;

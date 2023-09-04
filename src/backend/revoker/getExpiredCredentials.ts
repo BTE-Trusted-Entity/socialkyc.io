@@ -17,7 +17,7 @@ import { deduceWishedState, readCurrentStates } from './stateIdentifiers';
  * @param fromBlock decides where to start the blockchain scan.
  * @returns `attestationInfo`s that are either `valid` or `revoked`
  */
-export async function* expiredCredentialsGetter(
+export async function* getExpiredCredentials(
   fromBlock = 0,
 ): AsyncGenerator<AttestationInfo> {
   // Generator for attestationInfos of credentials issued by socialKYC
