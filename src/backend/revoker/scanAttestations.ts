@@ -4,7 +4,7 @@ import { CType, Did, DidUri } from '@kiltprotocol/sdk-js';
 
 import { subScanEventGenerator } from './subScan';
 
-export interface ParametersEntry {
+interface ParametersEntry {
   type: string;
   type_name: string;
   value: AccountId32 | `0x${string}` | null;
