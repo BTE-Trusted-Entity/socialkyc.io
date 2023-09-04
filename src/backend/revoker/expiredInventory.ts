@@ -17,7 +17,7 @@ export async function fillExpiredInventory(fromBlock: number) {
   }
 }
 
-export async function removeFromExpiredInventory(
+export function removeFromExpiredInventory(
   processedAttestations: AttestationInfo[],
 ) {
   for (const attestation of processedAttestations) {
