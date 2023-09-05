@@ -4,12 +4,13 @@ import { initKilt } from '../utilities/initKilt';
 
 import { AttestationInfo } from './scanAttestations';
 
+// Union Type:
 type validityState = 'valid' | 'revoked' | 'removed';
 
 /**
  * Reads on the blockchain the current states of an Array of Attestations.
  * @param attestationInfo
- * @returns array of the validity states: 'valid' | 'revoked' | 'removed'
+ * @returns array of validity states: 'valid' | 'revoked' | 'removed'
  */
 export async function readCurrentStates(
   attestationsInfo: AttestationInfo[],
