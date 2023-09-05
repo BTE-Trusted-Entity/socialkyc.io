@@ -21,14 +21,10 @@ export async function generateTransactions(
     const wishedState = deduceWishedState(attestationInfo);
 
     if (wishedState === 'removed') {
-      // If the attestation is to be removed, create a `remove` tx,
-      // which revokes and removes the attestation in one go.
       return [api.tx.attestation.remove(attestationInfo.claimHash, null)];
     }
 
     if (wishedState === 'revoked') {
-      // Otherwise, simply revoke the attestation but leave it on chain.
-      // Hence, the storage is not cleared and the deposit not returned.
       return [api.tx.attestation.revoke(attestationInfo.claimHash, null)];
     }
     return [];
