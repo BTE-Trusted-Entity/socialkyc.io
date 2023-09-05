@@ -1,6 +1,3 @@
-import type { Option } from '@polkadot/types-codec';
-import type { AttestationAttestationsAttestationDetails } from '@polkadot/types/lookup';
-
 import { ConfigService, Attestation } from '@kiltprotocol/sdk-js';
 
 import { initKilt } from '../utilities/initKilt';
@@ -22,13 +19,10 @@ export async function readCurrentStates(
     attestationsInfo.map(({ claimHash }) => claimHash),
   );
 
-  const attestationsTuples: [
-    AttestationInfo,
-    Option<AttestationAttestationsAttestationDetails>,
-  ][] = allAttestationsEncoded.map((encodedAttestation, index) => [
-    attestationsInfo[index],
-    encodedAttestation,
-  ]);
+  const attestationsTuples = allAttestationsEncoded.map(
+    (encodedAttestation, index) =>
+      [attestationsInfo[index], encodedAttestation] as const,
+  );
 
   const arrayOfStates: AttestationInfo['state'][] = [];
 
