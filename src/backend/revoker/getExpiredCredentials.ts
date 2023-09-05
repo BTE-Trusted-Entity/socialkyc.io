@@ -32,12 +32,6 @@ export async function* getExpiredCredentials(
     if (attestationInfo.state === 'removed') {
       continue;
     }
-    if (typeof attestationInfo.state === undefined) {
-      // this should never happen
-      throw new Error(
-        `Could not assign a validity state for this credential ${attestationInfo.claimHash}`,
-      );
-    }
 
     // if younger than a year
     if (deduceWishedState(attestationInfo) === 'valid') {
