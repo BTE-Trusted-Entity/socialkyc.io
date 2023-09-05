@@ -1,7 +1,5 @@
 import { ConfigService, SubmittableExtrinsic } from '@kiltprotocol/sdk-js';
 
-import { logger } from '../utilities/logger';
-
 import { initKilt } from '../utilities/initKilt';
 
 import { AttestationInfo } from './scanAttestations';
@@ -23,16 +21,6 @@ export async function generateTransactions(
   for (const attestationInfo of arrayOfAttestationsInfo) {
     const wishedState = deduceWishedState(attestationInfo);
 
-    if (wishedState === 'valid') {
-      logger.error(
-        `This credential is to young to be here:  ${attestationInfo.claimHash}`,
-      );
-    }
-    // if the wished state is already achieved, jump to the next entry
-    if (attestationInfo.state === wishedState) {
-      continue;
-    }
-
     if (wishedState === 'removed') {
       // If the attestation is to be removed, create a `remove` tx,
       // which revokes and removes the attestation in one go.
@@ -41,7 +29,6 @@ export async function generateTransactions(
         null,
       );
       arrayOfTransactions.push(transaction);
-      continue;
     }
 
     if (wishedState === 'revoked') {
@@ -52,7 +39,6 @@ export async function generateTransactions(
         null,
       );
       arrayOfTransactions.push(transaction);
-      continue;
     }
   }
 
