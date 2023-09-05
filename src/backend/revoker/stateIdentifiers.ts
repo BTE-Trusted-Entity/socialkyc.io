@@ -37,25 +37,8 @@ export async function readCurrentStates(
       attestationInfo.claimHash,
     );
 
-    if (attestationDecoded.revoked === false) {
-      arrayOfStates.push('valid');
-      continue;
-    }
-    if (attestationDecoded.revoked === true) {
-      arrayOfStates.push('revoked');
-      continue;
-    }
-
-    // Else:
-    // including attestationInfo.state === undefined
-    throw new Error(
-      `Could not assign any state to the attestation: ${attestationInfo.claimHash}`,
-    );
-
-    // should I throw??
-
-    arrayOfStates.push(undefined);
-    continue;
+    const state = attestationDecoded.revoked ? 'revoked' : 'valid';
+    arrayOfStates.push(state);
   }
   return arrayOfStates;
 }
