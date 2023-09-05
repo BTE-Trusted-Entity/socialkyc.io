@@ -25,11 +25,11 @@ export async function* getExpiredCredentials(
     scanAttestations(fromBlock),
   );
 
-  for await (const attestationInfoStateless of ourAttestationsGenerator) {
-    const attestationInfo = await assignState(attestationInfoStateless);
+  for await (const attestationInfo of ourAttestationsGenerator) {
+    const validityState = (await readCurrentStates([attestationInfo]))[0];
 
     // find the next attestation that has not been removed yet:
-    if (attestationInfo.state === 'removed') {
+    if (validityState === 'removed') {
       continue;
     }
 
@@ -61,16 +61,4 @@ async function* filterOnlyAttestedByUs(
     }
     // do nothing if DID not provided or wrong
   }
-}
-
-async function assignState(
-  attestationInfo: AttestationInfo | void,
-): Promise<AttestationInfo> {
-  if (!attestationInfo) {
-    throw new Error('attestation is empty');
-  }
-
-  attestationInfo.state = (await readCurrentStates([attestationInfo]))[0];
-
-  return attestationInfo;
 }

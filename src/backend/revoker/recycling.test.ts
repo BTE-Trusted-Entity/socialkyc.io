@@ -4,13 +4,12 @@
 
 import { describe, it } from '@jest/globals';
 
-// import { SubmittableExtrinsic } from '@kiltprotocol/sdk-js';
-
 import { configuration } from '../utilities/configuration';
 
 import { subScanEventGenerator } from './subScan';
 import { AttestationInfo, scanAttestations } from './scanAttestations';
 import { getExpiredCredentials } from './getExpiredCredentials';
+import { readCurrentStates } from './stateIdentifiers';
 
 describe('scan for first event on chain through subscan', () => {
   it('should always be the same on peregrine. Can not change the past.', async () => {
@@ -89,32 +88,9 @@ describe('get the first attestationInfo for a revocation/removal', () => {
       .value as AttestationInfo;
 
     const did = firstAttestation.owner;
-    const validityState = firstAttestation.state;
+    const validityState = (await readCurrentStates([firstAttestation]))[0];
 
     expect(did).toEqual(configuration.did);
     expect(['valid', 'revoked']).toContain(validityState);
   });
 });
-
-// describe('get the first submittable extrinsic for a revocation/removal', () => {
-//   it('should have the correct identity and account', async () => {
-//     const submittableExtrinsicsGenerator = expiredCredentialsGetter(0);
-
-//     const firstCondemnation = (await submittableExtrinsicsGenerator.next())
-//       .value as SubmittableExtrinsic;
-
-//     interface keyableObject {
-//       // eslint-disable-next-line @typescript-eslint/no-explicit-any
-//       [key: string]: any;
-//     }
-
-//     const someInnerInfo =
-//       firstCondemnation.inner.method.args[0].toJSON() as keyableObject;
-
-//     const did = `did:kilt:${someInnerInfo['did']}`;
-//     const submitter = someInnerInfo['submitter'];
-
-//     expect(did).toEqual(configuration.subscan.socialKYCDidUri);
-//     expect(submitter).toBe(configuration.subscan.socialKYCAddress);
-//   });
-// });

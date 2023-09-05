@@ -4,14 +4,16 @@ import { initKilt } from '../utilities/initKilt';
 
 import { AttestationInfo } from './scanAttestations';
 
+type validityState = 'valid' | 'revoked' | 'removed';
+
 /**
  * Reads on the blockchain the current states of an Array of Attestations.
  * @param attestationInfo
- * @returns array the validity states: 'valid' | 'revoked' | 'removed'
+ * @returns array of the validity states: 'valid' | 'revoked' | 'removed'
  */
 export async function readCurrentStates(
   attestationsInfo: AttestationInfo[],
-): Promise<AttestationInfo['state'][]> {
+): Promise<validityState[]> {
   await initKilt();
   const api = ConfigService.get('api');
 
@@ -45,7 +47,7 @@ export async function readCurrentStates(
  */
 export function deduceWishedState(
   attestationInfo: AttestationInfo,
-): AttestationInfo['state'] {
+): validityState {
   const dateNow = Date.now();
   const millisecondsInAYear = new Date('1971').getTime();
 
