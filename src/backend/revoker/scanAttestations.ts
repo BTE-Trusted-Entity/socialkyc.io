@@ -9,7 +9,6 @@ export interface AttestationInfo {
   block: number;
   createdAt: Date;
   extrinsicHash: `0x${string}`;
-  state: 'valid' | 'revoked' | 'removed' | undefined;
 }
 export async function* scanAttestations(fromBlock: number) {
   const eventGenerator = subScanEventGenerator(
