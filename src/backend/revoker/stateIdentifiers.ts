@@ -19,28 +19,18 @@ export async function readCurrentStates(
     attestationsInfo.map(({ claimHash }) => claimHash),
   );
 
-  const attestationsTuples = allAttestationsEncoded.map(
-    (encodedAttestation, index) =>
-      [attestationsInfo[index], encodedAttestation] as const,
-  );
-
-  const arrayOfStates: AttestationInfo['state'][] = [];
-
-  for (const [attestationInfo, attestationEncoded] of attestationsTuples) {
-    if (attestationEncoded.isNone) {
-      arrayOfStates.push('removed');
-      continue;
+  return allAttestationsEncoded.map((encodedAttestation, index) => {
+    if (encodedAttestation.isNone) {
+      return 'removed';
     }
 
     const attestationDecoded = Attestation.fromChain(
-      attestationEncoded,
-      attestationInfo.claimHash,
+      encodedAttestation,
+      attestationsInfo[index].claimHash,
     );
 
-    const state = attestationDecoded.revoked ? 'revoked' : 'valid';
-    arrayOfStates.push(state);
-  }
-  return arrayOfStates;
+    return attestationDecoded.revoked ? 'revoked' : 'valid';
+  });
 }
 
 /**
