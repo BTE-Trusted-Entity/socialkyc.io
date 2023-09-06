@@ -1,5 +1,6 @@
 import { logger } from '../utilities/logger';
 import { configuration } from '../utilities/configuration';
+import { filterG } from '../utilities/filterG';
 
 import { AttestationInfo, scanAttestations } from './scanAttestations';
 import { readCurrentStates, shouldBeRevoked } from './stateIdentifiers';
@@ -15,44 +16,22 @@ import { readCurrentStates, shouldBeRevoked } from './stateIdentifiers';
 export async function* getExpiredCredentials(
   fromBlock = 0,
 ): AsyncGenerator<AttestationInfo> {
-  // Generator for attestationInfos of credentials issued by socialKYC
-  const ourAttestationsGenerator = filterOnlyAttestedByUs(
-    scanAttestations(fromBlock),
+  const allAttestations = scanAttestations(fromBlock);
+  const ownAttestations = filterG(
+    allAttestations,
+    async ({ owner }) => owner === configuration.did,
   );
+  const validAttestations = filterG(ownAttestations, async (attestation) => {
+    const [state] = await readCurrentStates([attestation]);
+    return state !== 'removed';
+  });
 
-  for await (const attestationInfo of ourAttestationsGenerator) {
-    const validityState = (await readCurrentStates([attestationInfo]))[0];
-
-    // find the next attestation that has not been removed yet:
-    if (validityState === 'removed') {
-      continue;
-    }
-
-    if (!shouldBeRevoked(attestationInfo)) {
-      logger.debug(
-        'No more credentials younger than a year attested by SocialKYC.',
-      );
-      // end the generator:
+  for await (const attestationInfo of validAttestations) {
+    if (shouldBeRevoked(attestationInfo)) {
+      yield attestationInfo;
+    } else {
+      logger.debug('No more attestations to revoke');
       return;
     }
-    yield attestationInfo;
-  }
-}
-
-async function* filterOnlyAttestedByUs(
-  attestationGenerator: AsyncGenerator<AttestationInfo>,
-) {
-  for await (const attestation of attestationGenerator) {
-    if (!attestation) {
-      logger.debug('No more attestations found.');
-      // end the generator
-      return;
-    }
-
-    const didOfAttester = attestation.owner;
-    if (configuration.did === didOfAttester) {
-      yield attestation;
-    }
-    // do nothing if DID not provided or wrong
   }
 }
