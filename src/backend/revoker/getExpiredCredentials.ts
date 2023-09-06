@@ -5,17 +5,12 @@ import { AttestationInfo, scanAttestations } from './scanAttestations';
 import { readCurrentStates, shouldBeRevoked } from './stateIdentifiers';
 
 /**
- * Generator function to gather the old attestations issued by SocialKYC and assigns validity states.
+ * Generator function to gather the expired attestations issued by SocialKYC.
  *
- * "Old" means longer than a calendar year.
- *
- * Their validity `state` and the their creation date `createdAt` let us know, if they are to be revoked or removed.
- *
- * If they are older than 1 year, they should be revoked.
- * If they are older than 2 years, they should be removed.
+ * Their creation date `createdAt` lets us know if they are to be revoked or removed.
  *
  * @param fromBlock decides where to start the blockchain scan.
- * @returns `attestationInfo`s that are either `valid` or `revoked`
+ * @returns attestationInfo
  */
 export async function* getExpiredCredentials(
   fromBlock = 0,
