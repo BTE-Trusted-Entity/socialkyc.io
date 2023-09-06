@@ -65,10 +65,13 @@ export async function getEvents({
   return { count, events: parsedEvents };
 }
 
+type ParsedEvents = Required<Awaited<ReturnType<typeof getEvents>>>['events'];
+
 export async function* subScanEventGenerator(
   module: string,
   call: string,
   fromBlock: number,
+  transform: (events: ParsedEvents) => Promise<ParsedEvents>,
 ) {
   const parameters = {
     module,
@@ -106,7 +109,7 @@ export async function* subScanEventGenerator(
     }
 
     logger.debug(`Loaded events page ${page} for ${call}`);
-    for (const event of events) {
+    for (const event of await transform(events)) {
       yield event;
     }
 

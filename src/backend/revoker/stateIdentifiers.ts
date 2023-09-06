@@ -1,31 +1,27 @@
-import { Attestation, ConfigService } from '@kiltprotocol/sdk-js';
+import {
+  Attestation,
+  ConfigService,
+  type HexString,
+} from '@kiltprotocol/sdk-js';
 
 import { initKilt } from '../utilities/initKilt';
 
-import { AttestationInfo } from './scanAttestations';
-
 /**
  * Queries the revoked status of an array of attestations from the blockchain in bulk
- * @param attestationsInfo
+ * @param claimHashes
  * @returns Matching array of revoked values
  */
-export async function bulkQueryRevoked(attestationsInfo: AttestationInfo[]) {
+export async function bulkQueryRevoked(claimHashes: HexString[]) {
   await initKilt();
   const api = ConfigService.get('api');
 
-  const allAttestationsEncoded = await api.query.attestation.attestations.multi(
-    attestationsInfo.map(({ claimHash }) => claimHash),
-  );
+  const results = await api.query.attestation.attestations.multi(claimHashes);
 
-  return allAttestationsEncoded.map((encodedAttestation, index) => {
-    if (encodedAttestation.isNone) {
+  return results.map((encoded, index) => {
+    if (encoded.isNone) {
       return null;
     }
-
-    return Attestation.fromChain(
-      encodedAttestation,
-      attestationsInfo[index].claimHash,
-    ).revoked;
+    return Attestation.fromChain(encoded, claimHashes[index]).revoked;
   });
 }
 

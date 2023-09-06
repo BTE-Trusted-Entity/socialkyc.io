@@ -17,6 +17,7 @@ describe('scan for first event on chain through subscan', () => {
       'attestation',
       'AttestationCreated',
       0,
+      async (events) => events,
     );
 
     const firstEventHardCoded = {
@@ -70,6 +71,7 @@ describe('get the first attestation as an info-object from the chain', () => {
       createdAt: new Date('2022-02-14T13:19:36.000Z'),
       owner: 'did:kilt:4pehddkhEanexVTTzWAtrrfo2R7xPnePpuiJLC7shQU894aY',
       delegationId: null,
+      revoked: null,
     };
 
     const oneAttestationInfo = await attestationsGenerator.next();
@@ -86,7 +88,7 @@ describe('get the first attestationInfo for a revocation/removal', () => {
       .value as AttestationInfo;
 
     const did = firstAttestation.owner;
-    const revoked = (await bulkQueryRevoked([firstAttestation]))[0];
+    const revoked = (await bulkQueryRevoked([firstAttestation.claimHash]))[0];
 
     expect(did).toEqual(configuration.did);
     expect([true, false]).toContain(revoked);

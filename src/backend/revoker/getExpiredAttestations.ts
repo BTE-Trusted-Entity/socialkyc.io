@@ -3,7 +3,7 @@ import { configuration } from '../utilities/configuration';
 import { filterG } from '../utilities/filterG';
 
 import { AttestationInfo, scanAttestations } from './scanAttestations';
-import { bulkQueryRevoked, shouldBeRevoked } from './stateIdentifiers';
+import { shouldBeRevoked } from './stateIdentifiers';
 
 /**
  * Generator function to gather the expired attestations issued by SocialKYC.
@@ -21,10 +21,10 @@ export async function* getExpiredAttestations(
     allAttestations,
     async ({ owner }) => owner === configuration.did,
   );
-  const existingAttestations = filterG(ownAttestations, async (attestation) => {
-    const [revoked] = await bulkQueryRevoked([attestation]);
-    return revoked !== null;
-  });
+  const existingAttestations = filterG(
+    ownAttestations,
+    async ({ revoked }) => revoked !== null,
+  );
 
   for await (const attestationInfo of existingAttestations) {
     if (shouldBeRevoked(attestationInfo)) {
