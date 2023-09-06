@@ -60,7 +60,7 @@ describe('scan for first event on chain through subscan', () => {
 
 describe('get the first attestation as an info-object from the chain', () => {
   it('should always be the same on peregrine. Can not change the past.', async () => {
-    const attestationsGenerator = scanAttestations(0);
+    const attestationsGenerator = scanAttestations();
 
     const firstAttestationInfo: AttestationInfo = {
       block: 28500,
@@ -82,7 +82,7 @@ describe('get the first attestation as an info-object from the chain', () => {
 
 describe('get the first attestationInfo for a revocation/removal', () => {
   it('should have the correct identity and validity state', async () => {
-    const expiredAttestationsGenerator = getExpiredAttestations(0);
+    const expiredAttestationsGenerator = getExpiredAttestations();
 
     const firstAttestation = (await expiredAttestationsGenerator.next())
       .value as AttestationInfo;

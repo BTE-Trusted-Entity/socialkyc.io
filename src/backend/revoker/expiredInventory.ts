@@ -9,11 +9,9 @@ import { AttestationInfo } from './scanAttestations';
  */
 export const expiredInventory: AttestationInfo[] = [];
 
-export async function fillExpiredInventory(fromBlock: number) {
-  const expiredAttestationGenerator = getExpiredAttestations(fromBlock);
-
-  for await (const attestationToProcess of expiredAttestationGenerator) {
-    expiredInventory.push(attestationToProcess);
+async function fillExpiredInventory() {
+  for await (const expiredAttestation of getExpiredAttestations()) {
+    expiredInventory.push(expiredAttestation);
   }
 }
 
@@ -21,10 +19,8 @@ const SCAN_INTERVAL_MS = 60 * 60 * 1000;
 
 export function initExpiredInventory() {
   (async () => {
-    const fromBlock = 0;
-
     while (true) {
-      await fillExpiredInventory(fromBlock);
+      await fillExpiredInventory();
       await sleep(SCAN_INTERVAL_MS);
     }
   })();

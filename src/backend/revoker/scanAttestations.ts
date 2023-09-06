@@ -1,7 +1,9 @@
 import { Did, type HexString, type IAttestation } from '@kiltprotocol/sdk-js';
 
+import { logger } from '../utilities/logger';
+
 import { subScanEventGenerator } from './subScan';
-import { bulkQueryRevoked } from './stateIdentifiers';
+import { bulkQueryRevoked, shouldBeRevoked } from './stateIdentifiers';
 
 export type EventParams = [
   { type_name: 'AttesterOf'; value: Parameters<typeof Did.fromChain>[0] },
@@ -17,7 +19,9 @@ export interface AttestationInfo extends Omit<IAttestation, 'revoked'> {
   createdAt: Date;
 }
 
-export async function* scanAttestations(fromBlock: number) {
+let fromBlock = 0;
+
+export async function* scanAttestations() {
   const eventGenerator = subScanEventGenerator(
     'attestation',
     'AttestationCreated',
@@ -35,6 +39,13 @@ export async function* scanAttestations(fromBlock: number) {
   for await (const event of eventGenerator) {
     const { block, blockTimestampMs } = event;
     const createdAt = new Date(blockTimestampMs);
+
+    if (!shouldBeRevoked({ createdAt })) {
+      logger.debug('No more attestations to revoke');
+      // stop here so that fromBlock contains the last expired block, and we can start from it in the next run
+      return;
+    }
+    fromBlock = block;
 
     const params = event.params as EventParams;
     const owner = Did.fromChain(params[0].value);
