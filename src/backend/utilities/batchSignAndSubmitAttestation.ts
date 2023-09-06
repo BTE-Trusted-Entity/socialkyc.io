@@ -3,12 +3,11 @@ import {
   Did,
   ConfigService,
   IAttestation,
-  SubmittableExtrinsic,
 } from '@kiltprotocol/sdk-js';
 
 import { expiredInventory } from '../revoker/expiredInventory';
 
-import { generateTransactions } from '../revoker/generateTransactions';
+import { getExpirationTx } from '../revoker/getExpirationTx';
 
 import { AttestationInfo } from '../revoker/scanAttestations';
 
@@ -102,16 +101,12 @@ async function createPendingTransaction() {
   }
   logger.debug('Scheduling next transaction');
 
-  const newAttestations = currentAttestations.map(
-    ({ attestation: { cTypeHash, claimHash } }) =>
+  const extrinsics = [
+    ...currentAttestations.map(({ attestation: { cTypeHash, claimHash } }) =>
       api.tx.attestation.add(claimHash, cTypeHash, null),
-  ) as SubmittableExtrinsic[];
-
-  const submittableRevocations = await generateTransactions(
-    pendingExpiredAttestations,
-  );
-
-  const extrinsics = newAttestations.concat(submittableRevocations);
+    ),
+    ...pendingExpiredAttestations.map(getExpirationTx),
+  ];
 
   const { fullDid } = await fullDidPromise;
   const { identity } = await keypairsPromise;
