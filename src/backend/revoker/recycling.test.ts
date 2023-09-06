@@ -61,16 +61,15 @@ describe('get the first attestation as an info-object from the chain', () => {
   it('should always be the same on peregrine. Can not change the past.', async () => {
     const attestationsGenerator = scanAttestations(0);
 
-    const firstAttestationInfo = {
+    const firstAttestationInfo: AttestationInfo = {
       block: 28500,
-      cTypeId:
-        'kilt:ctype:0x3291bb126e33b4862d421bfaa1d2f272e6cdfc4f96658988fbcffea8914bd9ac',
+      cTypeHash:
+        '0x3291bb126e33b4862d421bfaa1d2f272e6cdfc4f96658988fbcffea8914bd9ac',
       claimHash:
         '0xc11239b76188eab173db38c253b462a087388cab49fbdcb16357d6130d7d7be1',
       createdAt: new Date('2022-02-14T13:19:36.000Z'),
-      extrinsicHash:
-        '0x4e406574dcdadef6e742d9a8d41bbe699840110b21f5ae83d45d4e44ae3638a7',
       owner: 'did:kilt:4pehddkhEanexVTTzWAtrrfo2R7xPnePpuiJLC7shQU894aY',
+      delegationId: null,
     };
 
     const oneAttestationInfo = await attestationsGenerator.next();
