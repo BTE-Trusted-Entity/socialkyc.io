@@ -1,4 +1,5 @@
 import got from 'got';
+import { type HexString } from '@kiltprotocol/sdk-js';
 
 import { configuration } from '../utilities/configuration';
 import { logger } from '../utilities/logger';
@@ -20,7 +21,7 @@ export interface EventsResponseJson {
       params: string;
       block_num: number;
       block_timestamp: number;
-      extrinsic_hash: `0x${string}`;
+      extrinsic_hash: HexString;
     }> | null;
   };
 }

@@ -1,14 +1,14 @@
-import { CType, Did, DidUri } from '@kiltprotocol/sdk-js';
+import { CType, Did, DidUri, HexString } from '@kiltprotocol/sdk-js';
 
 import { subScanEventGenerator } from './subScan';
 
 export interface AttestationInfo {
   owner: DidUri;
-  claimHash: `0x${string}`;
+  claimHash: HexString;
   cTypeId: `kilt:ctype:0x${string}`;
   block: number;
   createdAt: Date;
-  extrinsicHash: `0x${string}`;
+  extrinsicHash: HexString;
 }
 export async function* scanAttestations(fromBlock: number) {
   const eventGenerator = subScanEventGenerator(
