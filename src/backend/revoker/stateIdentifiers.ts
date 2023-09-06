@@ -1,19 +1,15 @@
-import { ConfigService, Attestation } from '@kiltprotocol/sdk-js';
+import { Attestation, ConfigService } from '@kiltprotocol/sdk-js';
 
 import { initKilt } from '../utilities/initKilt';
 
 import { AttestationInfo } from './scanAttestations';
 
-type ValidityState = 'valid' | 'revoked' | 'removed';
-
 /**
- * Reads from the blockchain the current states of an array of Attestations.
+ * Queries the revoked status of an array of attestations from the blockchain in bulk
  * @param attestationsInfo
- * @returns array of validity states
+ * @returns Matching array of revoked values
  */
-export async function readCurrentStates(
-  attestationsInfo: AttestationInfo[],
-): Promise<ValidityState[]> {
+export async function bulkQueryRevoked(attestationsInfo: AttestationInfo[]) {
   await initKilt();
   const api = ConfigService.get('api');
 
@@ -23,15 +19,13 @@ export async function readCurrentStates(
 
   return allAttestationsEncoded.map((encodedAttestation, index) => {
     if (encodedAttestation.isNone) {
-      return 'removed';
+      return null;
     }
 
-    const attestationDecoded = Attestation.fromChain(
+    return Attestation.fromChain(
       encodedAttestation,
       attestationsInfo[index].claimHash,
-    );
-
-    return attestationDecoded.revoked ? 'revoked' : 'valid';
+    ).revoked;
   });
 }
 

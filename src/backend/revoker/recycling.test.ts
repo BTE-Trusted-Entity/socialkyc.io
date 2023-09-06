@@ -9,7 +9,7 @@ import { configuration } from '../utilities/configuration';
 import { subScanEventGenerator } from './subScan';
 import { AttestationInfo, scanAttestations } from './scanAttestations';
 import { getExpiredAttestations } from './getExpiredAttestations';
-import { readCurrentStates } from './stateIdentifiers';
+import { bulkQueryRevoked } from './stateIdentifiers';
 
 describe('scan for first event on chain through subscan', () => {
   it('should always be the same on peregrine. Can not change the past.', async () => {
@@ -86,9 +86,9 @@ describe('get the first attestationInfo for a revocation/removal', () => {
       .value as AttestationInfo;
 
     const did = firstAttestation.owner;
-    const validityState = (await readCurrentStates([firstAttestation]))[0];
+    const revoked = (await bulkQueryRevoked([firstAttestation]))[0];
 
     expect(did).toEqual(configuration.did);
-    expect(['valid', 'revoked']).toContain(validityState);
+    expect([true, false]).toContain(revoked);
   });
 });

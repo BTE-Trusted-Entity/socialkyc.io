@@ -1,7 +1,7 @@
 import { AttestationInfo } from './scanAttestations';
 import { removeFromExpiredInventory } from './expiredInventory';
 import {
-  readCurrentStates,
+  bulkQueryRevoked,
   shouldBeRemoved,
   shouldBeRevoked,
 } from './stateIdentifiers';
@@ -15,15 +15,15 @@ import {
 export async function updateExpiredInventory(
   attestationsInfo: AttestationInfo[],
 ) {
-  const currentStates = await readCurrentStates(attestationsInfo);
+  const allRevoked = await bulkQueryRevoked(attestationsInfo);
 
   for (const [index, attestation] of attestationsInfo.entries()) {
-    const realCurrentState = currentStates[index];
+    const revoked = allRevoked[index];
 
     const removedSuccessfully =
-      shouldBeRemoved(attestation) && realCurrentState === 'removed';
+      shouldBeRemoved(attestation) && revoked === null;
     const revokedSuccessfully =
-      shouldBeRevoked(attestation) && realCurrentState === 'revoked';
+      shouldBeRevoked(attestation) && revoked === true;
 
     if (removedSuccessfully || revokedSuccessfully) {
       removeFromExpiredInventory([attestation]);
