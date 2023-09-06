@@ -36,30 +36,14 @@ export async function readCurrentStates(
   });
 }
 
-/**
- * Decides which state an Attestation should have based on time.
- *
- * If it is younger than 1 year, it can still be valid.
- * If it is older than 1 year, it should be revoked.
- * If it is older than 2 years, it should be removed.
- *
- * @param attestationInfo
- * @returns one of the validity states: 'valid' | 'revoked' | 'removed'
- */
-export function deduceWishedState(
-  attestationInfo: AttestationInfo,
-): validityState {
-  const dateNow = Date.now();
-  const millisecondsInAYear = new Date('1971').getTime();
+export function shouldBeRemoved({ createdAt }: { createdAt: Date }) {
+  const cutoff = new Date();
+  cutoff.setFullYear(cutoff.getFullYear() - 2); // remove attestations older than 2 years
+  return createdAt < cutoff;
+}
 
-  const removalCutoffDate = new Date(dateNow - 2 * millisecondsInAYear);
-  const revocationCutoffDate = new Date(dateNow - 1 * millisecondsInAYear);
-
-  if (attestationInfo.createdAt < removalCutoffDate) {
-    return 'removed';
-  }
-  if (attestationInfo.createdAt < revocationCutoffDate) {
-    return 'revoked';
-  }
-  return 'valid';
+export function shouldBeRevoked({ createdAt }: { createdAt: Date }) {
+  const cutoff = new Date();
+  cutoff.setFullYear(cutoff.getFullYear() - 1); // revoke attestations older than 1 year
+  return createdAt < cutoff;
 }

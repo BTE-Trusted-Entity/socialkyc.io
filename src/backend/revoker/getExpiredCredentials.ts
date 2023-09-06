@@ -1,8 +1,8 @@
 import { logger } from '../utilities/logger';
 import { configuration } from '../utilities/configuration';
 
-import { scanAttestations, AttestationInfo } from './scanAttestations';
-import { deduceWishedState, readCurrentStates } from './stateIdentifiers';
+import { AttestationInfo, scanAttestations } from './scanAttestations';
+import { readCurrentStates, shouldBeRevoked } from './stateIdentifiers';
 
 /**
  * Generator function to gather the old attestations issued by SocialKYC and assigns validity states.
@@ -33,8 +33,7 @@ export async function* getExpiredCredentials(
       continue;
     }
 
-    // if younger than a year
-    if (deduceWishedState(attestationInfo) === 'valid') {
+    if (!shouldBeRevoked(attestationInfo)) {
       logger.debug(
         'No more credentials younger than a year attested by SocialKYC.',
       );

@@ -1,8 +1,10 @@
-import { logger } from '../utilities/logger';
-
 import { AttestationInfo } from './scanAttestations';
 import { removeFromExpiredInventory } from './expiredInventory';
-import { deduceWishedState, readCurrentStates } from './stateIdentifiers';
+import {
+  readCurrentStates,
+  shouldBeRemoved,
+  shouldBeRevoked,
+} from './stateIdentifiers';
 
 /**
  * Checks if the attestation were successfully revoked or removed.
@@ -16,19 +18,14 @@ export async function updateExpiredInventory(
   const currentStates = await readCurrentStates(attestationsInfo);
 
   for (const [index, attestation] of attestationsInfo.entries()) {
-    const stateWishedAfterProcess = deduceWishedState(attestation);
     const realCurrentState = currentStates[index];
 
-    if (!realCurrentState || !stateWishedAfterProcess) {
-      throw new Error('State could not be assigned');
-    }
-    if (stateWishedAfterProcess === 'valid') {
-      logger.error(
-        `This credential is to young to be here:  ${attestation.claimHash}`,
-      );
-    }
+    const removedSuccessfully =
+      shouldBeRemoved(attestation) && realCurrentState === 'removed';
+    const revokedSuccessfully =
+      shouldBeRevoked(attestation) && realCurrentState === 'revoked';
 
-    if (realCurrentState === stateWishedAfterProcess) {
+    if (removedSuccessfully || revokedSuccessfully) {
       removeFromExpiredInventory([attestation]);
     }
   }
