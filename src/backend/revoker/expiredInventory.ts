@@ -5,7 +5,6 @@ import { AttestationInfo } from './scanAttestations';
 
 /**
  * List of attestations that need to be revoked or removed.
- *
  */
 export const expiredInventory: AttestationInfo[] = [];
 
