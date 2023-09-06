@@ -6,11 +6,8 @@ import {
 } from '@kiltprotocol/sdk-js';
 
 import { expiredInventory } from '../revoker/expiredInventory';
-
 import { getExpirationTx } from '../revoker/getExpirationTx';
-
 import { AttestationInfo } from '../revoker/scanAttestations';
-
 import { updateExpiredInventory } from '../revoker/updateExpiredInventory';
 
 import { logger } from './logger';
