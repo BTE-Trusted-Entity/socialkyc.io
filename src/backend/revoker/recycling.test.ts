@@ -71,7 +71,6 @@ describe('get the first attestation as an info-object from the chain', () => {
       extrinsicHash:
         '0x4e406574dcdadef6e742d9a8d41bbe699840110b21f5ae83d45d4e44ae3638a7',
       owner: 'did:kilt:4pehddkhEanexVTTzWAtrrfo2R7xPnePpuiJLC7shQU894aY',
-      state: undefined,
     };
 
     const oneAttestationInfo = await attestationsGenerator.next();
