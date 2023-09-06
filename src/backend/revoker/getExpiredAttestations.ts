@@ -13,7 +13,7 @@ import { readCurrentStates, shouldBeRevoked } from './stateIdentifiers';
  * @param fromBlock decides where to start the blockchain scan.
  * @returns attestationInfo
  */
-export async function* getExpiredCredentials(
+export async function* getExpiredAttestations(
   fromBlock = 0,
 ): AsyncGenerator<AttestationInfo> {
   const allAttestations = scanAttestations(fromBlock);

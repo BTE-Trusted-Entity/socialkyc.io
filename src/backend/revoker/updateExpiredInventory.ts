@@ -9,7 +9,7 @@ import {
 /**
  * Checks if the attestation were successfully revoked or removed.
  *
- * @param attestationsInfo Array of AttestationInfo of the credentials that should have been processed.
+ * @param attestationsInfo Array of AttestationInfo of the attestations that should have been processed.
  * @returns
  */
 export async function updateExpiredInventory(

@@ -1,6 +1,6 @@
 import { logger } from '../utilities/logger';
 
-import { getExpiredCredentials } from './getExpiredCredentials';
+import { getExpiredAttestations } from './getExpiredAttestations';
 import { AttestationInfo } from './scanAttestations';
 
 /**
@@ -10,7 +10,7 @@ import { AttestationInfo } from './scanAttestations';
 export const expiredInventory: AttestationInfo[] = [];
 
 export async function fillExpiredInventory(fromBlock: number) {
-  const expiredAttestationGenerator = getExpiredCredentials(fromBlock);
+  const expiredAttestationGenerator = getExpiredAttestations(fromBlock);
 
   for await (const attestationToProcess of expiredAttestationGenerator) {
     expiredInventory.push(attestationToProcess);

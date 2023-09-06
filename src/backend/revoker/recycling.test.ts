@@ -8,7 +8,7 @@ import { configuration } from '../utilities/configuration';
 
 import { subScanEventGenerator } from './subScan';
 import { AttestationInfo, scanAttestations } from './scanAttestations';
-import { getExpiredCredentials } from './getExpiredCredentials';
+import { getExpiredAttestations } from './getExpiredAttestations';
 import { readCurrentStates } from './stateIdentifiers';
 
 describe('scan for first event on chain through subscan', () => {
@@ -80,9 +80,9 @@ describe('get the first attestation as an info-object from the chain', () => {
 
 describe('get the first attestationInfo for a revocation/removal', () => {
   it('should have the correct identity and validity state', async () => {
-    const expiredCredentialGenerator = getExpiredCredentials(0);
+    const expiredAttestationsGenerator = getExpiredAttestations(0);
 
-    const firstAttestation = (await expiredCredentialGenerator.next())
+    const firstAttestation = (await expiredAttestationsGenerator.next())
       .value as AttestationInfo;
 
     const did = firstAttestation.owner;
