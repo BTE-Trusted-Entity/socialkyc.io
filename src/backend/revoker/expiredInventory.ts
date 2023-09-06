@@ -1,4 +1,5 @@
 import { logger } from '../utilities/logger';
+import { sleep } from '../utilities/sleep';
 
 import { getExpiredAttestations } from './getExpiredAttestations';
 import { AttestationInfo } from './scanAttestations';
@@ -14,6 +15,19 @@ export async function fillExpiredInventory(fromBlock: number) {
   for await (const attestationToProcess of expiredAttestationGenerator) {
     expiredInventory.push(attestationToProcess);
   }
+}
+
+const SCAN_INTERVAL_MS = 60 * 60 * 1000;
+
+export function initExpiredInventory() {
+  (async () => {
+    const fromBlock = 0;
+
+    while (true) {
+      await fillExpiredInventory(fromBlock);
+      await sleep(SCAN_INTERVAL_MS);
+    }
+  })();
 }
 
 export function removeFromExpiredInventory(

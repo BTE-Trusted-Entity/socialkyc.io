@@ -53,7 +53,7 @@ import { terms } from './endpoints/terms';
 import { privacy } from './endpoints/privacy';
 import { sessionHeader } from './endpoints/sessionHeader';
 import { metrics } from './endpoints/metrics';
-import { fillExpiredInventory } from './revoker/expiredInventory';
+import { initExpiredInventory } from './revoker/expiredInventory';
 
 const { isProduction, maintenanceMode, baseUri } = configuration;
 
@@ -82,9 +82,6 @@ const logger = {
       : { paths: ['req', 'res'], remove: true },
   },
 };
-
-// For the revocations and removals:
-const SCAN_FROM_BLOCK = 0;
 
 (async () => {
   await server.register(noWww);
@@ -167,5 +164,5 @@ const SCAN_FROM_BLOCK = 0;
 
   await manager.start();
 
-  fillExpiredInventory(SCAN_FROM_BLOCK);
+  initExpiredInventory();
 })().catch(exitOnError);
