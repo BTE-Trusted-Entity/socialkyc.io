@@ -18,7 +18,7 @@ export async function* getExpiredAttestations() {
   );
   const existing = filterGenerator(
     own,
-    async ({ revoked }) => revoked !== null,
+    async ({ revoked }) => revoked !== null, // still present on the blockchain
   );
   return existing;
 }
