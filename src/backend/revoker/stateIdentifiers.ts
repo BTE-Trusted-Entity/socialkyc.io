@@ -9,7 +9,7 @@ import { initKilt } from '../utilities/initKilt';
 /**
  * Queries the revoked status of an array of attestations from the blockchain in bulk
  * @param claimHashes
- * @returns Map of claimHashes to revoked status
+ * @returns Map of claimHashes to revoked status (null means absent from the blockchain)
  */
 export async function batchQueryRevoked(claimHashes: HexString[]) {
   await initKilt();
