@@ -10,7 +10,7 @@ import { scanAttestations } from './scanAttestations';
  *
  * @returns attestationInfo
  */
-export async function* getExpiredAttestations() {
+export function getExpiredAttestations() {
   const old = scanAttestations();
   const own = filterGenerator(
     old,
