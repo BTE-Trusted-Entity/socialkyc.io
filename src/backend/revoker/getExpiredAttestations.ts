@@ -1,5 +1,5 @@
 import { configuration } from '../utilities/configuration';
-import { filterG } from '../utilities/filterG';
+import { filterGenerator } from '../utilities/filterGenerator';
 
 import { scanAttestations } from './scanAttestations';
 
@@ -12,7 +12,13 @@ import { scanAttestations } from './scanAttestations';
  */
 export async function* getExpiredAttestations() {
   const old = scanAttestations();
-  const own = filterG(old, async ({ owner }) => owner === configuration.did);
-  const existing = filterG(own, async ({ revoked }) => revoked !== null);
+  const own = filterGenerator(
+    old,
+    async ({ owner }) => owner === configuration.did,
+  );
+  const existing = filterGenerator(
+    own,
+    async ({ revoked }) => revoked !== null,
+  );
   return existing;
 }

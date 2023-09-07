@@ -1,4 +1,4 @@
-export function filterG<Value>(
+export function filterGenerator<Value>(
   generator: AsyncGenerator<Value>,
   predicate: (value: Value) => Promise<boolean>,
 ) {
