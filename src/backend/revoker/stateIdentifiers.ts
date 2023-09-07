@@ -11,7 +11,7 @@ import { initKilt } from '../utilities/initKilt';
  * @param claimHashes
  * @returns Map of claimHashes to revoked status
  */
-export async function bulkQueryRevoked(claimHashes: HexString[]) {
+export async function batchQueryRevoked(claimHashes: HexString[]) {
   await initKilt();
   const api = ConfigService.get('api');
 

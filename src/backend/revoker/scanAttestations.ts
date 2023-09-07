@@ -3,7 +3,7 @@ import { Did, type HexString, type IAttestation } from '@kiltprotocol/sdk-js';
 import { logger } from '../utilities/logger';
 
 import { subScanEventGenerator } from './subScan';
-import { bulkQueryRevoked, shouldBeRevoked } from './stateIdentifiers';
+import { batchQueryRevoked, shouldBeRevoked } from './stateIdentifiers';
 
 export type EventParams = [
   { type_name: 'AttesterOf'; value: Parameters<typeof Did.fromChain>[0] },
@@ -28,7 +28,7 @@ export async function* scanAttestations() {
     fromBlock,
     async (events) => {
       const claimHashes = events.map(({ params }) => params[1].value);
-      const allRevoked = await bulkQueryRevoked(claimHashes);
+      const allRevoked = await batchQueryRevoked(claimHashes);
       events.forEach(({ params }) => {
         const claimHash = params[1].value;
         params.push(allRevoked[claimHash]);

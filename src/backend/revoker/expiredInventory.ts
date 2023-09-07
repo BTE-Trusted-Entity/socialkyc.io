@@ -2,7 +2,7 @@ import { sleep } from '../utilities/sleep';
 
 import { getExpiredAttestations } from './getExpiredAttestations';
 import { AttestationInfo } from './scanAttestations';
-import { bulkQueryRevoked, shouldBeRemoved } from './stateIdentifiers';
+import { batchQueryRevoked, shouldBeRemoved } from './stateIdentifiers';
 
 export const attestationsToRevoke: AttestationInfo[] = [];
 export const attestationsToRemove: AttestationInfo[] = [];
@@ -46,7 +46,7 @@ export async function updateExpiredInventory(
   revoke: boolean,
 ) {
   const claimHashes = attestationsInfo.map(({ claimHash }) => claimHash);
-  const allRevoked = await bulkQueryRevoked(claimHashes);
+  const allRevoked = await batchQueryRevoked(claimHashes);
 
   attestationsInfo.forEach((attestation) => {
     const revoked = allRevoked[attestation.claimHash];
