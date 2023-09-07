@@ -1,7 +1,7 @@
 import { configuration } from '../utilities/configuration';
 import { filterG } from '../utilities/filterG';
 
-import { AttestationInfo, scanAttestations } from './scanAttestations';
+import { scanAttestations } from './scanAttestations';
 
 /**
  * Generator function to gather the expired attestations issued by SocialKYC.
@@ -10,7 +10,7 @@ import { AttestationInfo, scanAttestations } from './scanAttestations';
  *
  * @returns attestationInfo
  */
-export async function* getExpiredAttestations(): AsyncGenerator<AttestationInfo> {
+export async function* getExpiredAttestations() {
   const old = scanAttestations();
   const own = filterG(old, async ({ owner }) => owner === configuration.did);
   const existing = filterG(own, async ({ revoked }) => revoked !== null);
