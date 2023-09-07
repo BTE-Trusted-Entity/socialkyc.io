@@ -1,17 +1,25 @@
-import { logger } from '../utilities/logger';
 import { sleep } from '../utilities/sleep';
 
 import { getExpiredAttestations } from './getExpiredAttestations';
 import { AttestationInfo } from './scanAttestations';
+import { bulkQueryRevoked, shouldBeRemoved } from './stateIdentifiers';
 
-/**
- * List of attestations that need to be revoked or removed.
- */
-export const expiredInventory: AttestationInfo[] = [];
+export const attestationsToRevoke: AttestationInfo[] = [];
+export const attestationsToRemove: AttestationInfo[] = [];
+export const attestationsToRemoveLater: AttestationInfo[] = [];
 
 async function fillExpiredInventory() {
+  const expiredSinceLastRun = attestationsToRemoveLater.filter(shouldBeRemoved);
+  attestationsToRemove.push(...expiredSinceLastRun);
+  attestationsToRemoveLater.splice(0, expiredSinceLastRun.length);
+
   for await (const expiredAttestation of getExpiredAttestations()) {
-    expiredInventory.push(expiredAttestation);
+    if (shouldBeRemoved(expiredAttestation)) {
+      attestationsToRemove.push(expiredAttestation);
+    } else {
+      attestationsToRevoke.push(expiredAttestation);
+      attestationsToRemoveLater.push(expiredAttestation);
+    }
   }
 }
 
@@ -26,20 +34,28 @@ export function initExpiredInventory() {
   })();
 }
 
-export function removeFromExpiredInventory(
-  processedAttestations: AttestationInfo[],
-) {
-  for (const attestation of processedAttestations) {
-    const inventoryIndex = expiredInventory.indexOf(attestation);
-
-    // if already removed from the inventory
-    if (inventoryIndex < 0) {
-      continue;
-    }
-
-    expiredInventory.splice(inventoryIndex, 1);
-    logger.trace(
-      `\`AttestationInfo\` removed from the \`ExpiredInventory\`: ${attestation.claimHash}`,
-    );
+function remove<Type>(list: Type[], item: Type) {
+  const index = list.indexOf(item);
+  if (index >= 0) {
+    list.splice(index, 1);
   }
+}
+
+export async function updateExpiredInventory(
+  attestationsInfo: AttestationInfo[],
+  revoke: boolean,
+) {
+  const claimHashes = attestationsInfo.map(({ claimHash }) => claimHash);
+  const allRevoked = await bulkQueryRevoked(claimHashes);
+
+  attestationsInfo.forEach((attestation, index) => {
+    const revoked = allRevoked[index];
+
+    if (revoke && revoked === true) {
+      remove(attestationsToRevoke, attestation);
+    }
+    if (!revoke && revoked === null) {
+      remove(attestationsToRemove, attestation);
+    }
+  });
 }

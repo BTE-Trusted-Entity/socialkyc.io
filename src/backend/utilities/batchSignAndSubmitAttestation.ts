@@ -5,10 +5,12 @@ import {
   IAttestation,
 } from '@kiltprotocol/sdk-js';
 
-import { expiredInventory } from '../revoker/expiredInventory';
-import { getExpirationTx } from '../revoker/getExpirationTx';
+import {
+  attestationsToRemove,
+  attestationsToRevoke,
+  updateExpiredInventory,
+} from '../revoker/expiredInventory';
 import { AttestationInfo } from '../revoker/scanAttestations';
-import { updateExpiredInventory } from '../revoker/updateExpiredInventory';
 
 import { logger } from './logger';
 import { fullDidPromise } from './fullDid';
@@ -30,8 +32,8 @@ let currentTransaction: Promise<void> | undefined = undefined;
 let pendingAttestations: AttemptedAttestation[] = [];
 let pendingTransaction: Promise<void> | undefined = undefined;
 
-let pendingExpiredAttestations: AttestationInfo[];
-let currentExpiredAttestations: AttestationInfo[];
+let currentToRemove: AttestationInfo[];
+let currentToRevoke: AttestationInfo[];
 
 function syncExitAfterUpdatingReferences(): boolean {
   const noNextTransactionNeeded = pendingAttestations.length === 0;
@@ -45,10 +47,10 @@ function syncExitAfterUpdatingReferences(): boolean {
 
   currentAttestations = pendingAttestations;
   currentTransaction = pendingTransaction;
-  currentExpiredAttestations = pendingExpiredAttestations;
+  currentToRemove = attestationsToRemove.slice(0, REVOCATION_BATCH_SIZE);
+  currentToRevoke = attestationsToRevoke.slice(0, REVOCATION_BATCH_SIZE);
   pendingAttestations = [];
   pendingTransaction = createPendingTransaction();
-  pendingExpiredAttestations = expiredInventory.slice(0, REVOCATION_BATCH_SIZE);
   return false;
 }
 
@@ -90,7 +92,8 @@ async function createPendingTransaction() {
     });
   });
 
-  await updateExpiredInventory(currentExpiredAttestations);
+  await updateExpiredInventory(currentToRemove, false);
+  await updateExpiredInventory(currentToRevoke, true);
 
   if (syncExitAfterUpdatingReferences()) {
     logger.debug('No next transaction scheduled');
@@ -102,7 +105,12 @@ async function createPendingTransaction() {
     ...currentAttestations.map(({ attestation: { cTypeHash, claimHash } }) =>
       api.tx.attestation.add(claimHash, cTypeHash, null),
     ),
-    ...pendingExpiredAttestations.map(getExpirationTx),
+    ...currentToRemove.map(({ claimHash }) =>
+      api.tx.attestation.remove(claimHash, null),
+    ),
+    ...currentToRevoke.map(({ claimHash }) =>
+      api.tx.attestation.revoke(claimHash, null),
+    ),
   ];
 
   const { fullDid } = await fullDidPromise;
