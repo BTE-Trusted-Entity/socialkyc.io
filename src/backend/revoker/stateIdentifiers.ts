@@ -9,7 +9,7 @@ import { initKilt } from '../utilities/initKilt';
 /**
  * Queries the revoked status of an array of attestations from the blockchain in bulk
  * @param claimHashes
- * @returns Matching array of revoked values
+ * @returns Map of claimHashes to revoked status
  */
 export async function bulkQueryRevoked(claimHashes: HexString[]) {
   await initKilt();
@@ -17,12 +17,15 @@ export async function bulkQueryRevoked(claimHashes: HexString[]) {
 
   const results = await api.query.attestation.attestations.multi(claimHashes);
 
-  return results.map((encoded, index) => {
-    if (encoded.isNone) {
-      return null;
-    }
-    return Attestation.fromChain(encoded, claimHashes[index]).revoked;
-  });
+  return Object.fromEntries(
+    results.map((encoded, index) => {
+      const claimHash = claimHashes[index];
+      if (encoded.isNone) {
+        return [claimHash, null];
+      }
+      return [claimHash, Attestation.fromChain(encoded, claimHash).revoked];
+    }),
+  );
 }
 
 export function shouldBeRemoved({ createdAt }: { createdAt: Date }) {

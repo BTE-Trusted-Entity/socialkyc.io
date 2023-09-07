@@ -48,8 +48,8 @@ export async function updateExpiredInventory(
   const claimHashes = attestationsInfo.map(({ claimHash }) => claimHash);
   const allRevoked = await bulkQueryRevoked(claimHashes);
 
-  attestationsInfo.forEach((attestation, index) => {
-    const revoked = allRevoked[index];
+  attestationsInfo.forEach((attestation) => {
+    const revoked = allRevoked[attestation.claimHash];
 
     if (revoke && revoked === true) {
       remove(attestationsToRevoke, attestation);

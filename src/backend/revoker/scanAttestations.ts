@@ -29,8 +29,9 @@ export async function* scanAttestations() {
     async (events) => {
       const claimHashes = events.map(({ params }) => params[1].value);
       const allRevoked = await bulkQueryRevoked(claimHashes);
-      events.forEach(({ params }, index) => {
-        params.push(allRevoked[index]);
+      events.forEach(({ params }) => {
+        const claimHash = params[1].value;
+        params.push(allRevoked[claimHash]);
       });
       return events;
     },
