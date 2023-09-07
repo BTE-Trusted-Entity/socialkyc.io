@@ -73,6 +73,10 @@ export async function* subScanEventGenerator(
   fromBlock: number,
   transform: (events: ParsedEvents) => Promise<ParsedEvents>,
 ) {
+  if (subscan.network === 'NONE') {
+    return;
+  }
+
   const parameters = {
     module,
     call,
