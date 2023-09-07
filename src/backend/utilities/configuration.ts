@@ -105,7 +105,7 @@ if (!lowBalanceAlertRecipients) {
   throw new ConfigurationError('No email recipients for low balance alerts');
 }
 
-const xApiKey = env.SECRET_SUBSCAN_API_KEY;
+const xApiKey = env.SECRET_SUBSCAN;
 if (!xApiKey) {
   throw new ConfigurationError('No SubScan Api Key provided');
 }
