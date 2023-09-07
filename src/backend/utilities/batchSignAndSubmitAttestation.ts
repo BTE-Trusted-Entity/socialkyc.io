@@ -32,16 +32,22 @@ let currentTransaction: Promise<void> | undefined = undefined;
 let pendingAttestations: AttemptedAttestation[] = [];
 let pendingTransaction: Promise<void> | undefined = undefined;
 
-let currentToRemove: AttestationInfo[];
-let currentToRevoke: AttestationInfo[];
+let currentToRemove: AttestationInfo[] = [];
+let currentToRevoke: AttestationInfo[] = [];
 
 function syncExitAfterUpdatingReferences(): boolean {
-  const noNextTransactionNeeded = pendingAttestations.length === 0;
+  const noNextTransactionNeeded =
+    pendingAttestations.length === 0 &&
+    attestationsToRemove.length === 0 &&
+    attestationsToRevoke.length === 0;
+
   if (noNextTransactionNeeded) {
     currentAttestations = [];
     currentTransaction = undefined;
     pendingAttestations = [];
     pendingTransaction = undefined;
+    currentToRemove = [];
+    currentToRevoke = [];
     return true;
   }
 
