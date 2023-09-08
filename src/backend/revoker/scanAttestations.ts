@@ -3,7 +3,8 @@ import { Did, type HexString, type IAttestation } from '@kiltprotocol/sdk-js';
 import { logger } from '../utilities/logger';
 
 import { subScanEventGenerator } from './subScan';
-import { batchQueryRevoked, shouldBeRevoked } from './stateIdentifiers';
+import { shouldBeRevoked } from './stateIdentifiers';
+import { batchQueryRevoked } from './batchQueryRevoked';
 
 export type EventParams = [
   { type_name: 'AttesterOf'; value: Parameters<typeof Did.fromChain>[0] },

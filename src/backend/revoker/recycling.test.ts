@@ -9,7 +9,7 @@ import { configuration } from '../utilities/configuration';
 import { subScanEventGenerator } from './subScan';
 import { AttestationInfo, scanAttestations } from './scanAttestations';
 import { getExpiredAttestations } from './getExpiredAttestations';
-import { batchQueryRevoked } from './stateIdentifiers';
+import { batchQueryRevoked } from './batchQueryRevoked';
 
 describe('scan for first event on chain through subscan', () => {
   it('should always be the same on peregrine. Can not change the past.', async () => {

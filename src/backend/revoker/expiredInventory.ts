@@ -2,13 +2,14 @@ import { sleep } from '../utilities/sleep';
 
 import { getExpiredAttestations } from './getExpiredAttestations';
 import { AttestationInfo } from './scanAttestations';
-import { batchQueryRevoked, shouldBeRemoved } from './stateIdentifiers';
+import { shouldBeRemoved } from './stateIdentifiers';
+import { batchQueryRevoked } from './batchQueryRevoked';
 
 export const attestationsToRevoke: AttestationInfo[] = [];
 export const attestationsToRemove: AttestationInfo[] = [];
 export const attestationsToRemoveLater: AttestationInfo[] = [];
 
-async function fillExpiredInventory() {
+export async function fillExpiredInventory() {
   const expiredSinceLastRun = attestationsToRemoveLater.filter(shouldBeRemoved);
   attestationsToRemove.push(...expiredSinceLastRun);
   attestationsToRemoveLater.splice(0, expiredSinceLastRun.length);
