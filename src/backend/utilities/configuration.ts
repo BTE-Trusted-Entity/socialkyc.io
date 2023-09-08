@@ -105,23 +105,16 @@ if (!lowBalanceAlertRecipients) {
   throw new ConfigurationError('No email recipients for low balance alerts');
 }
 
-const xApiKey = env.SECRET_SUBSCAN;
-if (!xApiKey) {
-  throw new ConfigurationError('No SubScan Api Key provided');
-}
-const network = env.SUBSCAN_NETWORK;
-if (!network) {
-  throw new ConfigurationError('No SubScan Network provided');
-}
-
-const apiUrl = `https://${network}.api.subscan.io`;
-
 const subscan = {
-  apiUrl,
-  network,
-  xApiKey,
-  headers: { 'X-API-Key': xApiKey },
+  network: env.SUBSCAN_NETWORK,
+  secret: env.SECRET_SUBSCAN,
 };
+if (!subscan.secret) {
+  throw new ConfigurationError('No SubScan secret provided');
+}
+if (!subscan.network) {
+  throw new ConfigurationError('No SubScan network provided');
+}
 
 export const configuration = {
   aws: {

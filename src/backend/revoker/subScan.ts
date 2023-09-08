@@ -1,5 +1,6 @@
 import got from 'got';
-import { type HexString } from '@kiltprotocol/sdk-js';
+
+import { ConfigService, type HexString } from '@kiltprotocol/sdk-js';
 
 import { configuration } from '../utilities/configuration';
 import { logger } from '../utilities/logger';
@@ -9,10 +10,12 @@ const { subscan } = configuration;
 
 const SUBSCAN_MAX_ROWS = 100;
 const QUERY_INTERVAL_MS = 1000;
+const BLOCK_RANGE_SIZE = 100_000;
 
-const subscanApiUrl = subscan.apiUrl;
-const eventsURL = `${subscanApiUrl}/api/scan/events`;
-const headers = subscan.headers;
+const eventsApi = `https://${subscan.network}.api.subscan.io/api/scan/events`;
+const headers = {
+  'X-API-Key': subscan.secret,
+};
 
 export interface EventsResponseJson {
   data: {
@@ -27,7 +30,7 @@ export interface EventsResponseJson {
 }
 
 export async function getEvents({
-  fromBlock: from_block,
+  fromBlock,
   row = SUBSCAN_MAX_ROWS,
   ...parameters
 }: {
@@ -39,14 +42,14 @@ export async function getEvents({
 }) {
   const json = {
     ...parameters,
-    from_block,
+    block_range: `${fromBlock}-${fromBlock + BLOCK_RANGE_SIZE}`,
     row,
     finalized: true,
   };
 
   const {
     data: { count, events },
-  } = await got.post(eventsURL, { headers, json }).json<EventsResponseJson>();
+  } = await got.post(eventsApi, { headers, json }).json<EventsResponseJson>();
 
   if (!events) {
     return { count };
@@ -70,53 +73,61 @@ type ParsedEvents = Required<Awaited<ReturnType<typeof getEvents>>>['events'];
 export async function* subScanEventGenerator(
   module: string,
   call: string,
-  fromBlock: number,
+  startBlock: number,
   transform: (events: ParsedEvents) => Promise<ParsedEvents>,
 ) {
   if (subscan.network === 'NONE') {
     return;
   }
 
-  const parameters = {
-    module,
-    call,
-    fromBlock,
-  };
-  const { count } = await getEvents({
-    ...parameters,
-    page: 0,
-    row: 1,
-  });
+  const api = ConfigService.get('api');
 
-  if (count === 0) {
-    logger.debug(`No new SubScan events found for ${call}`);
-    return;
-  }
+  const currentBlock = (await api.query.system.number()).toNumber();
 
-  logger.debug(
-    `Found ${count} (really ${count - 1}?) new SubScan events for ${call}`,
-  );
+  // get events in batches until the current block is reached
+  for (
+    let fromBlock = startBlock;
+    fromBlock < currentBlock;
+    fromBlock += BLOCK_RANGE_SIZE
+  ) {
+    const parameters = {
+      module,
+      call,
+      fromBlock,
+    };
 
-  // 10001 items should be split into 101 pages (1 to 101 inclusive)
-  // of 100 items each except the last one with 1 item,
-  // but SubScan seems to have a bug and returns page 100 without items.
-  // The pages are not 0-indexed.
-  const remainder = count % SUBSCAN_MAX_ROWS;
-  const ignoreLastPage = count > SUBSCAN_MAX_ROWS && remainder === 1;
-  const ignoredPages = ignoreLastPage ? 1 : 0;
-  const pages = Math.ceil(count / SUBSCAN_MAX_ROWS);
+    const { count } = await getEvents({ ...parameters, page: 0, row: 1 });
 
-  for (let page = pages - ignoredPages; page > 0; page--) {
-    const { events } = await getEvents({ ...parameters, page });
-    if (!events) {
-      throw new Error('No events');
+    const blockRange = `${fromBlock} - ${fromBlock + BLOCK_RANGE_SIZE}`;
+
+    if (count === 0) {
+      logger.debug(
+        `No new SubScan events found for ${call} in block range ${blockRange}`,
+      );
+      await sleep(QUERY_INTERVAL_MS);
+      continue;
     }
 
-    logger.debug(`Loaded events page ${page} for ${call}`);
-    for (const event of await transform(events)) {
-      yield event;
-    }
+    logger.debug(
+      `Found ${count} new SubScan events for ${call} in block range ${blockRange}`,
+    );
 
-    await sleep(QUERY_INTERVAL_MS);
+    const pages = Math.ceil(count / SUBSCAN_MAX_ROWS) - 1;
+
+    for (let page = pages; page >= 0; page--) {
+      const { events } = await getEvents({ ...parameters, page });
+      if (!events) {
+        continue;
+      }
+
+      logger.debug(
+        `Loaded events page ${page} for ${call} in block range ${blockRange}`,
+      );
+      for (const event of await transform(events)) {
+        yield event;
+      }
+
+      await sleep(QUERY_INTERVAL_MS);
+    }
   }
 }
