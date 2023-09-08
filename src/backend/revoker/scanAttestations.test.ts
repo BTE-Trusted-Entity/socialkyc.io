@@ -9,8 +9,12 @@ import { batchQueryRevoked } from './batchQueryRevoked';
 import { subScanEventGenerator } from './subScan';
 import { AttestationInfo, scanAttestations } from './scanAttestations';
 
-jest.mock('./batchQueryRevoked');
-jest.mock('./subScan');
+jest.mock('./batchQueryRevoked', () => ({
+  batchQueryRevoked: jest.fn(),
+}));
+jest.mock('./subScan', () => ({
+  subScanEventGenerator: jest.fn(),
+}));
 
 describe('scanAttestations', () => {
   it('should transform events to include revoked status', async () => {

@@ -15,7 +15,9 @@ import {
 
 import { batchQueryRevoked } from './batchQueryRevoked';
 
-jest.mock('./getExpiredAttestations');
+jest.mock('./getExpiredAttestations', () => ({
+  getExpiredAttestations: jest.fn(),
+}));
 jest.mock('./batchQueryRevoked');
 
 const deleteDate = new Date();
