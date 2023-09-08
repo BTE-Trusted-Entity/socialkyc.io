@@ -2,7 +2,7 @@ import { sleep } from '../utilities/sleep';
 
 import { getExpiredAttestations } from './getExpiredAttestations';
 import { AttestationInfo } from './scanAttestations';
-import { shouldBeRemoved } from './stateIdentifiers';
+import { shouldBeRemoved } from './shouldBeExpired';
 import { batchQueryRevoked } from './batchQueryRevoked';
 
 export const attestationsToRevoke: AttestationInfo[] = [];

@@ -3,7 +3,7 @@ import { Did, type HexString, type IAttestation } from '@kiltprotocol/sdk-js';
 import { logger } from '../utilities/logger';
 
 import { subScanEventGenerator } from './subScan';
-import { shouldBeRevoked } from './stateIdentifiers';
+import { shouldBeRevoked } from './shouldBeExpired';
 import { batchQueryRevoked } from './batchQueryRevoked';
 
 export type EventParams = [
