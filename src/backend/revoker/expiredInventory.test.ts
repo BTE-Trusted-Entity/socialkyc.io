@@ -46,10 +46,10 @@ jest.mocked(getExpiredAttestations).mockImplementation(async function* () {
   yield toRemove;
   yield toRevoke;
 });
-jest.mocked(batchQueryRevoked).mockImplementation(async () => ({
+jest.mocked(batchQueryRevoked).mockResolvedValue({
   [toRevoke.claimHash]: true,
   [toRemove.claimHash]: null,
-}));
+});
 
 describe('expiredInventory', () => {
   describe('fillExpiredInventory', () => {
