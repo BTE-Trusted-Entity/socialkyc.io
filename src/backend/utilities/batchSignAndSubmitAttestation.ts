@@ -20,7 +20,7 @@ import { signAndSubmit } from './signAndSubmit';
 
 const TRANSACTION_TIMEOUT = 5 * 60 * 1000;
 const MAXIMUM_FAILURES = 3;
-const REVOCATION_BATCH_SIZE = 2;
+const REVOCATION_BATCH_SIZE = 100;
 
 interface AttemptedAttestation {
   attestation: IAttestation;
