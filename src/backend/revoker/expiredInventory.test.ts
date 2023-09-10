@@ -15,6 +15,7 @@ import {
 
 import { batchQueryRevoked } from './batchQueryRevoked';
 
+jest.mock('../utilities/configuration', () => ({ configuration: {} }));
 jest.mock('./getExpiredAttestations', () => ({
   getExpiredAttestations: jest.fn(),
 }));

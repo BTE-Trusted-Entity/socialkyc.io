@@ -8,6 +8,10 @@ import got from 'got';
 
 import { configuration } from '../utilities/configuration';
 
+jest.mock('../utilities/configuration', () => ({
+  configuration: { subscan: { network: 'kilt-testnet', secret: 'SECRET' } },
+}));
+
 import {
   type EventsResponseJson,
   getEvents,

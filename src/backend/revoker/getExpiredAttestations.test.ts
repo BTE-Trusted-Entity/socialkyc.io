@@ -10,6 +10,9 @@ import { configuration } from '../utilities/configuration';
 import { AttestationInfo, scanAttestations } from './scanAttestations';
 import { getExpiredAttestations } from './getExpiredAttestations';
 
+jest.mock('../utilities/configuration', () => ({
+  configuration: { subscan: {} },
+}));
 jest.mock('./scanAttestations');
 
 describe('getExpiredAttestations', () => {

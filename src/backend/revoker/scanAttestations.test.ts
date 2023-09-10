@@ -9,6 +9,7 @@ import { batchQueryRevoked } from './batchQueryRevoked';
 import { subScanEventGenerator } from './subScan';
 import { AttestationInfo, scanAttestations } from './scanAttestations';
 
+jest.mock('../utilities/configuration', () => ({ configuration: {} }));
 jest.mock('./batchQueryRevoked', () => ({
   batchQueryRevoked: jest.fn(),
 }));
