@@ -7,7 +7,7 @@ import {
 import { initKilt } from '../utilities/initKilt';
 
 /**
- * Queries the revoked status of an array of attestations from the blockchain in bulk
+ * Queries the revoked status of an array of attestations from the blockchain in batches.
  * @param claimHashes
  * @returns Map of claimHashes to revoked status (null means removed from the blockchain)
  */
