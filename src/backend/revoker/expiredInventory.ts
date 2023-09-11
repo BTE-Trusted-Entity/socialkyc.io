@@ -18,7 +18,9 @@ export async function fillExpiredInventory() {
     if (shouldBeRemoved(expiredAttestation)) {
       attestationsToRemove.push(expiredAttestation);
     } else {
-      attestationsToRevoke.push(expiredAttestation);
+      if (expiredAttestation.revoked === false) {
+        attestationsToRevoke.push(expiredAttestation);
+      }
       attestationsToRemoveLater.push(expiredAttestation);
     }
   }
