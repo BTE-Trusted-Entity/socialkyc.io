@@ -62,10 +62,12 @@ jest.mocked(getExpiredAttestations).mockImplementation(async function* () {
   yield toRevoke;
   yield alreadyRevoked;
 });
+
+// mock delivery of on-chain revocation-status, after being processed
 jest.mocked(batchQueryRevoked).mockResolvedValue({
   [toRevoke.claimHash]: true,
   [toRemove.claimHash]: null,
-  [alreadyRevoked.claimHash]: false,
+  [alreadyRevoked.claimHash]: true,
 });
 
 describe('expiredInventory', () => {
@@ -75,7 +77,7 @@ describe('expiredInventory', () => {
 
       expect(attestationsToRemove[0].claimHash).toBe('0x01');
       expect(attestationsToRevoke[0].claimHash).toBe('0x02');
-      expect(attestationsToRemoveLater[0].claimHash).toBe('0x03');
+      expect(attestationsToRemoveLater[1].claimHash).toBe('0x03');
     });
   });
 
@@ -83,15 +85,19 @@ describe('expiredInventory', () => {
     it('should remove attestations from the lists', async () => {
       attestationsToRemove.length = 0;
       attestationsToRevoke.length = 0;
+      attestationsToRemoveLater.length = 0;
       await fillExpiredInventory();
       expect(attestationsToRemove.length).toBe(1);
       expect(attestationsToRevoke.length).toBe(1);
+      expect(attestationsToRemoveLater.length).toBe(2);
 
       await updateExpiredInventory([toRemove], false);
       await updateExpiredInventory([toRevoke], true);
-
+      // Should be directly processed
       expect(attestationsToRemove.length).toBe(0);
       expect(attestationsToRevoke.length).toBe(0);
+      // should be left for later
+      expect(attestationsToRemoveLater.length).toBe(2);
     });
   });
 });
