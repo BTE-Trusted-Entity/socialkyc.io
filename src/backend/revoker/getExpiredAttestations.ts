@@ -11,9 +11,9 @@ import { scanAttestations } from './scanAttestations';
  * @returns attestationInfo
  */
 export function getExpiredAttestations() {
-  const old = scanAttestations();
+  const allAttestations = scanAttestations();
   const own = filterGenerator(
-    old,
+    allAttestations,
     async ({ owner }) => owner === configuration.did,
   );
   const existing = filterGenerator(
