@@ -30,6 +30,8 @@ export async function* scanAttestations() {
     async (events) => {
       const claimHashes = events.map(({ params }) => params[1].value);
       const allRevoked = await batchQueryRevoked(claimHashes);
+
+      // add the revocation status as a new parameter
       events.forEach(({ params }) => {
         const claimHash = params[1].value;
         params.push(allRevoked[claimHash]);
