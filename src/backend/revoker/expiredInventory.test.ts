@@ -30,7 +30,7 @@ const toRemove: AttestationInfo = {
   createdAt: deleteDate,
   owner: 'did:kilt:4pehddkhEanexVTTzWAtrrfo2R7xPnePpuiJLC7shQU894aY',
   delegationId: null,
-  revoked: null,
+  revoked: true,
 };
 
 const revokeDate = new Date();
@@ -42,7 +42,7 @@ const toRevoke: AttestationInfo = {
   createdAt: revokeDate,
   owner: 'did:kilt:4pehddkhEanexVTTzWAtrrfo2R7xPnePpuiJLC7shQU894aY',
   delegationId: null,
-  revoked: null,
+  revoked: false,
 };
 
 jest.mocked(getExpiredAttestations).mockImplementation(async function* () {
