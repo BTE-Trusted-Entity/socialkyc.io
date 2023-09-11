@@ -8,6 +8,7 @@ import { getExpiredAttestations } from './getExpiredAttestations';
 import { AttestationInfo } from './scanAttestations';
 import {
   attestationsToRemove,
+  attestationsToRemoveLater,
   attestationsToRevoke,
   fillExpiredInventory,
   updateExpiredInventory,
@@ -45,13 +46,26 @@ const toRevoke: AttestationInfo = {
   revoked: false,
 };
 
+// revoked, but not ready to remove
+const alreadyRevoked: AttestationInfo = {
+  block: 3,
+  cTypeHash: '0x32',
+  claimHash: '0x03',
+  createdAt: revokeDate,
+  owner: 'did:kilt:4pehddkhEanexVTTzWAtrrfo2R7xPnePpuiJLC7shQU894aY',
+  delegationId: null,
+  revoked: true,
+};
+
 jest.mocked(getExpiredAttestations).mockImplementation(async function* () {
   yield toRemove;
   yield toRevoke;
+  yield alreadyRevoked;
 });
 jest.mocked(batchQueryRevoked).mockResolvedValue({
   [toRevoke.claimHash]: true,
   [toRemove.claimHash]: null,
+  [alreadyRevoked.claimHash]: false,
 });
 
 describe('expiredInventory', () => {
@@ -61,6 +75,7 @@ describe('expiredInventory', () => {
 
       expect(attestationsToRemove[0].claimHash).toBe('0x01');
       expect(attestationsToRevoke[0].claimHash).toBe('0x02');
+      expect(attestationsToRemoveLater[0].claimHash).toBe('0x03');
     });
   });
 
