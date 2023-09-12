@@ -126,9 +126,9 @@ export async function* subScanEventGenerator(
         );
         for (const event of await transform(events)) {
           logger.debug(
-            'event being yield',
-            typeof event,
-            JSON.stringify(event),
+            `event being yield:
+            ${typeof event},
+            ${JSON.stringify(event)}`,
           );
           yield event;
         }
