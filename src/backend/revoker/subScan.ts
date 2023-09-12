@@ -76,67 +76,59 @@ export async function* subScanEventGenerator(
   startBlock: number,
   transform: (events: ParsedEvents) => Promise<ParsedEvents>,
 ) {
-  try {
-    if (subscan.network === 'NONE') {
-      return;
+  if (subscan.network === 'NONE') {
+    return;
+  }
+
+  const api = ConfigService.get('api');
+
+  const currentBlock = (await api.query.system.number()).toNumber();
+
+  // get events in batches until the current block is reached
+  for (
+    let fromBlock = startBlock;
+    fromBlock < currentBlock;
+    fromBlock += BLOCK_RANGE_SIZE
+  ) {
+    const parameters = {
+      module,
+      call,
+      fromBlock,
+    };
+
+    const { count } = await getEvents({ ...parameters, page: 0, row: 1 });
+
+    const blockRange = `${fromBlock} - ${fromBlock + BLOCK_RANGE_SIZE}`;
+
+    if (count === 0) {
+      logger.debug(
+        `No new SubScan events found for ${call} in block range ${blockRange}`,
+      );
+      await sleep(QUERY_INTERVAL_MS);
+      continue;
     }
 
-    const api = ConfigService.get('api');
+    logger.debug(
+      `Found ${count} new SubScan events for ${call} in block range ${blockRange}`,
+    );
 
-    const currentBlock = (await api.query.system.number()).toNumber();
+    const pages = Math.ceil(count / SUBSCAN_MAX_ROWS) - 1;
 
-    // get events in batches until the current block is reached
-    for (
-      let fromBlock = startBlock;
-      fromBlock < currentBlock;
-      fromBlock += BLOCK_RANGE_SIZE
-    ) {
-      const parameters = {
-        module,
-        call,
-        fromBlock,
-      };
-
-      const { count } = await getEvents({ ...parameters, page: 0, row: 1 });
-
-      const blockRange = `${fromBlock} - ${fromBlock + BLOCK_RANGE_SIZE}`;
-
-      if (count === 0) {
-        logger.debug(
-          `No new SubScan events found for ${call} in block range ${blockRange}`,
-        );
-        await sleep(QUERY_INTERVAL_MS);
+    for (let page = pages; page >= 0; page--) {
+      const { events } = await getEvents({ ...parameters, page });
+      if (!events) {
         continue;
       }
 
       logger.debug(
-        `Found ${count} new SubScan events for ${call} in block range ${blockRange}`,
+        `Loaded events page ${page} for ${call} in block range ${blockRange}`,
       );
-
-      const pages = Math.ceil(count / SUBSCAN_MAX_ROWS) - 1;
-
-      for (let page = pages; page >= 0; page--) {
-        const { events } = await getEvents({ ...parameters, page });
-        if (!events) {
-          continue;
-        }
-
-        logger.debug(
-          `Loaded events page ${page} for ${call} in block range ${blockRange}`,
-        );
-        for (const event of await transform(events)) {
-          logger.debug(
-            'event being yield',
-            typeof event,
-            JSON.stringify(event),
-          );
-          yield event;
-        }
-
-        await sleep(QUERY_INTERVAL_MS);
+      for (const event of await transform(events)) {
+        logger.debug('event being yield', event);
+        yield event;
       }
+
+      await sleep(QUERY_INTERVAL_MS);
     }
-  } catch (e) {
-    logger.error(e);
   }
 }

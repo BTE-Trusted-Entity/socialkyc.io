@@ -32,15 +32,10 @@ export async function* scanAttestations() {
       const allRevoked = await batchQueryRevoked(claimHashes);
 
       // add the revocation status as a new parameter
-      events.forEach((event) => {
-        const { params } = event;
-        logger.debug('event before transformation', event);
-
+      events.forEach(({ params }) => {
         const claimHash = params[1].value;
         params.push(allRevoked[claimHash]);
-        logger.debug('params of the transformed event', params);
       });
-
       return events;
     },
   );
@@ -52,7 +47,6 @@ export async function* scanAttestations() {
     if (!shouldBeRevoked({ createdAt })) {
       logger.debug('No more attestations to revoke');
       // stop here so that fromBlock contains the last expired block, and we can start from it in the next run
-
       return;
     }
     fromBlock = block;
