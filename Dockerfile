@@ -16,7 +16,7 @@ RUN yarn install --immutable && yarn add --dev @parcel/css-linux-x64-musl && yar
 
 # get the sources and build the app
 COPY src ./src
-COPY tsconfig.json ./
+COPY tsconfig.json .babelrc.js ./
 RUN yarn build
 
 FROM base AS release
