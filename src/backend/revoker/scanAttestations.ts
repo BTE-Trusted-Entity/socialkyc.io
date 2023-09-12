@@ -34,11 +34,11 @@ export async function* scanAttestations() {
       // add the revocation status as a new parameter
       events.forEach((event) => {
         const { params } = event;
-        logger.debug(`event before transformation ${event}`);
+        logger.debug('event before transformation', event);
 
         const claimHash = params[1].value;
         params.push(allRevoked[claimHash]);
-        logger.debug(`params of the transformed event ${params}`);
+        logger.debug('params of the transformed event', params);
       });
 
       return events;
