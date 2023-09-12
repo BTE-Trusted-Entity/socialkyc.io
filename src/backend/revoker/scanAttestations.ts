@@ -34,11 +34,13 @@ export async function* scanAttestations() {
       // add the revocation status as a new parameter
       events.forEach((event) => {
         const { params } = event;
-        logger.debug(`event before transformation ${event}`);
+        logger.debug(`event before transformation ${JSON.stringify(event)}`);
 
         const claimHash = params[1].value;
         params.push(allRevoked[claimHash]);
-        logger.debug(`params of the transformed event ${params}`);
+        logger.debug(
+          `params of the transformed event ${JSON.stringify(params)}`,
+        );
       });
 
       return events;
@@ -64,7 +66,7 @@ export async function* scanAttestations() {
     const delegationId = params[3].value;
     const revoked = params[4];
 
-    yield <AttestationInfo>{
+    const attestation = {
       owner,
       claimHash,
       cTypeHash,
@@ -73,5 +75,11 @@ export async function* scanAttestations() {
       block,
       createdAt,
     };
+    logger.debug(
+      `attestation being yield:
+      ${typeof attestation},
+      ${JSON.stringify(attestation)}`,
+    );
+    yield <AttestationInfo>attestation;
   }
 }
