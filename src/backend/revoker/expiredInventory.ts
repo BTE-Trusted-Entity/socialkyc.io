@@ -1,4 +1,5 @@
 import { sleep } from '../utilities/sleep';
+import { logger } from '../utilities/logger';
 
 import { getExpiredAttestations } from './getExpiredAttestations';
 import { AttestationInfo } from './scanAttestations';
@@ -24,6 +25,9 @@ export async function fillExpiredInventory() {
       attestationsToRemoveLater.push(expiredAttestation);
     }
   }
+  logger.debug('attestationsToRemoveLater: ', attestationsToRemoveLater);
+  logger.debug('attestationsToRevoke: ', attestationsToRevoke);
+  logger.debug('attestationsToRemove: ', attestationsToRemove);
 }
 
 const SCAN_INTERVAL_MS = 60 * 60 * 1000;

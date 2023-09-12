@@ -12,13 +12,15 @@ import { scanAttestations } from './scanAttestations';
  */
 export function getExpiredAttestations() {
   const allAttestations = scanAttestations();
-  const own = filterGenerator(
+  const ourAttestations = filterGenerator(
     allAttestations,
-    async ({ owner }) => owner === configuration.did,
+    async (attestation) => {
+      return attestation && attestation.owner === configuration.did;
+    },
   );
-  const existing = filterGenerator(
-    own,
-    async ({ revoked }) => revoked !== null, // still present on the blockchain
-  );
+  const existing = filterGenerator(ourAttestations, async (attestation) => {
+    // return only attestations still on chain, not removed
+    return attestation && attestation.revoked !== null;
+  });
   return existing;
 }
