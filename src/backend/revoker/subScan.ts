@@ -125,6 +125,11 @@ export async function* subScanEventGenerator(
           `Loaded events page ${page} for ${call} in block range ${blockRange}`,
         );
         for (const event of await transform(events)) {
+          logger.debug(
+            `event being yield:
+            ${typeof event},
+            ${JSON.stringify(event)}`,
+          );
           yield event;
         }
 
