@@ -5,6 +5,13 @@ import {
   IAttestation,
 } from '@kiltprotocol/sdk-js';
 
+import {
+  attestationsToRemove,
+  attestationsToRevoke,
+  updateExpiredInventory,
+} from '../revoker/expiredInventory';
+import { AttestationInfo } from '../revoker/scanAttestations';
+
 import { logger } from './logger';
 import { fullDidPromise } from './fullDid';
 import { keypairsPromise } from './keypairs';
@@ -13,6 +20,7 @@ import { signAndSubmit } from './signAndSubmit';
 
 const TRANSACTION_TIMEOUT = 5 * 60 * 1000;
 const MAXIMUM_FAILURES = 3;
+const REVOCATION_BATCH_SIZE = 100;
 
 interface AttemptedAttestation {
   attestation: IAttestation;
@@ -24,18 +32,29 @@ let currentTransaction: Promise<void> | undefined = undefined;
 let pendingAttestations: AttemptedAttestation[] = [];
 let pendingTransaction: Promise<void> | undefined = undefined;
 
+let currentToRemove: AttestationInfo[] = [];
+let currentToRevoke: AttestationInfo[] = [];
+
 function syncExitAfterUpdatingReferences(): boolean {
-  const noNextTransactionNeeded = pendingAttestations.length === 0;
+  const noNextTransactionNeeded =
+    pendingAttestations.length === 0 &&
+    attestationsToRemove.length === 0 &&
+    attestationsToRevoke.length === 0;
+
   if (noNextTransactionNeeded) {
     currentAttestations = [];
     currentTransaction = undefined;
     pendingAttestations = [];
     pendingTransaction = undefined;
+    currentToRemove = [];
+    currentToRevoke = [];
     return true;
   }
 
   currentAttestations = pendingAttestations;
   currentTransaction = pendingTransaction;
+  currentToRemove = attestationsToRemove.slice(0, REVOCATION_BATCH_SIZE);
+  currentToRevoke = attestationsToRevoke.slice(0, REVOCATION_BATCH_SIZE);
   pendingAttestations = [];
   pendingTransaction = createPendingTransaction();
   return false;
@@ -79,16 +98,26 @@ async function createPendingTransaction() {
     });
   });
 
+  await updateExpiredInventory(currentToRemove, false);
+  await updateExpiredInventory(currentToRevoke, true);
+
   if (syncExitAfterUpdatingReferences()) {
     logger.debug('No next transaction scheduled');
     return;
   }
   logger.debug('Scheduling next transaction');
 
-  const extrinsics = currentAttestations.map(
-    ({ attestation: { cTypeHash, claimHash } }) =>
+  const extrinsics = [
+    ...currentAttestations.map(({ attestation: { cTypeHash, claimHash } }) =>
       api.tx.attestation.add(claimHash, cTypeHash, null),
-  );
+    ),
+    ...currentToRemove.map(({ claimHash }) =>
+      api.tx.attestation.remove(claimHash, null),
+    ),
+    ...currentToRevoke.map(({ claimHash }) =>
+      api.tx.attestation.revoke(claimHash, null),
+    ),
+  ];
 
   const { fullDid } = await fullDidPromise;
   const { identity } = await keypairsPromise;
