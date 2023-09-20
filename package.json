@@ -68,7 +68,7 @@
     "@testing-library/user-event": "^14.4.3",
     "@types/hapi__basic": "^5.1.4",
     "@types/hapi__hapi": "^20.0.13",
-    "@types/hapi__inert": "^5.2.6",
+    "@types/hapi__inert": "^5.2.7",
     "@types/jest": "^29.5.4",
     "@types/lodash-es": "^4.17.9",
     "@types/node": "^18.17.15",
