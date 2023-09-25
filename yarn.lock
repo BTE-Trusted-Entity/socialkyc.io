@@ -4633,22 +4633,13 @@ __metadata:
   linkType: hard
 
 "@polkadot/x-fetch@npm:^12.3.1":
-  version: 12.4.2
-  resolution: "@polkadot/x-fetch@npm:12.4.2"
+  version: 12.5.1
+  resolution: "@polkadot/x-fetch@npm:12.5.1"
   dependencies:
-    "@polkadot/x-global": 12.4.2
+    "@polkadot/x-global": 12.5.1
     node-fetch: ^3.3.2
     tslib: ^2.6.2
-  checksum: 7f0a5263172bcb97f837b7efdeceffdc9dd1caeabb058ec718b26d367779aa5f248ebd0373c1eb09850a87b34ae8dadf96237412e7e0b940d750aa4b5b634d9a
-  languageName: node
-  linkType: hard
-
-"@polkadot/x-global@npm:12.4.2":
-  version: 12.4.2
-  resolution: "@polkadot/x-global@npm:12.4.2"
-  dependencies:
-    tslib: ^2.6.2
-  checksum: 1489013e6ae3dce3c9f31f38f4ef8ca0956a18d35d12354c49cb7b256fef6dcbd3285a0c223509c8ed826b9d85fd8f59708312a010f1b69d5ee92963e38c48ac
+  checksum: 26b24b09f9074c181f53f13ea17a1389e823b262a956a28fddf609ba7d177a1cde3cd4db28e8e38320b207adcc675ac868dadfaeafe9cf3998a3861f02ee43d7
   languageName: node
   linkType: hard
 
@@ -4695,13 +4686,13 @@ __metadata:
   linkType: hard
 
 "@polkadot/x-ws@npm:^12.3.1":
-  version: 12.4.2
-  resolution: "@polkadot/x-ws@npm:12.4.2"
+  version: 12.5.1
+  resolution: "@polkadot/x-ws@npm:12.5.1"
   dependencies:
-    "@polkadot/x-global": 12.4.2
+    "@polkadot/x-global": 12.5.1
     tslib: ^2.6.2
-    ws: ^8.13.0
-  checksum: 28a415d84780cbf2912f7b94c93dc85a7fea75564995cbc97b9a03cc2e1c0c93222f1e99c6d5add78cb1d9971e4605b36e23ae526b22ce3357619de26d9b15a6
+    ws: ^8.14.1
+  checksum: 839e82ab4bf013d17a356e2f10a42ba2ecf88f4e432985241e785416aeb6434c0e7c897b09aeeab23f5d27b27ef0dfe65eda85293c7a08f52d0774bb1b23704b
   languageName: node
   linkType: hard
 
@@ -19305,9 +19296,9 @@ __metadata:
   languageName: node
   linkType: hard
 
-"ws@npm:^8.13.0, ws@npm:^8.2.3, ws@npm:^8.8.0, ws@npm:^8.8.1":
-  version: 8.13.0
-  resolution: "ws@npm:8.13.0"
+"ws@npm:^8.14.1, ws@npm:^8.2.3, ws@npm:^8.8.0, ws@npm:^8.8.1":
+  version: 8.14.2
+  resolution: "ws@npm:8.14.2"
   peerDependencies:
     bufferutil: ^4.0.1
     utf-8-validate: ">=5.0.2"
@@ -19316,7 +19307,7 @@ __metadata:
       optional: true
     utf-8-validate:
       optional: true
-  checksum: 53e991bbf928faf5dc6efac9b8eb9ab6497c69feeb94f963d648b7a3530a720b19ec2e0ec037344257e05a4f35bd9ad04d9de6f289615ffb133282031b18c61c
+  checksum: 3ca0dad26e8cc6515ff392b622a1467430814c463b3368b0258e33696b1d4bed7510bc7030f7b72838b9fdeb8dbd8839cbf808367d6aae2e1d668ce741d4308b
   languageName: node
   linkType: hard
 
