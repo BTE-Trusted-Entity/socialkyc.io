@@ -90,7 +90,7 @@
     "jest-environment-jsdom": "^29.7.0",
     "parcel": "^2.7.0",
     "pino-pretty": "^10.2.0",
-    "postcss": "^8.4.30",
+    "postcss": "^8.4.31",
     "postcss-modules": "^6.0.0",
     "prettier": "^3.0.3",
     "react-router": "^5.3.4",
