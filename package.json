@@ -39,7 +39,7 @@
     "http-status-codes": "^2.3.0",
     "ky": "^1.0.1",
     "node-cache": "^5.1.2",
-    "pino": "^8.15.7",
+    "pino": "^8.16.0",
     "prom-client": "^14.2.0",
     "punycode": "^2.3.0",
     "rate-limiter-flexible": "^3.0.0",
