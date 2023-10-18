@@ -46,18 +46,18 @@ function remove<Type>(list: Type[], item: Type) {
 
 export async function updateExpiredInventory(
   attestationsInfo: AttestationInfo[],
-  revoke: boolean,
+  toRevoke: boolean,
 ) {
   const claimHashes = attestationsInfo.map(({ claimHash }) => claimHash);
-  const allRevoked = await batchQueryRevoked(claimHashes);
+  const currentRevocationStatuses = await batchQueryRevoked(claimHashes);
 
   attestationsInfo.forEach((attestation) => {
-    const revoked = allRevoked[attestation.claimHash];
+    const revoked = currentRevocationStatuses[attestation.claimHash];
 
-    if (revoke && revoked === true) {
+    if (toRevoke && revoked === true) {
       remove(attestationsToRevoke, attestation);
     }
-    if (!revoke && revoked === null) {
+    if (!toRevoke && revoked === null) {
       remove(attestationsToRemove, attestation);
     }
   });
