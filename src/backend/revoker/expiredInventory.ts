@@ -26,7 +26,7 @@ export async function fillExpiredInventory() {
   }
 }
 
-const SCAN_INTERVAL_MS = 60 * 60 * 1000;
+const SCAN_INTERVAL_MS = 24 * 60 * 60 * 1000;
 
 export function initExpiredInventory() {
   (async () => {
