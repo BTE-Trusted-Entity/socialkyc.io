@@ -11,11 +11,20 @@ export const attestationsToRevoke: AttestationInfo[] = [];
 export const attestationsToRemove: AttestationInfo[] = [];
 export const attestationsToRemoveLater: AttestationInfo[] = [];
 
-function isNotIncludedYetOn(
-  list: AttestationInfo[],
-  element: AttestationInfo,
-): boolean {
-  return !list.some(({ claimHash }) => claimHash === element.claimHash);
+/** Adds the `element` to the `list`; only if missing.
+ * Avoids duplicates.
+ *
+ * @param list: one of the inventory lists
+ * @param element: attestation from the scan
+ */
+function include(list: AttestationInfo[], element: AttestationInfo) {
+  const isAlreadyIncluded = list.some(
+    ({ claimHash }) => claimHash === element.claimHash,
+  );
+
+  if (!isAlreadyIncluded) {
+    list.push(element);
+  }
 }
 
 export async function fillExpiredInventory() {
@@ -26,15 +35,12 @@ export async function fillExpiredInventory() {
   for await (const expiredAttestation of getExpiredAttestations()) {
     // decides in which list to put and makes sure that is not included yet
     if (shouldBeRemoved(expiredAttestation)) {
-      isNotIncludedYetOn(attestationsToRemove, expiredAttestation) &&
-        attestationsToRemove.push(expiredAttestation);
+      include(attestationsToRemove, expiredAttestation);
     } else {
       if (expiredAttestation.revoked === false) {
-        isNotIncludedYetOn(attestationsToRevoke, expiredAttestation) &&
-          attestationsToRevoke.push(expiredAttestation);
+        include(attestationsToRevoke, expiredAttestation);
       }
-      isNotIncludedYetOn(attestationsToRemoveLater, expiredAttestation) &&
-        attestationsToRemoveLater.push(expiredAttestation);
+      include(attestationsToRemoveLater, expiredAttestation);
     }
   }
 }
