@@ -50,7 +50,7 @@ function isNotIncludedYetOn(
   list: AttestationInfo[],
   element: AttestationInfo,
 ): boolean {
-  return !list.find((included) => included.claimHash === element.claimHash);
+  return !list.some(({ claimHash }) => claimHash === element.claimHash);
 }
 
 function remove<Type>(list: Type[], item: Type) {
