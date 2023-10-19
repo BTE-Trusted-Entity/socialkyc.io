@@ -11,13 +11,11 @@ export const attestationsToRevoke: AttestationInfo[] = [];
 export const attestationsToRemove: AttestationInfo[] = [];
 export const attestationsToRemoveLater: AttestationInfo[] = [];
 
-export function initExpiredInventory() {
-  (async () => {
-    while (true) {
-      await fillExpiredInventory();
-      await sleep(SCAN_INTERVAL_MS);
-    }
-  })();
+function isNotIncludedYetOn(
+  list: AttestationInfo[],
+  element: AttestationInfo,
+): boolean {
+  return !list.some(({ claimHash }) => claimHash === element.claimHash);
 }
 
 export async function fillExpiredInventory() {
@@ -46,11 +44,13 @@ export async function fillExpiredInventory() {
   }
 }
 
-function isNotIncludedYetOn(
-  list: AttestationInfo[],
-  element: AttestationInfo,
-): boolean {
-  return !list.some(({ claimHash }) => claimHash === element.claimHash);
+export function initExpiredInventory() {
+  (async () => {
+    while (true) {
+      await fillExpiredInventory();
+      await sleep(SCAN_INTERVAL_MS);
+    }
+  })();
 }
 
 function remove<Type>(list: Type[], item: Type) {
