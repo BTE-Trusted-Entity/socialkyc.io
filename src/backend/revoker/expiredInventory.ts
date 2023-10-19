@@ -25,21 +25,16 @@ export async function fillExpiredInventory() {
 
   for await (const expiredAttestation of getExpiredAttestations()) {
     // decides in which list to put and makes sure that is not included yet
-    if (
-      shouldBeRemoved(expiredAttestation) &&
-      isNotIncludedYetOn(attestationsToRemove, expiredAttestation)
-    ) {
-      attestationsToRemove.push(expiredAttestation);
+    if (shouldBeRemoved(expiredAttestation)) {
+      isNotIncludedYetOn(attestationsToRemove, expiredAttestation) &&
+        attestationsToRemove.push(expiredAttestation);
     } else {
-      if (
-        expiredAttestation.revoked === false &&
-        isNotIncludedYetOn(attestationsToRevoke, expiredAttestation)
-      ) {
-        attestationsToRevoke.push(expiredAttestation);
+      if (expiredAttestation.revoked === false) {
+        isNotIncludedYetOn(attestationsToRevoke, expiredAttestation) &&
+          attestationsToRevoke.push(expiredAttestation);
       }
-      if (isNotIncludedYetOn(attestationsToRemoveLater, expiredAttestation)) {
+      isNotIncludedYetOn(attestationsToRemoveLater, expiredAttestation) &&
         attestationsToRemoveLater.push(expiredAttestation);
-      }
     }
   }
 }
