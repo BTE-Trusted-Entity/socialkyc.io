@@ -33,7 +33,6 @@ export async function fillExpiredInventory() {
   attestationsToRemoveLater.splice(0, expiredSinceLastRun.length);
 
   for await (const expiredAttestation of getExpiredAttestations()) {
-    // decides in which list to put and makes sure that is not included yet
     if (shouldBeRemoved(expiredAttestation)) {
       include(attestationsToRemove, expiredAttestation);
     } else {
