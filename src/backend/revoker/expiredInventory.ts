@@ -5,9 +5,27 @@ import { AttestationInfo } from './scanAttestations';
 import { shouldBeRemoved } from './shouldBeExpired';
 import { batchQueryRevoked } from './batchQueryRevoked';
 
+const SCAN_INTERVAL_MS = 24 * 60 * 60 * 1000;
+
 export const attestationsToRevoke: AttestationInfo[] = [];
 export const attestationsToRemove: AttestationInfo[] = [];
 export const attestationsToRemoveLater: AttestationInfo[] = [];
+
+/** Adds the `element` to the `list`; only if missing.
+ * Avoids duplicates.
+ *
+ * @param list: one of the inventory lists
+ * @param element: attestation from the scan
+ */
+function include(list: AttestationInfo[], element: AttestationInfo) {
+  const isAlreadyIncluded = list.some(
+    ({ claimHash }) => claimHash === element.claimHash,
+  );
+
+  if (!isAlreadyIncluded) {
+    list.push(element);
+  }
+}
 
 export async function fillExpiredInventory() {
   const expiredSinceLastRun = attestationsToRemoveLater.filter(shouldBeRemoved);
@@ -16,17 +34,15 @@ export async function fillExpiredInventory() {
 
   for await (const expiredAttestation of getExpiredAttestations()) {
     if (shouldBeRemoved(expiredAttestation)) {
-      attestationsToRemove.push(expiredAttestation);
+      include(attestationsToRemove, expiredAttestation);
     } else {
       if (expiredAttestation.revoked === false) {
-        attestationsToRevoke.push(expiredAttestation);
+        include(attestationsToRevoke, expiredAttestation);
       }
-      attestationsToRemoveLater.push(expiredAttestation);
+      include(attestationsToRemoveLater, expiredAttestation);
     }
   }
 }
-
-const SCAN_INTERVAL_MS = 60 * 60 * 1000;
 
 export function initExpiredInventory() {
   (async () => {
@@ -46,18 +62,18 @@ function remove<Type>(list: Type[], item: Type) {
 
 export async function updateExpiredInventory(
   attestationsInfo: AttestationInfo[],
-  revoke: boolean,
+  toRevoke: boolean,
 ) {
   const claimHashes = attestationsInfo.map(({ claimHash }) => claimHash);
-  const allRevoked = await batchQueryRevoked(claimHashes);
+  const currentRevocationStatuses = await batchQueryRevoked(claimHashes);
 
   attestationsInfo.forEach((attestation) => {
-    const revoked = allRevoked[attestation.claimHash];
+    const revoked = currentRevocationStatuses[attestation.claimHash];
 
-    if (revoke && revoked === true) {
+    if (toRevoke && revoked === true) {
       remove(attestationsToRevoke, attestation);
     }
-    if (!revoke && revoked === null) {
+    if (!toRevoke && revoked === null) {
       remove(attestationsToRemove, attestation);
     }
   });

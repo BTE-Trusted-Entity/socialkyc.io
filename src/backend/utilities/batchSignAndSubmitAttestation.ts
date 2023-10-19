@@ -20,7 +20,7 @@ import { signAndSubmit } from './signAndSubmit';
 
 const TRANSACTION_TIMEOUT = 5 * 60 * 1000;
 const MAXIMUM_FAILURES = 3;
-const REVOCATION_BATCH_SIZE = 100;
+const REVOCATION_BATCH_SIZE = 10;
 
 interface AttemptedAttestation {
   attestation: IAttestation;
@@ -123,7 +123,7 @@ async function createPendingTransaction() {
   const { identity } = await keypairsPromise;
 
   const authorized = await Did.authorizeBatch({
-    batchFunction: api.tx.utility.batchAll,
+    batchFunction: api.tx.utility.forceBatch,
     did: fullDid.uri,
     extrinsics,
     sign: signWithAssertionMethod,
