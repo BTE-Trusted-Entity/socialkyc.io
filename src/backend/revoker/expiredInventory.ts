@@ -5,6 +5,8 @@ import { AttestationInfo } from './scanAttestations';
 import { shouldBeRemoved } from './shouldBeExpired';
 import { batchQueryRevoked } from './batchQueryRevoked';
 
+const SCAN_INTERVAL_MS = 24 * 60 * 60 * 1000;
+
 export const attestationsToRevoke: AttestationInfo[] = [];
 export const attestationsToRemove: AttestationInfo[] = [];
 export const attestationsToRemoveLater: AttestationInfo[] = [];
@@ -15,18 +17,25 @@ export async function fillExpiredInventory() {
   attestationsToRemoveLater.splice(0, expiredSinceLastRun.length);
 
   for await (const expiredAttestation of getExpiredAttestations()) {
-    if (shouldBeRemoved(expiredAttestation)) {
+    // decides in which list to put and makes sure that is not included yet
+    if (
+      shouldBeRemoved(expiredAttestation) &&
+      !attestationsToRemove.includes(expiredAttestation)
+    ) {
       attestationsToRemove.push(expiredAttestation);
     } else {
-      if (expiredAttestation.revoked === false) {
+      if (
+        expiredAttestation.revoked === false &&
+        !attestationsToRevoke.includes(expiredAttestation)
+      ) {
         attestationsToRevoke.push(expiredAttestation);
       }
-      attestationsToRemoveLater.push(expiredAttestation);
+      if (!attestationsToRemoveLater.includes(expiredAttestation)) {
+        attestationsToRemoveLater.push(expiredAttestation);
+      }
     }
   }
 }
-
-const SCAN_INTERVAL_MS = 24 * 60 * 60 * 1000;
 
 export function initExpiredInventory() {
   (async () => {
