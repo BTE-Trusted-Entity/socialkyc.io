@@ -11,6 +11,15 @@ export const attestationsToRevoke: AttestationInfo[] = [];
 export const attestationsToRemove: AttestationInfo[] = [];
 export const attestationsToRemoveLater: AttestationInfo[] = [];
 
+export function initExpiredInventory() {
+  (async () => {
+    while (true) {
+      await fillExpiredInventory();
+      await sleep(SCAN_INTERVAL_MS);
+    }
+  })();
+}
+
 export async function fillExpiredInventory() {
   const expiredSinceLastRun = attestationsToRemoveLater.filter(shouldBeRemoved);
   attestationsToRemove.push(...expiredSinceLastRun);
@@ -20,30 +29,28 @@ export async function fillExpiredInventory() {
     // decides in which list to put and makes sure that is not included yet
     if (
       shouldBeRemoved(expiredAttestation) &&
-      !attestationsToRemove.includes(expiredAttestation)
+      isNotIncludedYetOn(attestationsToRemove, expiredAttestation)
     ) {
       attestationsToRemove.push(expiredAttestation);
     } else {
       if (
         expiredAttestation.revoked === false &&
-        !attestationsToRevoke.includes(expiredAttestation)
+        isNotIncludedYetOn(attestationsToRevoke, expiredAttestation)
       ) {
         attestationsToRevoke.push(expiredAttestation);
       }
-      if (!attestationsToRemoveLater.includes(expiredAttestation)) {
+      if (isNotIncludedYetOn(attestationsToRemoveLater, expiredAttestation)) {
         attestationsToRemoveLater.push(expiredAttestation);
       }
     }
   }
 }
 
-export function initExpiredInventory() {
-  (async () => {
-    while (true) {
-      await fillExpiredInventory();
-      await sleep(SCAN_INTERVAL_MS);
-    }
-  })();
+function isNotIncludedYetOn(
+  list: AttestationInfo[],
+  element: AttestationInfo,
+): boolean {
+  return !list.find((included) => included.claimHash === element.claimHash);
 }
 
 function remove<Type>(list: Type[], item: Type) {
