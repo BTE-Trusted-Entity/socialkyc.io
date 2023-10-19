@@ -123,7 +123,7 @@ async function createPendingTransaction() {
   const { identity } = await keypairsPromise;
 
   const authorized = await Did.authorizeBatch({
-    batchFunction: api.tx.utility.batch,
+    batchFunction: api.tx.utility.forceBatch,
     did: fullDid.uri,
     extrinsics,
     sign: signWithAssertionMethod,
