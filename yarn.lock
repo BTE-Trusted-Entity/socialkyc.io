@@ -7163,14 +7163,14 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@types/hapi__basic@npm:^5.1.5":
-  version: 5.1.5
-  resolution: "@types/hapi__basic@npm:5.1.5"
+"@types/hapi__basic@npm:^5.1.6":
+  version: 5.1.6
+  resolution: "@types/hapi__basic@npm:5.1.6"
   dependencies:
     "@hapi/hapi": ^21.1.0
     "@types/node": "*"
     joi: ^17.7.0
-  checksum: 84ca70c3a5e1130ecf2b62bbe239a85def082e69d50ac7659782be7e144b815dfc5a0ccbffc9da0785191329cb1128aac2d405c999a279935653087c859e77aa
+  checksum: 573b34ec00b039bb0c23c3acc22ef9a4582ece8f5258b8ea3b88d0b6b1d179529ee8fea3e747955aa246cbe65c0f52ccf0940d0583850af17949da2c598da22a
   languageName: node
   linkType: hard
 
@@ -16792,7 +16792,7 @@ __metadata:
     "@testing-library/jest-dom": ^6.1.4
     "@testing-library/react": ^14.0.0
     "@testing-library/user-event": ^14.5.1
-    "@types/hapi__basic": ^5.1.5
+    "@types/hapi__basic": ^5.1.6
     "@types/hapi__hapi": ^20.0.13
     "@types/hapi__inert": ^5.2.9
     "@types/jest": ^29.5.7

@@ -66,7 +66,7 @@
     "@testing-library/jest-dom": "^6.1.4",
     "@testing-library/react": "^14.0.0",
     "@testing-library/user-event": "^14.5.1",
-    "@types/hapi__basic": "^5.1.5",
+    "@types/hapi__basic": "^5.1.6",
     "@types/hapi__hapi": "^20.0.13",
     "@types/hapi__inert": "^5.2.9",
     "@types/jest": "^29.5.7",
