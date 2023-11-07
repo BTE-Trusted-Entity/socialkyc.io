@@ -7197,13 +7197,13 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@types/hapi__inert@npm:^5.2.9":
-  version: 5.2.9
-  resolution: "@types/hapi__inert@npm:5.2.9"
+"@types/hapi__inert@npm:^5.2.10":
+  version: 5.2.10
+  resolution: "@types/hapi__inert@npm:5.2.10"
   dependencies:
     "@hapi/hapi": ^21.1.0
     joi: ^17.7.0
-  checksum: 8ab80801d580fa3703298a67ee568f0443eb7daf2f9b283904c2a2e4f2dec3f32149411bf8984fb625eaf3d1a071e5053746c62d46cdbb2a3eb2eb60939d78f8
+  checksum: c580606ff09e58b5d6b817915525b6c7195c65588b72798de8183babcd81e43069f2565d129c05c38998d4ae123740efadb46ce6f97aa4ab2e713dfdc73fa9c4
   languageName: node
   linkType: hard
 
@@ -16794,7 +16794,7 @@ __metadata:
     "@testing-library/user-event": ^14.5.1
     "@types/hapi__basic": ^5.1.6
     "@types/hapi__hapi": ^20.0.13
-    "@types/hapi__inert": ^5.2.9
+    "@types/hapi__inert": ^5.2.10
     "@types/jest": ^29.5.7
     "@types/lodash-es": ^4.17.10
     "@types/node": ^20.8.10
