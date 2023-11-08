@@ -16844,7 +16844,7 @@ __metadata:
     supervisor: ^0.12.0
     ts-jest: ^29.1.1
     twitter-api-v2: ^1.15.2
-    typed-css-modules: ^0.8.0
+    typed-css-modules: ^0.8.1
     typescript: ^5.2.2
     zod: ^3.22.4
   languageName: unknown
@@ -18422,9 +18422,9 @@ __metadata:
   languageName: node
   linkType: hard
 
-"typed-css-modules@npm:^0.8.0":
-  version: 0.8.0
-  resolution: "typed-css-modules@npm:0.8.0"
+"typed-css-modules@npm:^0.8.1":
+  version: 0.8.1
+  resolution: "typed-css-modules@npm:0.8.1"
   dependencies:
     camelcase: ^6.0.0
     chalk: ^4.0.0
@@ -18441,7 +18441,7 @@ __metadata:
     yargs: ^17.7.2
   bin:
     tcm: lib/cli.js
-  checksum: d9b1dd47181468993038499820b6a177ee8142d7b4f6775fc5d00a980c1696b04dcfa2d0013a3e0357938cf9404c59bed768cf28a55e5f95e1b74b55d141e79b
+  checksum: 7a623f86fa49c78fde47c24342563b1fbbd56362c721d16f46933836e6979789e2be957b7440fc0bf75a201cce50fbb7af9cea22c644f1b65b512231b9ac4ffc
   languageName: node
   linkType: hard
 
