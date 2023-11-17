@@ -107,13 +107,13 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@aws-sdk/client-ses@npm:^3.451.0":
-  version: 3.451.0
-  resolution: "@aws-sdk/client-ses@npm:3.451.0"
+"@aws-sdk/client-ses@npm:^3.454.0":
+  version: 3.454.0
+  resolution: "@aws-sdk/client-ses@npm:3.454.0"
   dependencies:
     "@aws-crypto/sha256-browser": 3.0.0
     "@aws-crypto/sha256-js": 3.0.0
-    "@aws-sdk/client-sts": 3.451.0
+    "@aws-sdk/client-sts": 3.454.0
     "@aws-sdk/core": 3.451.0
     "@aws-sdk/credential-provider-node": 3.451.0
     "@aws-sdk/middleware-host-header": 3.451.0
@@ -152,7 +152,7 @@ __metadata:
     "@smithy/util-waiter": ^2.0.13
     fast-xml-parser: 4.2.5
     tslib: ^2.5.0
-  checksum: 7dc8c05ae9b3e7973852a25c1e4370c50fd3b00c41fecec5e9002cf06f55f8876bf58d456ff17ebc1d5c52f892248a613b0cdb79f531a67be24976fbed766bd3
+  checksum: b9843f675e1023e561840645a38621160475c673e01bd6fb3c17489ae7d1facf18f9f1fc1da47e7f5b0c0705a14b27434b2b0f68e0a9c759ba666aa5274586b5
   languageName: node
   linkType: hard
 
@@ -200,9 +200,9 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@aws-sdk/client-sts@npm:3.451.0":
-  version: 3.451.0
-  resolution: "@aws-sdk/client-sts@npm:3.451.0"
+"@aws-sdk/client-sts@npm:3.454.0":
+  version: 3.454.0
+  resolution: "@aws-sdk/client-sts@npm:3.454.0"
   dependencies:
     "@aws-crypto/sha256-browser": 3.0.0
     "@aws-crypto/sha256-js": 3.0.0
@@ -244,7 +244,7 @@ __metadata:
     "@smithy/util-utf8": ^2.0.2
     fast-xml-parser: 4.2.5
     tslib: ^2.5.0
-  checksum: d5fc965400ddecfd466c82e88ee2c0d1d59c06980774ce4b0715ae13e8c522f1ad346aa04891b68d755a792477ed483411e3040875f156bdd160ae6fde511f07
+  checksum: 92e687abc8dcd5f6ddf911fe5800f04eeb11164214327072334275b04725ac77ee2170247b69df645ff756ed9f2b27916921d442fb393dc46084c114b5f76f54
   languageName: node
   linkType: hard
 
@@ -16779,7 +16779,7 @@ __metadata:
   version: 0.0.0-use.local
   resolution: "root-workspace-0b6124@workspace:."
   dependencies:
-    "@aws-sdk/client-ses": ^3.451.0
+    "@aws-sdk/client-ses": ^3.454.0
     "@babel/core": ^7.23.3
     "@babel/preset-env": ^7.23.3
     "@hapi/basic": ^7.0.2
