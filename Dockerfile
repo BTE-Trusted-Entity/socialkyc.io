@@ -13,7 +13,6 @@ RUN apk add --update --no-cache python3 g++ make && ln -sf python3 /usr/bin/pyth
 # install build dependencies
 # @parcel/css-linux-x64-musl is not optional but marked so
 COPY package.json yarn.lock .yarnrc.yml ./
-COPY .yarn ./.yarn/
 
 RUN yarn install --immutable && yarn add --dev @parcel/css-linux-x64-musl && yarn cache clean --all
 
@@ -34,7 +33,6 @@ ENV NODE_ENV production
 
 # get the dependencies and sources
 COPY package.json yarn.lock .yarnrc.yml ./
-COPY .yarn ./.yarn/
 
 # install the production dependencies only (depends on NODE_ENV)
 RUN yarn install --immutable && yarn cache clean --all
