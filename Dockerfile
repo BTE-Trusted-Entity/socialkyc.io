@@ -2,6 +2,9 @@ FROM node:20.9.0-alpine AS base
 
 WORKDIR /app
 
+# enable corepack
+RUN corepack enable
+
 FROM base AS builder
 
 # one of dependencies uses node-gyp which requires build tools
