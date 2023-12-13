@@ -107,13 +107,13 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@aws-sdk/client-ses@npm:^3.470.0":
-  version: 3.470.0
-  resolution: "@aws-sdk/client-ses@npm:3.470.0"
+"@aws-sdk/client-ses@npm:^3.473.0":
+  version: 3.473.0
+  resolution: "@aws-sdk/client-ses@npm:3.473.0"
   dependencies:
     "@aws-crypto/sha256-browser": "npm:3.0.0"
     "@aws-crypto/sha256-js": "npm:3.0.0"
-    "@aws-sdk/client-sts": "npm:3.470.0"
+    "@aws-sdk/client-sts": "npm:3.473.0"
     "@aws-sdk/core": "npm:3.468.0"
     "@aws-sdk/credential-provider-node": "npm:3.470.0"
     "@aws-sdk/middleware-host-header": "npm:3.468.0"
@@ -152,7 +152,7 @@ __metadata:
     "@smithy/util-waiter": "npm:^2.0.15"
     fast-xml-parser: "npm:4.2.5"
     tslib: "npm:^2.5.0"
-  checksum: 612c98a75166bff76f484a03f2238bf966d6180fc3848f13990e45b49c30efaf5cd99d10f2e138f77c38ae31d9bf305528b194894624f77854c7b1ad6afb7b85
+  checksum: a71e669772a890a4321a076afe3202aa3c96011bab80ed4ac6b42612e7357b91f2be0867224d88ce08fe09afa85d43840a1934b0ac8b0037d538d654a11b98ae
   languageName: node
   linkType: hard
 
@@ -200,9 +200,9 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@aws-sdk/client-sts@npm:3.470.0":
-  version: 3.470.0
-  resolution: "@aws-sdk/client-sts@npm:3.470.0"
+"@aws-sdk/client-sts@npm:3.473.0":
+  version: 3.473.0
+  resolution: "@aws-sdk/client-sts@npm:3.473.0"
   dependencies:
     "@aws-crypto/sha256-browser": "npm:3.0.0"
     "@aws-crypto/sha256-js": "npm:3.0.0"
@@ -244,7 +244,7 @@ __metadata:
     "@smithy/util-utf8": "npm:^2.0.2"
     fast-xml-parser: "npm:4.2.5"
     tslib: "npm:^2.5.0"
-  checksum: e3cdf294826904391febdf78830e8d2de9235f52cc0ebb85426666a695a46ba3d9069c8602d081fd01fc5a6172a0c5183ffe7d661ce926dc87c40bece77bbc39
+  checksum: 5b2226fd009901037249c69cabd5a536f553813c40ab793ff72d652cc83b8bf0360c6c21f7c6ae690eb8861b5bc37d4b5b4b36bffbc568e79ce6aab856dbd009
   languageName: node
   linkType: hard
 
@@ -16436,7 +16436,7 @@ __metadata:
   version: 0.0.0-use.local
   resolution: "root-workspace-0b6124@workspace:."
   dependencies:
-    "@aws-sdk/client-ses": "npm:^3.470.0"
+    "@aws-sdk/client-ses": "npm:^3.473.0"
     "@babel/core": "npm:^7.23.6"
     "@babel/preset-env": "npm:^7.23.6"
     "@hapi/basic": "npm:^7.0.2"
