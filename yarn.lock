@@ -15773,10 +15773,10 @@ __metadata:
   languageName: node
   linkType: hard
 
-"rate-limiter-flexible@npm:^3.0.6":
-  version: 3.0.6
-  resolution: "rate-limiter-flexible@npm:3.0.6"
-  checksum: 734775693cc7b43c7df9375a76fb223ef4066c1b8ca0f121bbfa560b3fcf7fa111f5ed018a9bcce603112baaa105d726f5ae63099209a6a975432bb95350f0e9
+"rate-limiter-flexible@npm:^4.0.0":
+  version: 4.0.0
+  resolution: "rate-limiter-flexible@npm:4.0.0"
+  checksum: 026cfe5ca2dae62c006587591cee08a036a3f233d71fbbeb004f52f501c7518e0ad3ec53b197fb6d04e79adfb2a47e57d7fb8380a0fd63f5363715148c175fb0
   languageName: node
   linkType: hard
 
@@ -16493,7 +16493,7 @@ __metadata:
     prettier: "npm:^3.1.1"
     prom-client: "npm:^15.1.0"
     punycode: "npm:^2.3.1"
-    rate-limiter-flexible: "npm:^3.0.6"
+    rate-limiter-flexible: "npm:^4.0.0"
     react: "npm:^18.2.0"
     react-dom: "npm:^18.2.0"
     react-router: "npm:^5.3.4"
