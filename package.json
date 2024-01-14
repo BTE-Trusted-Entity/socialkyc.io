@@ -92,7 +92,7 @@
     "pino-pretty": "^10.3.1",
     "postcss": "^8.4.33",
     "postcss-modules": "^6.0.0",
-    "prettier": "^3.2.1",
+    "prettier": "^3.2.2",
     "react-router": "^5.3.4",
     "storybook": "^7.6.8",
     "stylelint": "^16.1.0",
