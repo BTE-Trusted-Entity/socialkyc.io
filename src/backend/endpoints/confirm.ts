@@ -1,4 +1,4 @@
-import type { DidUri } from '@kiltprotocol/sdk-js';
+import type { Did } from '@kiltprotocol/types';
 import type {
   Request,
   ResponseObject,
@@ -28,7 +28,7 @@ type ConfirmType = 'discord' | 'github' | 'twitch' | 'youtube';
 
 const confirmationsForType: Record<
   ConfirmType,
-  (code: string, did: DidUri, logger: BaseLogger) => Promise<ContentfulClaim>
+  (code: string, did: Did, logger: BaseLogger) => Promise<ContentfulClaim>
 > = {
   github,
   discord,

@@ -1,4 +1,6 @@
-import { Did, type HexString, type IAttestation } from '@kiltprotocol/sdk-js';
+import type { HexString, IAttestation } from '@kiltprotocol/types';
+
+import { fromChain } from '@kiltprotocol/did';
 
 import { logger } from '../utilities/logger';
 
@@ -7,7 +9,7 @@ import { shouldBeRevoked } from './shouldBeExpired';
 import { batchQueryRevoked } from './batchQueryRevoked';
 
 export type EventParams = [
-  { type_name: 'AttesterOf'; value: Parameters<typeof Did.fromChain>[0] },
+  { type_name: 'AttesterOf'; value: Parameters<typeof fromChain>[0] },
   { type_name: 'ClaimHashOf'; value: HexString },
   { type_name: 'CTypeHashOf'; value: HexString },
   { type_name: 'DelegationNodeIdOf'; value: HexString | null },
@@ -52,7 +54,7 @@ export async function* scanAttestations() {
     fromBlock = block;
 
     const params = event.params as EventParams;
-    const owner = Did.fromChain(params[0].value);
+    const owner = fromChain(params[0].value);
     const claimHash = params[1].value;
     const cTypeHash = params[2].value;
     const delegationId = params[3].value;

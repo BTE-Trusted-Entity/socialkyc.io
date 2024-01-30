@@ -1,9 +1,9 @@
 /**
  * @jest-environment node
  */
+import type { Did } from '@kiltprotocol/types';
 
 import { describe, it, expect, jest } from '@jest/globals';
-import { type DidUri } from '@kiltprotocol/sdk-js';
 
 import { configuration } from '../utilities/configuration';
 
@@ -22,7 +22,7 @@ describe('getExpiredAttestations', () => {
       cTypeHash: '0x32',
       claimHash: '0x01',
       createdAt: new Date('2020-01-01'),
-      owner: configuration.did as DidUri,
+      owner: configuration.did as Did,
       delegationId: null,
       revoked: false,
     };
@@ -56,7 +56,7 @@ describe('getExpiredAttestations', () => {
         cTypeHash: '0x32',
         claimHash: '0x01',
         createdAt: new Date('2020-01-01'),
-        owner: configuration.did as DidUri,
+        owner: configuration.did as Did,
         delegationId: null,
         revoked: null,
       };

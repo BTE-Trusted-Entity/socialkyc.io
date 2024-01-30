@@ -1,8 +1,8 @@
-import {
-  Attestation,
-  ConfigService,
-  type HexString,
-} from '@kiltprotocol/sdk-js';
+import type { HexString } from '@kiltprotocol/types';
+
+import { ConfigService } from '@kiltprotocol/sdk-js';
+
+import { Attestation } from '@kiltprotocol/credentials';
 
 import { initKilt } from '../utilities/initKilt';
 

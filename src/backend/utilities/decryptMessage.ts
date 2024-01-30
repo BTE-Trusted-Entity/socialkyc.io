@@ -1,13 +1,13 @@
 import type { Request } from '@hapi/hapi';
-
 import type { EncryptedMessageInput } from './validateEncryptedMessage';
+import type {
+  IRequestAttestationContent,
+  MessageBodyType,
+} from '@kiltprotocol/extension-api/types';
+
+import * as Message from '@kiltprotocol/extension-api/messaging';
 
 import * as Boom from '@hapi/boom';
-import {
-  Message,
-  MessageBodyType,
-  IRequestAttestationContent,
-} from '@kiltprotocol/sdk-js';
 
 import { decrypt } from './cryptoCallbacks';
 
@@ -24,7 +24,6 @@ export async function decryptMessageContent<Result>(
   logger.debug('Message decrypted');
 
   const messageBody = message.body;
-  Message.verifyMessageBody(messageBody);
   const { type } = messageBody;
 
   if (type === rejectionType || type === 'reject') {

@@ -1,16 +1,20 @@
-import { naclSeal, randomAsNumber } from '@polkadot/util-crypto';
-import { HexString } from '@polkadot/util/types';
-import {
-  connect,
-  CType,
-  Did,
+import type {
   DidDocument,
-  DidEncryptionKey,
-  DidResourceUri,
-  disconnect,
+  DidUrl,
   ICType,
-  Utils,
-} from '@kiltprotocol/sdk-js';
+  VerificationMethod,
+} from '@kiltprotocol/types';
+
+import { DidResolver, connect, disconnect } from '@kiltprotocol/sdk-js';
+import { Crypto } from '@kiltprotocol/utils';
+import { CType } from '@kiltprotocol/credentials';
+import {
+  createLightDidDocument,
+  isFailedDereferenceMetadata,
+  multibaseKeyToDidKey,
+} from '@kiltprotocol/did';
+
+import { randomAsNumber } from '@polkadot/util-crypto';
 
 import { getEncryptedMessage } from './encryptedMessage.js';
 import {
@@ -24,10 +28,10 @@ import {
   sendEmailApi,
 } from './apis.js';
 
-export type CheckSessionInput = {
-  encryptionKeyUri: DidResourceUri;
-  encryptedChallenge: HexString;
-  nonce: HexString;
+export type Challenge = {
+  encryptionKeyUri: DidUrl;
+  encryptedChallenge: string;
+  nonce: string;
 };
 
 const emailCType: ICType = {
@@ -42,8 +46,8 @@ const emailCType: ICType = {
   type: 'object',
 };
 
-function getDidEncryptionKey(details: DidDocument): DidEncryptionKey {
-  const { keyAgreement } = details;
+function getDidEncryptionKey(document: DidDocument) {
+  const { keyAgreement } = document;
   if (!keyAgreement?.[0]) {
     throw new Error('encryptionKey is not defined somehow');
   }
@@ -51,15 +55,15 @@ function getDidEncryptionKey(details: DidDocument): DidEncryptionKey {
 }
 
 export function createDid() {
-  const authentication = Utils.Crypto.makeKeypairFromSeed();
-  const keyAgreement = Utils.Crypto.makeEncryptionKeypairFromSeed();
+  const authentication = Crypto.makeKeypairFromSeed();
+  const keyAgreement = Crypto.makeEncryptionKeypairFromSeed();
 
-  const document = Did.createLightDidDocument({
+  const document = createLightDidDocument({
     authentication: [authentication],
     keyAgreement: [keyAgreement],
   });
-  const { id } = getDidEncryptionKey(document);
-  const keyAgreementKeyUri: DidResourceUri = `${document.uri}${id}`;
+  const fragment = getDidEncryptionKey(document);
+  const keyAgreementKeyUri = `${document.id}${fragment}` as DidUrl;
 
   return {
     document,
@@ -70,23 +74,33 @@ export function createDid() {
 
 async function produceEncryptedChallenge(
   challenge: string,
-  dAppEncryptionKeyUri: DidResourceUri,
-): Promise<CheckSessionInput> {
-  const dAppEncryptionDidKey = await Did.resolveKey(dAppEncryptionKeyUri);
-
+  receiverKeyUri: DidUrl,
+): Promise<Challenge> {
   const temporaryChannelDid = createDid();
   const { keyAgreementKeyUri, keyAgreement } = temporaryChannelDid;
 
-  const { sealed, nonce } = naclSeal(
-    Utils.Crypto.coToUInt8(challenge),
+  const { dereferencingMetadata, contentStream } =
+    await DidResolver.dereference(receiverKeyUri, {});
+
+  if (isFailedDereferenceMetadata(dereferencingMetadata)) {
+    throw new Error(dereferencingMetadata.error);
+  }
+
+  const verificationMethod = contentStream as VerificationMethod;
+  const { publicKey } = multibaseKeyToDidKey(
+    verificationMethod.publicKeyMultibase,
+  );
+
+  const { nonce, box } = Crypto.encryptAsymmetricAsStr(
+    Crypto.coToUInt8(challenge),
+    publicKey,
     keyAgreement.secretKey,
-    dAppEncryptionDidKey.publicKey,
   );
 
   return {
     encryptionKeyUri: keyAgreementKeyUri,
-    encryptedChallenge: Utils.Crypto.u8aToHex(sealed),
-    nonce: Utils.Crypto.u8aToHex(nonce),
+    encryptedChallenge: box,
+    nonce,
   };
 }
 

@@ -4,7 +4,7 @@ import type {
   ResponseToolkit,
   ServerRoute,
 } from '@hapi/hapi';
-import type { IEncryptedMessage } from '@kiltprotocol/sdk-js';
+import type { IEncryptedMessage } from '@kiltprotocol/extension-api/types';
 import type { HexString } from '@polkadot/util/types';
 
 import { z } from 'zod';

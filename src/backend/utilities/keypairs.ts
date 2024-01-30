@@ -1,4 +1,3 @@
-import { Utils } from '@kiltprotocol/sdk-js';
 import {
   blake2AsU8a,
   ed25519PairFromSeed,
@@ -6,6 +5,8 @@ import {
   keyFromPath,
   mnemonicToMiniSecret,
 } from '@polkadot/util-crypto';
+
+import { Crypto } from '@kiltprotocol/utils';
 
 import { initKilt } from './initKilt';
 import { configuration } from './configuration';
@@ -16,12 +17,12 @@ export const keypairsPromise = (async () => {
 
   const { backupPhrase } = configuration;
 
-  const identity = Utils.Crypto.makeKeypairFromUri(backupPhrase, 'sr25519');
-  const authentication = Utils.Crypto.makeKeypairFromUri(
+  const identity = Crypto.makeKeypairFromUri(backupPhrase, 'sr25519');
+  const authentication = Crypto.makeKeypairFromUri(
     `${backupPhrase}//did//0`,
     'sr25519',
   );
-  const assertionMethod = Utils.Crypto.makeKeypairFromUri(
+  const assertionMethod = Crypto.makeKeypairFromUri(
     `${backupPhrase}//did//assertion//0`,
     'sr25519',
   );
@@ -29,7 +30,7 @@ export const keypairsPromise = (async () => {
   const edKeypair = ed25519PairFromSeed(mnemonicToMiniSecret(backupPhrase));
   const { path } = keyExtractPath('//did//keyAgreement//0');
   const { secretKey } = keyFromPath(edKeypair, path, 'ed25519');
-  const keyAgreement = Utils.Crypto.makeEncryptionKeypairFromSeed(
+  const keyAgreement = Crypto.makeEncryptionKeypairFromSeed(
     blake2AsU8a(secretKey),
   );
 

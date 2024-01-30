@@ -1,19 +1,20 @@
-import {
-  Did,
-  DidResourceUri,
+import type { DidUrl } from '@kiltprotocol/types';
+import type {
   IEncryptedMessage,
-  Message,
   MessageBody,
-} from '@kiltprotocol/sdk-js';
+} from '@kiltprotocol/extension-api/types';
+
+import { parse } from '@kiltprotocol/did';
+import * as Message from '@kiltprotocol/extension-api/messaging';
 
 import { encrypt } from './cryptoCallbacks';
 import { configuration } from './configuration';
 
 export async function encryptMessageBody(
-  encryptionKeyUri: DidResourceUri,
+  encryptionKeyUri: DidUrl,
   messageBody: MessageBody,
 ): Promise<IEncryptedMessage> {
-  const { did } = Did.parse(encryptionKeyUri);
+  const { did } = parse(encryptionKeyUri);
 
   if (configuration.did === 'pending') {
     throw new Error('Own DID not found');

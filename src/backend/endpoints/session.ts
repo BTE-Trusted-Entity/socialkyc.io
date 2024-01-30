@@ -1,3 +1,5 @@
+import type { DidUrl, VerificationMethod } from '@kiltprotocol/types';
+
 import {
   Request,
   ResponseObject,
@@ -8,25 +10,32 @@ import * as Boom from '@hapi/boom';
 import { z } from 'zod';
 import { StatusCodes } from 'http-status-codes';
 
-import { Did, DidResourceUri, Utils } from '@kiltprotocol/sdk-js';
 import { randomAsHex } from '@polkadot/util-crypto';
+
+import { DidResolver } from '@kiltprotocol/sdk-js';
+
+import {
+  isFailedDereferenceMetadata,
+  multibaseKeyToDidKey,
+} from '@kiltprotocol/did';
+import { Crypto } from '@kiltprotocol/utils';
 
 import { fullDidPromise } from '../utilities/fullDid';
 import { decrypt } from '../utilities/cryptoCallbacks';
 import { getBasicSession, setSession } from '../utilities/sessionStorage';
 
-import { isDidResourceUri } from '../utilities/isDidResourceUri';
+import { isDidUrl } from '../utilities/isDidUrl';
 
 import { paths } from './paths';
 
 const zodPayload = z.object({
-  encryptionKeyUri: z.string().refine<DidResourceUri>(isDidResourceUri),
+  encryptionKeyUri: z.string().refine<DidUrl>(isDidUrl),
   encryptedChallenge: z.string(),
   nonce: z.string(),
 });
 
 export interface GetSessionOutput {
-  dAppEncryptionKeyUri: DidResourceUri;
+  dAppEncryptionKeyUri: DidUrl;
   sessionId: string;
   challenge: string;
 }
@@ -46,21 +55,29 @@ async function handler(
   const { encryptionKeyUri, encryptedChallenge, nonce } = payload;
   const session = getBasicSession(request.headers);
 
-  const encryptionKey = await Did.resolveKey(encryptionKeyUri);
+  const { dereferencingMetadata, contentStream } =
+    await DidResolver.dereference(encryptionKeyUri, {});
+
+  if (isFailedDereferenceMetadata(dereferencingMetadata)) {
+    throw new Error(dereferencingMetadata.error);
+  }
+
+  const verificationMethod = contentStream as VerificationMethod;
+  const { publicKey } = multibaseKeyToDidKey(
+    verificationMethod.publicKeyMultibase,
+  );
 
   logger.debug('Session confirmation resolved DID encryption key');
 
-  const { keyAgreementKey, fullDid } = await fullDidPromise;
-
   const { data } = await decrypt({
-    data: Utils.Crypto.coToUInt8(encryptedChallenge),
-    nonce: Utils.Crypto.coToUInt8(nonce),
-    keyUri: `${fullDid.uri}${keyAgreementKey.id}`,
-    peerPublicKey: encryptionKey.publicKey,
+    data: Crypto.coToUInt8(encryptedChallenge),
+    nonce: Crypto.coToUInt8(nonce),
+    peerPublicKey: publicKey,
+    keyUri: encryptionKeyUri,
   });
   logger.debug('Session confirmation decrypted challenge');
 
-  const decryptedChallenge = Utils.Crypto.u8aToHex(data);
+  const decryptedChallenge = Crypto.u8aToHex(data);
   const originalChallenge = session.didChallenge;
 
   if (decryptedChallenge !== originalChallenge) {
@@ -69,7 +86,7 @@ async function handler(
 
   setSession({
     ...session,
-    did: encryptionKey.controller,
+    did: verificationMethod.controller,
     encryptionKeyUri,
     didConfirmed: true,
   });
@@ -98,7 +115,7 @@ export const session: ServerRoute[] = [
     path,
     handler: async () => {
       const { fullDid, keyAgreementKey } = await fullDidPromise;
-      const dAppEncryptionKeyUri: DidResourceUri = `${fullDid.uri}${keyAgreementKey.id}`;
+      const dAppEncryptionKeyUri: DidUrl = `${fullDid.id}${keyAgreementKey}`;
       return {
         dAppEncryptionKeyUri,
         ...startSession(),

@@ -1,12 +1,14 @@
-import NodeCache from 'node-cache';
-import * as Boom from '@hapi/boom';
-import {
-  DidResourceUri,
-  DidUri,
+import type {
+  Did,
+  DidUrl,
   IAttestation,
   ICredential,
   PartialClaim,
-} from '@kiltprotocol/sdk-js';
+} from '@kiltprotocol/types';
+
+import NodeCache from 'node-cache';
+import * as Boom from '@hapi/boom';
+
 import { randomAsNumber } from '@polkadot/util-crypto';
 
 import { sessionHeader } from '../endpoints/sessionHeader';
@@ -16,8 +18,8 @@ export type ContentfulClaim = PartialClaim &
 
 export interface BasicSession {
   sessionId: string;
-  did?: DidUri;
-  encryptionKeyUri?: DidResourceUri;
+  did?: Did;
+  encryptionKeyUri?: DidUrl;
   didChallenge?: string;
   didConfirmed?: boolean;
   claim?: ContentfulClaim;
@@ -29,8 +31,8 @@ export interface BasicSession {
 }
 
 export type Session = BasicSession & {
-  did: DidUri;
-  encryptionKeyUri: DidResourceUri;
+  did: Did;
+  encryptionKeyUri: DidUrl;
 };
 
 export interface PayloadWithSession {

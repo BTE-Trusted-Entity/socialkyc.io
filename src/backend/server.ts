@@ -7,7 +7,6 @@ import { getSecret } from './endpoints/getSecret';
 import { fullDidPromise } from './utilities/fullDid';
 import { testTwitterCType } from './twitter/twitterCType';
 import { testEmailCType } from './email/emailCType';
-import { testDomainLinkageCType } from './didConfiguration/domainLinkageCType';
 import { testDiscordCType } from './discord/discordCType';
 import { testGithubCType } from './github/githubCType';
 import { testTwitchCType } from './twitch/twitchCType';
@@ -112,7 +111,6 @@ const logger = {
   await fullDidPromise;
   server.logger.info('Blockchain connection initialized');
 
-  await testDomainLinkageCType();
   await testEmailCType();
   await testTwitterCType();
   await testDiscordCType();

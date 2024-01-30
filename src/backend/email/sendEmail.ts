@@ -15,7 +15,7 @@ import * as Boom from '@hapi/boom';
 import { RateLimiterMemory } from 'rate-limiter-flexible';
 import { z } from 'zod';
 
-import { CType } from '@kiltprotocol/sdk-js';
+import { CType } from '@kiltprotocol/credentials';
 
 import { configuration } from '../utilities/configuration';
 import {

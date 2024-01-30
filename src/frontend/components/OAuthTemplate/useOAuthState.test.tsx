@@ -1,7 +1,8 @@
+import type { IEncryptedMessage } from '@kiltprotocol/extension-api/types';
+
 // expect cannot be imported because of https://github.com/testing-library/jest-dom/issues/426
 import { afterEach, beforeEach, describe, it, jest } from '@jest/globals';
 import { userEvent } from '@testing-library/user-event';
-import { IEncryptedMessage } from '@kiltprotocol/sdk-js';
 import { JSX } from 'react';
 
 import {
