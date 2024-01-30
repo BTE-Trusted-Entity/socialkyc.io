@@ -1,6 +1,8 @@
+import type { HexString } from '@kiltprotocol/types';
+
 import got from 'got';
 
-import { ConfigService, type HexString } from '@kiltprotocol/sdk-js';
+import { ConfigService } from '@kiltprotocol/sdk-js';
 
 import { configuration } from '../utilities/configuration';
 import { logger } from '../utilities/logger';

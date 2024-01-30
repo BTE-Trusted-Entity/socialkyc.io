@@ -4,10 +4,12 @@ import type {
   ResponseToolkit,
   ServerRoute,
 } from '@hapi/hapi';
+import type { IEncryptedMessage } from '@kiltprotocol/extension-api/types';
 
 import { z } from 'zod';
 import { randomAsHex } from '@polkadot/util-crypto';
-import { CType, IEncryptedMessage } from '@kiltprotocol/sdk-js';
+
+import { CType } from '@kiltprotocol/credentials';
 
 import { supportedCTypes } from '../utilities/supportedCTypes';
 import { supportedCTypeKeys } from '../utilities/supportedCType';

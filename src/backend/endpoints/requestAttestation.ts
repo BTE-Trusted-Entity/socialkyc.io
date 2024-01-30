@@ -7,9 +7,10 @@ import type {
 import type { SupportedCType } from '../utilities/supportedCType';
 
 import { StatusCodes } from 'http-status-codes';
-import { Credential } from '@kiltprotocol/sdk-js';
 import { z } from 'zod';
 import * as Boom from '@hapi/boom';
+
+import { Credential as LegacyCredential } from '@kiltprotocol/legacy-credentials';
 
 import { getSession, setSession } from '../utilities/sessionStorage';
 import { validateEncryptedMessage } from '../utilities/validateEncryptedMessage';
@@ -49,7 +50,7 @@ async function handler(
   };
 
   const ctype = supportedCTypes[type];
-  Credential.verifyWellFormed(credential, { ctype });
+  LegacyCredential.verifyWellFormed(credential, { ctype });
   logger.debug(`Request attestation verified for ${type}`);
 
   setSession({ ...session, credential });

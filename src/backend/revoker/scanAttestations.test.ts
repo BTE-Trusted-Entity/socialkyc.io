@@ -1,9 +1,11 @@
 /**
  * @jest-environment node
  */
+import type { HexString } from '@kiltprotocol/types';
 
 import { describe, it, jest } from '@jest/globals';
-import { Did, type HexString } from '@kiltprotocol/sdk-js';
+
+import { toChain } from '@kiltprotocol/did';
 
 import { batchQueryRevoked } from './batchQueryRevoked';
 import { subScanEventGenerator } from './subScan';
@@ -77,7 +79,7 @@ describe('scanAttestations', () => {
         blockTimestampMs: createdAt.getTime(),
         extrinsicHash: '0x01' as HexString,
         params: [
-          { type_name: 'AttesterOf', value: Did.toChain(owner) },
+          { type_name: 'AttesterOf', value: toChain(owner) },
           { type_name: 'ClaimHashOf', value: '0x02' },
           { type_name: 'CTypeHashOf', value: '0x03' },
           { type_name: 'DelegationNodeIdOf', value: null },

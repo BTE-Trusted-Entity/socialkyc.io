@@ -1,17 +1,21 @@
-import { Blockchain, Did, SubmittableExtrinsic } from '@kiltprotocol/sdk-js';
+import type { SubmittableExtrinsic } from '@kiltprotocol/types';
 
-import { fullDidPromise } from './fullDid';
+import { authorizeTx } from '@kiltprotocol/did';
+import { Blockchain } from '@kiltprotocol/chain-helpers';
+
+import { fullDidPromise, getAssertionMethodSigners } from './fullDid';
 import { keypairsPromise } from './keypairs';
-import { signWithAssertionMethod } from './cryptoCallbacks';
 
 export async function signAndSubmit(tx: SubmittableExtrinsic): Promise<void> {
   const { fullDid } = await fullDidPromise;
   const { identity } = await keypairsPromise;
 
-  const extrinsic = await Did.authorizeTx(
-    fullDid.uri,
+  const signers = await getAssertionMethodSigners();
+
+  const extrinsic = await authorizeTx(
+    fullDid.id,
     tx,
-    signWithAssertionMethod,
+    signers,
     identity.address,
   );
 

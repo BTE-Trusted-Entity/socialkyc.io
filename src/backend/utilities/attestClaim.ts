@@ -1,12 +1,11 @@
+import type { IAttestation, ICredential } from '@kiltprotocol/types';
+import type { IEncryptedMessage } from '@kiltprotocol/extension-api/types';
+
 import * as Boom from '@hapi/boom';
 import { Logger } from 'pino';
-import {
-  Attestation,
-  ConfigService,
-  IAttestation,
-  ICredential,
-  IEncryptedMessage,
-} from '@kiltprotocol/sdk-js';
+import { ConfigService } from '@kiltprotocol/sdk-js';
+
+import { Attestation } from '@kiltprotocol/credentials';
 
 import {
   attestSuccess,

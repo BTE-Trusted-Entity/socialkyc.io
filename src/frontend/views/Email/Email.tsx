@@ -1,5 +1,6 @@
+import type { IEncryptedMessage } from '@kiltprotocol/extension-api/types';
+
 import { FormEvent, useCallback, useEffect, useState } from 'react';
-import { IEncryptedMessage } from '@kiltprotocol/sdk-js';
 
 import { Rejection, Session } from '../../utilities/session';
 import { useValuesFromRedirectUri } from '../../utilities/useValuesFromRedirectUri';

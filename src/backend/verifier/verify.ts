@@ -5,12 +5,11 @@ import type {
   ServerRoute,
 } from '@hapi/hapi';
 
+import type { Did, ICredentialPresentation } from '@kiltprotocol/types';
+
 import * as Boom from '@hapi/boom';
-import {
-  Credential,
-  DidUri,
-  ICredentialPresentation,
-} from '@kiltprotocol/sdk-js';
+
+import { Credential as LegacyCredential } from '@kiltprotocol/legacy-credentials';
 
 import { decryptMessageContent } from '../utilities/decryptMessage';
 import { validateEncryptedMessage } from '../utilities/validateEncryptedMessage';
@@ -21,7 +20,7 @@ export interface Output {
   presentation: ICredentialPresentation;
   isAttested: boolean;
   revoked?: boolean;
-  attester?: DidUri;
+  attester?: Did;
 }
 
 async function handler(
@@ -46,7 +45,7 @@ async function handler(
   logger.debug('Verification credential constructed');
 
   try {
-    const { revoked, attester } = await Credential.verifyPresentation(
+    const { revoked, attester } = await LegacyCredential.verifyPresentation(
       presentation,
       { challenge },
     );

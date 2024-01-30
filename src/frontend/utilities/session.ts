@@ -1,4 +1,5 @@
-import { DidResourceUri, IEncryptedMessage } from '@kiltprotocol/sdk-js';
+import type { DidUrl } from '@kiltprotocol/types';
+import type { IEncryptedMessage } from '@kiltprotocol/extension-api/types';
 
 import {
   checkSession,
@@ -13,7 +14,7 @@ interface PubSubSession {
   ) => Promise<void>;
   close: () => Promise<void>;
   send: (message: IEncryptedMessage) => Promise<void>;
-  encryptionKeyUri: DidResourceUri;
+  encryptionKeyUri: DidUrl;
   encryptedChallenge: string;
   nonce: string;
 }
@@ -21,7 +22,7 @@ interface PubSubSession {
 interface InjectedWindowProvider {
   startSession: (
     dAppName: string,
-    dAppEncryptionKeyUri: DidResourceUri,
+    dAppEncryptionKeyUri: DidUrl,
     challenge: string,
   ) => Promise<PubSubSession>;
   name: string;

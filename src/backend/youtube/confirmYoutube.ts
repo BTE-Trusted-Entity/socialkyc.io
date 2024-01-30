@@ -1,8 +1,10 @@
+import type { Did } from '@kiltprotocol/types';
 import type { BaseLogger } from 'pino';
 
 import got from 'got';
 import * as Boom from '@hapi/boom';
-import { CType, DidUri } from '@kiltprotocol/sdk-js';
+
+import { CType } from '@kiltprotocol/credentials';
 
 import { configuration } from '../utilities/configuration';
 import { ContentfulClaim } from '../utilities/sessionStorage';
@@ -21,7 +23,7 @@ async function revokeAccessToken(token: string): Promise<void> {
 
 export async function confirmYoutube(
   code: string,
-  did: DidUri,
+  did: Did,
   logger: BaseLogger,
 ) {
   logger.debug('Exchanging code for access token');

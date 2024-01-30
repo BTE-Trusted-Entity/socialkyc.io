@@ -1,7 +1,9 @@
+import type { Did } from '@kiltprotocol/types';
 import type { BaseLogger } from 'pino';
 
 import got from 'got';
-import { CType, DidUri } from '@kiltprotocol/sdk-js';
+
+import { CType } from '@kiltprotocol/credentials';
 
 import { configuration } from '../utilities/configuration';
 import { ContentfulClaim } from '../utilities/sessionStorage';
@@ -17,7 +19,7 @@ export interface Output {
 
 export async function confirmDiscord(
   code: string,
-  did: DidUri,
+  did: Did,
   logger: BaseLogger,
 ) {
   logger.debug('Exchanging code for access token');

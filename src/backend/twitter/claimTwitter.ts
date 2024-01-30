@@ -1,7 +1,7 @@
 import type { Request, ResponseObject, ServerRoute } from '@hapi/hapi';
 
 import { z } from 'zod';
-import { CType } from '@kiltprotocol/sdk-js';
+import { CType } from '@kiltprotocol/credentials';
 
 import {
   ContentfulClaim,

@@ -5,7 +5,7 @@ import {
   ServerRoute,
 } from '@hapi/hapi';
 import * as Boom from '@hapi/boom';
-import { CType } from '@kiltprotocol/sdk-js';
+import { CType } from '@kiltprotocol/credentials';
 
 import { getSession, setSession } from '../utilities/sessionStorage';
 

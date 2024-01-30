@@ -9,7 +9,8 @@ import type {
 
 import { z } from 'zod';
 import * as Boom from '@hapi/boom';
-import { CType } from '@kiltprotocol/sdk-js';
+
+import { CType } from '@kiltprotocol/credentials';
 
 import {
   ContentfulClaim,

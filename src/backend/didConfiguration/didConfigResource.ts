@@ -1,60 +1,32 @@
 import {
-  Claim,
-  Credential,
-  ICredentialPresentation,
-} from '@kiltprotocol/sdk-js';
+  createCredential,
+  didConfigResourceFromCredentials,
+} from '@kiltprotocol/extension-api/wellKnownDidConfiguration';
 
 import { configuration } from '../utilities/configuration';
-import { fullDidPromise } from '../utilities/fullDid';
-import { signWithAssertionMethod } from '../utilities/cryptoCallbacks';
+import {
+  fullDidPromise,
+  getAssertionMethodSigners,
+} from '../utilities/fullDid';
 import { exitOnError } from '../utilities/exitOnError';
 
-import { domainLinkageCType } from './domainLinkageCType';
-import { fromCredential } from './domainLinkageCredential';
-
-async function attestDomainLinkage(): Promise<ICredentialPresentation> {
-  const claimContents = {
-    id: configuration.did,
-    origin: configuration.baseUri,
-  };
+export const didConfigResourcePromise = (async () => {
+  await fullDidPromise;
 
   if (configuration.did === 'pending') {
     throw new Error('Own DID not found');
   }
 
-  const claim = Claim.fromCTypeAndClaimContents(
-    domainLinkageCType,
-    claimContents,
+  const signers = await getAssertionMethodSigners();
+
+  const domainLinkageCredential = await createCredential(
+    signers,
+    configuration.baseUri,
     configuration.did,
+    { proofType: 'KILTSelfSigned2020' },
   );
 
-  const credential = Credential.fromClaim(claim);
-
-  const { fullDid } = await fullDidPromise;
-
-  const attestationKey = fullDid.assertionMethod?.[0];
-  if (!attestationKey) {
-    throw new Error('The attestation key is not defined?!?');
-  }
-
-  return Credential.createPresentation({
-    credential,
-    // the domain linkage credential is special in that it is signed with the assertionMethod key
-    signCallback: signWithAssertionMethod,
-  });
-}
-
-export const didConfigResourcePromise = (async () => {
-  await fullDidPromise;
-
-  const credential = await attestDomainLinkage();
-
-  const domainLinkageCredential = fromCredential(credential);
-
-  return {
-    '@context': 'https://identity.foundation/.well-known/did-configuration/v1',
-    linked_dids: [domainLinkageCredential],
-  };
+  return didConfigResourceFromCredentials([domainLinkageCredential]);
 })();
 
 didConfigResourcePromise.catch(exitOnError);

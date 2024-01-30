@@ -1,23 +1,23 @@
-import {
-  Credential,
-  Did,
-  DidResourceUri,
-  IRequestAttestation,
+import type {
+  DidUrl,
   KiltEncryptionKeypair,
-  Message,
   PartialClaim,
-} from '@kiltprotocol/sdk-js';
+} from '@kiltprotocol/types';
+import type { IRequestAttestation } from '@kiltprotocol/extension-api/types';
 
-import { naclSeal } from '@polkadot/util-crypto';
+import { parse } from '@kiltprotocol/did';
+import * as Message from '@kiltprotocol/extension-api/messaging';
+import { Credential as LegacyCredential } from '@kiltprotocol/legacy-credentials';
+import { Crypto } from '@kiltprotocol/utils';
 
 export async function getEncryptedMessage(
   claim: PartialClaim & Required<Pick<PartialClaim, 'contents'>>,
-  dAppEncryptionKeyUri: DidResourceUri,
-  keyAgreementKeyUri: DidResourceUri,
-  keyAgreement: KiltEncryptionKeypair,
+  receiverEncryptionKeyUri: DidUrl,
+  senderEncryptionKeyUri: DidUrl,
+  senderKeypair: KiltEncryptionKeypair,
 ) {
-  const owner = Did.parse(keyAgreementKeyUri).did;
-  const credential = Credential.fromClaim({ ...claim, owner });
+  const sender = parse(senderEncryptionKeyUri).did;
+  const credential = LegacyCredential.fromClaim({ ...claim, owner: sender });
 
   const requestForAttestationBody: IRequestAttestation = {
     content: { credential },
@@ -26,17 +26,21 @@ export async function getEncryptedMessage(
 
   const message = Message.fromBody(
     requestForAttestationBody,
-    owner,
-    Did.parse(dAppEncryptionKeyUri).did,
+    sender,
+    parse(receiverEncryptionKeyUri).did,
   );
 
   return Message.encrypt(
     message,
-    async function decrypt({ data, peerPublicKey }) {
-      const { secretKey } = keyAgreement;
-      const { sealed, nonce } = naclSeal(data, secretKey, peerPublicKey);
-      return { nonce, data: sealed, keyUri: keyAgreementKeyUri };
+    async function encrypt({ data, peerPublicKey }) {
+      const { secretKey } = senderKeypair;
+      const { nonce, box } = Crypto.encryptAsymmetric(
+        data,
+        peerPublicKey,
+        secretKey,
+      );
+      return { nonce, data: box, keyUri: senderEncryptionKeyUri };
     },
-    dAppEncryptionKeyUri,
+    receiverEncryptionKeyUri,
   );
 }

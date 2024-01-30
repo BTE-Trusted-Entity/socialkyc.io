@@ -1,4 +1,7 @@
-import { BalanceUtils, ConfigService, KiltAddress } from '@kiltprotocol/sdk-js';
+import type { KiltAddress } from '@kiltprotocol/types';
+
+import { ConfigService } from '@kiltprotocol/sdk-js';
+import { BalanceUtils } from '@kiltprotocol/chain-helpers';
 
 import { SendEmailCommand } from '@aws-sdk/client-ses';
 

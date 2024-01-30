@@ -1,9 +1,10 @@
 import { cwd } from 'node:process';
 import path from 'node:path';
 
+import type { Did } from '@kiltprotocol/types';
+
 import { config } from 'dotenv';
 import { pino } from 'pino';
-import { DidUri } from '@kiltprotocol/sdk-js';
 
 config();
 
@@ -35,7 +36,7 @@ if (!baseUri) {
   throw new ConfigurationError('No base URI provided');
 }
 
-const did = (env.DID || 'pending') as DidUri | 'pending';
+const did = (env.DID || 'pending') as Did | 'pending';
 const storeDidAndCTypes = env.STORE_DID_AND_CTYPES === 'true';
 if (did === 'pending' && !storeDidAndCTypes) {
   throw new ConfigurationError('Neither DID nor STORE_DID_AND_CTYPES provided');

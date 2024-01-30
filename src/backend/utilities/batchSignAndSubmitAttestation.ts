@@ -1,9 +1,10 @@
-import {
-  Blockchain,
-  Did,
-  ConfigService,
-  IAttestation,
-} from '@kiltprotocol/sdk-js';
+import type { IAttestation } from '@kiltprotocol/types';
+
+import { ConfigService } from '@kiltprotocol/sdk-js';
+
+import { Blockchain } from '@kiltprotocol/chain-helpers';
+
+import { authorizeBatch } from '@kiltprotocol/did';
 
 import {
   attestationsToRemove,
@@ -13,9 +14,8 @@ import {
 import { AttestationInfo } from '../revoker/scanAttestations';
 
 import { logger } from './logger';
-import { fullDidPromise } from './fullDid';
+import { fullDidPromise, getAssertionMethodSigners } from './fullDid';
 import { keypairsPromise } from './keypairs';
-import { signWithAssertionMethod } from './cryptoCallbacks';
 import { signAndSubmit } from './signAndSubmit';
 
 const TRANSACTION_TIMEOUT = 5 * 60 * 1000;
@@ -122,11 +122,13 @@ async function createPendingTransaction() {
   const { fullDid } = await fullDidPromise;
   const { identity } = await keypairsPromise;
 
-  const authorized = await Did.authorizeBatch({
+  const signers = await getAssertionMethodSigners();
+
+  const authorized = await authorizeBatch({
     batchFunction: api.tx.utility.forceBatch,
-    did: fullDid.uri,
+    did: fullDid.id,
     extrinsics,
-    sign: signWithAssertionMethod,
+    signers,
     submitter: identity.address,
   });
 

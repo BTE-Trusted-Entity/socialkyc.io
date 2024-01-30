@@ -1,5 +1,6 @@
+import type { IEncryptedMessage } from '@kiltprotocol/extension-api/types';
+
 import { FormEvent, Fragment, useCallback, useEffect, useState } from 'react';
-import { IEncryptedMessage } from '@kiltprotocol/sdk-js';
 
 import * as styles from './Telegram.module.css';
 

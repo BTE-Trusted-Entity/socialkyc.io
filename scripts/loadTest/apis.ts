@@ -1,15 +1,16 @@
+import type { DidUrl } from '@kiltprotocol/types';
+import type { IEncryptedMessage } from '@kiltprotocol/extension-api/types';
+
 import got from 'got';
 
-import { DidResourceUri, IEncryptedMessage } from '@kiltprotocol/sdk-js';
-
-import { CheckSessionInput } from './loadTest';
+import { Challenge } from './loadTest';
 
 const sessionHeader = 'x-session-id';
 
 const api = got.extend({ prefixUrl: process.env.URL });
 
 export async function getSessionFromEndpoint(): Promise<{
-  dAppEncryptionKeyUri: DidResourceUri;
+  dAppEncryptionKeyUri: DidUrl;
   sessionId: string;
   challenge: string;
 }> {
@@ -17,7 +18,7 @@ export async function getSessionFromEndpoint(): Promise<{
 }
 
 export async function checkSession(
-  encryptionChallenge: CheckSessionInput,
+  encryptionChallenge: Challenge,
   sessionId: string,
 ) {
   await api
