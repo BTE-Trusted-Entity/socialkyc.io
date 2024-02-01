@@ -29,6 +29,10 @@
       "matchPackagePatterns": ["polkadot"],
       "groupName": "polkadot",
       "automerge": false
+    },
+    {
+      "matchPackageNames": ["@types/node"],
+      "enabled": false
     }
   ]
 }
