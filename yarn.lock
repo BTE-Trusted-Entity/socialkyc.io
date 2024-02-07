@@ -107,15 +107,15 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@aws-sdk/client-ses@npm:^3.507.0":
-  version: 3.507.0
-  resolution: "@aws-sdk/client-ses@npm:3.507.0"
+"@aws-sdk/client-ses@npm:^3.509.0":
+  version: 3.509.0
+  resolution: "@aws-sdk/client-ses@npm:3.509.0"
   dependencies:
     "@aws-crypto/sha256-browser": "npm:3.0.0"
     "@aws-crypto/sha256-js": "npm:3.0.0"
     "@aws-sdk/client-sts": "npm:3.507.0"
     "@aws-sdk/core": "npm:3.496.0"
-    "@aws-sdk/credential-provider-node": "npm:3.507.0"
+    "@aws-sdk/credential-provider-node": "npm:3.509.0"
     "@aws-sdk/middleware-host-header": "npm:3.502.0"
     "@aws-sdk/middleware-logger": "npm:3.502.0"
     "@aws-sdk/middleware-recursion-detection": "npm:3.502.0"
@@ -153,7 +153,7 @@ __metadata:
     "@smithy/util-waiter": "npm:^2.1.1"
     fast-xml-parser: "npm:4.2.5"
     tslib: "npm:^2.5.0"
-  checksum: 10c0/bdc0a55727ded5cee9bde7ec7654e40a8d517e023f54a7ba527fc3534e3355ded00e0e112ad26ce9bf1dcb1a8a55d79cf12bb5b7ce0c11fefbc39bfbff8c59ec
+  checksum: 10c0/86b9fbe15e2682ed0aa1a788aa254de9ef48910ee76bd10e5b35d29fc05e8b7422b7b2bbfe81502e7613e5a49397c0257ba853ba6e64708df14dc229e86ed62b
   languageName: node
   linkType: hard
 
@@ -362,9 +362,9 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@aws-sdk/credential-provider-node@npm:3.507.0":
-  version: 3.507.0
-  resolution: "@aws-sdk/credential-provider-node@npm:3.507.0"
+"@aws-sdk/credential-provider-node@npm:3.509.0":
+  version: 3.509.0
+  resolution: "@aws-sdk/credential-provider-node@npm:3.509.0"
   dependencies:
     "@aws-sdk/credential-provider-env": "npm:3.502.0"
     "@aws-sdk/credential-provider-http": "npm:3.503.1"
@@ -378,7 +378,7 @@ __metadata:
     "@smithy/shared-ini-file-loader": "npm:^2.3.1"
     "@smithy/types": "npm:^2.9.1"
     tslib: "npm:^2.5.0"
-  checksum: 10c0/73e6a6373443a3a748be1107585da01c94f750e245e77b3b2c89adc8b1179b9738171d6d999f42937ee04119682e0b9a5bdaa6f2738507d2229e0ec814a7338e
+  checksum: 10c0/2c103c055f14876f3ae387cc659efe057e4524aa979c361d2bb57b8521ac758b4758d6d4570b13fcd249670b5904e1b53cd43df79d247ce202189a55cfea9743
   languageName: node
   linkType: hard
 
@@ -16614,7 +16614,7 @@ __metadata:
   version: 0.0.0-use.local
   resolution: "root-workspace-0b6124@workspace:."
   dependencies:
-    "@aws-sdk/client-ses": "npm:^3.507.0"
+    "@aws-sdk/client-ses": "npm:^3.509.0"
     "@babel/core": "npm:^7.23.9"
     "@babel/preset-env": "npm:^7.23.9"
     "@hapi/basic": "npm:^7.0.2"
