@@ -2,17 +2,9 @@ import { Did, type HexString, type IAttestation } from '@kiltprotocol/sdk-js';
 
 import { logger } from '../utilities/logger';
 
-import { subScanEventGenerator } from './subScan';
+import { subScanEventGenerator, type ParsedEvent } from './subScan';
 import { shouldBeRevoked } from './shouldBeExpired';
 import { batchQueryRevoked } from './batchQueryRevoked';
-
-export type EventParams = [
-  { type_name: 'AttesterOf'; value: Parameters<typeof Did.fromChain>[0] },
-  { type_name: 'ClaimHashOf'; value: HexString },
-  { type_name: 'CTypeHashOf'; value: HexString },
-  { type_name: 'DelegationNodeIdOf'; value: HexString | null },
-  boolean | null, // revoked value added by our transform function
-];
 
 export interface AttestationInfo extends Omit<IAttestation, 'revoked'> {
   revoked: boolean | null;
@@ -22,19 +14,41 @@ export interface AttestationInfo extends Omit<IAttestation, 'revoked'> {
 
 let fromBlock = 0;
 
+function extractParameterValue(event: ParsedEvent, parameter: string) {
+  const desiredParam = event.params.find(
+    (param) => param.type_name === parameter,
+  );
+  if (!desiredParam) {
+    throw new Error(
+      `Could not extract desired parameter "${parameter}" from event "${event}"`,
+    );
+  }
+  return desiredParam.value;
+}
+
 export async function* scanAttestations() {
   const eventGenerator = subScanEventGenerator(
     'attestation',
     'AttestationCreated',
     fromBlock,
     async (events) => {
-      const claimHashes = events.map(({ params }) => params[1].value);
+      const claimHashes = events.map((event) =>
+        extractParameterValue(event, 'ClaimHashOf'),
+      ) as HexString[];
+      console.log('claimHashes: ', claimHashes);
       const revocationStatuses = await batchQueryRevoked(claimHashes);
 
       // add the revocation status as a new parameter
-      events.forEach(({ params }) => {
-        const claimHash = params[1].value;
-        params.push(revocationStatuses[claimHash]);
+      events.forEach((event) => {
+        const claimHash = extractParameterValue(
+          event,
+          'ClaimHashOf',
+        ) as HexString;
+
+        event.params.push({
+          type_name: 'RevocationStatus',
+          value: revocationStatuses[claimHash],
+        });
       });
       return events;
     },
@@ -51,12 +65,20 @@ export async function* scanAttestations() {
     }
     fromBlock = block;
 
-    const params = event.params as EventParams;
-    const owner = Did.fromChain(params[0].value);
-    const claimHash = params[1].value;
-    const cTypeHash = params[2].value;
-    const delegationId = params[3].value;
-    const revoked = params[4];
+    const owner = Did.fromChain(
+      extractParameterValue(event, 'AttesterOf') as Parameters<
+        typeof Did.fromChain
+      >[0],
+    );
+    const claimHash = extractParameterValue(event, 'ClaimHashOf') as HexString;
+    const cTypeHash = extractParameterValue(event, 'CtypeHashOf') as HexString;
+    const delegationId = extractParameterValue(
+      event,
+      'Option<DelegationNodeIdOf>',
+    ) as HexString | null;
+    const revoked = extractParameterValue(event, 'RevocationStatus') as
+      | boolean
+      | null;
 
     yield <AttestationInfo>{
       owner,
