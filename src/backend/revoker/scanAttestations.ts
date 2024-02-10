@@ -25,7 +25,7 @@ function extractParameterValue(event: ParsedEvent, parameter: string) {
   );
   if (!desiredParam) {
     throw new Error(
-      `Could not extract desired parameter "${parameter}" from event "${event}"`,
+      `Could not extract desired parameter "${parameter}" from event "${JSON.stringify(event, null, 2)}"`,
     );
   }
   return desiredParam.value;
