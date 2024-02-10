@@ -21,30 +21,32 @@ const headers = {
 /**
  * Structure of SubScan responses from `/api/v2/scan/events`.
  */
-interface EventsListJSON {
-  code: number;
+export interface EventsListJSON {
+  code?: number;
   data: {
     count: number;
-    events: {
-      block_timestamp: number; // UNIX-time in seconds
-      event_id: string;
-      event_index: string;
-      extrinsic_hash: string;
-      extrinsic_index: string;
-      finalized: true;
-      id: number;
-      module_id: string;
-      phase: number;
-    }[];
+    events:
+      | {
+          block_timestamp: number; // UNIX-time in seconds
+          event_id: string;
+          event_index: string;
+          extrinsic_hash: string;
+          extrinsic_index: string;
+          finalized: true;
+          id: number;
+          module_id: string;
+          phase: number;
+        }[]
+      | null;
   };
-  generated_at: number;
-  message: string;
+  generated_at?: number;
+  message?: string;
 }
 
 /**
  * Structure of SubScan responses from `/api/scan/event/params`.
  */
-interface EventsParamsJSON {
+export interface EventsParamsJSON {
   code: number;
   data: {
     event_index: string;

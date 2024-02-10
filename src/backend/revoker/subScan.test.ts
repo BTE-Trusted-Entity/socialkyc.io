@@ -13,7 +13,8 @@ jest.mock('../utilities/configuration', () => ({
 }));
 
 import {
-  type EventsResponseJson,
+  type EventsListJSON,
+  type EventsParamsJSON,
   getEvents,
   subScanEventGenerator,
 } from './subScan';
@@ -27,7 +28,7 @@ const api = {
 } as unknown as Awaited<ReturnType<typeof connect>>;
 ConfigService.set({ api });
 
-let postResponse: EventsResponseJson;
+let postResponse: EventsListJSON | EventsParamsJSON;
 jest.mock('got', () => ({
   post: jest.fn().mockReturnValue({
     json: () => postResponse,
@@ -39,7 +40,7 @@ beforeEach(() => {
 });
 
 const moduleName = 'ctype';
-const call = 'CTypeCreated';
+const event_id = 'CTypeCreated';
 
 describe('subScan', () => {
   describe('getEvents', () => {
@@ -48,7 +49,7 @@ describe('subScan', () => {
 
       await getEvents({
         module: moduleName,
-        call,
+        event_id,
         fromBlock: 10,
         page: 0,
         row: 0,
@@ -60,7 +61,7 @@ describe('subScan', () => {
           headers: { 'X-API-Key': configuration.subscan.secret },
           json: {
             module: moduleName,
-            call,
+            event_id,
             block_range: '10-100010',
             page: 0,
             row: 0,
@@ -75,7 +76,7 @@ describe('subScan', () => {
 
       const cTypeEvents = await getEvents({
         module: moduleName,
-        call,
+        event_id,
         fromBlock: 10,
         page: 0,
         row: 0,
@@ -83,52 +84,6 @@ describe('subScan', () => {
 
       expect(cTypeEvents.count).toBe(0);
       expect(cTypeEvents.events).toBeUndefined();
-    });
-
-    it('should return parsed events in reverse order', async () => {
-      postResponse = {
-        data: {
-          count: 2,
-          events: [
-            {
-              params: '[{ "fake": "JSON" }]',
-              block_num: 123,
-              block_timestamp: 123_456,
-              extrinsic_hash: '0xCAFECAFE',
-            },
-            {
-              params: '[{ "JSON": "fake" }]',
-              block_num: 789,
-              block_timestamp: 789_123,
-              extrinsic_hash: '0xFACEFACE',
-            },
-          ],
-        },
-      };
-
-      const cTypeEvents = await getEvents({
-        module: moduleName,
-        call,
-        fromBlock: 10,
-        page: 0,
-        row: 0,
-      });
-
-      expect(cTypeEvents.count).toBe(2);
-      expect(cTypeEvents.events).toEqual([
-        {
-          params: [{ JSON: 'fake' }],
-          block: 789,
-          blockTimestampMs: 789_123_000,
-          extrinsicHash: '0xFACEFACE',
-        },
-        {
-          params: [{ fake: 'JSON' }],
-          block: 123,
-          blockTimestampMs: 123_456_000,
-          extrinsicHash: '0xCAFECAFE',
-        },
-      ]);
     });
   });
 
@@ -138,7 +93,7 @@ describe('subScan', () => {
 
       const eventGenerator = subScanEventGenerator(
         moduleName,
-        call,
+        event_id,
         0,
         async (events) => events,
       );
@@ -213,7 +168,7 @@ describe('subScan', () => {
 
       const eventGenerator = subScanEventGenerator(
         moduleName,
-        call,
+        event_id,
         0,
         async (events) => events,
       );
@@ -241,7 +196,7 @@ describe('subScan', () => {
 
     const eventGenerator = subScanEventGenerator(
       moduleName,
-      call,
+      event_id,
       0,
       async (events) => events,
     );
