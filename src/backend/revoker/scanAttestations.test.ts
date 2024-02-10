@@ -36,14 +36,14 @@ describe('scanAttestations', () => {
       extrinsicHash: '0x01' as HexString,
     };
     const events = await jest.mocked(subScanEventGenerator).mock.calls[0][3]([
-      { ...mockEvent, params: [{ type_name: 'First', value: '0x01' }] },
-      { ...mockEvent, params: [{ type_name: 'Second', value: '0x02' }] },
-      { ...mockEvent, params: [{ type_name: 'Third', value: '0x03' }] },
+      { ...mockEvent, params: [{ type_name: 'ClaimHashOf', value: '0x01' }] },
+      { ...mockEvent, params: [{ type_name: 'ClaimHashOf', value: '0x02' }] },
+      { ...mockEvent, params: [{ type_name: 'ClaimHashOf', value: '0x03' }] },
     ]);
 
-    expect(events[0].params[2]).toBe(false);
-    expect(events[1].params[2]).toBe(true);
-    expect(events[2].params[2]).toBe(null);
+    expect(events[0].params[1].value).toBe(false);
+    expect(events[1].params[1].value).toBe(true);
+    expect(events[2].params[1].value).toBe(null);
   });
 
   it('should stop when there’s no more attestations to revoke', async () => {
@@ -58,8 +58,8 @@ describe('scanAttestations', () => {
         params: [
           { type_name: 'AttesterOf', value: '0x01' },
           { type_name: 'ClaimHashOf', value: '0x01' },
-          { type_name: 'CTypeHashOf', value: '0x01' },
-          { type_name: 'DelegationNodeIdOf', value: null },
+          { type_name: 'CtypeHashOf', value: '0x01' },
+          { type_name: 'Option<DelegationNodeIdOf', value: null },
         ],
       };
     });
@@ -79,8 +79,8 @@ describe('scanAttestations', () => {
         params: [
           { type_name: 'AttesterOf', value: Did.toChain(owner) },
           { type_name: 'ClaimHashOf', value: '0x02' },
-          { type_name: 'CTypeHashOf', value: '0x03' },
-          { type_name: 'DelegationNodeIdOf', value: null },
+          { type_name: 'CtypeHashOf', value: '0x03' },
+          { type_name: 'Option<DelegationNodeIdOf>', value: null },
           { type_name: 'RevocationStatus', value: false },
         ],
       };
