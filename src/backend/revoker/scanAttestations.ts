@@ -35,7 +35,6 @@ export async function* scanAttestations() {
       const claimHashes = events.map((event) =>
         extractParameterValue(event, 'ClaimHashOf'),
       ) as HexString[];
-      console.log('claimHashes: ', claimHashes);
       const revocationStatuses = await batchQueryRevoked(claimHashes);
 
       // add the revocation status as a new parameter

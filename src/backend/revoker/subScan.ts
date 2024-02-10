@@ -78,7 +78,7 @@ export async function getEvents({
     finalized: true,
   };
 
-  console.log('payloadForEventsListRequest: ', payloadForEventsListRequest);
+  logger.debug('payloadForEventsListRequest: ' + payloadForEventsListRequest);
 
   const {
     data: { count, events },
@@ -93,7 +93,9 @@ export async function getEvents({
   const eventIndices = events.map((event) => event.event_index);
 
   const payloadForEventsParamsRequest = { event_index: eventIndices };
-  console.log('payloadForEventsParamsRequest: ', payloadForEventsParamsRequest);
+  logger.debug(
+    'payloadForEventsParamsRequest: ' + payloadForEventsParamsRequest,
+  );
 
   const { data: eventsDetails } = await got
     .post(eventsParamsURL, { headers, json: payloadForEventsParamsRequest })
@@ -121,7 +123,7 @@ export async function getEvents({
     },
   );
 
-  console.log('parsedEvents: ' + JSON.stringify(parsedEvents, null, 2));
+  logger.debug('parsedEvents: ' + JSON.stringify(parsedEvents, null, 2));
 
   return { count, events: parsedEvents };
 }
