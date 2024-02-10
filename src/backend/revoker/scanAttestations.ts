@@ -14,6 +14,11 @@ export interface AttestationInfo extends Omit<IAttestation, 'revoked'> {
 
 let fromBlock = 0;
 
+/** Alternative name: getParam
+ * @param event
+ * @param parameter name of the parameter
+ * @returns whatever is on the `value` field of the `parameter`
+ */
 function extractParameterValue(event: ParsedEvent, parameter: string) {
   const desiredParam = event.params.find(
     (param) => param.type_name === parameter,
