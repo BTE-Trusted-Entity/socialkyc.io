@@ -36,9 +36,9 @@ describe('scanAttestations', () => {
       extrinsicHash: '0x01' as HexString,
     };
     const events = await jest.mocked(subScanEventGenerator).mock.calls[0][3]([
-      { ...mockEvent, params: [, { value: '0x01' }] },
-      { ...mockEvent, params: [, { value: '0x02' }] },
-      { ...mockEvent, params: [, { value: '0x03' }] },
+      { ...mockEvent, params: [{ type_name: 'First', value: '0x01' }] },
+      { ...mockEvent, params: [{ type_name: 'Second', value: '0x02' }] },
+      { ...mockEvent, params: [{ type_name: 'Third', value: '0x03' }] },
     ]);
 
     expect(events[0].params[2]).toBe(false);
@@ -81,7 +81,7 @@ describe('scanAttestations', () => {
           { type_name: 'ClaimHashOf', value: '0x02' },
           { type_name: 'CTypeHashOf', value: '0x03' },
           { type_name: 'DelegationNodeIdOf', value: null },
-          false,
+          { type_name: 'RevocationStatus', value: false },
         ],
       };
     });
