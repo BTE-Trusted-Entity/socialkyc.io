@@ -1,8 +1,10 @@
+import type { AccountId32 } from '@polkadot/types/interfaces';
+
 import { Did, type HexString, type IAttestation } from '@kiltprotocol/sdk-js';
 
 import { logger } from '../utilities/logger';
 
-import { subScanEventGenerator, type ParsedEvent } from './subScan';
+import { subScanEventGenerator } from './subScan';
 import { shouldBeRevoked } from './shouldBeExpired';
 import { batchQueryRevoked } from './batchQueryRevoked';
 
@@ -14,40 +16,23 @@ export interface AttestationInfo extends Omit<IAttestation, 'revoked'> {
 
 let fromBlock = 0;
 
-/** Alternative name: getParam
- * @param event
- * @param parameter name of the parameter
- * @returns whatever is on the `value` field of the `parameter`
- */
-function extractParameterValue(event: ParsedEvent, parameter: string) {
-  const desiredParam = event.params.find(
-    (param) => param.type_name === parameter,
-  );
-  if (!desiredParam) {
-    throw new Error(
-      `Could not extract desired parameter "${parameter}" from event "${JSON.stringify(event, null, 2)}"`,
-    );
-  }
-  return desiredParam.value;
-}
-
 export async function* scanAttestations() {
   const eventGenerator = subScanEventGenerator(
     'attestation',
     'AttestationCreated',
     fromBlock,
     async (events) => {
-      const claimHashes = events.map((event) =>
-        extractParameterValue(event, 'ClaimHashOf'),
+      const claimHashes = events.map(
+        ({ params }) =>
+          params.find((param) => param.type_name === 'ClaimHashOf')?.value,
       ) as HexString[];
       const revocationStatuses = await batchQueryRevoked(claimHashes);
 
       // add the revocation status as a new parameter
       events.forEach((event) => {
-        const claimHash = extractParameterValue(
-          event,
-          'ClaimHashOf',
-        ) as HexString;
+        const claimHash = event.params.find(
+          (param) => param.type_name === 'ClaimHashOf',
+        )?.value as HexString;
 
         event.params.push({
           type_name: 'RevocationStatus',
@@ -69,20 +54,17 @@ export async function* scanAttestations() {
     }
     fromBlock = block;
 
-    const owner = Did.fromChain(
-      extractParameterValue(event, 'AttesterOf') as Parameters<
-        typeof Did.fromChain
-      >[0],
+    // extract the parameters
+    const params = Object.fromEntries(
+      event.params.map((param) => [param.type_name, param.value]),
     );
-    const claimHash = extractParameterValue(event, 'ClaimHashOf') as HexString;
-    const cTypeHash = extractParameterValue(event, 'CtypeHashOf') as HexString;
-    const delegationId = extractParameterValue(
-      event,
-      'Option<DelegationNodeIdOf>',
-    ) as HexString | null;
-    const revoked = extractParameterValue(event, 'RevocationStatus') as
-      | boolean
-      | null;
+    const owner = Did.fromChain(params.AttesterOf as AccountId32);
+    const claimHash = params.ClaimHashOf as HexString;
+    const cTypeHash = params.CtypeHashOf as HexString;
+    const delegationId = params[
+      'Option<DelegationNodeIdOf>'
+    ] as HexString | null;
+    const revoked = params.RevocationStatus as boolean | null;
 
     yield <AttestationInfo>{
       owner,
