@@ -133,17 +133,12 @@ export async function getEvents({
   return { count, events: parsedEvents };
 }
 
-export type ParsedEvent = Required<
-  Awaited<ReturnType<typeof getEvents>>
->['events'][number];
-
-// I'm more of a fan of explicit definition:
-// export interface ParsedEvent {
-//   block: number;
-//   blockTimestampMs: number;
-//   params: EventsParamsJSON["data"][number]["params"];
-//   extrinsicHash: string;
-// }
+export interface ParsedEvent {
+  block: number;
+  blockTimestampMs: number;
+  params: EventsParamsJSON['data'][number]['params'];
+  extrinsicHash: string;
+}
 
 export async function* subScanEventGenerator(
   module: string,
