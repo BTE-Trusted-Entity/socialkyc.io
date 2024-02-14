@@ -64,6 +64,7 @@ export interface EventsParamsJSON {
 export async function getEvents({
   fromBlock,
   row = SUBSCAN_MAX_ROWS,
+  eventId,
   ...parameters
 }: {
   module: string; // Pallet name
@@ -73,11 +74,10 @@ export async function getEvents({
   row?: number;
 }) {
   const payloadForEventsListRequest = {
-    module: parameters.module,
-    event_id: parameters.eventId,
+    ...parameters,
+    event_id: eventId,
     block_range: `${fromBlock}-${fromBlock + BLOCK_RANGE_SIZE}`,
     order: 'asc',
-    page: parameters.page,
     row,
     finalized: true,
   };
