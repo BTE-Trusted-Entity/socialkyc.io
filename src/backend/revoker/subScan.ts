@@ -67,13 +67,14 @@ export async function getEvents({
   ...parameters
 }: {
   module: string; // Pallet name
-  event_id: string; // Event emitted
+  eventId: string; // Event emitted
   fromBlock: number;
   page: number;
   row?: number;
 }) {
   const payloadForEventsListRequest = {
     ...parameters,
+    event_id: parameters.eventId,
     block_range: `${fromBlock}-${fromBlock + BLOCK_RANGE_SIZE}`,
     order: 'asc',
     row,
@@ -144,7 +145,7 @@ export type ParsedEvent = Required<
 
 export async function* subScanEventGenerator(
   module: string,
-  event_id: string,
+  eventId: string,
   startBlock: number,
   transform: (events: ParsedEvent[]) => Promise<ParsedEvent[]>,
 ) {
@@ -164,7 +165,7 @@ export async function* subScanEventGenerator(
   ) {
     const parameters = {
       module,
-      event_id,
+      eventId,
       fromBlock,
     };
 
@@ -174,14 +175,14 @@ export async function* subScanEventGenerator(
 
     if (count === 0) {
       logger.debug(
-        `No new "${event_id}" events found on SubScan in block range ${blockRange}.`,
+        `No new "${eventId}" events found on SubScan in block range ${blockRange}.`,
       );
       await sleep(QUERY_INTERVAL_MS);
       continue;
     }
 
     logger.debug(
-      `Found ${count} new "${event_id}" events on SubScan for in block range ${blockRange}.`,
+      `Found ${count} new "${eventId}" events on SubScan for in block range ${blockRange}.`,
     );
 
     const pages = Math.ceil(count / SUBSCAN_MAX_ROWS) - 1;
@@ -193,7 +194,7 @@ export async function* subScanEventGenerator(
       }
 
       logger.debug(
-        `Loaded page ${page} of "${event_id}" events in block range ${blockRange}.`,
+        `Loaded page ${page} of "${eventId}" events in block range ${blockRange}.`,
       );
       for (const event of await transform(events)) {
         yield event;

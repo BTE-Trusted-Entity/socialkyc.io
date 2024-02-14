@@ -40,7 +40,7 @@ beforeEach(() => {
 });
 
 const moduleName = 'ctype';
-const event_id = 'CTypeCreated';
+const eventId = 'CTypeCreated';
 
 describe('subScan', () => {
   describe('getEvents', () => {
@@ -49,7 +49,7 @@ describe('subScan', () => {
 
       await getEvents({
         module: moduleName,
-        event_id,
+        eventId,
         fromBlock: 10,
         page: 0,
         row: 0,
@@ -61,7 +61,7 @@ describe('subScan', () => {
           headers: { 'X-API-Key': configuration.subscan.secret },
           json: {
             module: moduleName,
-            event_id,
+            event_id: eventId,
             block_range: '10-100010',
             order: 'asc',
             page: 0,
@@ -77,7 +77,7 @@ describe('subScan', () => {
 
       const cTypeEvents = await getEvents({
         module: moduleName,
-        event_id,
+        eventId,
         fromBlock: 10,
         page: 0,
         row: 0,
@@ -94,7 +94,7 @@ describe('subScan', () => {
 
       const eventGenerator = subScanEventGenerator(
         moduleName,
-        event_id,
+        eventId,
         0,
         async (events) => events,
       );
@@ -134,7 +134,7 @@ describe('subScan', () => {
 
     const eventGenerator = subScanEventGenerator(
       moduleName,
-      event_id,
+      eventId,
       0,
       async (events) => events,
     );
