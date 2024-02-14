@@ -101,27 +101,28 @@ export async function getEvents({
     'payloadForEventsParamsRequest: ' + payloadForEventsParamsRequest,
   );
 
-  const { data: eventsDetails } = await got
+  const { data: eventsParameters } = await got
     .post(eventsParamsURL, { headers, json: payloadForEventsParamsRequest })
     .json<EventsParamsJSON>();
 
   const parsedEvents = events.map(
     ({ event_index, block_timestamp, extrinsic_hash }) => {
-      const blockNumber = parseInt(event_index.split('-')[0]);
+      // Block number
+      const block = parseInt(event_index.split('-')[0]);
 
-      const parameters = eventsDetails.find(
+      const params = eventsParameters.find(
         (detailed) => detailed.event_index === event_index,
       )?.params;
-      if (!parameters || parameters.length === 0) {
+      if (!params || params.length === 0) {
         throw new Error(
           `Parameters could not be retrieved for event with index: ${event_index}`,
         );
       }
 
       return {
-        block: blockNumber,
+        block,
         blockTimestampMs: block_timestamp * 1000,
-        params: parameters,
+        params,
         extrinsicHash: extrinsic_hash,
       };
     },
