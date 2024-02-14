@@ -73,10 +73,11 @@ export async function getEvents({
   row?: number;
 }) {
   const payloadForEventsListRequest = {
-    ...parameters,
+    module: parameters.module,
     event_id: parameters.eventId,
     block_range: `${fromBlock}-${fromBlock + BLOCK_RANGE_SIZE}`,
     order: 'asc',
+    page: parameters.page,
     row,
     finalized: true,
   };
