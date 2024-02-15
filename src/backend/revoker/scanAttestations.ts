@@ -22,7 +22,7 @@ let fromBlock = 0;
  * @param event
  * @returns the extended event
  */
-function paramsParser(event: ParsedEvent) {
+function parseParams(event: ParsedEvent) {
   return {
     ...event,
     parsedParams: Object.fromEntries(
@@ -37,9 +37,9 @@ export async function* scanAttestations() {
     'AttestationCreated',
     fromBlock,
     async (events) => {
-      const extendedEvents = events.map((event) => paramsParser(event));
+      const extendedEvents = events.map(parseParams);
       const claimHashes = extendedEvents.map(
-        (parsed) => parsed.parsedParams.ClaimHashOf as HexString,
+        ({ parsedParams }) => parsedParams.ClaimHashOf as HexString,
       );
       const revocationStatuses = await batchQueryRevoked(claimHashes);
 
@@ -69,7 +69,7 @@ export async function* scanAttestations() {
     fromBlock = block;
 
     // extract the parameters
-    const params = paramsParser(event).parsedParams;
+    const params = parseParams(event).parsedParams;
     const owner = Did.fromChain(params.AttesterOf as AccountId32);
     const claimHash = params.ClaimHashOf as HexString;
     const cTypeHash = params.CtypeHashOf as HexString;
