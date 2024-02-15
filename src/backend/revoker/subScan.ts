@@ -1,6 +1,6 @@
 import got from 'got';
 
-import { ConfigService, type HexString } from '@kiltprotocol/sdk-js';
+import { ConfigService } from '@kiltprotocol/sdk-js';
 
 import { configuration } from '../utilities/configuration';
 import { logger } from '../utilities/logger';
@@ -12,69 +12,140 @@ const SUBSCAN_MAX_ROWS = 100;
 const QUERY_INTERVAL_MS = 1000;
 const BLOCK_RANGE_SIZE = 100_000;
 
-const eventsApi = `https://${subscan.network}.api.subscan.io/api/scan/events`;
+const subscanAPI = `https://${subscan.network}.api.subscan.io`;
+const eventsListURL = `${subscanAPI}/api/v2/scan/events`;
+const eventsParamsURL = `${subscanAPI}/api/scan/event/params`;
 const headers = {
   'X-API-Key': subscan.secret,
 };
 
-export interface EventsResponseJson {
+/**
+ * Structure of SubScan responses from `/api/v2/scan/events`.
+ */
+export interface EventsListJSON {
+  code?: number;
   data: {
     count: number;
-    events: Array<{
-      params: string;
-      block_num: number;
-      block_timestamp: number;
-      extrinsic_hash: HexString;
-    }> | null;
+    events:
+      | {
+          block_timestamp: number; // UNIX-time in seconds
+          event_id: string;
+          event_index: string;
+          extrinsic_hash: string;
+          extrinsic_index: string;
+          finalized: true;
+          id: number;
+          module_id: string;
+          phase: number;
+        }[]
+      | null;
   };
+  generated_at?: number;
+  message?: string;
+}
+
+/**
+ * Structure of SubScan responses from `/api/scan/event/params`.
+ */
+export interface EventsParamsJSON {
+  code: number;
+  data: {
+    event_index: string;
+    params: {
+      name?: string;
+      type?: string;
+      type_name: string;
+      value: unknown;
+    }[];
+  }[];
+  generated_at: number;
+  message: string;
 }
 
 export async function getEvents({
   fromBlock,
   row = SUBSCAN_MAX_ROWS,
+  eventId,
   ...parameters
 }: {
-  module: string;
-  call: string;
+  module: string; // Pallet name
+  eventId: string; // Event emitted
   fromBlock: number;
   page: number;
   row?: number;
 }) {
-  const json = {
+  const payloadForEventsListRequest = {
     ...parameters,
+    event_id: eventId,
     block_range: `${fromBlock}-${fromBlock + BLOCK_RANGE_SIZE}`,
+    order: 'asc',
     row,
     finalized: true,
   };
 
+  logger.debug('payloadForEventsListRequest: ' + payloadForEventsListRequest);
+
   const {
     data: { count, events },
-  } = await got.post(eventsApi, { headers, json }).json<EventsResponseJson>();
+  } = await got
+    .post(eventsListURL, { headers, json: payloadForEventsListRequest })
+    .json<EventsListJSON>();
 
   if (!events) {
     return { count };
   }
 
-  events.reverse();
-  const parsedEvents = events.map(
-    ({ block_num, block_timestamp, extrinsic_hash, params }) => ({
-      block: block_num,
-      blockTimestampMs: block_timestamp * 1000,
-      params: JSON.parse(params),
-      extrinsicHash: extrinsic_hash,
-    }),
+  const eventIndices = events.map((event) => event.event_index);
+
+  const payloadForEventsParamsRequest = { event_index: eventIndices };
+  logger.debug(
+    'payloadForEventsParamsRequest: ' + payloadForEventsParamsRequest,
   );
+
+  const { data: eventsParameters } = await got
+    .post(eventsParamsURL, { headers, json: payloadForEventsParamsRequest })
+    .json<EventsParamsJSON>();
+
+  const parsedEvents = events.map(
+    ({ event_index, block_timestamp, extrinsic_hash }) => {
+      // Block number
+      const block = parseInt(event_index.split('-')[0]);
+
+      const params = eventsParameters.find(
+        (detailed) => detailed.event_index === event_index,
+      )?.params;
+      if (!params || params.length === 0) {
+        throw new Error(
+          `Parameters could not be retrieved for event with index: ${event_index}`,
+        );
+      }
+
+      return {
+        block,
+        blockTimestampMs: block_timestamp * 1000,
+        params,
+        extrinsicHash: extrinsic_hash,
+      };
+    },
+  );
+
+  logger.debug('parsedEvents: ' + JSON.stringify(parsedEvents, null, 2));
 
   return { count, events: parsedEvents };
 }
 
-type ParsedEvents = Required<Awaited<ReturnType<typeof getEvents>>>['events'];
+export interface ParsedEvent {
+  block: number;
+  blockTimestampMs: number;
+  params: EventsParamsJSON['data'][number]['params'];
+  extrinsicHash: string;
+}
 
 export async function* subScanEventGenerator(
   module: string,
-  call: string,
+  eventId: string,
   startBlock: number,
-  transform: (events: ParsedEvents) => Promise<ParsedEvents>,
+  transform: (events: ParsedEvent[]) => Promise<ParsedEvent[]>,
 ) {
   if (subscan.network === 'NONE') {
     return;
@@ -92,7 +163,7 @@ export async function* subScanEventGenerator(
   ) {
     const parameters = {
       module,
-      call,
+      eventId,
       fromBlock,
     };
 
@@ -102,14 +173,14 @@ export async function* subScanEventGenerator(
 
     if (count === 0) {
       logger.debug(
-        `No new SubScan events found for ${call} in block range ${blockRange}`,
+        `No new "${eventId}" events found on SubScan in block range ${blockRange}.`,
       );
       await sleep(QUERY_INTERVAL_MS);
       continue;
     }
 
     logger.debug(
-      `Found ${count} new SubScan events for ${call} in block range ${blockRange}`,
+      `Found ${count} new "${eventId}" events on SubScan for in block range ${blockRange}.`,
     );
 
     const pages = Math.ceil(count / SUBSCAN_MAX_ROWS) - 1;
@@ -121,7 +192,7 @@ export async function* subScanEventGenerator(
       }
 
       logger.debug(
-        `Loaded events page ${page} for ${call} in block range ${blockRange}`,
+        `Loaded page ${page} of "${eventId}" events in block range ${blockRange}.`,
       );
       for (const event of await transform(events)) {
         yield event;

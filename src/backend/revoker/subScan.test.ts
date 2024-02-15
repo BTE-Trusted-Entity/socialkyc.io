@@ -13,7 +13,8 @@ jest.mock('../utilities/configuration', () => ({
 }));
 
 import {
-  type EventsResponseJson,
+  type EventsListJSON,
+  type EventsParamsJSON,
   getEvents,
   subScanEventGenerator,
 } from './subScan';
@@ -27,7 +28,7 @@ const api = {
 } as unknown as Awaited<ReturnType<typeof connect>>;
 ConfigService.set({ api });
 
-let postResponse: EventsResponseJson;
+let postResponse: EventsListJSON | EventsParamsJSON;
 jest.mock('got', () => ({
   post: jest.fn().mockReturnValue({
     json: () => postResponse,
@@ -39,7 +40,7 @@ beforeEach(() => {
 });
 
 const moduleName = 'ctype';
-const call = 'CTypeCreated';
+const eventId = 'CTypeCreated';
 
 describe('subScan', () => {
   describe('getEvents', () => {
@@ -48,20 +49,21 @@ describe('subScan', () => {
 
       await getEvents({
         module: moduleName,
-        call,
+        eventId,
         fromBlock: 10,
         page: 0,
         row: 0,
       });
 
       expect(got.post).toHaveBeenCalledWith(
-        'https://kilt-testnet.api.subscan.io/api/scan/events',
+        'https://kilt-testnet.api.subscan.io/api/v2/scan/events',
         {
           headers: { 'X-API-Key': configuration.subscan.secret },
           json: {
             module: moduleName,
-            call,
+            event_id: eventId,
             block_range: '10-100010',
+            order: 'asc',
             page: 0,
             row: 0,
             finalized: true,
@@ -75,7 +77,7 @@ describe('subScan', () => {
 
       const cTypeEvents = await getEvents({
         module: moduleName,
-        call,
+        eventId,
         fromBlock: 10,
         page: 0,
         row: 0,
@@ -83,52 +85,6 @@ describe('subScan', () => {
 
       expect(cTypeEvents.count).toBe(0);
       expect(cTypeEvents.events).toBeUndefined();
-    });
-
-    it('should return parsed events in reverse order', async () => {
-      postResponse = {
-        data: {
-          count: 2,
-          events: [
-            {
-              params: '[{ "fake": "JSON" }]',
-              block_num: 123,
-              block_timestamp: 123_456,
-              extrinsic_hash: '0xCAFECAFE',
-            },
-            {
-              params: '[{ "JSON": "fake" }]',
-              block_num: 789,
-              block_timestamp: 789_123,
-              extrinsic_hash: '0xFACEFACE',
-            },
-          ],
-        },
-      };
-
-      const cTypeEvents = await getEvents({
-        module: moduleName,
-        call,
-        fromBlock: 10,
-        page: 0,
-        row: 0,
-      });
-
-      expect(cTypeEvents.count).toBe(2);
-      expect(cTypeEvents.events).toEqual([
-        {
-          params: [{ JSON: 'fake' }],
-          block: 789,
-          blockTimestampMs: 789_123_000,
-          extrinsicHash: '0xFACEFACE',
-        },
-        {
-          params: [{ fake: 'JSON' }],
-          block: 123,
-          blockTimestampMs: 123_456_000,
-          extrinsicHash: '0xCAFECAFE',
-        },
-      ]);
     });
   });
 
@@ -138,7 +94,7 @@ describe('subScan', () => {
 
       const eventGenerator = subScanEventGenerator(
         moduleName,
-        call,
+        eventId,
         0,
         async (events) => events,
       );
@@ -147,7 +103,7 @@ describe('subScan', () => {
         expect(event).toBeDefined();
       }
 
-      expect(got.post).toHaveBeenCalledTimes(3);
+      expect(got.post).toHaveBeenCalledTimes(6);
       const { calls } = jest.mocked(got.post).mock;
 
       // get count
@@ -156,77 +112,14 @@ describe('subScan', () => {
 
       // get last page
       // @ts-expect-error because TS infers wrong parameters
-      expect(calls[1][1]).toMatchObject({ json: { page: 1, row: 100 } });
+      expect(calls[2][1]).toMatchObject({ json: { page: 1, row: 100 } });
 
       // get first page
       // @ts-expect-error because TS infers wrong parameters
-      expect(calls[2][1]).toMatchObject({ json: { page: 0, row: 100 } });
-    });
-
-    it('should yield events in reverse order', async () => {
-      jest
-        .mocked(got.post)
-        .mockReturnValueOnce({
-          // @ts-expect-error but the code doesn’t care about the other members
-          json: () => ({ data: { count: 200 } }),
-        })
-        .mockReturnValueOnce({
-          // @ts-expect-error but the code doesn’t care about the other members
-          json: () => ({
-            data: {
-              count: 200,
-              events: [
-                {
-                  block_timestamp: 1,
-                  params: '"JSON"',
-                  extrinsic_hash: '0xCAFECAFE',
-                },
-                {
-                  block_timestamp: 0,
-                  params: '"JSON"',
-                  extrinsic_hash: '0xFACEFACE',
-                },
-              ],
-            },
-          }),
-        })
-        .mockReturnValueOnce({
-          // @ts-expect-error but the code doesn’t care about the other members
-          json: () => ({
-            data: {
-              count: 200,
-              events: [
-                {
-                  block_timestamp: 3,
-                  params: '"JSON"',
-                  extrinsic_hash: '0xCAFECAFE',
-                },
-                {
-                  block_timestamp: 2,
-                  params: '"JSON"',
-                  extrinsic_hash: '0xFACEFACE',
-                },
-              ],
-            },
-          }),
-        });
-
-      const eventGenerator = subScanEventGenerator(
-        moduleName,
-        call,
-        0,
-        async (events) => events,
-      );
-
-      const events = [];
-      for await (const event of eventGenerator) {
-        events.push(event);
-      }
-
-      const timestamps = events.map(({ blockTimestampMs }) => blockTimestampMs);
-      expect(timestamps).toEqual([0, 1000, 2000, 3000]);
+      expect(calls[4][1]).toMatchObject({ json: { page: 0, row: 100 } });
     });
   });
+
   it('should get events in batches if current block is higher than block range', async () => {
     const api = {
       query: {
@@ -241,7 +134,7 @@ describe('subScan', () => {
 
     const eventGenerator = subScanEventGenerator(
       moduleName,
-      call,
+      eventId,
       0,
       async (events) => events,
     );
@@ -250,11 +143,11 @@ describe('subScan', () => {
       expect(event).toBeDefined();
     }
 
-    expect(got.post).toHaveBeenCalledTimes(4);
+    expect(got.post).toHaveBeenCalledTimes(8);
     const { calls } = jest.mocked(got.post).mock;
 
     // @ts-expect-error because TS infers wrong parameters
-    expect(calls[3][1]).toMatchObject({
+    expect(calls[6][1]).toMatchObject({
       json: { block_range: '100000-200000', page: 0, row: 100 },
     });
   });
