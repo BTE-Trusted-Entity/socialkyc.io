@@ -1,6 +1,7 @@
 import type { AccountId32 } from '@polkadot/types/interfaces';
 
 import { Did, type HexString, type IAttestation } from '@kiltprotocol/sdk-js';
+import { hexToU8a } from '@polkadot/util';
 
 import { logger } from '../utilities/logger';
 
@@ -29,6 +30,12 @@ function parseParams(event: ParsedEvent) {
       event.params.map((param) => [param.type_name, param.value]),
     ),
   };
+}
+
+function getDidUriFromHex(didAccount: HexString) {
+  const didU8a = hexToU8a(didAccount);
+
+  return Did.fromChain(didU8a as AccountId32);
 }
 
 export async function* scanAttestations() {
@@ -70,7 +77,9 @@ export async function* scanAttestations() {
 
     // extract the parameters
     const params = parseParams(event).parsedParams;
-    const owner = Did.fromChain(params.AttesterOf as AccountId32);
+
+    const owner = getDidUriFromHex(params.AttesterOf as HexString);
+
     const claimHash = params.ClaimHashOf as HexString;
     const cTypeHash = params.CtypeHashOf as HexString;
     const delegationId = params[
