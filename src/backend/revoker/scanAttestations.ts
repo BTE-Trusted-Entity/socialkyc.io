@@ -33,6 +33,7 @@ function parseParams(event: ParsedEvent) {
 }
 
 function getDidUriFromHex(didAccount: HexString) {
+  logger.debug('DID as Account Address as a HexString: ' + didAccount);
   const didU8a = hexToU8a(didAccount);
 
   return Did.fromChain(didU8a as AccountId32);
