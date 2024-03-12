@@ -32,11 +32,13 @@ function parseParams(event: ParsedEvent) {
   };
 }
 
-function getDidUriFromHex(didAccount: HexString) {
-  logger.debug('DID as Account Address as a HexString: ' + didAccount);
+function getDidUriFromAccountHex(didAccount: HexString) {
+  logger.debug('DID as HexString of Account Address: ' + didAccount);
   const didU8a = hexToU8a(didAccount);
 
-  return Did.fromChain(didU8a as AccountId32);
+  const didUri = Did.fromChain(didU8a as AccountId32);
+  logger.debug('Corresponding DID-URI: ' + didUri);
+  return didUri;
 }
 
 export async function* scanAttestations() {
@@ -79,7 +81,7 @@ export async function* scanAttestations() {
     // extract the parameters
     const params = parseParams(event).parsedParams;
 
-    const owner = getDidUriFromHex(params.AttesterOf as HexString);
+    const owner = getDidUriFromAccountHex(params.AttesterOf as HexString);
 
     const claimHash = params.ClaimHashOf as HexString;
     const cTypeHash = params.CtypeHashOf as HexString;
