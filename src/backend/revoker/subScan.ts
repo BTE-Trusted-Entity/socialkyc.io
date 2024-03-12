@@ -83,7 +83,10 @@ export async function getEvents({
     finalized: true,
   };
 
-  logger.debug('payloadForEventsListRequest: ' + payloadForEventsListRequest);
+  logger.debug(
+    'payloadForEventsListRequest: ' +
+      JSON.stringify(payloadForEventsListRequest, null, 2),
+  );
 
   const {
     data: { count, events },
@@ -99,7 +102,8 @@ export async function getEvents({
 
   const payloadForEventsParamsRequest = { event_index: eventIndices };
   logger.debug(
-    'payloadForEventsParamsRequest: ' + payloadForEventsParamsRequest,
+    'payloadForEventsParamsRequest: ' +
+      JSON.stringify(payloadForEventsParamsRequest, null, 2),
   );
 
   const { data: eventsParameters } = await got
