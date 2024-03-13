@@ -16731,7 +16731,7 @@ __metadata:
     stylelint-config-standard: "npm:^36.0.0"
     supervisor: "npm:^0.12.0"
     ts-jest: "npm:^29.1.2"
-    twitter-api-v2: "npm:^1.16.0"
+    twitter-api-v2: "npm:^1.16.1"
     typed-css-modules: "npm:^0.9.1"
     typescript: "npm:^5.4.2"
     zod: "npm:^3.22.4"
@@ -18167,10 +18167,10 @@ __metadata:
   languageName: node
   linkType: hard
 
-"twitter-api-v2@npm:^1.16.0":
-  version: 1.16.0
-  resolution: "twitter-api-v2@npm:1.16.0"
-  checksum: 10c0/f7917cb891bbf197dd3b8f940e88a5f35d3d05d97bf5b9d4fab0f6302bddad3337278c3ba291cafc327621abc72f390c2bd71579b9c82b4285d2bc507662e42f
+"twitter-api-v2@npm:^1.16.1":
+  version: 1.16.1
+  resolution: "twitter-api-v2@npm:1.16.1"
+  checksum: 10c0/aa3ca17f887406fb7c089b934ddc628b42e33a1d08fa065dce0ee48dbdc1ff4b1638a1bfcf482268433e67732493cd364e92ff62a62e9bd7ab8a96ece7ae44c2
   languageName: node
   linkType: hard
 
