@@ -90,6 +90,12 @@ export async function getEvents({
       JSON.stringify(payloadForEventsListRequest, null, 2),
   );
 
+  if (parameters.page >= 100) {
+    throw new Error(
+      `Page ${parameters.page} exceeds Subscan's paging limit of 100.`,
+    );
+  }
+
   const {
     data: { count, events },
   } = await got
