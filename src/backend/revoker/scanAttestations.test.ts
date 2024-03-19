@@ -3,7 +3,7 @@
  */
 
 import { describe, it, jest } from '@jest/globals';
-import { Utils, type HexString } from '@kiltprotocol/sdk-js';
+import { Utils, type HexString, Did } from '@kiltprotocol/sdk-js';
 
 import { u8aToHex } from '@polkadot/util';
 
@@ -74,7 +74,7 @@ describe('scanAttestations', () => {
     const createdAt = new Date('2020-01-01');
 
     const attesterDidAsAccountHex = u8aToHex(
-      Utils.Crypto.decodeAddress(owner.split(':')[2]),
+      Utils.Crypto.decodeAddress(Did.toChain(owner)),
     );
 
     jest.mocked(subScanEventGenerator).mockImplementation(async function* () {
