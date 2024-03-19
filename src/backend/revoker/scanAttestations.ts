@@ -33,13 +33,11 @@ function parseParams(event: ParsedEvent) {
 }
 
 function getDidUriFromAccountHex(didAccount: HexString) {
-  logger.debug('DID as HexString of Account Address: ' + didAccount);
   // SubScan returns some AttesterOf values as hex without the "0x" prefix
   // so we first parsed to a Uint8Array via `hexToU8a`, which can handle HexStrings with or without the prefix.
   const didU8a = hexToU8a(didAccount);
 
   const didUri = Did.fromChain(didU8a as AccountId32);
-  logger.debug('Corresponding DID-URI: ' + didUri);
   return didUri;
 }
 
