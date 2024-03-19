@@ -3,11 +3,13 @@
  */
 
 import { describe, it, jest } from '@jest/globals';
-import { Did, type HexString } from '@kiltprotocol/sdk-js';
+import { Utils, type HexString, Did } from '@kiltprotocol/sdk-js';
+
+import { u8aToHex } from '@polkadot/util';
 
 import { batchQueryRevoked } from './batchQueryRevoked';
-import { subScanEventGenerator } from './subScan';
 import { AttestationInfo, scanAttestations } from './scanAttestations';
+import { subScanEventGenerator } from './subScan';
 
 jest.mock('../utilities/configuration', () => ({ configuration: {} }));
 jest.mock('./batchQueryRevoked', () => ({
@@ -71,13 +73,17 @@ describe('scanAttestations', () => {
     const owner = 'did:kilt:4pehddkhEanexVTTzWAtrrfo2R7xPnePpuiJLC7shQU894aY';
     const createdAt = new Date('2020-01-01');
 
+    const attesterDidAsAccountHex = u8aToHex(
+      Utils.Crypto.decodeAddress(Did.toChain(owner)),
+    );
+
     jest.mocked(subScanEventGenerator).mockImplementation(async function* () {
       yield {
         block: 1,
         blockTimestampMs: createdAt.getTime(),
         extrinsicHash: '0x01' as HexString,
         params: [
-          { type_name: 'AttesterOf', value: Did.toChain(owner) },
+          { type_name: 'AttesterOf', value: attesterDidAsAccountHex },
           { type_name: 'ClaimHashOf', value: '0x02' },
           { type_name: 'CtypeHashOf', value: '0x03' },
           { type_name: 'Option<DelegationNodeIdOf>', value: null },

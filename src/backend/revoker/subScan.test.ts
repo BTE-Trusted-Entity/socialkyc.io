@@ -39,8 +39,8 @@ beforeEach(() => {
   jest.mocked(got.post).mockClear();
 });
 
-const moduleName = 'ctype';
-const eventId = 'CTypeCreated';
+const moduleName = 'attestation';
+const eventId = 'AttestationCreated';
 
 describe('subScan', () => {
   describe('getEvents', () => {
