@@ -189,7 +189,7 @@ export async function* subScanEventGenerator(
 
     const pages = Math.ceil(count / SUBSCAN_MAX_ROWS) - 1;
 
-    for (let page = pages; page >= 0; page--) {
+    for (let page = 0; page <= pages; page++) {
       const { events } = await getEvents({ ...parameters, page });
       if (!events) {
         continue;
