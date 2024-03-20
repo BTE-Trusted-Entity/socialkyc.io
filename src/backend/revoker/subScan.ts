@@ -10,7 +10,7 @@ const { subscan } = configuration;
 
 const SUBSCAN_MAX_ROWS = 100;
 const QUERY_INTERVAL_MS = 1000;
-const BLOCK_RANGE_SIZE = 100_000;
+const MAX_BLOCK_RANGE_SIZE = 100_000;
 
 const subscanAPI = `https://${subscan.network}.api.subscan.io`;
 const eventsListURL = `${subscanAPI}/api/v2/scan/events`;
@@ -79,7 +79,7 @@ export async function getEvents({
   const payloadForEventsListRequest = {
     ...parameters,
     event_id: eventId,
-    block_range: `${fromBlock}-${toBlock ?? fromBlock + BLOCK_RANGE_SIZE}`,
+    block_range: `${fromBlock}-${toBlock ?? fromBlock + MAX_BLOCK_RANGE_SIZE}`,
     order: 'asc',
     row,
     finalized: true,
@@ -169,12 +169,12 @@ export async function* subScanEventGenerator(
   for (
     let fromBlock = startBlock;
     fromBlock < currentBlock;
-    fromBlock += BLOCK_RANGE_SIZE
+    fromBlock += MAX_BLOCK_RANGE_SIZE
   ) {
     // Subscan has a limit of 100 accessible pages for a given query.
     // To stay within the limit and don't miss any events, we reduce the block range when necessary.
     let rangeReducer = 1;
-    const endOfBigLoopBlock = fromBlock + BLOCK_RANGE_SIZE;
+    const endOfBigLoopBlock = fromBlock + MAX_BLOCK_RANGE_SIZE;
     let nextFromBlock = fromBlock;
 
     while (nextFromBlock < endOfBigLoopBlock) {
@@ -182,7 +182,7 @@ export async function* subScanEventGenerator(
         module,
         eventId,
         fromBlock: nextFromBlock,
-        toBlock: nextFromBlock + Math.ceil(BLOCK_RANGE_SIZE / rangeReducer),
+        toBlock: nextFromBlock + Math.ceil(MAX_BLOCK_RANGE_SIZE / rangeReducer),
       };
 
       const { count } = await getEvents({ ...parameters, page: 0, row: 1 });
