@@ -10,7 +10,7 @@ const { subscan } = configuration;
 
 const SUBSCAN_MAX_ROWS = 100;
 const QUERY_INTERVAL_MS = 1000;
-const BLOCK_RANGE_SIZE = 100_000;
+const MAX_BLOCK_RANGE_SIZE = 100_000;
 
 const subscanAPI = `https://${subscan.network}.api.subscan.io`;
 const eventsListURL = `${subscanAPI}/api/v2/scan/events`;
@@ -64,6 +64,7 @@ export interface EventsParamsJSON {
 
 export async function getEvents({
   fromBlock,
+  toBlock,
   row = SUBSCAN_MAX_ROWS,
   eventId,
   ...parameters
@@ -71,13 +72,14 @@ export async function getEvents({
   module: string; // Pallet name
   eventId: string; // Event emitted
   fromBlock: number;
+  toBlock?: number;
   page: number;
   row?: number;
 }) {
   const payloadForEventsListRequest = {
     ...parameters,
     event_id: eventId,
-    block_range: `${fromBlock}-${fromBlock + BLOCK_RANGE_SIZE}`,
+    block_range: `${fromBlock}-${toBlock ?? fromBlock + MAX_BLOCK_RANGE_SIZE}`,
     order: 'asc',
     row,
     finalized: true,
@@ -87,6 +89,12 @@ export async function getEvents({
     'payloadForEventsListRequest: ' +
       JSON.stringify(payloadForEventsListRequest, null, 2),
   );
+
+  if (parameters.page >= 100) {
+    throw new Error(
+      `Page ${parameters.page} exceeds Subscan's paging limit of 100.`,
+    );
+  }
 
   const {
     data: { count, events },
@@ -133,8 +141,6 @@ export async function getEvents({
     },
   );
 
-  logger.debug('parsedEvents: ' + JSON.stringify(parsedEvents, null, 2));
-
   return { count, events: parsedEvents };
 }
 
@@ -163,46 +169,67 @@ export async function* subScanEventGenerator(
   for (
     let fromBlock = startBlock;
     fromBlock < currentBlock;
-    fromBlock += BLOCK_RANGE_SIZE
+    fromBlock += MAX_BLOCK_RANGE_SIZE
   ) {
-    const parameters = {
-      module,
-      eventId,
-      fromBlock,
-    };
+    // Subscan has a limit of 100 accessible pages for a given query.
+    // To stay within the limit and don't miss any events, we reduce the block range when necessary.
+    let rangeReducer = 1;
+    const endOfBigLoopBlock = fromBlock + MAX_BLOCK_RANGE_SIZE;
+    let nextFromBlock = fromBlock;
 
-    const { count } = await getEvents({ ...parameters, page: 0, row: 1 });
+    while (nextFromBlock < endOfBigLoopBlock) {
+      const parameters = {
+        module,
+        eventId,
+        fromBlock: nextFromBlock,
+        toBlock: nextFromBlock + Math.ceil(MAX_BLOCK_RANGE_SIZE / rangeReducer),
+      };
 
-    const blockRange = `${fromBlock} - ${fromBlock + BLOCK_RANGE_SIZE}`;
+      const { count } = await getEvents({ ...parameters, page: 0, row: 1 });
 
-    if (count === 0) {
-      logger.debug(
-        `No new "${eventId}" events found on SubScan in block range ${blockRange}.`,
-      );
-      await sleep(QUERY_INTERVAL_MS);
-      continue;
-    }
+      const blockRange = `${parameters.fromBlock} - ${parameters.toBlock}`;
 
-    logger.debug(
-      `Found ${count} new "${eventId}" events on SubScan for in block range ${blockRange}.`,
-    );
-
-    const pages = Math.ceil(count / SUBSCAN_MAX_ROWS) - 1;
-
-    for (let page = pages; page >= 0; page--) {
-      const { events } = await getEvents({ ...parameters, page });
-      if (!events) {
+      if (count === 0) {
+        logger.debug(
+          `No new "${eventId}" events found on SubScan in block range ${blockRange}.`,
+        );
+        await sleep(QUERY_INTERVAL_MS);
+        nextFromBlock = parameters.toBlock;
         continue;
       }
 
       logger.debug(
-        `Loaded page ${page} of "${eventId}" events in block range ${blockRange}.`,
+        `Found ${count} new "${eventId}" events on SubScan for in block range ${blockRange}.`,
       );
-      for (const event of await transform(events)) {
-        yield event;
+
+      const pages = Math.ceil(count / SUBSCAN_MAX_ROWS) - 1;
+
+      if (pages > 100) {
+        rangeReducer += 1;
+        logger.debug(
+          `Reducing block range to comply with Subscan's page limit.`,
+        );
+        continue;
       }
 
-      await sleep(QUERY_INTERVAL_MS);
+      for (let page = 0; page <= pages; page++) {
+        const { events } = await getEvents({ ...parameters, page });
+        if (!events) {
+          continue;
+        }
+
+        logger.debug(
+          `Loaded page ${page} of "${eventId}" events in block range ${blockRange}.`,
+        );
+        for (const event of await transform(events)) {
+          yield event;
+        }
+
+        await sleep(QUERY_INTERVAL_MS);
+      }
+
+      nextFromBlock = parameters.toBlock;
+      rangeReducer = 1;
     }
   }
 }
