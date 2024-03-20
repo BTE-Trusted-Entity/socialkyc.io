@@ -37,8 +37,7 @@ function getDidUriFromAccountHex(didAccount: HexString) {
   // so we first parsed to a Uint8Array via `hexToU8a`, which can handle HexStrings with or without the prefix.
   const didU8a = hexToU8a(didAccount);
 
-  const didUri = Did.fromChain(didU8a as AccountId32);
-  return didUri;
+  return Did.fromChain(didU8a as AccountId32);
 }
 
 export async function* scanAttestations() {
