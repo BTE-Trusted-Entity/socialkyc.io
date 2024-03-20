@@ -141,8 +141,6 @@ export async function getEvents({
     },
   );
 
-  logger.debug('parsedEvents: ' + JSON.stringify(parsedEvents, null, 2));
-
   return { count, events: parsedEvents };
 }
 
