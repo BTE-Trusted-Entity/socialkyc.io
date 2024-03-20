@@ -89,7 +89,7 @@ describe('subScan', () => {
   });
 
   describe('subScanEventGenerator', () => {
-    it('should iterate through pages in reverse order', async () => {
+    it('should iterate through pages in ascending order', async () => {
       postResponse = { data: { count: 200, events: [] } };
 
       const eventGenerator = subScanEventGenerator(
@@ -110,13 +110,13 @@ describe('subScan', () => {
       // @ts-expect-error because TS infers wrong parameters
       expect(calls[0][1]).toMatchObject({ json: { page: 0, row: 1 } });
 
-      // get last page
-      // @ts-expect-error because TS infers wrong parameters
-      expect(calls[2][1]).toMatchObject({ json: { page: 1, row: 100 } });
-
       // get first page
       // @ts-expect-error because TS infers wrong parameters
-      expect(calls[4][1]).toMatchObject({ json: { page: 0, row: 100 } });
+      expect(calls[2][1]).toMatchObject({ json: { page: 0, row: 100 } });
+
+      // get last page
+      // @ts-expect-error because TS infers wrong parameters
+      expect(calls[4][1]).toMatchObject({ json: { page: 1, row: 100 } });
     });
   });
 
