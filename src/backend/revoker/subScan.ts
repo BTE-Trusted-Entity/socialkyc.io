@@ -88,6 +88,12 @@ export async function getEvents({
       JSON.stringify(payloadForEventsListRequest, null, 2),
   );
 
+  if (parameters.page >= 100) {
+    throw new Error(
+      `Page ${parameters.page} exceeds Subscan's paging limit of 100.`,
+    );
+  }
+
   const {
     data: { count, events },
   } = await got
@@ -185,6 +191,7 @@ export async function* subScanEventGenerator(
       `Found ${count} new "${eventId}" events on SubScan for in block range ${blockRange}.`,
     );
 
+    // Subscan has a limit of 100 accessible pages for a given query.
     const pages = Math.ceil(count / SUBSCAN_MAX_ROWS) - 1;
 
     for (let page = 0; page <= pages; page++) {
