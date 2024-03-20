@@ -5,7 +5,7 @@ import { AttestationInfo } from './scanAttestations';
 import { shouldBeRemoved } from './shouldBeExpired';
 import { batchQueryRevoked } from './batchQueryRevoked';
 
-const SCAN_INTERVAL_MS = 24 * 60 * 60 * 1000;
+const SCAN_INTERVAL_MS = 60 * 60 * 1000;
 
 export const attestationsToRevoke: AttestationInfo[] = [];
 export const attestationsToRemove: AttestationInfo[] = [];
