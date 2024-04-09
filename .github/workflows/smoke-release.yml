@@ -3,9 +3,6 @@ name: Smoke release
 on:
   workflow_dispatch:
     types: [created]
-  push:
-    branches:
-      - staging
 jobs:
   deploy:
     name: Build image and push to Amazon ECR
