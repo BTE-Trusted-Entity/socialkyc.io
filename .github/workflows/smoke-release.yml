@@ -47,5 +47,5 @@ jobs:
           ECR_REPOSITORY: socialkyc
           IMAGE_TAG: ${{ github.sha }}
         with:
-          args: rollout restart deployment social-kyc-stg -n social-kyc
+          args: rollout restart deployment social-kyc-smoke -n social-kyc
 
