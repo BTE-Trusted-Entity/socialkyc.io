@@ -1,11 +1,7 @@
 name: Test release
 
 on:
-  workflow_dispatch:
-    types: [created]
-  push:
-    branches:
-      - test
+  workflow_dispatch
 jobs:
   deploy:
     name: Build image and push to Amazon ECR
