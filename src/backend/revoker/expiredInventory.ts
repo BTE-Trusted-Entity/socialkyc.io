@@ -1,5 +1,7 @@
 import { sleep } from '../utilities/sleep';
 
+import { logger } from '../utilities/logger';
+
 import { getExpiredAttestations } from './getExpiredAttestations';
 import { AttestationInfo } from './scanAttestations';
 import { shouldBeRemoved } from './shouldBeExpired';
@@ -32,7 +34,20 @@ export async function fillExpiredInventory() {
   attestationsToRemove.push(...expiredSinceLastRun);
   attestationsToRemoveLater.splice(0, expiredSinceLastRun.length);
 
+  logger.debug(
+    'Before getExpiredAttestations()' +
+      'Inventory at this time ' +
+      new Date().toLocaleDateString() +
+      '\n' +
+      'attestationsToRemoveLater: ' +
+      JSON.stringify(attestationsToRemoveLater, null, 2) +
+      '\n' +
+      'attestationsToRemove: ' +
+      JSON.stringify(attestationsToRemove, null, 2),
+  );
+
   for await (const expiredAttestation of getExpiredAttestations()) {
+    logger.info('');
     if (shouldBeRemoved(expiredAttestation)) {
       include(attestationsToRemove, expiredAttestation);
     } else {
@@ -42,6 +57,17 @@ export async function fillExpiredInventory() {
       include(attestationsToRemoveLater, expiredAttestation);
     }
   }
+  logger.debug(
+    'After getExpiredAttestations()' +
+      'Inventory at this time ' +
+      new Date().toLocaleDateString() +
+      '\n' +
+      'attestationsToRemoveLater: ' +
+      JSON.stringify(attestationsToRemoveLater, null, 2) +
+      '\n' +
+      'attestationsToRemove: ' +
+      JSON.stringify(attestationsToRemove, null, 2),
+  );
 }
 
 export function initExpiredInventory() {
