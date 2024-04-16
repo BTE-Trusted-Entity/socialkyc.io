@@ -37,17 +37,21 @@ export async function fillExpiredInventory() {
   logger.debug(
     'Before getExpiredAttestations()' +
       'Inventory at this time ' +
-      new Date().toLocaleDateString() +
+      new Date().toLocaleString() +
       '\n' +
-      'attestationsToRemoveLater: ' +
-      JSON.stringify(attestationsToRemoveLater, null, 2) +
+      'count of attestationsToRemoveLater: ' +
+      // JSON.stringify(attestationsToRemoveLater, null, 2) +
+      attestationsToRemoveLater.length +
       '\n' +
-      'attestationsToRemove: ' +
-      JSON.stringify(attestationsToRemove, null, 2),
+      'count of attestationsToRemove: ' +
+      // JSON.stringify(attestationsToRemove, null, 2)
+      attestationsToRemove.length,
   );
 
   for await (const expiredAttestation of getExpiredAttestations()) {
-    logger.info('');
+    logger.info(
+      'expiredAttestation: ' + JSON.stringify(expiredAttestation, null, 2),
+    );
     if (shouldBeRemoved(expiredAttestation)) {
       include(attestationsToRemove, expiredAttestation);
     } else {
@@ -56,18 +60,20 @@ export async function fillExpiredInventory() {
       }
       include(attestationsToRemoveLater, expiredAttestation);
     }
+    logger.debug(
+      'After getExpiredAttestations()' +
+        'Inventory at this time ' +
+        new Date().toLocaleString() +
+        '\n' +
+        'count of attestationsToRemoveLater: ' +
+        // JSON.stringify(attestationsToRemoveLater, null, 2) +
+        attestationsToRemoveLater.length +
+        '\n' +
+        'count of attestationsToRemove: ' +
+        // JSON.stringify(attestationsToRemove, null, 2)
+        attestationsToRemove.length,
+    );
   }
-  logger.debug(
-    'After getExpiredAttestations()' +
-      'Inventory at this time ' +
-      new Date().toLocaleDateString() +
-      '\n' +
-      'attestationsToRemoveLater: ' +
-      JSON.stringify(attestationsToRemoveLater, null, 2) +
-      '\n' +
-      'attestationsToRemove: ' +
-      JSON.stringify(attestationsToRemove, null, 2),
-  );
 }
 
 export function initExpiredInventory() {
