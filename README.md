@@ -14,22 +14,17 @@ After having cloning the repository on your local machine and defining all envir
    yarn install
    ```
 
-2. Build the binary version of the current code, running:
+2. Enter the dev watch mode from parcel (builds as well), running:
 
    ```
-   yarn build
+   yarn dev
    ```
 
-3. Enter the dev watch mode from parcel, running:
-
-	```
-	yarn dev
-	```
-
-4. On a new terminal window, start the app, running:
+3. On a new terminal window, start the app, running:
 
    ```
-   yarn start
+   yarn dev-start
    ```
-Now you can see the logs of the backend on the terminal and visit the frontend under the URL specified by the variable `URL` from the `.env`-file.
-(By default http://localhost:3000)
+
+   Now you can see the logs of the backend on the terminal and visit the frontend under the URL specified by the variable `URL` from the `.env`-file.
+   (By default http://localhost:3000)
