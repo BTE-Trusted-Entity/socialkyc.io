@@ -83,10 +83,10 @@ export async function getEvents({
     finalized: true,
   };
 
-  logger.debug(
-    'payloadForEventsListRequest: ' +
-      JSON.stringify(payloadForEventsListRequest, null, 2),
-  );
+  // logger.debug(
+  //   'payloadForEventsListRequest: ' +
+  //     JSON.stringify(payloadForEventsListRequest, null, 2),
+  // );
 
   if (parameters.page >= 100) {
     throw new Error(
@@ -107,10 +107,10 @@ export async function getEvents({
   const eventIndices = events.map((event) => event.event_index);
 
   const payloadForEventsParamsRequest = { event_index: eventIndices };
-  logger.debug(
-    'payloadForEventsParamsRequest: ' +
-      JSON.stringify(payloadForEventsParamsRequest, null, 2),
-  );
+  // logger.debug(
+  //   'payloadForEventsParamsRequest: ' +
+  //     JSON.stringify(payloadForEventsParamsRequest, null, 2),
+  // );
 
   const { data: eventsParameters } = await got
     .post(eventsParamsURL, { headers, json: payloadForEventsParamsRequest })
