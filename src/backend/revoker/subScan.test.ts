@@ -17,6 +17,7 @@ import {
   type EventsParamsJSON,
   getEvents,
   subScanEventGenerator,
+  BLOCK_RANGE_SIZE,
 } from './subScan';
 
 const api = {
@@ -62,7 +63,7 @@ describe('subScan', () => {
           json: {
             module: moduleName,
             event_id: eventId,
-            block_range: '10-100010',
+            block_range: `10-${BLOCK_RANGE_SIZE + 10}`,
             order: 'asc',
             page: 0,
             row: 0,
@@ -124,7 +125,7 @@ describe('subScan', () => {
     const api = {
       query: {
         system: {
-          number: () => ({ toNumber: () => 150000 }),
+          number: () => ({ toNumber: () => BLOCK_RANGE_SIZE * 1.5 }),
         },
       },
     } as unknown as Awaited<ReturnType<typeof connect>>;
@@ -148,7 +149,11 @@ describe('subScan', () => {
 
     // @ts-expect-error because TS infers wrong parameters
     expect(calls[6][1]).toMatchObject({
-      json: { block_range: '100000-200000', page: 0, row: 100 },
+      json: {
+        block_range: `${BLOCK_RANGE_SIZE}-${2 * BLOCK_RANGE_SIZE}`,
+        page: 0,
+        row: 100,
+      },
     });
   });
 });
