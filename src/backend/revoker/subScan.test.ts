@@ -23,7 +23,7 @@ import {
 const api = {
   query: {
     system: {
-      number: () => ({ toNumber: () => 12345 }),
+      number: () => ({ toNumber: () => BLOCK_RANGE_SIZE * 0.75 }),
     },
   },
 } as unknown as Awaited<ReturnType<typeof connect>>;
