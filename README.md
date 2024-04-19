@@ -6,7 +6,7 @@ Copyright (c) 2021-2023, BOTLabs GmbH. All rights reserved.
 
 ## Start the app locally:
 
-After having cloning the repository on your local machine and defining all environment variables, to start the app locally follow this steps.
+After having cloned the repository on your local machine and defining all environment variables, to start the app locally follow this steps.
 
 1. Make sure you have all dependencies installed, running:
 
