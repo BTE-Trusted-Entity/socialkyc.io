@@ -10,7 +10,7 @@ const { subscan } = configuration;
 
 const SUBSCAN_MAX_ROWS = 100;
 const QUERY_INTERVAL_MS = 1000;
-const BLOCK_RANGE_SIZE = 10_000;
+export const BLOCK_RANGE_SIZE = 10_000;
 
 const subscanAPI = `https://${subscan.network}.api.subscan.io`;
 const eventsListURL = `${subscanAPI}/api/v2/scan/events`;
