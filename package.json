@@ -40,7 +40,7 @@
     "ky": "^1.2.3",
     "node-cache": "^5.1.2",
     "pino": "^8.19.0",
-    "prom-client": "^15.1.0",
+    "prom-client": "^15.1.2",
     "punycode": "^2.3.1",
     "rate-limiter-flexible": "^4.0.1",
     "react": "^18.2.0",
