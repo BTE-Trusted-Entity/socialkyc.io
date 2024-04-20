@@ -15801,13 +15801,13 @@ __metadata:
   languageName: node
   linkType: hard
 
-"prom-client@npm:^15.1.0":
-  version: 15.1.0
-  resolution: "prom-client@npm:15.1.0"
+"prom-client@npm:^15.1.2":
+  version: 15.1.2
+  resolution: "prom-client@npm:15.1.2"
   dependencies:
     "@opentelemetry/api": "npm:^1.4.0"
     tdigest: "npm:^0.1.1"
-  checksum: 10c0/c10781adbf49225298e44da5396a51a0bd4d0cddc3c7e237ba50e888e12ead26a8f98261f362a442f1bbcdaddd6e7302d5675b37beac67ea9b6f82e4d39fb3cc
+  checksum: 10c0/a221db148fa64e29dfd4c6cdcaaae14635495a4272b68917e2b44fcfd988bc57027d275b04489ceeea4d0c4d64d058af842c1300966d2c1ffa255f1fa6af1277
   languageName: node
   linkType: hard
 
@@ -16718,7 +16718,7 @@ __metadata:
     postcss: "npm:^8.4.38"
     postcss-modules: "npm:^6.0.0"
     prettier: "npm:^3.2.5"
-    prom-client: "npm:^15.1.0"
+    prom-client: "npm:^15.1.2"
     punycode: "npm:^2.3.1"
     rate-limiter-flexible: "npm:^4.0.1"
     react: "npm:^18.2.0"
