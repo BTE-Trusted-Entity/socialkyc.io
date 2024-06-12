@@ -15612,9 +15612,9 @@ __metadata:
   languageName: node
   linkType: hard
 
-"pino-pretty@npm:^11.2.0":
-  version: 11.2.0
-  resolution: "pino-pretty@npm:11.2.0"
+"pino-pretty@npm:^11.2.1":
+  version: 11.2.1
+  resolution: "pino-pretty@npm:11.2.1"
   dependencies:
     colorette: "npm:^2.0.7"
     dateformat: "npm:^4.6.3"
@@ -15632,7 +15632,7 @@ __metadata:
     strip-json-comments: "npm:^3.1.1"
   bin:
     pino-pretty: bin.js
-  checksum: 10c0/59421522c0e07877614ed8b51eb45fe79aad9865244b95dfaf5e28c83f9e95631941b5b9e37a277d1751ed90903d7593915e8a8857cc856b4af7e6bf20a5f97d
+  checksum: 10c0/6c7f15b5bf8a007c8b7157eae445675b13cd95097ffa512d5ebd661f9e7abd328fa27592b25708756a09f098f87cb03ca81837518cd725c16e3f801129b941d4
   languageName: node
   linkType: hard
 
@@ -16874,7 +16874,7 @@ __metadata:
     node-cache: "npm:^5.1.2"
     parcel: "npm:^2.7.0"
     pino: "npm:^8.21.0"
-    pino-pretty: "npm:^11.2.0"
+    pino-pretty: "npm:^11.2.1"
     postcss: "npm:^8.4.38"
     postcss-modules: "npm:^6.0.0"
     prettier: "npm:^3.3.2"
