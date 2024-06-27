@@ -2569,13 +2569,13 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@hapi/catbox-memory@npm:^6.0.1":
-  version: 6.0.1
-  resolution: "@hapi/catbox-memory@npm:6.0.1"
+"@hapi/catbox-memory@npm:^6.0.2":
+  version: 6.0.2
+  resolution: "@hapi/catbox-memory@npm:6.0.2"
   dependencies:
     "@hapi/boom": "npm:^10.0.1"
     "@hapi/hoek": "npm:^11.0.2"
-  checksum: 10c0/d11f9e0b87f7b80e845cdb5d87ea3529318d0385a8cfeb71578768085389735946b717c571ff1f65597d209082fd8477d19d0ca1403ee28c7b19bdd170aafc43
+  checksum: 10c0/7ab29849f88540908f8e0a3863fca72f81895ad55159f1259cd00051ed272da0ef638d1c26748369d630a453e7fae9f847570d8026fe8890d2243b975f3007ee
   languageName: node
   linkType: hard
 
@@ -2625,9 +2625,9 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@hapi/hapi@npm:^21.1.0, @hapi/hapi@npm:^21.3.7":
-  version: 21.3.7
-  resolution: "@hapi/hapi@npm:21.3.7"
+"@hapi/hapi@npm:^21.1.0, @hapi/hapi@npm:^21.3.10":
+  version: 21.3.10
+  resolution: "@hapi/hapi@npm:21.3.10"
   dependencies:
     "@hapi/accept": "npm:^6.0.1"
     "@hapi/ammo": "npm:^6.0.1"
@@ -2635,7 +2635,7 @@ __metadata:
     "@hapi/bounce": "npm:^3.0.1"
     "@hapi/call": "npm:^9.0.1"
     "@hapi/catbox": "npm:^12.1.1"
-    "@hapi/catbox-memory": "npm:^6.0.1"
+    "@hapi/catbox-memory": "npm:^6.0.2"
     "@hapi/heavy": "npm:^8.0.1"
     "@hapi/hoek": "npm:^11.0.2"
     "@hapi/mimos": "npm:^7.0.1"
@@ -2647,7 +2647,7 @@ __metadata:
     "@hapi/teamwork": "npm:^6.0.0"
     "@hapi/topo": "npm:^6.0.1"
     "@hapi/validate": "npm:^2.0.1"
-  checksum: 10c0/c0b75dcb5fa761b2f771ae61f1cfda25e986ead129a604054980ab1bb07bcb470412888199eaa85bd56ea720436d544e2560b3699ed1fc2cb18b99350c765311
+  checksum: 10c0/4b682562bcf1073004e74c95082d5bd95d3233bcd631ac85136fed6fef39682d8a6b785c03d8a665cc54db437370b388beaf0d81922dbcb37795ec18bfa7a766
   languageName: node
   linkType: hard
 
@@ -16829,7 +16829,7 @@ __metadata:
     "@babel/preset-env": "npm:^7.24.7"
     "@hapi/basic": "npm:^7.0.2"
     "@hapi/boom": "npm:^10.0.1"
-    "@hapi/hapi": "npm:^21.3.7"
+    "@hapi/hapi": "npm:^21.3.10"
     "@hapi/inert": "npm:^7.1.0"
     "@jest/globals": "npm:^29.7.0"
     "@kiltprotocol/sdk-js": "npm:^0.35.0"
