@@ -16,3 +16,23 @@ fragment DidNames on Did {
   id
   web3NameId
 }`;
+
+export const wholeAttestation = `
+fragment wholeAttestation on Attestation {
+  id
+  claimHash
+  cTypeId
+  issuerId
+  payer
+  delegationID
+  valid
+  creationBlock {
+    ...wholeBlock
+  }
+  revocationBlock {
+    ...wholeBlock
+  }
+  removalBlock {
+    ...wholeBlock
+  }
+}`;
