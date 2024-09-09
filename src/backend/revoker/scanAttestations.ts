@@ -14,6 +14,13 @@ export interface AttestationInfo extends Omit<IAttestation, 'revoked'> {
   block: number;
   createdAt: Date;
 }
+// export interface IAttestation {
+//   claimHash: ICredential['rootHash'];
+//   cTypeHash: CTypeHash;
+//   owner: DidUri;
+//   delegationId: IDelegationNode['id'] | null;
+//   revoked: boolean;
+// }
 
 let fromBlock = 0;
 
