@@ -1,8 +1,8 @@
-import { got } from 'got';
+import got from 'got';
 
-import { configuration } from '../configuration';
-import { logger } from '../logger';
-import { sleep } from '../sleep';
+import { configuration } from '../../utilities/configuration';
+import { logger } from '../../utilities/logger';
+import { sleep } from '../../utilities/sleep';
 
 const { indexer } = configuration;
 

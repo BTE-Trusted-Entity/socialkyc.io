@@ -116,6 +116,13 @@ if (!subscan.network) {
   throw new ConfigurationError('No SubScan network provided');
 }
 
+const indexer = {
+  graphqlEndpoint: env.GRAPHQL_ENDPOINT as string,
+};
+if (!indexer.graphqlEndpoint) {
+  throw new ConfigurationError('No endpoint for the GraphQL server provided');
+}
+
 export const configuration = {
   aws: {
     region,
@@ -141,4 +148,5 @@ export const configuration = {
   youtube,
   lowBalanceAlertRecipients,
   subscan,
+  indexer,
 };
