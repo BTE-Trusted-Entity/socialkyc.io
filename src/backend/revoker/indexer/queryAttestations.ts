@@ -80,6 +80,8 @@ export function queryExpiredAttestations(issuedBy: DidUri) {
   return attestationParser(stillExistingExpiredAttestations);
 }
 
+/** Transforms what an attestation generator yields.
+ *  From the query interface `QueriedAttestation` to the old interface `AttestationInfo`.*/
 async function* attestationParser(
   queriedAttestationsGenerator: AsyncGenerator<
     QueriedAttestation,
