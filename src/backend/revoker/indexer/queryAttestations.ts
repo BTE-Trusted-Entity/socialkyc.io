@@ -1,9 +1,4 @@
-import {
-  CType,
-  type DidUri,
-  type HexString,
-  type ICType,
-} from '@kiltprotocol/sdk-js';
+import { type DidUri, type HexString, type ICType } from '@kiltprotocol/sdk-js';
 
 import { logger } from '../../utilities/logger';
 
@@ -12,7 +7,11 @@ import { matchesGenerator, QUERY_SIZE } from './queryFromIndexer';
 
 // When modifying queries, first try them out on https://indexer.kilt.io/ or https://dev-indexer.kilt.io/
 
-function buildAttestationQueries(fromDate: Date, issuedBy: DidUri) {
+function buildAttestationQueries(
+  issuedBy: DidUri,
+  fromDate: Date,
+  untilDate: Date,
+) {
   return (offset: number) => `
   query {
   attestations(
@@ -23,7 +22,7 @@ function buildAttestationQueries(fromDate: Date, issuedBy: DidUri) {
       issuerId: {
         equalTo: "${issuedBy}"
       }
-      creationBlock: { timeStamp: { greaterThan: "${fromDate.toISOString()}" } }
+      creationBlock: { timeStamp: { greaterThan: "${fromDate.toISOString()}", lessThan: "${untilDate.toISOString()}"  } }
     }
   ) {
     totalCount
@@ -37,8 +36,14 @@ function buildAttestationQueries(fromDate: Date, issuedBy: DidUri) {
 `;
 }
 
+interface IndexedBlock {
+  id: string; // Block Ordinal Number, without punctuation
+  hash: HexString;
+  timeStamp: string; // ISO8601 Date String, like 2022-02-09T13:09:18.217
+}
+
 /** Expected structure of responses for queries defined above. */
-interface QueriedCType {
+interface QueriedAttestation {
   id: string; // Block number and ordinal number of attestation inside of it
   claimHash: HexString;
   cTypeId: ICType['$id'];
@@ -46,27 +51,19 @@ interface QueriedCType {
   payer: string; // account address
   valid: boolean;
   delegationID: null | DidUri;
-  creationBlock: {
-    id: string; // Block Ordinal Number, without punctuation
-    hash: HexString;
-    timeStamp: string; // ISO8601 Date String, like 2022-02-09T13:09:18.217
-  };
-  revocationBlock: {
-    id: string; // Block Ordinal Number, without punctuation
-    hash: HexString;
-    timeStamp: string; // ISO8601 Date String, like 2022-02-09T13:09:18.217
-  } | null;
-  removalBlock: {
-    id: string; // Block Ordinal Number, without punctuation
-    hash: HexString;
-    timeStamp: string; // ISO8601 Date String, like 2022-02-09T13:09:18.217
-  } | null;
+  creationBlock: IndexedBlock;
+  revocationBlock: IndexedBlock | null;
+  removalBlock: IndexedBlock | null;
 }
 
-export async function queryAttestations(issuedBy: DidUri) {
+let fromDate = new Date(0);
 
-  const entitiesGenerator = matchesGenerator<QueriedCType>(
-    buildAttestationQueries(fromDate, issuedBy: DidUri),
+export async function queryAttestations(issuedBy: DidUri) {
+  const untilDate = new Date();
+  untilDate.setFullYear(untilDate.getFullYear() - 1);
+
+  const entitiesGenerator = matchesGenerator<QueriedAttestation>(
+    buildAttestationQueries(issuedBy, fromDate, untilDate),
   );
 
   for await (const entity of entitiesGenerator) {
