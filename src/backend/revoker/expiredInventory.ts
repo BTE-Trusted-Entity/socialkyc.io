@@ -4,6 +4,8 @@ import { getExpiredAttestations } from './getExpiredAttestations';
 import { AttestationInfo } from './scanAttestations';
 import { shouldBeRemoved } from './shouldBeExpired';
 import { batchQueryRevoked } from './batchQueryRevoked';
+import { queryExpiredAttestations } from './indexer/queryAttestations';
+import { configuration } from '../utilities/configuration';
 
 const SCAN_INTERVAL_MS = 60 * 60 * 1000;
 
@@ -32,7 +34,15 @@ export async function fillExpiredInventory() {
   attestationsToRemove.push(...expiredSinceLastRun);
   attestationsToRemoveLater.splice(0, expiredSinceLastRun.length);
 
-  for await (const expiredAttestation of getExpiredAttestations()) {
+  const issuedBy = configuration.did;
+
+  if (issuedBy === 'pending') {
+    return;
+  }
+
+  for await (const expiredAttestation of await queryExpiredAttestations(
+    issuedBy,
+  )) {
     if (shouldBeRemoved(expiredAttestation)) {
       include(attestationsToRemove, expiredAttestation);
     } else {
