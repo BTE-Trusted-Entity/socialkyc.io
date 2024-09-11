@@ -75,5 +75,14 @@ export async function queryExpiredAttestations(issuedBy: DidUri) {
   // Save date for next query
   fromDate = untilDate;
 
-  return stillExistingExpiredAttestations;
+  async function* expiredAttestationsWithCreationDate() {
+    for await (const querAtty of stillExistingExpiredAttestations) {
+      const { creationBlock } = querAtty;
+      const createdAt = new Date(creationBlock.timeStamp);
+
+      yield { createdAt, ...querAtty };
+    }
+  }
+
+  return expiredAttestationsWithCreationDate();
 }
