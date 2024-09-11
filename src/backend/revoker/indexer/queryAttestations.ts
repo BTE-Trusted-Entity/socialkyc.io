@@ -5,8 +5,6 @@ import {
   type ICType,
 } from '@kiltprotocol/sdk-js';
 
-import { filterGenerator } from '../../utilities/filterGenerator';
-
 import { wholeAttestation, wholeBlock } from './fragments';
 import { matchesGenerator, QUERY_SIZE } from './queryFromIndexer';
 
@@ -28,6 +26,7 @@ function buildAttestationQueries(
         equalTo: "${issuedBy}"
       }
       creationBlock: { timeStamp: { greaterThan: "${fromDate.toISOString()}", lessThan: "${untilDate.toISOString()}"  } }
+      removalBlockExists: true
     }
   ) {
     totalCount
@@ -77,17 +76,10 @@ export function queryExpiredAttestations(issuedBy: DidUri) {
     buildAttestationQueries(issuedBy, fromDate, untilDate),
   );
 
-  // TODO: Add this filter directly on the query to the Indexer
-  // filter out attestations that are already removed
-  const stillExistingExpiredAttestations = filterGenerator(
-    expiredAttestations,
-    async ({ removalBlock }) => removalBlock !== null,
-  );
-
   // Save date for next query
   fromDate = untilDate;
 
-  return attestationParser(stillExistingExpiredAttestations);
+  return attestationParser(expiredAttestations);
 }
 
 /** Transforms what an attestation generator yields.
