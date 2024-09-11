@@ -1,8 +1,11 @@
-import { type DidUri, type HexString, type ICType } from '@kiltprotocol/sdk-js';
+import {
+  IAttestation,
+  type DidUri,
+  type HexString,
+  type ICType,
+} from '@kiltprotocol/sdk-js';
 
 import { filterGenerator } from '../../utilities/filterGenerator';
-
-import { AttestationInfo } from '../scanAttestations';
 
 import { wholeAttestation, wholeBlock } from './fragments';
 import { matchesGenerator, QUERY_SIZE } from './queryFromIndexer';
@@ -58,6 +61,12 @@ interface QueriedAttestation {
   removalBlock: IndexedBlock | null;
 }
 
+/** Legacy interface. */
+export interface AttestationInfo extends Omit<IAttestation, 'revoked'> {
+  revoked: boolean | null;
+  block: number;
+  createdAt: Date;
+}
 let fromDate = new Date(0);
 
 export function queryExpiredAttestations(issuedBy: DidUri) {

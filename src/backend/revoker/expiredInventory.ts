@@ -2,8 +2,11 @@ import { sleep } from '../utilities/sleep';
 import { configuration } from '../utilities/configuration';
 
 import { batchQueryRevoked } from './batchQueryRevoked';
-import { queryExpiredAttestations } from './indexer/queryAttestations';
-import { AttestationInfo } from './scanAttestations';
+import {
+  AttestationInfo,
+  queryExpiredAttestations,
+} from './indexer/queryAttestations';
+
 import { shouldBeRemoved } from './shouldBeExpired';
 
 const SCAN_INTERVAL_MS = 60 * 60 * 1000;
