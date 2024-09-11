@@ -10,7 +10,7 @@ import {
   attestationsToRevoke,
   updateExpiredInventory,
 } from '../revoker/expiredInventory';
-import { AttestationInfo } from '../revoker/scanAttestations';
+import { AttestationInfo } from '../revoker/indexer/queryAttestations';
 
 import { logger } from './logger';
 import { fullDidPromise } from './fullDid';
