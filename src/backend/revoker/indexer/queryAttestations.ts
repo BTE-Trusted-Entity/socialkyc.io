@@ -1,6 +1,6 @@
 import { type DidUri, type HexString, type ICType } from '@kiltprotocol/sdk-js';
 
-import { logger } from '../../utilities/logger';
+import { filterGenerator } from '../../utilities/filterGenerator';
 
 import { wholeAttestation, wholeBlock } from './fragments';
 import { matchesGenerator, QUERY_SIZE } from './queryFromIndexer';
@@ -58,45 +58,22 @@ interface QueriedAttestation {
 
 let fromDate = new Date(0);
 
-export async function queryAttestations(issuedBy: DidUri) {
+export async function queryExpiredAttestations(issuedBy: DidUri) {
   const untilDate = new Date();
   untilDate.setFullYear(untilDate.getFullYear() - 1);
 
-  const entitiesGenerator = matchesGenerator<QueriedAttestation>(
+  const expiredAttestations = matchesGenerator<QueriedAttestation>(
     buildAttestationQueries(issuedBy, fromDate, untilDate),
   );
 
-  for await (const entity of entitiesGenerator) {
-    const {
-      id: cTypeId,
-      author,
-      registrationBlock,
-      definition,
-      attestationsCreated,
-    } = entity;
+  // filter out attestations that are already removed
+  const stillExistingExpiredAttestations = filterGenerator(
+    expiredAttestations,
+    async ({ removalBlock }) => removalBlock !== null,
+  );
 
-    const { id: creator } = author;
-    const { $schema, ...rest } = JSON.parse(definition) as Omit<ICType, '$id'>;
+  // Save date for next query
+  fromDate = untilDate;
 
-    try {
-      const newCType = await CTypeModel.upsert({
-        id: cTypeId,
-        schema: $schema,
-        createdAt: new Date(registrationBlock.timeStamp + 'Z'),
-        creator,
-        block: registrationBlock.id,
-        ...rest,
-        attestationsCreated,
-      });
-      logger.info(
-        `Added new CType to data base: ${JSON.stringify(newCType, null, 2)}`,
-      );
-    } catch (error) {
-      logger.error(
-        error,
-        `Could not add cType ${cTypeId} to database. Probably bad formatted, see its definition: ${definition}`,
-      );
-      continue;
-    }
-  }
+  return stillExistingExpiredAttestations;
 }
