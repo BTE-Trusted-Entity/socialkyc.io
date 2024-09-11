@@ -2,6 +2,8 @@ import { type DidUri, type HexString, type ICType } from '@kiltprotocol/sdk-js';
 
 import { filterGenerator } from '../../utilities/filterGenerator';
 
+import { AttestationInfo } from '../scanAttestations';
+
 import { wholeAttestation, wholeBlock } from './fragments';
 import { matchesGenerator, QUERY_SIZE } from './queryFromIndexer';
 
@@ -58,7 +60,7 @@ interface QueriedAttestation {
 
 let fromDate = new Date(0);
 
-export async function queryExpiredAttestations(issuedBy: DidUri) {
+export function queryExpiredAttestations(issuedBy: DidUri) {
   const untilDate = new Date();
   untilDate.setFullYear(untilDate.getFullYear() - 1);
 
@@ -75,14 +77,43 @@ export async function queryExpiredAttestations(issuedBy: DidUri) {
   // Save date for next query
   fromDate = untilDate;
 
-  async function* expiredAttestationsWithCreationDate() {
-    for await (const querAtty of stillExistingExpiredAttestations) {
-      const { creationBlock } = querAtty;
-      const createdAt = new Date(creationBlock.timeStamp);
+  return attestationParser(stillExistingExpiredAttestations);
+}
 
-      yield { createdAt, ...querAtty };
-    }
+async function* attestationParser(
+  queriedAttestationsGenerator: AsyncGenerator<
+    QueriedAttestation,
+    void,
+    unknown
+  >,
+) {
+  for await (const queriedAttestation of queriedAttestationsGenerator) {
+    const {
+      creationBlock,
+      revocationBlock,
+      removalBlock,
+      cTypeId,
+      claimHash,
+      issuerId,
+      delegationID,
+    } = queriedAttestation;
+
+    const createdAt = new Date(creationBlock.timeStamp);
+    const blockNumber = parseInt(creationBlock.id);
+    const cTypeHash = cTypeId.split(':')[2] as HexString;
+
+    // `null` if removed, `true` if revoked, `false` if valid.
+    const revoked =
+      removalBlock !== null ? null : revocationBlock !== null ? true : false;
+
+    yield <AttestationInfo>{
+      owner: issuerId,
+      claimHash,
+      cTypeHash,
+      delegationId: delegationID,
+      revoked,
+      block: blockNumber,
+      createdAt,
+    };
   }
-
-  return expiredAttestationsWithCreationDate();
 }
