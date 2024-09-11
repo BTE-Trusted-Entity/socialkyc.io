@@ -77,6 +77,7 @@ export function queryExpiredAttestations(issuedBy: DidUri) {
     buildAttestationQueries(issuedBy, fromDate, untilDate),
   );
 
+  // TODO: Add this filter directly on the query to the Indexer
   // filter out attestations that are already removed
   const stillExistingExpiredAttestations = filterGenerator(
     expiredAttestations,
@@ -128,3 +129,5 @@ async function* attestationParser(
     };
   }
 }
+
+// TODO: add unit tests for this file
