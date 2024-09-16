@@ -23,7 +23,7 @@ export const QUERY_SIZE = 100;
 //   }
 // `;
 
-interface FetchedData {
+export interface FetchedData {
   data: Record<
     string,
     {
