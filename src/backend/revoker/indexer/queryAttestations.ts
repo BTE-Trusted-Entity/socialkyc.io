@@ -25,7 +25,12 @@ function buildAttestationQueries(
       issuerId: {
         equalTo: "${issuedBy}"
       }
-      creationBlock: { timeStamp: { greaterThan: "${fromDate.toISOString()}", lessThan: "${untilDate.toISOString()}"  } }
+      creationBlock: {
+        timeStamp: {
+          greaterThan: "${fromDate.toISOString()}",
+          lessThan: "${untilDate.toISOString()}"
+        }
+      }
       removalBlockExists: true
     }
   ) {
