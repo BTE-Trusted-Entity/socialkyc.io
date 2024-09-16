@@ -66,6 +66,7 @@ export interface AttestationInfo extends Omit<IAttestation, 'revoked'> {
   block: number;
   createdAt: Date;
 }
+
 let fromDate = new Date(0);
 
 export function queryExpiredAttestations(issuedBy: DidUri) {
