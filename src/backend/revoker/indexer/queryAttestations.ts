@@ -1,4 +1,5 @@
 import {
+  CType,
   IAttestation,
   type DidUri,
   type HexString,
@@ -110,7 +111,7 @@ async function* attestationParser(
 
     const createdAt = new Date(creationBlock.timeStamp);
     const blockNumber = parseInt(creationBlock.id);
-    const cTypeHash = cTypeId.split(':')[2] as HexString;
+    const cTypeHash = CType.idToChain(cTypeId);
 
     // `null` if removed, `true` if revoked, `false` if valid.
     const revoked =
