@@ -1,5 +1,4 @@
 import { sleep } from '../utilities/sleep';
-import { configuration } from '../utilities/configuration';
 
 import { batchQueryRevoked } from './batchQueryRevoked';
 import {
@@ -36,13 +35,7 @@ export async function fillExpiredInventory() {
   attestationsToRemove.push(...expiredSinceLastRun);
   attestationsToRemoveLater.splice(0, expiredSinceLastRun.length);
 
-  const issuedBy = configuration.did;
-
-  if (issuedBy === 'pending') {
-    return;
-  }
-
-  for await (const expiredAttestation of queryExpiredAttestations(issuedBy)) {
+  for await (const expiredAttestation of queryExpiredAttestations()) {
     if (shouldBeRemoved(expiredAttestation)) {
       include(attestationsToRemove, expiredAttestation);
     } else {
