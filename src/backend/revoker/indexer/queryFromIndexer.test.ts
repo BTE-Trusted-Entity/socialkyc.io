@@ -2,25 +2,26 @@
  * @jest-environment node
  */
 
-import { beforeEach, describe, expect, it, jest } from '@jest/globals';
+import {
+  // afterEach,
+  beforeEach,
+  describe,
+  expect,
+  it,
+  jest,
+} from '@jest/globals';
 import { HexString } from '@kiltprotocol/sdk-js';
 import got from 'got';
 
 import { configuration } from '../../utilities/configuration';
 
+import { wholeBlock } from './fragments';
 import {
   FetchedData,
   matchesGenerator,
   QUERY_SIZE,
   queryFromIndexer,
 } from './queryFromIndexer';
-import { wholeBlock } from './fragments';
-
-jest.mock('../../utilities/configuration', () => ({
-  configuration: {
-    indexer: { graphqlEndpoint: 'https://dev-indexer.kilt.io/' },
-  },
-}));
 
 // /** Example Query. */
 // const queryBlocks = `
@@ -68,12 +69,18 @@ function mockBlocks(numberOfBlocks: number) {
     mockedBlocks.push({
       id: index.toString(),
       hash: `0x${index.toString(16)}`,
-      timeStamp: new Date(index, 4, 20).toISOString(),
+      timeStamp: new Date(index, 3, 21).toISOString(),
     });
   }
 
   return mockedBlocks;
 }
+
+// jest.mock('../../utilities/configuration', () => ({
+//   configuration: {
+//     indexer: { graphqlEndpoint: 'https://dev-indexer.kilt.io/' },
+//   },
+// }));
 
 let postResponse: FetchedData;
 jest.mock('got', () => ({
@@ -84,7 +91,13 @@ jest.mock('got', () => ({
 
 beforeEach(() => {
   jest.mocked(got.post).mockClear();
+  configuration.indexer.graphqlEndpoint = 'https://dev-indexer.kilt.io/';
 });
+
+// breaks most tests:
+// afterEach(() => {
+//   jest.resetAllMocks();
+// });
 
 describe('The fundamental function to query from the Indexer', () => {
   describe('queryFromIndexer()', () => {
@@ -184,45 +197,96 @@ describe('The fundamental function to query from the Indexer', () => {
 
 describe('The wrapper function that manages big queries to the Indexer', () => {
   describe('matchesGenerator()', () => {
-    it("should only query once if all matches are on the first Indexer's response", async () => {
-      const count = Math.floor(QUERY_SIZE * 0.77);
+    describe('on positive cases', () => {
+      it("should only query once if all matches are on the first Indexer's response", async () => {
+        const count = Math.floor(QUERY_SIZE * 0.77);
 
-      postResponse = {
-        data: {
-          blocks: {
-            totalCount: count,
-            nodes: mockBlocks(count).map((b) => ({ ...b })),
+        postResponse = {
+          data: {
+            blocks: {
+              totalCount: count,
+              nodes: mockBlocks(count).map((b) => ({ ...b })),
+            },
           },
-        },
-      };
-      const buildBlockQuery = buildBlockQueries();
-      const aFewMatches = matchesGenerator<IndexedBlock>(buildBlockQuery);
+        };
+        const buildBlockQuery = buildBlockQueries();
+        const aFewMatches = matchesGenerator<IndexedBlock>(buildBlockQuery);
 
-      for await (const match of aFewMatches) {
-        expect(match).toBeDefined();
-      }
+        for await (const match of aFewMatches) {
+          expect(match).toBeDefined();
+        }
 
-      expect(got.post).toHaveBeenCalledTimes(1);
+        expect(got.post).toHaveBeenCalledTimes(1);
+      });
+      it('should continue requesting from the Indexer until querying all matches', async () => {
+        const count = Math.floor(QUERY_SIZE * 3.33);
+        postResponse = {
+          data: {
+            blocks: {
+              totalCount: count,
+              nodes: mockBlocks(QUERY_SIZE).map((b) => ({ ...b })),
+            },
+          },
+        };
+
+        const buildBlockQuery = buildBlockQueries();
+        const aLotOfMatches = matchesGenerator<IndexedBlock>(buildBlockQuery);
+
+        for await (const match of aLotOfMatches) {
+          expect(match).toBeDefined();
+        }
+
+        expect(got.post).toHaveBeenCalledTimes(5);
+      }, 10000);
     });
-    it('should continue requesting from the Indexer until querying all matches', async () => {
-      const count = Math.floor(QUERY_SIZE * 3.33);
-      postResponse = {
-        data: {
-          blocks: {
-            totalCount: count,
-            nodes: mockBlocks(QUERY_SIZE).map((b) => ({ ...b })),
+    describe('on negative cases', () => {
+      it('should just return void if the GraphQL Endpoint is not available', async () => {
+        configuration.indexer.graphqlEndpoint = 'NONE';
+        postResponse = {
+          data: {
+            blocks: {
+              totalCount: 37,
+              nodes: mockBlocks(37).map((b) => ({ ...b })),
+            },
           },
-        },
-      };
+        };
 
-      const buildBlockQuery = buildBlockQueries();
-      const aLotOfMatches = matchesGenerator<IndexedBlock>(buildBlockQuery);
+        const noMatches = matchesGenerator<IndexedBlock>((foo) =>
+          foo.toString(),
+        );
 
-      for await (const match of aLotOfMatches) {
-        expect(match).toBeDefined();
-      }
+        const returnValue = await noMatches.next();
+        expect(returnValue.value).toBeUndefined();
+        expect(returnValue.done).toBe(true);
 
-      expect(got.post).toHaveBeenCalledTimes(5);
-    }, 10000);
+        expect(got.post).toHaveBeenCalledTimes(0);
+      });
+      it('should restore the default graphqlEndpoint in the next test', () => {
+        // After dynamic change in the previous test, the mock should still be the default
+        expect(configuration.indexer.graphqlEndpoint).toBe(
+          'https://dev-indexer.kilt.io/',
+        );
+      });
+      it('should just return void if there is no matches to a query', async () => {
+        postResponse = {
+          data: {
+            blocks: {
+              totalCount: 0,
+              nodes: [],
+            },
+          },
+        };
+
+        const noMatches = matchesGenerator<IndexedBlock>((foo) =>
+          foo.toString(),
+        );
+
+        const returnValue = await noMatches.next();
+        expect(returnValue.value).toBeUndefined();
+        expect(returnValue.done).toBe(true);
+
+        expect(got.post).toHaveBeenCalledTimes(1);
+      });
+    });
   });
 });
