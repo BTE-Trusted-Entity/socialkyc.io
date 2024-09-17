@@ -174,7 +174,7 @@ describe('The wrapper function that manages big queries to the Indexer', () => {
       postResponse = {
         data: {
           blocks: {
-            totalCount: QUERY_SIZE * 3,
+            totalCount: QUERY_SIZE * 3.33,
             nodes: [],
           },
         },
@@ -187,7 +187,7 @@ describe('The wrapper function that manages big queries to the Indexer', () => {
         expect(match).toBeDefined();
       }
 
-      expect(got.post).toHaveBeenCalledTimes(4);
+      expect(got.post).toHaveBeenCalledTimes(5);
     }, 10000);
   });
 });
