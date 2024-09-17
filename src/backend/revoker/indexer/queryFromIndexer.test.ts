@@ -225,6 +225,29 @@ describe('The wrapper function that manages big queries to the Indexer', () => {
         }
 
         expect(got.post).toHaveBeenCalledTimes(5);
+
+        const { calls: postRequests } = jest.mocked(got.post).mock;
+
+        // @ts-expect-error because TS infers wrong parameters
+        expect(postRequests[0][1]).toMatchObject({
+          json: { query: buildBlockQuery(0) },
+        });
+        // @ts-expect-error because TS infers wrong parameters
+        expect(postRequests[1][1]).toMatchObject({
+          json: { query: buildBlockQuery(0) },
+        });
+        // @ts-expect-error because TS infers wrong parameters
+        expect(postRequests[2][1]).toMatchObject({
+          json: { query: buildBlockQuery(QUERY_SIZE) },
+        });
+        // @ts-expect-error because TS infers wrong parameters
+        expect(postRequests[3][1]).toMatchObject({
+          json: { query: buildBlockQuery(QUERY_SIZE * 2) },
+        });
+        // @ts-expect-error because TS infers wrong parameters
+        expect(postRequests[4][1]).toMatchObject({
+          json: { query: buildBlockQuery(QUERY_SIZE * 3) },
+        });
       }, 10000);
     });
     describe('on negative cases', () => {
