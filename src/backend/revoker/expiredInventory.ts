@@ -36,10 +36,13 @@ export async function fillExpiredInventory() {
   attestationsToRemove.push(...expiredSinceLastRun);
   attestationsToRemoveLater.splice(0, expiredSinceLastRun.length);
 
-  for await (const expiredAttestation of queryExpiredAttestations()) {
-    if (!expiredAttestation) {
-      return;
-    }
+  const issuedBy = configuration.did;
+
+  if (issuedBy === 'pending') {
+    return;
+  }
+
+  for await (const expiredAttestation of queryExpiredAttestations(issuedBy)) {
     if (shouldBeRemoved(expiredAttestation)) {
       include(attestationsToRemove, expiredAttestation);
     } else {
