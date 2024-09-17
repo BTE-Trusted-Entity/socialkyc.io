@@ -13,7 +13,7 @@ import { matchesGenerator, QUERY_SIZE } from './queryFromIndexer';
 
 // When modifying queries, first try them out on https://indexer.kilt.io/ or https://dev-indexer.kilt.io/
 
-function buildAttestationQueries(fromDate: Date, untilDate: Date) {
+export function buildAttestationQueries(fromDate: Date, untilDate: Date) {
   return (offset: number) => `
   query {
   attestations(
@@ -51,7 +51,7 @@ interface IndexedBlock {
 }
 
 /** Expected structure of responses for queries defined above. */
-interface QueriedAttestation {
+export interface QueriedAttestation {
   id: string; // Block number and ordinal number of attestation inside of it
   claimHash: HexString;
   cTypeId: ICType['$id'];
