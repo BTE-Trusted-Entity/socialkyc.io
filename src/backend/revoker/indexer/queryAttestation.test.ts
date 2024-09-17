@@ -10,7 +10,7 @@ import { configuration } from '../../utilities/configuration';
 
 import { FetchedData, QUERY_SIZE } from './queryFromIndexer';
 import {
-  // buildAttestationQueries,
+  buildAttestationQueries,
   queryExpiredAttestations,
   QueriedAttestation,
 } from './queryAttestations';
@@ -129,54 +129,54 @@ describe('The function that queries the old attestations issued by SocialKYC fro
 
         expect(got.post).toHaveBeenCalledTimes(5);
       }, 10000);
-      // it('should use request from the Indexer the expected query', async () => {
-      //   const count = Math.floor(QUERY_SIZE * 3.33);
-      //   postResponse = {
-      //     data: {
-      //       blocks: {
-      //         totalCount: count,
-      //         nodes: mockAttestations(QUERY_SIZE).map((b) => ({ ...b })),
-      //       },
-      //     },
-      //   };
-      //   const aLotOfAttestations = queryExpiredAttestations();
+      it('should use request from the Indexer the expected query', async () => {
+        const count = Math.floor(QUERY_SIZE * 3.33);
+        postResponse = {
+          data: {
+            blocks: {
+              totalCount: count,
+              nodes: mockAttestations(QUERY_SIZE).map((b) => ({ ...b })),
+            },
+          },
+        };
+        const aLotOfAttestations = queryExpiredAttestations();
 
-      //   for await (const match of aLotOfAttestations) {
-      //     expect(match).toBeDefined();
-      //   }
+        for await (const match of aLotOfAttestations) {
+          expect(match).toBeDefined();
+        }
 
-      //   expect(got.post).toHaveBeenCalledTimes(5);
+        expect(got.post).toHaveBeenCalledTimes(5);
 
-      //   const timeZero = new Date(0);
+        const timeZero = new Date(0);
 
-      //   const buildAttestationQuery = buildAttestationQueries(
-      //     timeZero,
-      //     frozenNow,
-      //   );
+        const buildAttestationQuery = buildAttestationQueries(
+          timeZero,
+          frozenNow,
+        );
 
-      //   const { calls: postRequests } = jest.mocked(got.post).mock;
+        const { calls: postRequests } = jest.mocked(got.post).mock;
 
-      //   // @ts-expect-error because TS infers wrong parameters
-      //   expect(postRequests[0][1]).toMatchObject({
-      //     json: { query: buildAttestationQuery(0) },
-      //   });
-      //   // @ts-expect-error because TS infers wrong parameters
-      //   expect(postRequests[1][1]).toMatchObject({
-      //     json: { query: buildAttestationQuery(0) },
-      //   });
-      //   // @ts-expect-error because TS infers wrong parameters
-      //   expect(postRequests[2][1]).toMatchObject({
-      //     json: { query: buildAttestationQuery(QUERY_SIZE) },
-      //   });
-      //   // @ts-expect-error because TS infers wrong parameters
-      //   expect(postRequests[3][1]).toMatchObject({
-      //     json: { query: buildAttestationQuery(QUERY_SIZE * 2) },
-      //   });
-      //   // @ts-expect-error because TS infers wrong parameters
-      //   expect(postRequests[4][1]).toMatchObject({
-      //     json: { query: buildAttestationQuery(QUERY_SIZE * 3) },
-      //   });
-      // }, 10000);
+        // @ts-expect-error because TS infers wrong parameters
+        expect(postRequests[0][1]).toMatchObject({
+          json: { query: buildAttestationQuery(0) },
+        });
+        // @ts-expect-error because TS infers wrong parameters
+        expect(postRequests[1][1]).toMatchObject({
+          json: { query: buildAttestationQuery(0) },
+        });
+        // @ts-expect-error because TS infers wrong parameters
+        expect(postRequests[2][1]).toMatchObject({
+          json: { query: buildAttestationQuery(QUERY_SIZE) },
+        });
+        // @ts-expect-error because TS infers wrong parameters
+        expect(postRequests[3][1]).toMatchObject({
+          json: { query: buildAttestationQuery(QUERY_SIZE * 2) },
+        });
+        // @ts-expect-error because TS infers wrong parameters
+        expect(postRequests[4][1]).toMatchObject({
+          json: { query: buildAttestationQuery(QUERY_SIZE * 3) },
+        });
+      }, 10000);
     });
     describe('on negative cases', () => {
       it('should just return void if there is no matches to a query', async () => {
