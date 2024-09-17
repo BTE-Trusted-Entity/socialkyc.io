@@ -6,14 +6,16 @@ import {
   type ICType,
 } from '@kiltprotocol/sdk-js';
 
-import { configuration } from '../../utilities/configuration';
-
 import { wholeAttestation, wholeBlock } from './fragments';
 import { matchesGenerator, QUERY_SIZE } from './queryFromIndexer';
 
 // When modifying queries, first try them out on https://indexer.kilt.io/ or https://dev-indexer.kilt.io/
 
-function buildAttestationQueries(fromDate: Date, untilDate: Date) {
+function buildAttestationQueries(
+  issuedBy: DidUri,
+  fromDate: Date,
+  untilDate: Date,
+) {
   return (offset: number) => `
   query {
   attestations(
@@ -22,7 +24,7 @@ function buildAttestationQueries(fromDate: Date, untilDate: Date) {
     offset: ${offset}
     filter: {
       issuerId: {
-        equalTo: "${configuration.did}"
+        equalTo: "${issuedBy}"
       }
       creationBlock: {
         timeStamp: {
@@ -73,12 +75,12 @@ export interface AttestationInfo extends Omit<IAttestation, 'revoked'> {
 
 let fromDate = new Date(0);
 
-export function queryExpiredAttestations() {
+export function queryExpiredAttestations(issuedBy: DidUri) {
   const untilDate = new Date();
   untilDate.setFullYear(untilDate.getFullYear() - 1);
 
   const expiredAttestations = matchesGenerator<QueriedAttestation>(
-    buildAttestationQueries(fromDate, untilDate),
+    buildAttestationQueries(issuedBy, fromDate, untilDate),
   );
 
   // Save date for next query
