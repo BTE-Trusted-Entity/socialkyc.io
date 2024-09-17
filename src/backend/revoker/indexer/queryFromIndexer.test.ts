@@ -68,6 +68,11 @@ function mockBlocks(numberOfBlocks: number) {
 
   return mockedBlocks;
 }
+jest.mock('../../utilities/configuration', () => ({
+  configuration: {
+    indexer: { graphqlEndpoint: 'https://dev-indexer.kilt.io/' },
+  },
+}));
 
 let postResponse: FetchedData;
 jest.mock('got', () => ({
