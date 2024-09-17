@@ -2,14 +2,7 @@
  * @jest-environment node
  */
 
-import {
-  // afterEach,
-  beforeEach,
-  describe,
-  expect,
-  it,
-  jest,
-} from '@jest/globals';
+import { beforeEach, describe, expect, it, jest } from '@jest/globals';
 import { HexString } from '@kiltprotocol/sdk-js';
 import got from 'got';
 
@@ -76,12 +69,6 @@ function mockBlocks(numberOfBlocks: number) {
   return mockedBlocks;
 }
 
-// jest.mock('../../utilities/configuration', () => ({
-//   configuration: {
-//     indexer: { graphqlEndpoint: 'https://dev-indexer.kilt.io/' },
-//   },
-// }));
-
 let postResponse: FetchedData;
 jest.mock('got', () => ({
   post: jest.fn().mockReturnValue({
@@ -93,11 +80,6 @@ beforeEach(() => {
   jest.mocked(got.post).mockClear();
   configuration.indexer.graphqlEndpoint = 'https://dev-indexer.kilt.io/';
 });
-
-// breaks most tests:
-// afterEach(() => {
-//   jest.resetAllMocks();
-// });
 
 describe('The fundamental function to query from the Indexer', () => {
   describe('queryFromIndexer()', () => {
@@ -260,12 +242,6 @@ describe('The wrapper function that manages big queries to the Indexer', () => {
         expect(returnValue.done).toBe(true);
 
         expect(got.post).toHaveBeenCalledTimes(0);
-      });
-      it('should restore the default graphqlEndpoint in the next test', () => {
-        // After dynamic change in the previous test, the mock should still be the default
-        expect(configuration.indexer.graphqlEndpoint).toBe(
-          'https://dev-indexer.kilt.io/',
-        );
       });
       it('should just return void if there is no matches to a query', async () => {
         postResponse = {
