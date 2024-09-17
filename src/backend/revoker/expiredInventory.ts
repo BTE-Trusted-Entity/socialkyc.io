@@ -1,4 +1,5 @@
 import { sleep } from '../utilities/sleep';
+import { configuration } from '../utilities/configuration';
 
 import { batchQueryRevoked } from './batchQueryRevoked';
 import {
@@ -49,6 +50,10 @@ export async function fillExpiredInventory() {
 
 export function initExpiredInventory() {
   (async () => {
+    if (configuration.did === 'pending') {
+      return;
+    }
+
     while (true) {
       await fillExpiredInventory();
       await sleep(SCAN_INTERVAL_MS);
