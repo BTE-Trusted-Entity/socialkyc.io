@@ -61,6 +61,20 @@ interface IndexedBlock {
   timeStamp: string; // ISO8601 Date String, like 2022-02-09T13:09:18.217
 }
 
+function mockBlocks(numberOfBlocks: number) {
+  const mockedBlocks: IndexedBlock[] = [];
+
+  for (let index = numberOfBlocks; index > 0; index--) {
+    mockedBlocks.push({
+      id: index.toString(),
+      hash: `0x${index.toString(16)}`,
+      timeStamp: new Date(index, 4, 20).toISOString(),
+    });
+  }
+
+  return mockedBlocks;
+}
+
 let postResponse: FetchedData;
 jest.mock('got', () => ({
   post: jest.fn().mockReturnValue({
@@ -170,12 +184,33 @@ describe('The fundamental function to query from the Indexer', () => {
 
 describe('The wrapper function that manages big queries to the Indexer', () => {
   describe('matchesGenerator()', () => {
-    it('should continue requesting from the Indexer until querying all matches', async () => {
+    it("should only query once if all matches are on the first Indexer's response", async () => {
+      const count = Math.floor(QUERY_SIZE * 0.77);
+
       postResponse = {
         data: {
           blocks: {
-            totalCount: QUERY_SIZE * 3.33,
-            nodes: [],
+            totalCount: count,
+            nodes: mockBlocks(count).map((b) => ({ ...b })),
+          },
+        },
+      };
+      const buildBlockQuery = buildBlockQueries();
+      const aFewMatches = matchesGenerator<IndexedBlock>(buildBlockQuery);
+
+      for await (const match of aFewMatches) {
+        expect(match).toBeDefined();
+      }
+
+      expect(got.post).toHaveBeenCalledTimes(1);
+    });
+    it('should continue requesting from the Indexer until querying all matches', async () => {
+      const count = Math.floor(QUERY_SIZE * 3.33);
+      postResponse = {
+        data: {
+          blocks: {
+            totalCount: count,
+            nodes: mockBlocks(QUERY_SIZE).map((b) => ({ ...b })),
           },
         },
       };
