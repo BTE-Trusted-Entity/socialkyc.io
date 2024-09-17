@@ -6,6 +6,8 @@ import {
   type ICType,
 } from '@kiltprotocol/sdk-js';
 
+import { configuration } from '../../utilities/configuration';
+
 import { wholeAttestation, wholeBlock } from './fragments';
 import { matchesGenerator, QUERY_SIZE } from './queryFromIndexer';
 
@@ -75,7 +77,15 @@ export interface AttestationInfo extends Omit<IAttestation, 'revoked'> {
 
 let fromDate = new Date(0);
 
-export function queryExpiredAttestations(issuedBy: DidUri) {
+export function queryExpiredAttestations() {
+  const issuedBy = configuration.did;
+
+  if (issuedBy === 'pending') {
+    async function* voidGenerator() {
+      yield;
+    }
+    return voidGenerator();
+  }
   const untilDate = new Date();
   untilDate.setFullYear(untilDate.getFullYear() - 1);
 
