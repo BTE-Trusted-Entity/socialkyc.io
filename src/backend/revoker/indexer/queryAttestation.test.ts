@@ -2,8 +2,6 @@
  * @jest-environment node
  */
 
-/* eslint-disable jest/no-focused-tests */
-
 import { beforeEach, describe, expect, it, jest } from '@jest/globals';
 import { DidUri } from '@kiltprotocol/sdk-js';
 import got from 'got';
@@ -11,23 +9,19 @@ import got from 'got';
 import { configuration } from '../../utilities/configuration';
 
 import { FetchedData, QUERY_SIZE } from './queryFromIndexer';
-import * as qA from './queryAttestations';
+import {
+  buildAttestationQueries,
+  queryExpiredAttestations,
+  QueriedAttestation,
+} from './queryAttestations';
 
-// Chronos is indeed the father of Chaos
 const frozenNow = new Date();
-const cutOff = new Date(frozenNow);
-cutOff.setFullYear(frozenNow.getFullYear() - 1);
 
-// jest.mock('./queryAttestations', () => ({
-//   getCutOffDate: jest.fn(),
-// You have to reimplement everything with this approach
-//   buildAttestationQueries: buildAttestationQueries,
-//   queryExpiredAttestations: queryExpiredAttestations,
-// }));
-
-jest.spyOn(qA, 'getCutOffDate').mockImplementation(() => {
-  console.log('Aquí falseandola: ', cutOff.toISOString());
-  return cutOff;
+beforeAll(() => {
+  jest.spyOn(global.Date, 'now').mockImplementation(() => frozenNow.getTime());
+});
+afterAll(() => {
+  jest.restoreAllMocks();
 });
 
 jest.mock('../../utilities/configuration', () => ({
@@ -43,29 +37,13 @@ jest.mock('got', () => ({
   }),
 }));
 
-beforeAll(() => {
-  const kairos = qA.getCutOffDate();
-  console.log(
-    'beforeAll: ',
-    'frozenNow: ',
-    frozenNow,
-    'cutOff: ',
-    cutOff,
-    'kairos: ',
-    kairos,
-  );
-});
-afterAll(() => {
-  jest.restoreAllMocks();
-});
-
 beforeEach(() => {
   jest.mocked(got.post).mockClear();
   configuration.indexer.graphqlEndpoint = 'https://dev-indexer.kilt.io/';
 });
 
 function mockAttestations(numberOfAttestations: number) {
-  const mockedAttestations: qA.QueriedAttestation[] = [];
+  const mockedAttestations: QueriedAttestation[] = [];
 
   for (let index = numberOfAttestations; index > 0; index--) {
     mockedAttestations.push({
@@ -103,7 +81,7 @@ describe('The function that queries the old attestations issued by SocialKYC fro
           },
         };
 
-        const aFewAttestations = qA.queryExpiredAttestations();
+        const aFewAttestations = queryExpiredAttestations();
 
         for await (const match of aFewAttestations) {
           expect(match).toBeDefined();
@@ -124,7 +102,7 @@ describe('The function that queries the old attestations issued by SocialKYC fro
             },
           },
         };
-        const aFewAttestations = qA.queryExpiredAttestations();
+        const aFewAttestations = queryExpiredAttestations();
 
         for await (const match of aFewAttestations) {
           expect(match).toBeDefined();
@@ -143,7 +121,7 @@ describe('The function that queries the old attestations issued by SocialKYC fro
             },
           },
         };
-        const aLotOfAttestations = qA.queryExpiredAttestations();
+        const aLotOfAttestations = queryExpiredAttestations();
 
         for await (const match of aLotOfAttestations) {
           expect(match).toBeDefined();
@@ -151,7 +129,7 @@ describe('The function that queries the old attestations issued by SocialKYC fro
 
         expect(got.post).toHaveBeenCalledTimes(5);
       }, 10000);
-      it.only('should use request from the Indexer the expected query', async () => {
+      it('should use request from the Indexer the expected query', async () => {
         const count = Math.floor(QUERY_SIZE * 3.33);
         postResponse = {
           data: {
@@ -161,7 +139,7 @@ describe('The function that queries the old attestations issued by SocialKYC fro
             },
           },
         };
-        const aLotOfAttestations = qA.queryExpiredAttestations();
+        const aLotOfAttestations = queryExpiredAttestations();
 
         for await (const match of aLotOfAttestations) {
           expect(match).toBeDefined();
@@ -170,12 +148,10 @@ describe('The function that queries the old attestations issued by SocialKYC fro
         expect(got.post).toHaveBeenCalledTimes(5);
 
         const timeZero = new Date(0);
-        const aYearAgo = new Date(frozenNow.valueOf());
-        aYearAgo.setFullYear(aYearAgo.getFullYear() - 1);
 
-        const buildAttestationQuery = qA.buildAttestationQueries(
+        const buildAttestationQuery = buildAttestationQueries(
           timeZero,
-          aYearAgo,
+          frozenNow,
         );
 
         const { calls: postRequests } = jest.mocked(got.post).mock;
@@ -212,7 +188,7 @@ describe('The function that queries the old attestations issued by SocialKYC fro
             },
           },
         };
-        const noMatches = qA.queryExpiredAttestations();
+        const noMatches = queryExpiredAttestations();
 
         const returnValue = await noMatches.next();
         expect(returnValue.value).toBeUndefined();

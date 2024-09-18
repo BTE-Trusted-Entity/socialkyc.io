@@ -73,14 +73,9 @@ export interface AttestationInfo extends Omit<IAttestation, 'revoked'> {
 
 let fromDate = new Date(0);
 
-export function getCutOffDate(): Date {
-  const cutOff = new Date();
-  cutOff.setFullYear(cutOff.getFullYear() - 1);
-  return cutOff;
-}
-
 export function queryExpiredAttestations() {
-  const untilDate = getCutOffDate();
+  const untilDate = new Date();
+  untilDate.setFullYear(untilDate.getFullYear() - 1);
 
   const expiredAttestations = matchesGenerator<QueriedAttestation>(
     buildAttestationQueries(fromDate, untilDate),
