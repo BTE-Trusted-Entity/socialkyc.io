@@ -13,6 +13,7 @@ import {
   buildAttestationQueries,
   queryExpiredAttestations,
   QueriedAttestation,
+  fromDate,
 } from './queryAttestations';
 
 const frozenNow = new Date();
@@ -167,12 +168,13 @@ describe('The function that queries the old attestations issued by SocialKYC fro
 
         expect(got.post).toHaveBeenCalledTimes(5);
 
-        const timeZero = new Date(0);
+        // `fromDate` is only 0 on the app's start
+        // const timeZero = new Date(0);
         const aYearAgo = new Date(frozenNow.valueOf());
         aYearAgo.setFullYear(aYearAgo.getFullYear() - 1);
 
         const buildAttestationQuery = buildAttestationQueries(
-          timeZero,
+          fromDate,
           aYearAgo,
         );
 
