@@ -91,6 +91,43 @@ function mockAttestations(numberOfAttestations: number) {
 describe('The function that queries the old attestations issued by SocialKYC from the Indexer', () => {
   describe('queryExpiredAttestations()', () => {
     describe('on positive cases', () => {
+      it("On the App's start: should request attestations from 1970 until a year ago from the Indexer", async () => {
+        const timeZero = new Date(0);
+        const aYearAgo = new Date(frozenNow.valueOf());
+        aYearAgo.setFullYear(aYearAgo.getFullYear() - 1);
+
+        // check the start value of `fromDate`
+        expect(fromDate).toEqual(timeZero);
+
+        const count = Math.floor(QUERY_SIZE * 0.2);
+        postResponse = {
+          data: {
+            blocks: {
+              totalCount: count,
+              nodes: mockAttestations(count).map((b) => ({ ...b })),
+            },
+          },
+        };
+        const aFewMatches = queryExpiredAttestations();
+
+        for await (const match of aFewMatches) {
+          expect(match).toBeDefined();
+        }
+
+        expect(got.post).toHaveBeenCalled();
+
+        const buildAttestationQuery = buildAttestationQueries(
+          timeZero,
+          aYearAgo,
+        );
+
+        const { calls: postRequests } = jest.mocked(got.post).mock;
+
+        // @ts-expect-error because TS infers wrong parameters
+        expect(postRequests[0][1]).toMatchObject({
+          json: { query: buildAttestationQuery(0) },
+        });
+      });
       it('should query the KILT Indexer API', async () => {
         const count = 3;
         postResponse = {
@@ -150,7 +187,7 @@ describe('The function that queries the old attestations issued by SocialKYC fro
 
         expect(got.post).toHaveBeenCalledTimes(5);
       }, 10000);
-      it('should use request from the Indexer the expected query', async () => {
+      it('should request from the Indexer using the expected queries', async () => {
         const count = Math.floor(QUERY_SIZE * 3.33);
         postResponse = {
           data: {
