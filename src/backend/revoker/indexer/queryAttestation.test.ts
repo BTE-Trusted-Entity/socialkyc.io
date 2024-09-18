@@ -2,8 +2,6 @@
  * @jest-environment node
  */
 
-/* eslint-disable jest/no-focused-tests */
-
 import { beforeEach, describe, expect, it, jest } from '@jest/globals';
 import { DidUri } from '@kiltprotocol/sdk-js';
 import got from 'got';
@@ -151,7 +149,7 @@ describe('The function that queries the old attestations issued by SocialKYC fro
 
         expect(got.post).toHaveBeenCalledTimes(5);
       }, 10000);
-      it.only('should use request from the Indexer the expected query', async () => {
+      it('should use request from the Indexer the expected query', async () => {
         const count = Math.floor(QUERY_SIZE * 3.33);
         postResponse = {
           data: {
