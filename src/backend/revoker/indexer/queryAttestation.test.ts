@@ -38,8 +38,8 @@ beforeAll(() => {
       'setTimeout',
       'clearTimeout',
     ],
+    now: frozenNow,
   });
-  jest.setSystemTime(frozenNow);
 });
 afterAll(() => {
   jest.restoreAllMocks();
