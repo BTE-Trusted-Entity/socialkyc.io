@@ -14,6 +14,7 @@ import {
   queryExpiredAttestations,
   QueriedAttestation,
   fromDate,
+  AttestationInfo,
 } from './queryAttestations';
 
 const frozenNow = new Date();
@@ -238,6 +239,57 @@ describe('The function that queries the old attestations issued by SocialKYC fro
           json: { query: buildAttestationQuery(QUERY_SIZE * 3) },
         });
       }, 10000);
+      it("should yield attestations in the 'AttestationInfo' interface", async () => {
+        const cousinNumbers = [1, 2, 3, 5, 7, 13];
+
+        const mockedMatches: QueriedAttestation[] = cousinNumbers.map((n) => {
+          return {
+            id: `000${n}-1`,
+            claimHash: `0xBE11AC10000${n}`,
+            cTypeId: `kilt:ctype:0xC10BE11A`,
+            issuerId: 'did:kilt:4_yourFavoriteGod',
+            delegationID: null,
+            payer: 'PapaStaat',
+            valid: true,
+            creationBlock: {
+              id: `000${n}`,
+              hash: `0x123456789ABCDEF000${n}`,
+              timeStamp: new Date(n, 3, 21).toISOString(),
+            },
+            revocationBlock: null,
+            removalBlock: null,
+          };
+        });
+
+        const expectedYields: AttestationInfo[] = cousinNumbers.map((n) => {
+          return {
+            owner: 'did:kilt:4_yourFavoriteGod',
+            claimHash: `0xBE11AC10000${n}`,
+            cTypeHash: `0xC10BE11A`,
+            delegationId: null,
+            revoked: false,
+            block: n,
+            createdAt: new Date(n, 3, 21),
+          };
+        });
+
+        postResponse = {
+          data: {
+            blocks: {
+              totalCount: cousinNumbers.length,
+              nodes: mockedMatches.map((m) => ({ ...m })),
+            },
+          },
+        };
+
+        const someAttestations = queryExpiredAttestations();
+
+        let index = 0;
+        for await (const match of someAttestations) {
+          expect(match).toEqual(expectedYields.at(index));
+          index++;
+        }
+      });
     });
     describe('on negative cases', () => {
       it('should just return void if there is no matches to a query', async () => {
