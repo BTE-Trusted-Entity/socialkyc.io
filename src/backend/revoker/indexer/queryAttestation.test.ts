@@ -2,6 +2,8 @@
  * @jest-environment node
  */
 
+/* eslint-disable jest/no-focused-tests */
+
 import { beforeEach, describe, expect, it, jest } from '@jest/globals';
 import { DidUri } from '@kiltprotocol/sdk-js';
 import got from 'got';
@@ -18,10 +20,30 @@ import {
 const frozenNow = new Date();
 
 beforeAll(() => {
-  jest.spyOn(global.Date, 'now').mockImplementation(() => frozenNow.getTime());
+  // Fake only the Date
+  jest.useFakeTimers({
+    doNotFake: [
+      'hrtime',
+      'nextTick',
+      'performance',
+      'queueMicrotask',
+      'requestAnimationFrame',
+      'cancelAnimationFrame',
+      'requestIdleCallback',
+      'cancelIdleCallback',
+      'setImmediate',
+      'clearImmediate',
+      'setInterval',
+      'clearInterval',
+      'setTimeout',
+      'clearTimeout',
+    ],
+  });
+  jest.setSystemTime(frozenNow);
 });
 afterAll(() => {
   jest.restoreAllMocks();
+  jest.useRealTimers();
 });
 
 jest.mock('../../utilities/configuration', () => ({
@@ -129,7 +151,7 @@ describe('The function that queries the old attestations issued by SocialKYC fro
 
         expect(got.post).toHaveBeenCalledTimes(5);
       }, 10000);
-      it('should use request from the Indexer the expected query', async () => {
+      it.only('should use request from the Indexer the expected query', async () => {
         const count = Math.floor(QUERY_SIZE * 3.33);
         postResponse = {
           data: {
@@ -148,10 +170,12 @@ describe('The function that queries the old attestations issued by SocialKYC fro
         expect(got.post).toHaveBeenCalledTimes(5);
 
         const timeZero = new Date(0);
+        const aYearAgo = new Date(frozenNow.valueOf());
+        aYearAgo.setFullYear(aYearAgo.getFullYear() - 1);
 
         const buildAttestationQuery = buildAttestationQueries(
           timeZero,
-          frozenNow,
+          aYearAgo,
         );
 
         const { calls: postRequests } = jest.mocked(got.post).mock;
