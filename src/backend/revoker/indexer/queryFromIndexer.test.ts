@@ -146,8 +146,7 @@ describe('The fundamental function to query from the Indexer', () => {
         const unmatched = await queryFromIndexer(queryBlocks);
 
         expect(unmatched.totalCount).toBe(0);
-        expect(unmatched.matches).toBeDefined();
-        expect(unmatched.matches.length).toBe(0);
+        expect(unmatched.matches).toMatchObject([]);
       });
     });
 
