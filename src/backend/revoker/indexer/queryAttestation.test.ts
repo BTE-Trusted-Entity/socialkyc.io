@@ -173,11 +173,10 @@ describe('The function that queries the old attestations issued by SocialKYC fro
       });
 
       it('should continue requesting from the Indexer until querying all matches', async () => {
-        const count = Math.floor(QUERY_SIZE * 3.33);
         postResponse = {
           data: {
             blocks: {
-              totalCount: count,
+              totalCount: Math.floor(QUERY_SIZE * 3.33),
               nodes: mockAttestations(QUERY_SIZE).map((b) => ({ ...b })),
             },
           },
@@ -192,11 +191,10 @@ describe('The function that queries the old attestations issued by SocialKYC fro
       }, 10000);
 
       it('should request from the Indexer using the expected queries', async () => {
-        const count = Math.floor(QUERY_SIZE * 3.33);
         postResponse = {
           data: {
             blocks: {
-              totalCount: count,
+              totalCount: Math.floor(QUERY_SIZE * 3.33),
               nodes: mockAttestations(QUERY_SIZE).map((b) => ({ ...b })),
             },
           },
