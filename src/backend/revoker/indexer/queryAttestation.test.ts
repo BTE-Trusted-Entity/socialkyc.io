@@ -92,7 +92,7 @@ function mockAttestations(numberOfAttestations: number) {
 describe('The function that queries the old attestations issued by SocialKYC from the Indexer', () => {
   describe('queryExpiredAttestations()', () => {
     describe('on positive cases', () => {
-      it("On the App's start: should request attestations from 1970 until a year ago from the Indexer", async () => {
+      it("should, on the App's start, request attestations from 1970 until a year ago from the Indexer", async () => {
         const timeZero = new Date(0);
         const aYearAgo = new Date(frozenNow.valueOf());
         aYearAgo.setFullYear(aYearAgo.getFullYear() - 1);
