@@ -119,6 +119,10 @@ describe('The fundamental function to query from the Indexer', () => {
         const queryBlocks = buildBlockQueries()(0);
         await queryFromIndexer(queryBlocks);
 
+        const { calls: postRequests } = jest.mocked(got.post).mock;
+
+        expect(postRequests[0][0]).toBe(configuration.indexer.graphqlEndpoint);
+
         expect(got.post).toHaveBeenCalledWith(
           configuration.indexer.graphqlEndpoint,
           {

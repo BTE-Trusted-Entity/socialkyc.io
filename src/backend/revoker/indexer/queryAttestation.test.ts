@@ -129,66 +129,6 @@ describe('The function that queries the old attestations issued by SocialKYC fro
         });
       });
 
-      it('should query the KILT Indexer API', async () => {
-        const count = 3;
-        postResponse = {
-          data: {
-            attestations: {
-              totalCount: count,
-              nodes: mockAttestations(count).map((a) => ({ ...a })),
-            },
-          },
-        };
-
-        const aFewAttestations = queryExpiredAttestations();
-
-        for await (const match of aFewAttestations) {
-          expect(match).toBeDefined();
-        }
-
-        const { calls: postRequests } = jest.mocked(got.post).mock;
-
-        expect(postRequests[0][0]).toBe(configuration.indexer.graphqlEndpoint);
-      });
-
-      it("should only query once if all matches are on the first Indexer's response", async () => {
-        const count = Math.floor(QUERY_SIZE * 0.77);
-
-        postResponse = {
-          data: {
-            blocks: {
-              totalCount: count,
-              nodes: mockAttestations(count).map((a) => ({ ...a })),
-            },
-          },
-        };
-        const aFewAttestations = queryExpiredAttestations();
-
-        for await (const match of aFewAttestations) {
-          expect(match).toBeDefined();
-        }
-
-        expect(got.post).toHaveBeenCalledTimes(1);
-      });
-
-      it('should continue requesting from the Indexer until querying all matches', async () => {
-        postResponse = {
-          data: {
-            blocks: {
-              totalCount: Math.floor(QUERY_SIZE * 3.33),
-              nodes: mockAttestations(QUERY_SIZE).map((b) => ({ ...b })),
-            },
-          },
-        };
-        const aLotOfAttestations = queryExpiredAttestations();
-
-        for await (const match of aLotOfAttestations) {
-          expect(match).toBeDefined();
-        }
-
-        expect(got.post).toHaveBeenCalledTimes(5);
-      }, 10000);
-
       it('should request from the Indexer using the expected queries', async () => {
         postResponse = {
           data: {
@@ -286,26 +226,6 @@ describe('The function that queries the old attestations issued by SocialKYC fro
           expect(match).toEqual(expectedYields.at(index));
           index++;
         }
-      });
-    });
-
-    describe('on negative cases', () => {
-      it('should just return void if there is no matches to a query', async () => {
-        postResponse = {
-          data: {
-            blocks: {
-              totalCount: 0,
-              nodes: [],
-            },
-          },
-        };
-        const noMatches = queryExpiredAttestations();
-
-        const returnValue = await noMatches.next();
-        expect(returnValue.value).toBeUndefined();
-        expect(returnValue.done).toBe(true);
-
-        expect(got.post).toHaveBeenCalledTimes(1);
       });
     });
   });
