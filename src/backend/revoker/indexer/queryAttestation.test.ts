@@ -129,6 +129,7 @@ describe('The function that queries the old attestations issued by SocialKYC fro
           json: { query: buildAttestationQuery(0) },
         });
       });
+
       it('should query the KILT Indexer API', async () => {
         const count = 3;
         postResponse = {
@@ -150,6 +151,7 @@ describe('The function that queries the old attestations issued by SocialKYC fro
 
         expect(postRequests[0][0]).toBe(configuration.indexer.graphqlEndpoint);
       });
+
       it("should only query once if all matches are on the first Indexer's response", async () => {
         const count = Math.floor(QUERY_SIZE * 0.77);
 
@@ -188,6 +190,7 @@ describe('The function that queries the old attestations issued by SocialKYC fro
 
         expect(got.post).toHaveBeenCalledTimes(5);
       }, 10000);
+
       it('should request from the Indexer using the expected queries', async () => {
         const count = Math.floor(QUERY_SIZE * 3.33);
         postResponse = {
@@ -239,6 +242,7 @@ describe('The function that queries the old attestations issued by SocialKYC fro
           json: { query: buildAttestationQuery(QUERY_SIZE * 3) },
         });
       }, 10000);
+
       it("should yield attestations in the 'AttestationInfo' interface", async () => {
         const cousinNumbers = [1, 2, 3, 5, 7, 13];
 
@@ -291,6 +295,7 @@ describe('The function that queries the old attestations issued by SocialKYC fro
         }
       });
     });
+
     describe('on negative cases', () => {
       it('should just return void if there is no matches to a query', async () => {
         postResponse = {

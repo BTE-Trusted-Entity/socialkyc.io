@@ -117,7 +117,6 @@ describe('The fundamental function to query from the Indexer', () => {
         };
 
         const queryBlocks = buildBlockQueries()(0);
-
         await queryFromIndexer(queryBlocks);
 
         expect(got.post).toHaveBeenCalledWith(
@@ -129,6 +128,7 @@ describe('The fundamental function to query from the Indexer', () => {
           },
         );
       });
+
       it('should return empty array when matches count is 0', async () => {
         postResponse = {
           data: {
@@ -150,6 +150,7 @@ describe('The fundamental function to query from the Indexer', () => {
         expect(unmatched.matches.length).toBe(0);
       });
     });
+
     describe('on negative cases', () => {
       it('should throw if the "totalCount" is not included on the query', async () => {
         postResponse = {
@@ -165,6 +166,7 @@ describe('The fundamental function to query from the Indexer', () => {
           'The query did not ask for total count. Please add field "totalCount" to your query.',
         );
       });
+
       it('should throw if the "nodes" is not included on the query', async () => {
         postResponse = {
           data: {
@@ -206,6 +208,7 @@ describe('The wrapper function that manages big queries to the Indexer', () => {
 
         expect(got.post).toHaveBeenCalledTimes(1);
       });
+
       it('should continue requesting from the Indexer until querying all matches', async () => {
         const count = Math.floor(QUERY_SIZE * 3.33);
         postResponse = {
@@ -250,6 +253,7 @@ describe('The wrapper function that manages big queries to the Indexer', () => {
         });
       }, 10000);
     });
+
     describe('on negative cases', () => {
       it('should just return void if the GraphQL Endpoint is not available', async () => {
         configuration.indexer.graphqlEndpoint = 'NONE';
@@ -272,6 +276,7 @@ describe('The wrapper function that manages big queries to the Indexer', () => {
 
         expect(got.post).toHaveBeenCalledTimes(0);
       });
+
       it('should just return void if there is no matches to a query', async () => {
         postResponse = {
           data: {
