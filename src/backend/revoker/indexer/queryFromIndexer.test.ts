@@ -55,18 +55,12 @@ interface QueriedBlock {
   timeStamp: string; // ISO8601 Date String, like 2022-02-09T13:09:18.217
 }
 
-function mockBlocks(numberOfBlocks: number) {
-  const mockedBlocks: QueriedBlock[] = [];
-
-  for (let index = numberOfBlocks; index > 0; index--) {
-    mockedBlocks.push({
-      id: index.toString(),
-      hash: `0x${index.toString(16)}`,
-      timeStamp: new Date(index, 3, 21).toISOString(),
-    });
-  }
-
-  return mockedBlocks;
+function mockBlocks(numberOfBlocks: number): QueriedBlock[] {
+  return [...new Array(numberOfBlocks).keys()].reverse().map((index) => ({
+    id: index.toString(),
+    hash: `0x${index.toString(16)}`,
+    timeStamp: new Date(index, 3, 21).toISOString(),
+  }));
 }
 
 jest.mock('../../utilities/configuration', () => ({
