@@ -4,8 +4,10 @@
 
 import { describe, it, expect, jest } from '@jest/globals';
 
-import { getExpiredAttestations } from './getExpiredAttestations';
-import { AttestationInfo } from './scanAttestations';
+import {
+  AttestationInfo,
+  queryExpiredAttestations,
+} from './indexer/queryAttestations';
 import {
   attestationsToRemove,
   attestationsToRemoveLater,
@@ -17,8 +19,8 @@ import {
 import { batchQueryRevoked } from './batchQueryRevoked';
 
 jest.mock('../utilities/configuration', () => ({ configuration: {} }));
-jest.mock('./getExpiredAttestations', () => ({
-  getExpiredAttestations: jest.fn(),
+jest.mock('./indexer/queryAttestations', () => ({
+  queryExpiredAttestations: jest.fn(),
 }));
 jest.mock('./batchQueryRevoked');
 
@@ -57,7 +59,7 @@ const alreadyRevoked: AttestationInfo = {
   revoked: true,
 };
 
-jest.mocked(getExpiredAttestations).mockImplementation(async function* () {
+jest.mocked(queryExpiredAttestations).mockImplementation(async function* () {
   yield toRemove;
   yield toRevoke;
   yield alreadyRevoked;

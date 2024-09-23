@@ -1,9 +1,13 @@
 import { sleep } from '../utilities/sleep';
+import { configuration } from '../utilities/configuration';
 
-import { getExpiredAttestations } from './getExpiredAttestations';
-import { AttestationInfo } from './scanAttestations';
-import { shouldBeRemoved } from './shouldBeExpired';
 import { batchQueryRevoked } from './batchQueryRevoked';
+import {
+  AttestationInfo,
+  queryExpiredAttestations,
+} from './indexer/queryAttestations';
+
+import { shouldBeRemoved } from './shouldBeExpired';
 
 const SCAN_INTERVAL_MS = 60 * 60 * 1000;
 
@@ -32,7 +36,7 @@ export async function fillExpiredInventory() {
   attestationsToRemove.push(...expiredSinceLastRun);
   attestationsToRemoveLater.splice(0, expiredSinceLastRun.length);
 
-  for await (const expiredAttestation of getExpiredAttestations()) {
+  for await (const expiredAttestation of queryExpiredAttestations()) {
     if (shouldBeRemoved(expiredAttestation)) {
       include(attestationsToRemove, expiredAttestation);
     } else {
@@ -46,6 +50,10 @@ export async function fillExpiredInventory() {
 
 export function initExpiredInventory() {
   (async () => {
+    if (configuration.did === 'pending') {
+      return;
+    }
+
     while (true) {
       await fillExpiredInventory();
       await sleep(SCAN_INTERVAL_MS);

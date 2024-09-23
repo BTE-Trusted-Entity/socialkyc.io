@@ -17,7 +17,7 @@ async function handler(
   logger.debug('DID configuration started');
   const didConfigResource = await didConfigResourcePromise;
 
-  logger.debug('DID configuration started');
+  logger.debug('DID configuration resolved');
   return h.response(didConfigResource);
 }
 

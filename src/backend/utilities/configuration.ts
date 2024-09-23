@@ -105,15 +105,11 @@ if (!lowBalanceAlertRecipients) {
   throw new ConfigurationError('No email recipients for low balance alerts');
 }
 
-const subscan = {
-  network: env.SUBSCAN_NETWORK,
-  secret: env.SECRET_SUBSCAN,
+const indexer = {
+  graphqlEndpoint: env.GRAPHQL_ENDPOINT as string,
 };
-if (!subscan.secret) {
-  throw new ConfigurationError('No SubScan secret provided');
-}
-if (!subscan.network) {
-  throw new ConfigurationError('No SubScan network provided');
+if (!indexer.graphqlEndpoint) {
+  throw new ConfigurationError('No endpoint for the GraphQL server provided');
 }
 
 export const configuration = {
@@ -140,5 +136,5 @@ export const configuration = {
   telegram,
   youtube,
   lowBalanceAlertRecipients,
-  subscan,
+  indexer,
 };
