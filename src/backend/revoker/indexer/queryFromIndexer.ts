@@ -23,17 +23,17 @@ export const QUERY_SIZE = 100;
 //   }
 // `;
 
-export interface FetchedData {
+export interface FetchedData<ExpectedQueryResults> {
   data: Record<
     string,
     {
       totalCount?: number;
-      nodes?: Array<Record<string, unknown>>;
+      nodes?: Array<ExpectedQueryResults>;
     }
   >;
 }
 
-export async function queryFromIndexer(query: string) {
+export async function queryFromIndexer<ExpectedQueryResults>(query: string) {
   logger.debug(
     `Querying from GraphQL under ${indexer.graphqlEndpoint}, using this payload: ${query} `,
   );
@@ -43,7 +43,7 @@ export async function queryFromIndexer(query: string) {
         query,
       },
     })
-    .json<FetchedData>();
+    .json<FetchedData<ExpectedQueryResults>>();
 
   const entities = Object.entries(data);
 
@@ -83,7 +83,8 @@ export async function* matchesGenerator<ExpectedQueryResults>(
     return;
   }
   const query = buildQuery(0);
-  const { totalCount, matches } = await queryFromIndexer(query);
+  const { totalCount, matches } =
+    await queryFromIndexer<ExpectedQueryResults>(query);
 
   if (totalCount === 0) {
     logger.debug(
@@ -94,16 +95,18 @@ export async function* matchesGenerator<ExpectedQueryResults>(
 
   if (totalCount === matches.length) {
     for (const match of matches) {
-      yield match as ExpectedQueryResults;
+      yield match;
     }
     return;
   }
 
   for (let offset = 0; offset < totalCount; offset += QUERY_SIZE) {
-    const { matches } = await queryFromIndexer(buildQuery(offset));
+    const { matches } = await queryFromIndexer<ExpectedQueryResults>(
+      buildQuery(offset),
+    );
 
     for (const match of matches) {
-      yield match as ExpectedQueryResults;
+      yield match;
     }
     await sleep(QUERY_INTERVAL_MS);
   }

@@ -52,7 +52,7 @@ jest.mock('../../utilities/configuration', () => ({
   },
 }));
 
-let postResponse: FetchedData;
+let postResponse: FetchedData<QueriedAttestation>;
 jest.mock('got', () => ({
   post: jest.fn().mockReturnValue({
     json: () => postResponse,
@@ -98,7 +98,7 @@ describe('The function that queries the old attestations issued by SocialKYC fro
           data: {
             blocks: {
               totalCount: count,
-              nodes: mockAttestations(count).map((b) => ({ ...b })),
+              nodes: mockAttestations(count),
             },
           },
         };
@@ -128,7 +128,7 @@ describe('The function that queries the old attestations issued by SocialKYC fro
           data: {
             blocks: {
               totalCount: Math.floor(QUERY_SIZE * 3.33),
-              nodes: mockAttestations(QUERY_SIZE).map((b) => ({ ...b })),
+              nodes: mockAttestations(QUERY_SIZE),
             },
           },
         };
@@ -208,7 +208,7 @@ describe('The function that queries the old attestations issued by SocialKYC fro
           data: {
             blocks: {
               totalCount: cousinNumbers.length,
-              nodes: mockedMatches.map((m) => ({ ...m })),
+              nodes: mockedMatches,
             },
           },
         };

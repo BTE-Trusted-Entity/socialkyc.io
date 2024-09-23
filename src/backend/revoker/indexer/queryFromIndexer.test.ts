@@ -49,14 +49,14 @@ function buildBlockQueries(filter?: string) {
 `;
 }
 /** Expected structure of responses for queries defined above. */
-interface IndexedBlock {
+interface QueriedBlock {
   id: string; // Block Ordinal Number, without punctuation
   hash: HexString;
   timeStamp: string; // ISO8601 Date String, like 2022-02-09T13:09:18.217
 }
 
 function mockBlocks(numberOfBlocks: number) {
-  const mockedBlocks: IndexedBlock[] = [];
+  const mockedBlocks: QueriedBlock[] = [];
 
   for (let index = numberOfBlocks; index > 0; index--) {
     mockedBlocks.push({
@@ -75,7 +75,7 @@ jest.mock('../../utilities/configuration', () => ({
   },
 }));
 
-let postResponse: FetchedData;
+let postResponse: FetchedData<QueriedBlock>;
 jest.mock('got', () => ({
   post: jest.fn().mockReturnValue({
     json: () => postResponse,
@@ -198,12 +198,12 @@ describe('The wrapper function that manages big queries to the Indexer', () => {
           data: {
             blocks: {
               totalCount: count,
-              nodes: mockBlocks(count).map((b) => ({ ...b })),
+              nodes: mockBlocks(count),
             },
           },
         };
         const buildBlockQuery = buildBlockQueries();
-        const aFewMatches = matchesGenerator<IndexedBlock>(buildBlockQuery);
+        const aFewMatches = matchesGenerator<QueriedBlock>(buildBlockQuery);
 
         for await (const match of aFewMatches) {
           expect(match).toBeDefined();
@@ -218,13 +218,13 @@ describe('The wrapper function that manages big queries to the Indexer', () => {
           data: {
             blocks: {
               totalCount: count,
-              nodes: mockBlocks(QUERY_SIZE).map((b) => ({ ...b })),
+              nodes: mockBlocks(QUERY_SIZE),
             },
           },
         };
 
         const buildBlockQuery = buildBlockQueries();
-        const aLotOfMatches = matchesGenerator<IndexedBlock>(buildBlockQuery);
+        const aLotOfMatches = matchesGenerator<QueriedBlock>(buildBlockQuery);
 
         for await (const match of aLotOfMatches) {
           expect(match).toBeDefined();
@@ -264,12 +264,12 @@ describe('The wrapper function that manages big queries to the Indexer', () => {
           data: {
             blocks: {
               totalCount: 37,
-              nodes: mockBlocks(37).map((b) => ({ ...b })),
+              nodes: mockBlocks(37),
             },
           },
         };
 
-        const noMatches = matchesGenerator<IndexedBlock>((foo) =>
+        const noMatches = matchesGenerator<QueriedBlock>((foo) =>
           foo.toString(),
         );
 
@@ -290,7 +290,7 @@ describe('The wrapper function that manages big queries to the Indexer', () => {
           },
         };
 
-        const noMatches = matchesGenerator<IndexedBlock>((foo) =>
+        const noMatches = matchesGenerator<QueriedBlock>((foo) =>
           foo.toString(),
         );
 
