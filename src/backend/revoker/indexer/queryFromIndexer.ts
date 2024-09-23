@@ -33,6 +33,7 @@ export interface FetchedData<ExpectedQueryResults> {
   >;
 }
 
+/** The fundamental function to query from the Indexer. */
 export async function queryFromIndexer<ExpectedQueryResults>(query: string) {
   logger.debug(
     `Querying from GraphQL under ${indexer.graphqlEndpoint}, using this payload: ${query} `,
@@ -76,6 +77,7 @@ export async function queryFromIndexer<ExpectedQueryResults>(query: string) {
   return { totalCount, matches };
 }
 
+/** The wrapper function that manages big queries to the Indexer. */
 export async function* matchesGenerator<ExpectedQueryResults>(
   buildQuery: (offset: number) => string,
 ): AsyncGenerator<ExpectedQueryResults, void> {

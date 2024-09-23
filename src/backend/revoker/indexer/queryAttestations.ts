@@ -73,6 +73,7 @@ export interface AttestationInfo extends Omit<IAttestation, 'revoked'> {
 
 export let fromDate = new Date(0);
 
+/** The function that queries the old attestations issued by SocialKYC from the Indexer. */
 export function queryExpiredAttestations() {
   const untilDate = new Date();
   untilDate.setFullYear(untilDate.getFullYear() - 1);
