@@ -61,7 +61,6 @@ jest.mock('got', () => ({
 
 beforeEach(() => {
   jest.mocked(got.post).mockClear();
-  configuration.indexer.graphqlEndpoint = 'https://dev-indexer.kilt.io/';
 });
 
 function mockAttestations(numberOfAttestations: number) {
