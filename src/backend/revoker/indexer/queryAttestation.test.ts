@@ -63,29 +63,23 @@ beforeEach(() => {
   jest.mocked(got.post).mockClear();
 });
 
-function mockAttestations(numberOfAttestations: number) {
-  const mockedAttestations: QueriedAttestation[] = [];
-
-  for (let index = numberOfAttestations; index > 0; index--) {
-    mockedAttestations.push({
+function mockAttestations(numberOfAttestations: number): QueriedAttestation[] {
+  return [...new Array(numberOfAttestations).keys()].reverse().map((index) => ({
+    id: index.toString(),
+    claimHash: `0x${index.toString(16)}`,
+    cTypeId: `kilt:ctype:0x${index.toString(16)}`,
+    issuerId: configuration.did as DidUri,
+    delegationID: null,
+    payer: 'PapaStaat',
+    valid: true,
+    creationBlock: {
       id: index.toString(),
-      claimHash: `0x${index.toString(16)}`,
-      cTypeId: `kilt:ctype:0x${index.toString(16)}`,
-      issuerId: configuration.did as DidUri,
-      delegationID: null,
-      payer: 'PapaStaat',
-      valid: true,
-      creationBlock: {
-        id: index.toString(),
-        hash: `0x${index.toString(16)}`,
-        timeStamp: new Date(index, 3, 21).toISOString(),
-      },
-      revocationBlock: null,
-      removalBlock: null,
-    });
-  }
-
-  return mockedAttestations;
+      hash: `0x${index.toString(16)}`,
+      timeStamp: new Date(index, 3, 21).toISOString(),
+    },
+    revocationBlock: null,
+    removalBlock: null,
+  }));
 }
 
 describe('The function that queries the old attestations issued by SocialKYC from the Indexer', () => {
