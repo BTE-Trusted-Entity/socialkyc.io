@@ -111,5 +111,3 @@ export async function* matchesGenerator<ExpectedQueryResults>(
     await sleep(QUERY_INTERVAL_MS);
   }
 }
-
-// TODO: add unit tests for this file

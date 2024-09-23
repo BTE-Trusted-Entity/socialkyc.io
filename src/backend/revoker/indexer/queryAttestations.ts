@@ -126,5 +126,3 @@ async function* attestationParser(
     };
   }
 }
-
-// TODO: add unit tests for this file
