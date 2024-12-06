@@ -45,18 +45,22 @@ export function buildAttestationQueries(fromDate: Date, untilDate: Date) {
 }
 
 interface IndexedBlock {
-  id: string; // Block Ordinal Number, without punctuation
+  /** Block Ordinal Number, without punctuation */
+  id: string;
   hash: HexString;
-  timeStamp: string; // ISO8601 Date String, like 2022-02-09T13:09:18.217
+  /** ISO8601 Date String, like 2022-02-09T13:09:18.217 */
+  timeStamp: string;
 }
 
 /** Expected structure of responses for queries defined above. */
 export interface QueriedAttestation {
-  id: string; // Block number and ordinal number of attestation inside of it
+  /** Block number and ordinal number of attestation inside of it */
+  id: string;
   claimHash: HexString;
   cTypeId: ICType['$id'];
   issuerId: DidUri;
-  payer: string; // account address
+  /** account address */
+  payer: string;
   valid: boolean;
   delegationID: null | DidUri;
   creationBlock: IndexedBlock;
