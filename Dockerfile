@@ -28,8 +28,8 @@ RUN apk add --update --no-cache nginx nginx-mod-http-brotli
 COPY ./nginx.conf /etc/nginx/http.d/default.conf
 
 # tell the app it will run on port 4000 in production mode
-ENV PORT 4000
-ENV NODE_ENV production
+ENV PORT=4000
+ENV NODE_ENV=production
 
 # get the dependencies and sources
 COPY package.json yarn.lock .yarnrc.yml ./
@@ -41,4 +41,4 @@ RUN yarn install --immutable && yarn cache clean --all
 COPY --from=builder /app/dist dist
 
 EXPOSE 3000
-ENTRYPOINT nginx; exec yarn start
+ENTRYPOINT [ "sh", "-c", "nginx && exec yarn start" ]
