@@ -120,7 +120,7 @@ async function* attestationParser(
     const revoked =
       removalBlock !== null ? null : revocationBlock !== null ? true : false;
 
-    yield <AttestationInfo>{
+    const parsedAttestation: AttestationInfo = {
       owner: issuerId,
       claimHash,
       cTypeHash,
@@ -129,5 +129,6 @@ async function* attestationParser(
       block: blockNumber,
       createdAt,
     };
+    yield parsedAttestation;
   }
 }
