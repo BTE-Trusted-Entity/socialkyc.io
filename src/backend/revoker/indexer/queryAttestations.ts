@@ -30,7 +30,7 @@ export function buildAttestationQueries(fromDate: Date, untilDate: Date) {
           lessThan: "${untilDate.toISOString()}"
         }
       }
-      removalBlockExists: true
+      removalBlockExists: false
     }
   ) {
     totalCount
