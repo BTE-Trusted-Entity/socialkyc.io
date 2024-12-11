@@ -129,6 +129,7 @@ async function* attestationParser(
       block: blockNumber,
       createdAt,
     };
+    // trying to yield directly with `<AttestationInfo>` breaks parcel
     yield parsedAttestation;
   }
 }
