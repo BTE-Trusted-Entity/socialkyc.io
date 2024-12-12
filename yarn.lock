@@ -12423,10 +12423,10 @@ __metadata:
   languageName: node
   linkType: hard
 
-"ky@npm:^1.4.0":
-  version: 1.4.0
-  resolution: "ky@npm:1.4.0"
-  checksum: 10c0/351affa46d9dcd623ad3c9c8e95a22bb642eb0bd0326c1884577aef20c82261da5b46deb33c18e08398cef5c34c4d94871dfebf0db73d5400949948a33ac34fb
+"ky@npm:^1.7.3":
+  version: 1.7.3
+  resolution: "ky@npm:1.7.3"
+  checksum: 10c0/9e9c130a1ec4bfaa1fbafea0616dc778884afaf753a9b2eee572f70de54aab9ed7aebe89e92559397513e1fa2c32a09027db60bb9e4a92fcd0633856cac7ae7d
   languageName: node
   linkType: hard
 
@@ -14785,7 +14785,7 @@ __metadata:
     http-status-codes: "npm:^2.3.0"
     jest: "npm:^29.7.0"
     jest-environment-jsdom: "npm:^29.7.0"
-    ky: "npm:^1.4.0"
+    ky: "npm:^1.7.3"
     node-cache: "npm:^5.1.2"
     parcel: "npm:^2.7.0"
     pino: "npm:^8.21.0"
