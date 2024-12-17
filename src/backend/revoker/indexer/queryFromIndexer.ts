@@ -98,7 +98,7 @@ export async function queryFromIndexer<ExpectedQueryResults>(query: string) {
 export async function* matchesGenerator<ExpectedQueryResults>(
   buildQuery: (offset: number) => string,
 ): AsyncGenerator<ExpectedQueryResults, void> {
-  if (indexer.graphqlEndpoint === 'NONE') {
+  if (String(indexer.graphqlEndpoint).toUpperCase() === 'NONE') {
     return;
   }
   const query = buildQuery(0);
