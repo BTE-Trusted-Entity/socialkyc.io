@@ -318,6 +318,6 @@ p {
   padding: 0 calc(90rem / 16) 0 0;
   font-size: 0.625rem;
   margin: 0;
-  background: url('../images/built-on-KILT.svg') no-repeat top calc(5rem / 16)
+  background: url('../images/KILT-Horizontal-black.svg') no-repeat top calc(5rem / 16)
     right;
 }
