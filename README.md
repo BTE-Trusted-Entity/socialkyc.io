@@ -1,10 +1,10 @@
 # SocialKYC
 
-The source code of https://socialkyc.io
+The source code of <https://socialkyc.io>
 
-Copyright (c) 2021-2023, BOTLabs GmbH. All rights reserved.
+Copyright (c) 2025, KILT Foundation. All rights reserved.
 
-## Start the app locally:
+## Start the app locally
 
 After having cloned the repository on your local machine and defining all environment variables, to start the app locally follow this steps.
 
@@ -27,4 +27,4 @@ After having cloned the repository on your local machine and defining all enviro
    ```
 
    Now you can see the logs of the backend on the terminal and visit the frontend under the URL specified by the variable `URL` from the `.env`-file.
-   (By default http://localhost:3000)
+   (By default <http://localhost:3000>)
